@@ -51,3 +51,6 @@ aside {
   display: none;
 }
 </style>
+<style lang="sass">
+@import '@/assets/ow-admin.scss'
+</style>

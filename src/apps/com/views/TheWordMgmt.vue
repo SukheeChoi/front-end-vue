@@ -279,8 +279,8 @@
                             <wj-flex-grid-cell-template cellType="ColumnHeader">
                                 <input type="checkbox" v-model="isAllChecked" @click="allCheck" />
                             </wj-flex-grid-cell-template>
-                            <wj-flex-grid-cell-template cellType="Cell">
-                                <input type="checkbox" v-model="isChecked" @click="clickFunc" />
+                            <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
+                                <input type="checkbox" v-model="isChecked" @click="clickFunc(cell.row)" />
                             </wj-flex-grid-cell-template>
                         </wj-flex-grid-column>
                         <wj-flex-grid-column :header="'표준단어명'" :binding="'1'" :width="150" />
@@ -349,6 +349,9 @@ export default {
                 this.isChecked = false;
                 this.isAllChecked  = false;
             }
+        },
+        clickFunc(a){
+            console.log(a);
         }
   }
 };
