@@ -6,7 +6,7 @@
         <app-nav></app-nav>
         <app-section>
           <div class="row">
-            <app-article class="col fix-left">
+            <app-article class="col fix-left" v-if="show">
               <the-action-plan></the-action-plan>
               <the-approval></the-approval>
             </app-article>
@@ -40,7 +40,7 @@ export default {
     TheActionPlan,
     TheApproval,
   },
-  props: {},
+  props: ['show'],
   mounted() {
     console.log(this.testProps);
   },

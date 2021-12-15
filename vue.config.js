@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   lintOnSave: false,
   devServer: {
-    port: 8000,
+    port: process.env.VUE_APP_SERVER_PORT,
     https: false,
     overlay: false,
   },
