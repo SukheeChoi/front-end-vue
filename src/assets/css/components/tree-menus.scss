@@ -1,7 +1,7 @@
 $clrs-achromatic: getColors("achromatic");
 $clrs-base: getColors("base");
 
-.erp-tree-menu-set {
+.ow-tree-menu-set {
   // border: 1px solid red;
   // height: 100%;
   flex: 1 1 auto;
@@ -9,7 +9,7 @@ $clrs-base: getColors("base");
   // padding: 5px;
   // border: 1px solid #d7dce3;
   overflow-y: auto;
-  @at-root .erp-layer-popup & {
+  @at-root .ow-layer-popup & {
     border:1px solid #d7dce3 ; 
   }
   .vtl-tree-margin {

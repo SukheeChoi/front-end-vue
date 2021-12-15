@@ -1,11 +1,8 @@
 $clrs-achromatic: getColors("achromatic");
 $clrs-base: getColors("base");
 
-:root {
-  --toast-width: 310px;
-}
-
-// Bootstrap popup 사이즈 정의
+// wijmo, Bootstrap popup 사이즈 정의
+.wj-popup,
 .modal-dialog {
   width: 100%;
   max-width: 400px !important ;
@@ -36,24 +33,26 @@ $clrs-base: getColors("base");
   }
 }
 
-// Bootstrap popup custom : layer popup
+// wijmo, Bootstrap popup custom : layer popup
+.wj-popup,
 .ow-custom-layer-popup {
-  box-shadow: 0 16px 36px 0 rgba(0, 0, 0, 0.5);
+  @include box-shadow(0, 16px, 36px, 0.2);
   background-color: #fff;
+  &.wj-content,
   &.modal-content {
     border-radius: 0;
     border: 0;
   }
   .modal-header {
+    padding: 0 calc(var(--bs-gutter) * 2);
     display: flex;
-    height: 36px;
     flex: inherit;
-    padding: 0 16px;
+    flex-shrink: 0;
     align-items: center;
-    background-image: linear-gradient(to bottom, #7893b6, #637d9e);
+    height: 36px;
     border-bottom: 1px solid #50637c;
     border-radius: 0;
-    flex-shrink: 0;
+    background-image: linear-gradient(to bottom, #7893b6, #637d9e);
     button.close {
       width: 15px;
       height: 15px;
@@ -73,7 +72,7 @@ $clrs-base: getColors("base");
   .modal-body {
     padding: 0;
     .layer-body {
-      padding: 16px 16px 20px;
+      padding: calc(var(--bs-gutter) * 2);
       .ct:not(:last-child) {
         margin-bottom: 20px;
       }
@@ -95,7 +94,7 @@ $clrs-base: getColors("base");
         }
       }
       .tab-content {
-        padding: 16px 0 0 0;
+        padding: calc(var(--bs-gutter) * 2) 0 0 0;
       }
       .ow-pagination {
         margin-top: 20px;
@@ -105,7 +104,7 @@ $clrs-base: getColors("base");
       }
     }
     .layer-foot {
-      padding: 0 16px;
+      padding: 0 calc(var(--bs-gutter) * 2);
       .actions {
         display: flex;
         padding-bottom: 30px;
@@ -116,7 +115,7 @@ $clrs-base: getColors("base");
         }
       }
       .controls {
-        padding: 0 0 16px 0;
+        padding: 0 0 calc(var(--bs-gutter) * 2) 0;
         .ow-checkbox {
           label {
             font-weight: 400;

@@ -3,14 +3,14 @@ $color-achromatic: getColors('achromatic');
 $gap: 10px;
 $size: 4px;
 
-.erp-product-list{
+.ow-product-list{
   position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(134px, 1fr));
   border-top: 1px solid #e2e6ec;
   border-left: 1px solid #e2e6ec;
 
-  .erp-product-item{
+  .ow-product-item{
     position: relative;
     height: 58px;
     border: 1px solid #e2e6ec;
@@ -31,7 +31,7 @@ $size: 4px;
       display: block;
     }
 
-    .erp-product-info{
+    .ow-product-info{
       position: relative; z-index: 2;
       display: flex;
       flex-direction: column;
@@ -39,12 +39,12 @@ $size: 4px;
       gap: 5px;
       height: 100%;
       padding: 10px 8px;
-      .erp-product-name, .erp-product-price{ 
+      .ow-product-name, .ow-product-price{ 
         color: nth($color-achromatic, 2); font-size: 12px;
         letter-spacing: -0.6px;
         display: block; 
       }
-      .erp-product-name{
+      .ow-product-name{
         width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -52,7 +52,7 @@ $size: 4px;
         word-break:keep-all;
         word-wrap:break-word;
       }
-      .erp-product-price{
+      .ow-product-price{
         font-weight: bold;
       }
     }

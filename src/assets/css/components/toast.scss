@@ -11,7 +11,7 @@ $header: 40px;
   z-index: 999;
 
   &.toast-slide {
-    padding: calc(var(--bs-gutter) * 2);
+    padding: var(--bs-gutter);
     position: fixed;
     top: 0;
     right: 0;
@@ -80,7 +80,7 @@ $header: 40px;
 .toast-wrap {
   @include box-shadow(0,2px,4px,0.12);
   
-  padding: calc(var(--bs-gutter) * 2);
+  padding: var(--bs-gutter);
   max-width: $toast-width;
   color: #333;
   border: 1px solid $toast-border-1;
@@ -189,6 +189,7 @@ $header: 40px;
   }
   .toast {
     width: 100% !important;
+    font-size: inherit;
     background-color: #fff;
     border-radius: 0;
     &:not(.show) {
@@ -237,4 +238,24 @@ $header: 40px;
       }
     }
   }
+}
+
+// show transition
+.custom-classes-transition-enter-to,
+.custom-classes-transition-leave-to,
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(30px);
+  opacity: 0;
+}
+
+.custom-classes-transition-enter-from,
+.custom-classes-transition-leave-to {
+  transform: translateX(90px);
+  opacity: 0;
 }

@@ -8,7 +8,7 @@
 
 /* fontawesome */
 
-@import "https://use.fontawesome.com/releases/v5.15.0/css/all.css";
+@import 'https://use.fontawesome.com/releases/v5.15.0/css/all.css';
 
 /* ow common */
 
@@ -21,6 +21,7 @@
 @import "./common/_reset";
 @import "./common/_common";
 @import "./common/_single_class";
+@import "./common/ow-login.scss";
 
 /* ow components */
 
@@ -47,6 +48,7 @@
 @import "./components/list";
 @import "./components/scroll";
 @import "./components/toast";
+@import "./components/shuttle";
 @import "./components/layout";
 
 /* ow style */

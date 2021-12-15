@@ -1,10 +1,10 @@
 $color-base: getColors('base');
 $color-achromatic: getColors('achromatic');
-$erp-card: '.erp-card';
+$ow-card: '.ow-card';
 $gap: 10px;
 $size: 4px;
 
-#{$erp-card}-item{
+#{$ow-card}-item{
   display: inline-flex;
   flex-direction: column;
   max-width: 526px;
@@ -14,7 +14,7 @@ $size: 4px;
   background-color: #fff;
   padding: 10px 10px;
 
-  #{$erp-card}-item-header{
+  #{$ow-card}-item-header{
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -25,22 +25,22 @@ $size: 4px;
     padding: 0 0 0 20px;
     margin-bottom: 8px;
 
-    #{$erp-card}-item-date{
+    #{$ow-card}-item-date{
       color: nth($color-achromatic, 2);
       font-size: 12px;
       letter-spacing: -0.6px;
     }
 
-    .erp-btn{  margin: 0 }
+    .ow-btn{  margin: 0 }
   }
 
-  #{$erp-card}-item-body{
+  #{$ow-card}-item-body{
     display: flex;
     flex: 1;
     overflow: hidden;
     gap: 28px;
 
-    #{$erp-card}-item-info{
+    #{$ow-card}-item-info{
       min-width: 238px;
       overflow: hidden;
       li{
@@ -51,7 +51,7 @@ $size: 4px;
         font-size: 12px;
         color: nth($color-achromatic, 2);
 
-        #{$erp-card}-item-name{
+        #{$ow-card}-item-name{
           width: 182px;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -59,7 +59,7 @@ $size: 4px;
           word-break:keep-all;
           word-wrap:break-word;
         }
-        #{$erp-card}-item-count{ color: nth($color-achromatic, 6); }
+        #{$ow-card}-item-count{ color: nth($color-achromatic, 6); }
       }
     }
   }

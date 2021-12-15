@@ -1,0 +1,29 @@
+$clrs-border: getColors("border");
+
+.ow-shuttle {
+    $size: 42px;
+    
+    @include d-flex(center, center);
+    flex-direction: column;
+    height: 100%;
+    
+    .ow-btn {
+        &.type-icon {
+            width: $size;
+            height: $size;
+            border: 1px solid nth($clrs-border, 2);
+
+            .triangle {
+              width: calc(#{$size} * .25);
+              height: calc(#{$size} * .25);
+              border-color: black;
+
+            }
+        }
+
+        + .ow-btn {
+            margin-top: var(--bs-gutter);
+            margin-left: 0;
+        }
+    }
+}
