@@ -1,4 +1,4 @@
-import http from "./axiosHttp";
+import http from "./index";
 
 const RestApi = {
     get(url, params) {

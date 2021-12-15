@@ -58,9 +58,9 @@
 </template>
 
 <script>
-import router from "../../router";
+import router from "@/routes";
 import axios from 'axios';
-import login from '../../api/login.js';
+import login from '@/api/login.js';
 export default{
     name: "OssLogin",
     data(){
@@ -105,8 +105,6 @@ export default{
       },
       */
       async getToken(){
-        console.log(await login);
-        
         const tokenData = await login.requestLogin("/com/login/do-login", this.loginId, this.password);
         if(tokenData.data.data !== null){
           const accessToken = tokenData.data.data;
