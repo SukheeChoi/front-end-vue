@@ -20,9 +20,14 @@ const routes = [
 const apps = (process.env.VUE_APP_APPS || '').split(',');
 
 for (const app of apps) {
-  const module = require(`@/app/${app.toLowerCase()}/routes`).default;
-  if (module && Array.isArray(module)) {
-    routes.push(...module);
+  let module;
+  try {
+    module = require(`@/apps/${app.trim().toLowerCase()}/routes`);
+    if (module && module.default && Array.isArray(module.default)) {
+      routes.push(...module.default);
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
 
