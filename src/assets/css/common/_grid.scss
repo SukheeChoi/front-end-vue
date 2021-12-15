@@ -1,8 +1,8 @@
 .row {
     &,
-    >* {
+    > * {
         --bs-gutter-x: 8px;
-        padding-right: calc(var(--bs-gutter-x) * 0.25);
-        padding-left: calc(var(--bs-gutter-x) * 0.25);
+        padding-right: calc(var(--bs-gutter-x) * .25);
+        padding-left: calc(var(--bs-gutter-x) * .25);
     }
 }

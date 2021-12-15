@@ -273,3 +273,16 @@ $radius: 2px;
     background-color: nth($clrs-achromatic, 10);
   }
 }
+
+.ow-tree-wrap {
+  @include border(1px, nth($clrs-border, 2));
+
+  .ow-tree-head {
+    padding: var(--bs-gutter);
+    border-bottom: 1px dashed nth($clrs-achromatic, 9);
+  }
+
+  .ow-tree-body {
+    padding: calc(var(--bs-gutter) * 0.5);
+  }
+}

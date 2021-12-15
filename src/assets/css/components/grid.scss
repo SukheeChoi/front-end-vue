@@ -1,125 +1,136 @@
 $grid-name: ".ow-grid";
+
 $clrs-achromatic: getColors("achromatic");
 $clrs-base: getColors("base");
+
 // 그리드 레이아웃 기본 박스 클래스
 // 위즈모 그리드 추가시 아래 클래스로 된 div 영역안에 넣어야합니다.
 #{$grid-name}-wrap {
-    display: flex;
-    flex: 1 1 0;
-    overflow: hidden;
-    // 부모 영역 만큼 스크롤 추가하기 위한 클래스
-    &.size-full {
-        height: 100%;
-    }
-    // 그리드영역 그림자 추가
-    &.type-shadow {
-        width: 100%;
-        background-color: #fff;
-        box-shadow: 0 2px 8px 0 rgb(0 0 0 / 16%);
-    }
+  display: flex;
+  flex: 1 1 0;
+  overflow: hidden;
+  // 부모 영역 만큼 스크롤 추가하기 위한 클래스
+  &.size-full {
+    height: 100%;
+  }
+
+  // 그리드영역 그림자 추가
+  &.type-shadow{
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 2px 8px 0 rgb(0 0 0 / 16%);
+  }
 }
 
 // 기본 그리드 스타일 클래스
 // 위즈모 그리드 태그에 추가합니다.
 #{$grid-name} {
-    position: relative;
-    border-radius: 0 !important;
-    height: var(--height, auto) !important;
-    // header cell
-    .wj-colheaders {
-        .wj-cell {
-            border-bottom: 3px solid #e2e6ec !important;
-            &.wj-header {
-                color: nth($clrs-achromatic, 2);
-                background-color: #fff;
-                border-right: 0;
-                &:before {
-                    content: "";
-                    position: absolute;
-                    top: 50%;
-                    right: 0;
-                    transform: translateY(-50%);
-                    display: block;
-                    width: 1px;
-                    height: 20px;
-                    background-color: #d7dce3;
-                }
-                &:last-child {
-                    border-right: 0;
-                    &:before {
-                        display: none;
-                    }
-                }
-            }
-        }
-    }
-    .wj-topleft {
-        .wj-row {
-            .wj-cell {
-                border-bottom: 3px solid #e2e6ec !important;
-            }
-        }
-    }
-    // 전체 셀
+  position: relative;
+  border-radius: 0 !important;
+  height: var(--height, auto) !important;
+
+  // header cell
+  .wj-colheaders {
     .wj-cell {
-        display: inline-flex;
-        align-items: center;
-        padding: 0px 20px;
-        height: 35px;
-        border-color: #d7dce3;
+      border-bottom: 3px solid #e2e6ec !important ;
+      &.wj-header {
         color: nth($clrs-achromatic, 2);
-        &.wj-group {
-            background-color: #fff;
+        background-color: #fff;
+        border-right: 0;
+
+        &:before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          right: 0;
+          transform: translateY(-50%);
+          display: block;
+          width: 1px;
+          height: 20px;
+          background-color: #d7dce3;
         }
-        // 짝수 행만 선택
-        &.wj-alt {
-            background-color: #f1f5f9;
+        &:last-child {
+          border-right: 0;
+          &:before {
+            display: none;
+          }
         }
-        // 커스텀용 클래스
-        &.add-style-class {
-            background-color: #fff0f0;
-            color: #333;
-            font-weight: 700;
-            text-align: left;
-        }
-        &.high-value {
-            color: red;
-        }
-        &.low-value {
-            color: blue;
-        }
-        &.wj-align-center {
-            justify-content: center;
-        }
+      }
     }
-    // body 영역
-    .wj-cells {
-        // 선택했을 때 스타일
-        .wj-cell.wj-state-selected {
-            background-color: #d8f3fd;
-            color: #000cff;
-        }
-        .wj-cell.wj-state-multi-selected {
-            background-color: #d8f3fd;
-            color: #000cff;
-        }
-        .wj-row {
-            &:last-child {
-                .wj-cell {
-                    // border-bottom: 0;
-                }
-            }
-            .wj-cell:last-child {
-                border-right: 0;
-            }
-        }
+  }
+  .wj-topleft {
+    .wj-row {
+      .wj-cell {
+        border-bottom: 3px solid #e2e6ec !important ;
+      }
     }
+  }
+
+  // 전체 셀
+  .wj-cell {
+    display: inline-flex;
+    align-items: center ;
+    padding: 0px 20px;
+    height:35px ;
+    border-color: #d7dce3;
+    color: nth($clrs-achromatic, 2);
+
+    &.wj-group {
+      background-color: #fff;
+    }
+
+    // 짝수 행만 선택
+    &.wj-alt {
+      background-color: #f1f5f9;
+    }
+
+    // 커스텀용 클래스
+    &.add-style-class {
+      background-color: #fff0f0;
+      color: #333;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    &.high-value {
+      color: red;
+    }
+    &.low-value {
+      color: blue;
+    }
+    &.wj-align-center{
+      justify-content: center;
+    }
+  }
+  // body 영역
+  .wj-cells {
+    // 선택했을 때 스타일
+    .wj-cell.wj-state-selected {
+      background-color: #d8f3fd;
+      color: #000cff;
+    }
+    .wj-cell.wj-state-multi-selected {
+      background-color: #d8f3fd;
+      color: #000cff;
+    }
+
+    .wj-row {
+      &:last-child {
+        .wj-cell {
+          // border-bottom: 0;
+        }
+      }
+      .wj-cell:last-child {
+        border-right: 0;
+      }
+    }
+  }
 }
 
 // BaseGrid 컴포넌트 클래스
 .basegrid-component-wrap {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  overflow: hidden;
 }

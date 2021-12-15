@@ -39,8 +39,12 @@
 
 // main left
 .col {
-  &.fix-left {
+  $fix: 'fix';
+  &[class*=#{$fix}] {
     flex: 0 0 auto;
+  }
+
+  &.#{$fix}-left {
     width: 446px;
   }
 }

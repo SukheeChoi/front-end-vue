@@ -2,7 +2,7 @@ $clrs-achromatic: getColors("achromatic");
 $clrs-base: getColors("base");
 
 // 퍼블리싱 Spin BUtton
-.erp-spin-button {
+.ow-spin-button {
   position: relative;
   display: inline-flex;
   width: 56px;
@@ -67,7 +67,7 @@ $clrs-base: getColors("base");
 
 // Bootstrap Spin Button
 .b-form-spinbutton {
-  &.erp-spin-type-02 {
+  &.ow-spin-type-02 {
     position: relative;
     display: inline-flex;
     width: 100%;
