@@ -14,14 +14,14 @@
           <li>
             <a href="javascript:void(0);">
               <i class="person"><span class="sr-only">유저 아이콘</span></i>
-              <span>국내영업총괄본부</span>
+              <span>{{userInfo.prntOrgNm}}</span>
             </a>
           </li>
           <li>
-            <a href="javascript:void(0);">국내영업</a>
+            <a href="javascript:void(0);">{{userInfo.orgNm}}</a>
           </li>
           <li>
-            <a href="javascript:void(0);">홍길동 전무</a>
+            <a href="javascript:void(0);">{{userInfo.userNm}} {{userInfo.jbgrNm}}</a>
           </li>
         </ul>
 
@@ -37,11 +37,13 @@
   </header>
 </template>
 <script>
+import store from "@/store"
 export default {
   name: 'AppHeader',
   data() {
     return {
-      // userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
+        //userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
+        userInfo : store.state.login.userInfo,
       user: {},
     };
   },

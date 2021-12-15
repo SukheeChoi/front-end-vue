@@ -108,7 +108,10 @@ export default{
         const tokenData = await login.requestLogin("/com/login/do-login", this.loginId, this.password);
         if(tokenData.data.data !== null){
           const accessToken = tokenData.data.data;
-          localStorage.setItem("token", accessToken);
+          //localStorage.setItem("token", accessToken);
+          //console.log(this.$store);
+          this.$store.commit("setToken", accessToken);
+          //console.log(test);
           return await this.getUserInfo();
         }
         
@@ -117,7 +120,8 @@ export default{
         const userData = await login.getUserInfo("/com/login/user-info", this.loginId);
         if(userData.data.dat !==null){
           const userInfo = userData.data.data;
-          localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          //localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          this.$store.commit("setUserInfo", userInfo);
           this.$router.push("/");
         }
 

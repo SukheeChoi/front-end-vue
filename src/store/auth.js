@@ -1,11 +1,8 @@
-import Vue from "vue"
-import Vuex from "vuex"
+import { createStore } from "vuex"
 import axios from "axios"
 import { ACCESS_TOKEN } from "../utils/constants.js"
 
-Vue.use(Vuex)
-
-export default new Vuerx.Store({
+export default createStore({
     state: {
         userInfo: null,
         accessToken: '',
