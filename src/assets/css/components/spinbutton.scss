@@ -1,0 +1,140 @@
+$clrs-achromatic: getColors("achromatic");
+$clrs-base: getColors("base");
+
+// 퍼블리싱 Spin BUtton
+.erp-spin-button {
+  position: relative;
+  display: inline-flex;
+  width: 56px;
+  border: 1px solid #bac1c9;
+  input[type="text"] {
+    display: inline-flex;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 8px;
+    color: #333;
+    font-size: 12px;
+    &:disabled {
+      background-color: #edf0f2;
+      color: #adadad;
+      & + .controller {
+        .inc {
+          border-color: transparent transparent #adadad transparent;
+        }
+        .dec {
+          border-color: #adadad transparent transparent transparent;
+        }
+      }
+    }
+  }
+  .controller {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 14px;
+    justify-content: space-between;
+    button {
+      display: inline-flex;
+      width: 0;
+      height: 0;
+      text-indent: -9999em;
+      font-size: 0;
+      border-style: solid;
+      &.inc {
+        border-width: 0 5px 5px 5px;
+        border-color: transparent transparent #1b1b1b transparent;
+        &:hover,
+        &:focus {
+          border-color: transparent transparent #006cff transparent;
+        }
+      }
+      &.dec {
+        border-width: 5px 5px 0 5px;
+        border-color: #1b1b1b transparent transparent transparent;
+        &:hover,
+        &:focus {
+          border-color: #006cff transparent transparent transparent;
+        }
+      }
+    }
+  }
+}
+
+// Bootstrap Spin Button
+.b-form-spinbutton {
+  &.erp-spin-type-02 {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 24px;
+    padding-right: 26px;
+    border: 1px solid #bac1c9;
+    border-radius: 0;
+    outline: 0;
+    button {
+      position: absolute;
+      right: 8px;
+
+      display: inline-flex;
+      width: 0;
+      height: 0;
+      padding: 0;
+      text-indent: -9999em;
+      font-size: 0;
+      border-style: solid !important;
+
+      svg {
+        display: none;
+      }
+      &[aria-label="Decrement"] {
+        bottom: 4px;
+        border-width: 5px 5px 0 5px !important ;
+        border-color: #1b1b1b transparent transparent transparent !important;
+      }
+      &[aria-label="Increment"] {
+        top: 4px;
+        border-width: 0 5px 5px 5px !important ;
+        border-color: transparent transparent #1b1b1b transparent !important;
+      }
+    }
+    output {
+      text-align: left;
+      padding-left: 8px;
+      color: nth($clrs-achromatic, 2);
+      font-size: 12px;
+      font-weight: 400;
+      user-select: none;
+    }
+    &:hover,
+    &:focus {
+      button {
+        &[aria-label="Decrement"] {
+          border-color: #006cff transparent transparent transparent !important;
+        }
+        &[aria-label="Increment"] {
+          border-color: transparent transparent #006cff transparent !important;
+        }
+      }
+    }
+    &.disabled {
+      background-color: #edf0f2;
+      output {
+        color: #adadad;
+      }
+      button {
+        opacity: 1;
+        &[aria-label="Decrement"] {
+          border-color: #adadad transparent transparent transparent !important;
+        }
+        &[aria-label="Increment"] {
+          border-color: transparent transparent #adadad transparent !important;
+        }
+      }
+    }
+  }
+}

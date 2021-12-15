@@ -1,0 +1,59 @@
+$clrs-achromatic: getColors("achromatic");
+$clrs-base: getColors("base");
+
+.erp-tree-menu-set {
+  // border: 1px solid red;
+  // height: 100%;
+  flex: 1 1 auto;
+  height: 1px;
+  // padding: 5px;
+  // border: 1px solid #d7dce3;
+  overflow-y: auto;
+  @at-root .erp-layer-popup & {
+    border:1px solid #d7dce3 ; 
+  }
+  .vtl-tree-margin {
+    margin-left: 1em;
+  }
+  .vtl-node-main {
+    position: relative;
+    // border: 1px solid green;
+    padding: 3px 0 3px 18px;
+
+    // 뎁스 오픈 아이콘
+    .vtl-caret {
+      cursor: pointer;
+      margin: 0;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2em;
+    }
+
+    // 메뉴명 텍스트
+    .vtl-node-content {
+      padding-left: 6px;
+      font-size: 12px;
+      letter-spacing: -0.5px;
+      color: nth($clrs-achromatic, 2);
+    }
+    .vtl-operation {
+      display: flex;
+      margin-left: auto;
+      align-items: center;
+      // border: 1px solid blue;
+      > span {
+        display: inline-flex;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+    }
+  }
+  .vtl-border {
+    // height: 0;
+  }
+  .vtl-border.vtl-up {
+    margin-top: 0;
+  }
+}

@@ -1,0 +1,66 @@
+$color-base: getColors('base');
+$color-achromatic: getColors('achromatic');
+$erp-card: '.erp-card';
+$gap: 10px;
+$size: 4px;
+
+#{$erp-card}-item{
+  display: inline-flex;
+  flex-direction: column;
+  max-width: 526px;
+  max-height: 260px;
+  border: 1px solid #bac1c9;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.16);
+  background-color: #fff;
+  padding: 10px 10px;
+
+  #{$erp-card}-item-header{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+    border-radius: 14px 0 0 14px;
+    background-color: #cfddf2;
+    padding: 0 0 0 20px;
+    margin-bottom: 8px;
+
+    #{$erp-card}-item-date{
+      color: nth($color-achromatic, 2);
+      font-size: 12px;
+      letter-spacing: -0.6px;
+    }
+
+    .erp-btn{  margin: 0 }
+  }
+
+  #{$erp-card}-item-body{
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 28px;
+
+    #{$erp-card}-item-info{
+      min-width: 238px;
+      overflow: hidden;
+      li{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 21px;
+        font-size: 12px;
+        color: nth($color-achromatic, 2);
+
+        #{$erp-card}-item-name{
+          width: 182px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          word-break:keep-all;
+          word-wrap:break-word;
+        }
+        #{$erp-card}-item-count{ color: nth($color-achromatic, 6); }
+      }
+    }
+  }
+}

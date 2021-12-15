@@ -1,0 +1,59 @@
+// tree view header
+.tree-header {
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    background-color: nth($clrs-achromatic, 11);
+    border: 1px solid nth($clrs-border, 2);
+}
+
+.tree-header {
+    &>.d-flex {
+        flex-grow: 1;
+        align-items: center;
+    }
+    h3 {
+        white-space: nowrap;
+    }
+    +.box-type2 {
+        border-top: 0;
+    }
+    .ow-input {
+        padding: 2px 4px;
+        border: 1px solid nth($clrs-border, 2);
+        border-radius: 3px;
+        color: nth($clrs-achromatic, 2);
+    }
+}
+
+.btn-variation {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    border: 1px solid #e0e0e0;
+    background-color: white;
+    &::before,
+    &::after {
+        position: absolute;
+        content: '';
+        top: 50%;
+        left: 50%;
+        width: 9px;
+        height: 1px;
+        background-color: #3765a4;
+        transform: translate(-50%, -50%);
+    }
+    &::after {
+        position: absolute;
+        content: '';
+        width: 1px;
+        height: 9px;
+    }
+    &.minus {
+        margin-left: 2px;
+        &::after {
+            display: none;
+        }
+    }
+}

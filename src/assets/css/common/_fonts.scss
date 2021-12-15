@@ -1,0 +1,37 @@
+// @font-face {
+//   font-family: "Spoqa Han Sans";
+//   font-weight: 700;
+//   src: local("Spoqa Han Sans Bold"),
+//     url("~@/assets/fonts/Spoqa Han Sans Bold.woff2") format("woff2"),
+//     url("~@/assets/fonts/Spoqa Han Sans Bold.woff") format("woff"),
+//     url("~@/assets/fonts/Spoqa Han Sans Bold.ttf") format("truetype");
+// }
+
+// @font-face {
+//   font-family: "Spoqa Han Sans";
+//   font-weight: 400;
+//   src: local("Spoqa Han Sans Regular"),
+//     url("~@/assets/fonts/Spoqa Han Sans Regular.woff2") format("woff2"),
+//     url("~@/assets/fonts/Spoqa Han Sans Regular.woff") format("woff"),
+//     url("~@/assets/fonts/Spoqa Han Sans Regular.ttf") format("truetype");
+// }
+
+// Neo
+
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 700;
+  src: local("Spoqa Han Sans Neo Bold"),
+    url("~@/assets/fonts/SpoqaHanSansNeo-Bold.woff2") format("woff2"),
+    url("~@/assets/fonts/SpoqaHanSansNeo-Bold.woff") format("woff"),
+    url("~@/assets/fonts/SpoqaHanSansNeo-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 400;
+  src: local("Spoqa Han Sans Neo Regular"),
+    url("~@/assets/fonts/SpoqaHanSansNeo-Regular.woff2") format("woff2"),
+    url("~@/assets/fonts/SpoqaHanSansNeo-Regular.woff") format("woff"),
+    url("~@/assets/fonts/SpoqaHanSansNeo-Regular.otf") format("opentype");
+}

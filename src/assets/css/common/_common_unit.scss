@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+/**
+ * @author UI Team
+ * @since 2021.11.01
+**/
+
+// vue file inner style 작업 시 import
+// root 변수 선언 및 mixin.scss, _variables.scss 파일 호출
+
+@import '@/assets/css/common/_variables.scss';
+@import '@/assets/css/common/_mixin.scss';
+
+// 컬러 변수
+$clrs-base: getColors('base');
+$clrs-achromatic: getColors('achromatic');
+$clrs-point: getColors('point');
+$clrs-accent: getColors('accent');
+$clrs-border: getColors('border');

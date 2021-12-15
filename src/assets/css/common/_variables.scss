@@ -1,0 +1,71 @@
+/*
+  공통 색상
+  [사용 방법]
+  사용할 색상 리스트를 변수에 저장해서 사용합니다.
+  getColors 함수는 전달 받은 인자의 색상리스트를 불러옵니다.
+  $clrs : getColors( 'line-bg' ) ;
+  .box { border: 1px solid nth( $clrs, 2 ) ; }  
+*/
+$colors: (
+  base: 
+    #000cff #176de2 #2b8ad1 #2f7eec #3b6bb4
+    #3765a4 #4e95f5 #498ce7 #6980af #bdddfd
+    #cfddf2 #4789cb #1c3769,
+  achromatic:
+    #111111 #333333 #404854 #464b54 #677180
+    #979797 #cad1da #e1e6ea #e4e8ec #f3f3f3
+    #f1f5f9 #f1f1f1 #ffffff,
+  point:
+    #53fffd #1995bd rgba(130, 199, 219, 0.12) #82c7db,
+  accent:
+    #f60808 #ff0000,
+  border:
+    #d7dce3 #e0e0e0,
+  button:
+    #3f484e #eeeff0 // normal
+    #5d656a #f6f7f7 // hover
+    #252b2e #d5d6d7 // selected
+    // cyan
+    #2c8faf #34add4 #267995 // normal
+    #1da1cc #2dbceb #1b86a9 // hover
+    #247791 #2884a3 #1e6077 //selected
+    // blue
+    #2468c3 #4e95f5 #2461b3 // active
+    #d1d5dc #ffffff #bababa // normal
+);
+
+/* 
+  공통 텍스트 스타일
+
+  [사용 방법]
+  @include getTypoStyles( head-18 ) ;
+  getTypoStyles mixin에 적용할 이름을 전달하면 스타일이 적용됩니다.
+*/
+// $font-Spoqa: ("Spoqa Han Sans", "Nanum Gothic", "돋움", dotum, sans-serif);
+$font-Spoqa: ("Spoqa Han Sans Neo", "Nanum Gothic", "돋움", dotum, sans-serif);
+$font-Nanum: ("Nanum Gothic", "돋움", dotum, sans-serif);
+$font-dotum: (dotum, arial, sans-serif);
+$font-code:  (Consolas, Menlo, "courier new", monospace, sans-serif);
+
+$typoStyles: (
+  head: (
+    font-family: $font-Spoqa,
+    font-size: 28px,
+  ),
+  title: (
+    font-family: $font-Spoqa,
+    font-size: 16px,
+  ),
+  subtitle: (
+    font-family: $font-Spoqa,
+    font-size: 13px,
+  ),
+  body: (
+    font-family: $font-Spoqa,
+    font-size: 12px,
+  ),
+  code: (
+    font-family: $font-code,
+    font-size: 12px,
+  ),
+);

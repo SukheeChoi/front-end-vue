@@ -1,0 +1,68 @@
+.ow-accordion {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > .ow-accordion-header {
+    display: flex;
+    height: 26px;
+    align-items: center;
+    border: 1px solid #979797;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 0 0 0 10px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.65px;
+    &:not(:first-child) {
+      margin-top: 4px;
+    }
+    &:after {
+      content: "";
+      display: inline-flex;
+      width: 30px;
+      height: 26px;
+      margin-left: auto;
+      background: url(~@/assets/images/icon/icon-accordion-down.svg) no-repeat 0 0;
+    }
+    // 아코디언 열렸을 경우
+    &.not-collapsed {
+      color: #fff;
+      background-color: #284077;
+      border-color: #284077;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      &:after {
+        background: url(~@/assets/images/icon/icon-accordion-up.svg) no-repeat 0 0;
+      }
+    }
+  } // end of ow-accordion-header
+
+  > .collapse {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border: 2px solid #6379a6;
+    border-top: 0;
+    transition: none !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.16);
+    .card-body {
+      // padding: var(--padding-body, 10px 0);
+      padding: 10px;
+      overflow: hidden;
+      overflow-y: auto;
+      flex-direction: column;
+      height: 1px;
+    }
+  } // end of collapse
+
+  // .ow-accordion-header {
+  //   border-radius: 0;
+  //   color: #fff;
+  //   padding: 8px 14px;
+  //   background-image: linear-gradient(to bottom, #7893b6, #637d9e);
+  //   cursor: pointer;
+  // }
+}

@@ -1,0 +1,659 @@
+$clrs-achromatic: getColors("achromatic");
+$clrs-base: getColors("base");
+
+:root {
+  --toast-width: 310px;
+}
+
+// Bootstrap popup 사이즈 정의
+.modal-dialog {
+  width: 100%;
+  max-width: 400px !important ;
+  &.modal-xxs {
+    //dialog 팝업 사이즈
+    max-width: 240px !important ;
+  }
+  &.modal-xs {
+    max-width: 400px !important ;
+  }
+  &.modal-sm {
+    max-width: 620px !important ;
+  }
+  &.modal-md {
+    max-width: 740px !important ;
+  }
+  &.modal-lg {
+    max-width: 940px !important ;
+  }
+  &.modal-xl {
+    max-width: 1050px !important ;
+  }
+  &.modal-xxl {
+    max-width: 1200px !important ;
+  }
+  &.modal-xxxl {
+    max-width: 1900px !important ;
+  }
+}
+
+// Bootstrap popup custom : layer popup
+.ow-custom-layer-popup {
+  box-shadow: 0 16px 36px 0 rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+  &.modal-content {
+    border-radius: 0;
+    border: 0;
+  }
+  .modal-header {
+    display: flex;
+    height: 36px;
+    flex: inherit;
+    padding: 0 16px;
+    align-items: center;
+    background-image: linear-gradient(to bottom, #7893b6, #637d9e);
+    border-bottom: 1px solid #50637c;
+    border-radius: 0;
+    flex-shrink: 0;
+    button.close {
+      width: 15px;
+      height: 15px;
+      background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
+      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
+        brightness(105%) contrast(103%);
+      text-indent: -9999em;
+      font-size: 0;
+    }
+    .modal-title {
+      font-size: 14px;
+      color: #fff;
+      letter-spacing: -1px;
+      font-weight: 700;
+    }
+  }
+  .modal-body {
+    padding: 0;
+    .layer-body {
+      padding: 16px 16px 20px;
+      .ct:not(:last-child) {
+        margin-bottom: 20px;
+      }
+      .title-sub-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        .title-sub {
+          font-size: 13px;
+          color: nth($clrs-achromatic, 2);
+          letter-spacing: -1px;
+          font-weight: 700;
+        }
+        .btns {
+          margin-left: auto;
+          > .ow-btn:not(:first-child) {
+            margin-left: 4px;
+          }
+        }
+      }
+      .tab-content {
+        padding: 16px 0 0 0;
+      }
+      .ow-pagination {
+        margin-top: 20px;
+      }
+      .ow-select{
+        padding:0;
+      }
+    }
+    .layer-foot {
+      padding: 0 16px;
+      .actions {
+        display: flex;
+        padding-bottom: 30px;
+        margin: 0 -2px;
+        justify-content: center;
+        .ow-btn.type-base {
+          margin: 0 2px;
+        }
+      }
+      .controls {
+        padding: 0 0 16px 0;
+        .ow-checkbox {
+          label {
+            font-weight: 400;
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Bootstrap popup custom : dialog popup
+.ow-custom-dialog-popup {
+  width: 240px;
+  padding: 0 16px 20px;
+  border: 1px solid nth($clrs-achromatic, 2);
+  box-shadow: 0 8px 10px 0 rgba(0, 0, 0, 0.34);
+  background-color: #fff;
+  border-radius: 3px;
+  .modal-header {
+    position: relative;
+    display: flex;
+    height: 40px;
+    align-items: center;
+    padding: 0;
+    flex: inherit;
+    border-bottom: 0;
+    button.close {
+      width: 15px;
+      height: 15px;
+      background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
+      text-indent: -9999em;
+      font-size: 0;
+    }
+    .modal-title {
+      color: nth($clrs-achromatic, 2);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+  }
+  .modal-body {
+    // padding: 0 0 24px 0;
+    padding: 0;
+    .dialog-body {
+      padding: 0 0 24px 0;
+    }
+    .ta-c {
+      text-align: center;
+    }
+    .ta-l {
+      text-align: left;
+    }
+    .ta-r {
+      text-align: right;
+    }
+    p {
+      color: nth($clrs-achromatic, 2);
+      font-size: 13px;
+      line-height: 1.3;
+      letter-spacing: -1.08px;
+      & ~ p {
+        margin-top: 8px;
+      }
+      &.txt-highlight {
+        // color: #498ce7;
+        color: nth($clrs-base, 8);
+        font-weight: 700;
+      }
+    }
+
+    .delivery {
+      .ow-radio {
+        &:not(:last-child) {
+          margin-bottom: 5px;
+        }
+        label {
+          font-weight: 400;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+  .dialog-foot {
+    .actions {
+      display: flex;
+      margin: 0 -2px;
+      justify-content: center;
+      .ow-btn.type-base {
+        flex: 1;
+        padding-left: 0;
+        padding-right: 0;
+        justify-content: center;
+        margin: 0 2px;
+      }
+      &.single {
+        .ow-btn.type-base {
+          flex-grow: 0;
+          flex-basis: 90px;
+        }
+      }
+    }
+  }
+}
+
+// layer popup
+// Bootstrap 사용하지 않은 순수 퍼블리싱 팝업으로 현재 사용하지 않고 Bootstrap 커스텀 버전을 사용합니다.
+.ow-layer-popup {
+  width: var(--size, 400px);
+  box-shadow: 0 16px 36px 0 rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+  .layer-head {
+    display: flex;
+    height: 36px;
+    padding: 0 16px;
+    align-items: center;
+    background-image: linear-gradient(to bottom, #7893b6, #637d9e);
+    border-bottom: 1px solid #50637c;
+    .title {
+      font-size: 14px;
+      color: #fff;
+      letter-spacing: -1px;
+      font-weight: 700;
+    }
+    .ow-btn.close {
+      margin-left: auto;
+      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
+        brightness(105%) contrast(103%);
+    }
+  }
+  .layer-body {
+    padding: 16px 16px 20px;
+    .title-sub-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      .title-sub {
+        font-size: 13px;
+        color: nth($clrs-achromatic, 2);
+        letter-spacing: -1px;
+        font-weight: 700;
+        & + .ow-btn {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+  .layer-foot {
+    padding: 0 16px;
+    .actions {
+      display: flex;
+      padding-bottom: 30px;
+      margin: 0 -2px;
+      justify-content: center;
+      .ow-btn.type-base {
+        margin: 0 2px;
+      }
+    }
+    .controls {
+      padding: 0 0 16px 0;
+      .ow-checkbox {
+        label {
+          font-weight: 400;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+// dialog popup
+// Bootstrap 사용하지 않은 순수 퍼블리싱 팝업으로 현재 사용하지 않고 Bootstrap 커스텀 버전을 사용합니다.
+.ow-dialog-popup {
+  width: 240px;
+  padding: 0 16px 20px;
+  border: 1px solid nth($clrs-achromatic, 2);
+  box-shadow: 0 8px 10px 0 rgba(0, 0, 0, 0.34);
+  background-color: #fff;
+  border-radius: 3px;
+  .dialog-head {
+    position: relative;
+    display: flex;
+    height: 40px;
+    align-items: center;
+    .title {
+      color: nth($clrs-achromatic, 2);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+    .ow-btn.close {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+  .dialog-body {
+    padding: 0 0 24px 0;
+    .ta-c {
+      text-align: center;
+    }
+    .ta-l {
+      text-align: left;
+    }
+    .ta-r {
+      text-align: right;
+    }
+    p {
+      color: nth($clrs-achromatic, 2);
+      font-size: 13px;
+      line-height: 1.3;
+      letter-spacing: -1.08px;
+      & ~ p {
+        margin-top: 8px;
+      }
+      &.txt-highlight {
+        // color: #498ce7;
+        color: nth($clrs-base, 8);
+        font-weight: 700;
+      }
+    }
+
+    .delivery {
+      .ow-radio {
+        &:not(:last-child) {
+          margin-bottom: 5px;
+        }
+        label {
+          font-weight: 400;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+  .dialog-foot {
+    .actions {
+      display: flex;
+      margin: 0 -2px;
+      justify-content: center;
+      .ow-btn.type-base {
+        flex: 1;
+        padding-left: 0;
+        padding-right: 0;
+        justify-content: center;
+        margin: 0 2px;
+      }
+      &.single {
+        .ow-btn.type-base {
+          flex-grow: 0;
+          flex-basis: 90px;
+        }
+      }
+    }
+  }
+}
+
+// Bootstrap : tooltip
+.tooltip {
+  &.ow-tooltip-type-dark {
+    padding: 5px 0;
+    .tooltip-inner {
+      max-width: 300px;
+      padding: 12px;
+      background-color: rgba(0, 0, 0, 0.75);
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
+
+      .ct-tooltip {
+        font-size: 11px;
+        letter-spacing: -0.5px;
+        line-height: 1.5;
+        text-align: left;
+      }
+    }
+    .arrow {
+      position: absolute;
+      width: 10px;
+      height: 5px;
+      margin: 0 5px;
+      &:before {
+        position: absolute;
+        content: "";
+        border-color: transparent;
+        border-style: solid;
+      }
+    }
+    &[x-placement^="top"] {
+      .arrow {
+        bottom: 0;
+        &:before {
+          top: 0;
+          border-width: 5px 5px 0;
+          border-top-color: rgba(0, 0, 0, 0.75);
+        }
+      }
+    }
+    &[x-placement^="bottom"] {
+      .arrow {
+        top: 0;
+        &:before {
+          bottom: 0;
+          border-width: 0 5px 5px;
+          border-bottom-color: rgba(0, 0, 0, 0.75);
+        }
+      }
+    }
+    &[x-placement^="left"] {
+      padding: 0 5px;
+    }
+  }
+  &.ow-tooltip-type-light {
+    padding: 0 5px;
+    .tooltip-inner {
+      padding: 4px 10px;
+      background-color: #fff;
+      border: solid 1px #e0e0e0;
+      border-radius: 3px;
+      .ct-tooltip {
+        color: nth($clrs-achromatic, 2);
+      }
+    }
+    &.legend-dentist-tooltip {
+      .tooltip-inner {
+        max-width: 310px;
+        width: 310px;
+
+        .legend-dentist-wrap {
+          display: flex;
+          flex-wrap: wrap;
+          row-gap: 10px;
+
+          .item {
+            flex-basis: 140px;
+            flex-shrink: 0;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+
+  &.ow-tooltip-type-layer {
+    .tooltip-inner {
+      max-width: 600px;
+      background-color: #fff;
+    }
+  }
+}
+
+.legend-dentist-wrap {
+  .item {
+    display: flex;
+    i {
+      display: inline-flex;
+      width: 16px;
+      height: 16px;
+      margin-right: 3px;
+    }
+    font-size: 12px;
+    letter-spacing: -0.5px;
+    &.gray-line i {
+      border: solid 1px #e0e0e0;
+    }
+    &.gray-bg i {
+      background-color: #f0f0f0;
+    }
+    &.blue-bg i {
+      background-color: #4e95f5;
+    }
+    &.blue-line i {
+      border: solid 3px #4789cb;
+    }
+  }
+}
+
+// Alert Popup
+// 간단한 메시지 출력용 Alert 팝업입니다.
+.ow-alert {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1055;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  > .overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1055;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .ow-alert-wrap {
+    display: flex;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 1055;
+    .ow-alert-container {
+      width: 100%;
+      max-width: var(--size, 500px);
+      background-color: #fff;
+      .head {
+        display: flex;
+        height: 36px;
+        flex: inherit;
+        padding: 0 16px;
+        align-items: center;
+        background-image: linear-gradient(to bottom, #7893b6, #637d9e);
+        border-bottom: 1px solid #50637c;
+        border-radius: 0;
+        flex-shrink: 0;
+        justify-content: space-between;
+        .title {
+          font-size: 14px;
+          color: #fff;
+          letter-spacing: -1px;
+          font-weight: 700;
+        }
+        button.btn-alert-close {
+          width: 15px;
+          height: 15px;
+          background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
+          filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
+            brightness(105%) contrast(103%);
+          text-indent: -9999em;
+          font-size: 0;
+        }
+      }
+      .body {
+        padding: 12px 16px 20px;
+      }
+      .actions {
+        display: flex;
+        padding-bottom: 30px;
+        margin: 0 -2px;
+        justify-content: center;
+        .ow-btn {
+          margin: 0 2px;
+        }
+      }
+    }
+  }
+}
+
+.ow-tooltip-layer-wrap {
+  position: relative;
+  background-color: yellow;
+  .collapse {
+    transition: all 0s;
+  }
+  .ow-layer-popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translateY(5px);
+    z-index: 1000;
+  }
+}
+
+.ow-toast-wrap {
+  position: relative;
+}
+
+.ow-toast {
+  &.b-toast {
+    // position: absolute;
+    // top: 100%;
+    // left: 0;
+    // transform: translateY(5px);
+    // max-width: var(--toast-width, 400px);
+    // width: var(--toast-width, 400px);
+    position: fixed;
+    top: inherit;
+    bottom: 0;
+    left: inherit;
+    right: 0;
+    z-index: 1000;
+    max-width: var(--toast-width);
+    width: var(--toast-width);
+  }
+  .toast {
+    width: 100% !important;
+    background-color: #fff;
+    border-radius: 0;
+    &:not(.show) {
+      display: block;
+    }
+    .toast-header {
+      display: flex;
+      height: 36px;
+      flex: inherit;
+      padding: 0 16px;
+      align-items: center;
+      background-image: linear-gradient(to bottom, #7893b6, #637d9e);
+      border-bottom: 1px solid #50637c;
+      border-radius: 0;
+      flex-shrink: 0;
+      justify-content: space-between;
+      strong {
+        font-size: 14px;
+        color: #fff;
+        letter-spacing: -1px;
+        font-weight: 700;
+      }
+      .close {
+        width: 15px;
+        height: 15px;
+        background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
+          brightness(105%) contrast(103%);
+        text-indent: -9999em;
+        font-size: 0;
+        margin-bottom: 0 !important;
+      }
+    }
+    .toast-body {
+      padding: 0;
+      background-color: #fff;
+      .ow-layer-popup {
+        box-shadow: none;
+        width: 100%;
+        .layer-body {
+          // padding: 0;
+          .ct:not(:last-child) {
+            margin-bottom: 20px;
+          }
+        }
+      }
+    }
+  }
+}

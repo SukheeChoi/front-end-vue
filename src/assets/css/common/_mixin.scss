@@ -1,0 +1,182 @@
+/* function */
+/* color 가져오기 */
+@function getColors ( $findKey : 'text' ) {
+	$rlst : (); 
+	@each $key , $value in $colors {
+		@if ( $key == unquote( $findKey )) {
+			$rlst: $value; 
+		}
+	}
+	@return $rlst; 
+}
+
+/* mixin */
+/* 타이포리스트에서 사용할 스타일 가져오기 */
+@mixin getTypoStyles ( $name ) {
+  $getTypo : map-get( $typoStyles, $name ) ;
+  @each $prop, $value in $getTypo {
+    #{$prop} : $value ; 
+  }
+}
+
+/* key값 가지고 오기 */
+@function getKeys ( $name ) {
+  @return map-keys( $name ) ;
+}
+
+/* 둥근모서리 적용 */
+@mixin borderRoundingBox ( $rd : 6px , $pd : 40px  ) {
+  background-color: #fff;
+  border-radius: $rd ; 
+  padding: $pd ; 
+}
+
+/* 반복 style 루프 */
+@mixin styleLoop( $style : () ) {
+  @each $prop , $value in $style{
+    #{$prop} : $value;
+  }
+};
+
+/* 가로, 세로 너비 지정 */
+@mixin wh($width, $height) {
+  width:$width;
+  height:$height;
+}
+
+/* 박스 그림자 지정 */
+@mixin box-shadow($x,$y,$b,$o) {
+  box-shadow:$x $y $b 0 rgba(0,0,0,$o);
+}
+
+/* position 지정 (특히, absolute 인 경우) */
+@mixin position ($position, $top, $left){
+  position:$position;
+  top:$top;
+  left:$left;
+}
+
+/* border 선 지정 시 */
+@mixin border($size, $color) {
+  border: $size solid $color;
+}
+
+/* content 이용 시 (특히, 가상선택자 이용 시 사용) */
+@mixin content {
+  display:inline-block;
+  position:relative;
+  content:"";
+}
+
+/* 가상선택자에 구글 폰트 이용 시  */
+@mixin ico-g($content) {
+  @include content;
+  font-family:'Material Icons';
+  font-size:$txt-size-sm;
+  color:$grey;
+  content:$content;
+}
+
+/* float 사용 시 부모에게 사용(위치 reset) */
+@mixin clear {
+  &::after {
+    display:block;
+    clear: both;
+    content:"";
+  }
+}
+
+/* font 지정 시 */
+@mixin body-txt {
+  font-size:$txt-size-rg;
+  line-height: 140%;
+  color:$dark-grey;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 박스에 라운드 지정 시 */
+@mixin radius($size) {
+  box-sizing: border-box;
+  border-radius: $size;
+}
+
+/* transition 효과 걸어주는 경우 */
+/* 기본적으로 0.3s, 0 을 사용 */
+@mixin effect($duration,$delay) {
+  transition-property:all;
+  transition-duration:$duration;
+  transition-timing-function:ease-in-out;
+  transition-delay:$delay;
+}
+
+/* 텍스트 말줄임 처리 */
+@mixin ellipsis {
+  display:block;
+  position:relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break:keep-all;
+  word-wrap:break-word;
+}
+
+/* 말줄임 */
+@mixin ellipsis($line) {
+  @if ($line=='1') {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $line;
+  }
+}
+
+/* notebook */
+@mixin notebook {
+  @media (max-width: #{$breakpoint-notebook - 1px}) {
+    @content;
+  }
+}
+
+/* d-flex */
+@mixin d-flex($j: center, $a: center) {
+  display: flex;
+  justify-content: $j;
+  align-items: $a;
+}
+
+@mixin flex-($name, $value){
+  #{$name}: $value;
+  @content;
+}
+
+@mixin flex($variable) {
+	-webkit-box-flex: $variable;
+	-ms-flex: $variable;
+	flex: $variable;
+}
+
+/* 포지션-정중앙 */
+@mixin pos-center($l: 50%, $t: 50%) {
+  position: absolute;
+  left: $l;
+  top: $t;
+  transform: translate(-$l, -$t);
+}
+
+/* Screenreaders */
+@mixin sr-only() {
+  padding: 0;
+  margin: -1px;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}

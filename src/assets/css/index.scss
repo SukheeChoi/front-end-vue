@@ -1,0 +1,55 @@
+/* color-admin */
+
+// @import "./default/styles";
+
+/* bootstrap */
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+/* fontawesome */
+
+@import "https://use.fontawesome.com/releases/v5.15.0/css/all.css";
+
+/* ow common */
+
+@import "./common/_fonts";
+@import "./common/_root";
+@import "./common/_grid";
+@import "./common/simple-line-icons";
+@import "./common/_variables";
+@import "./common/_mixin";
+@import "./common/_reset";
+@import "./common/_common";
+@import "./common/_single_class";
+
+/* ow components */
+
+@import "./components/sidebar";
+@import "./components/button";
+@import "./components/tab";
+@import "./components/checkbox";
+@import "./components/radio";
+@import "./components/dropdownlist";
+@import "./components/input";
+@import "./components/pagination";
+@import "./components/spinbutton";
+@import "./components/inputfile";
+@import "./components/iconTag";
+@import "./components/table";
+@import "./components/popup";
+@import "./components/accordion";
+@import "./components/grid";
+@import "./components/filter";
+@import "./components/tree-menus";
+@import "./components/product-list";
+@import "./components/card-list";
+@import "./components/info-list";
+@import "./components/list";
+@import "./components/scroll";
+@import "./components/toast";
+@import "./components/layout";
+
+/* ow style */
+
+@import "./layout/layout";
+// @import "./layout/admin";

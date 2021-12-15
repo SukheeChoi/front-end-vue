@@ -1,0 +1,84 @@
+
+.sidebar{
+  > .menu {
+    padding: 0 0 50px 0 ; 
+    // 메뉴 버튼 공통 적용
+    .menu-link {
+      display: inline-flex;
+      padding: 4px 0 ; 
+      font-size:12px ; 
+      width: 100% ;
+      cursor: pointer;
+      text-decoration: none ;
+      align-items: center ;
+      color:#404854 ; 
+      transition:all .3s ; 
+      &:hover {
+        color:#000 ; 
+      }
+      i {
+        margin-right: 5px ;
+        transition:all .2s ; 
+        color:#000 ; 
+      }
+    }
+    .menu-item {
+      &.has-sub {
+        > .menu-link {
+          font-weight: 700 ;
+          color:#000 ; 
+          i {
+            transform:rotate(-90deg);
+          }
+        }
+        &.expand {
+          > .menu-link {
+            i {
+              transform:rotate(0deg);
+            }
+          }
+        }
+      }
+      .menu-submenu {
+        // display: none;
+      }
+    }
+    
+    // depth 1 
+    > .menu-item {
+      > .menu-link {
+        font-weight: 700 ;
+        font-size:12px ; 
+        color:#000 ; 
+      }
+
+      // depth 2 
+      > .menu-submenu {
+        padding-left: 10px ;
+        
+        > .menu-item {
+          > .menu-link {
+          }
+
+          // depth 3
+          > .menu-submenu {
+            padding-left:20px ; 
+            > .menu-item {
+              > .menu-link {
+              }
+
+              // depth 4
+              > .menu-submenu {
+                padding-left:20px ; 
+                > .menu-item{
+                  > .menu-link {
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

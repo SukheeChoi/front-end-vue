@@ -1,0 +1,32 @@
+// scroll 커스텀
+
+$scroll:
+  '' 4px 20px #c3c3c3 #717171,
+  '-2' 7px 20px transparent #c6c6c6;
+
+@each $n, $w, $h, $b, $c in $scroll {
+  .ow-scroll#{$n} {
+    padding-right: 4px;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: $w;
+      height: $h;
+    }
+
+    &::-webkit-scrollbar-track-piece {
+      background-color: $b;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: 1px solid $c;
+      border-radius: 2px;
+      background-color: $c;
+    }
+
+    &::-webkit-resizer {
+      display: none;
+      background-color: transparent;
+    }
+  }
+}

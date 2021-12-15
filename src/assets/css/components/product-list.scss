@@ -1,0 +1,61 @@
+$color-base: getColors('base');
+$color-achromatic: getColors('achromatic');
+$gap: 10px;
+$size: 4px;
+
+.erp-product-list{
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(134px, 1fr));
+  border-top: 1px solid #e2e6ec;
+  border-left: 1px solid #e2e6ec;
+
+  .erp-product-item{
+    position: relative;
+    height: 58px;
+    border: 1px solid #e2e6ec;
+    border-left: 0;
+    border-top: 0;
+    cursor: pointer;
+
+    &::before{
+      content:"";
+      position: absolute; z-index: 1;
+      left: -1px; top: -1px;
+      width: calc(100% + 2px); height: calc(100% + 2px);
+      display: none; background-color: nth($color-base, 10);
+      border: 1px solid #4789cb;
+    }
+
+    &.active::before{
+      display: block;
+    }
+
+    .erp-product-info{
+      position: relative; z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      height: 100%;
+      padding: 10px 8px;
+      .erp-product-name, .erp-product-price{ 
+        color: nth($color-achromatic, 2); font-size: 12px;
+        letter-spacing: -0.6px;
+        display: block; 
+      }
+      .erp-product-name{
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break:keep-all;
+        word-wrap:break-word;
+      }
+      .erp-product-price{
+        font-weight: bold;
+      }
+    }
+
+  }
+}

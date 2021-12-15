@@ -1,0 +1,240 @@
+// Toast
+$ow-toast: ".ow-toast";
+
+$toast-border-1: #ffe58f;
+$toast-border-2: #ede2bf;
+$toast-bg: #fffbe6;
+$toast-width: 310px;
+$header: 40px;
+
+#{$ow-toast} {
+  z-index: 999;
+
+  &.toast-slide {
+    padding: calc(var(--bs-gutter) * 2);
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: $toast-width;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55);
+    z-index: 998;
+  }
+
+  &[class*=fixed-postion] {
+    position: fixed;
+
+    &[class*=-bottom] {
+      bottom: 0;
+    }
+    &[class*=-right] {
+      right: 0;
+    }
+  }
+
+  .toast {
+    + .toast {
+      margin-top: 20px;
+    }
+  }
+}
+
+.toast-slide {
+  .toast,
+  .toast-body {
+    background-color: transparent !important;
+  }
+  
+  .ow-select {
+    height: 24px;
+    padding: 0 var(--bs-gutter);
+  }
+
+  .ow-select select {
+    position: relative;
+  }
+  
+  .ow-select.dark {
+    color: white;
+    border: solid 1px rgba(255, 255, 255, 0.5);
+    background-color: #272727;
+  }
+  
+  .toast-top-option {
+    @include d-flex(normal, center);
+  }
+  
+  .toast-top-option .ow-select {
+    flex: 1 0 0;
+  }
+
+  .summary-list {
+    li {
+      * {
+        color: white
+      }
+    }
+  }
+}
+
+.toast-wrap {
+  @include box-shadow(0,2px,4px,0.12);
+  
+  padding: calc(var(--bs-gutter) * 2);
+  max-width: $toast-width;
+  color: #333;
+  border: 1px solid $toast-border-1;
+  border-radius: 3px;
+  background-color: $toast-bg;
+  
+  .toast-slide & {
+    @include box-shadow(0,2px,4px,0.12);
+
+    color: white;
+    border: 0;
+    background-color: #282828;
+
+    span {
+      color: white;
+    }
+
+    .toast-top {
+      @include d-flex(space-between, center);
+      padding: 5px 0 10px;
+      border-bottom: 1px solid #979797;
+    }
+
+    .separate-list .separate-list-item::before {
+      background-color: #888888;
+    }
+
+    +.toast-wrap {
+      margin-top: 20px;
+    }
+  }
+}
+
+.toast-top {
+  padding: var(--bs-gutter) 0;
+  position: relative;
+
+  .separate-list-item span {
+    font-size: 10px;
+
+    &.name {
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+
+  .separate-list .separate-list-item::before {
+    background-color: $toast-border-1;
+  }
+
+  .ico-cross {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+
+  + .toast-contents {
+    margin-top: 5px;
+  }
+
+}
+
+.toast-area-bottom {
+  position: absolute;
+  left: 10px;
+  bottom: 20px;
+  
+  .separate-list-item span {
+    color: white;
+  }
+}
+
+.toast-area-top {
+  padding: 5px 0;
+
+  .ico.ico-arrow {
+    .triangle {
+      left: 0;
+      -webkit-transform: translate(0%, -50%) rotate(-135deg);
+      -ms-transform: translate(0%, -50%) rotate(-135deg);
+      -o-transform: translate(0%, -50%) rotate(-135deg);
+      transform: translate(0%, -50%) rotate(-135deg);
+  
+      + .triangle {
+        left: 6px;
+      }
+    }
+  }
+}
+
+.ow-toast-wrap {
+  position: relative;
+}
+
+.ow-toast {
+  &.b-toast {
+    position: fixed;
+    top: inherit;
+    bottom: 0;
+    left: inherit;
+    right: 0;
+    z-index: 1000;
+    max-width: var(--toast-width);
+    width: var(--toast-width);
+  }
+  .toast {
+    width: 100% !important;
+    background-color: #fff;
+    border-radius: 0;
+    &:not(.show) {
+      display: block;
+    }
+    .toast-header {
+      display: flex;
+      height: 36px;
+      flex: inherit;
+      padding: 0 16px;
+      align-items: center;
+      background-image: linear-gradient(to bottom, #7893b6, #637d9e);
+      border-bottom: 1px solid #50637c;
+      border-radius: 0;
+      flex-shrink: 0;
+      justify-content: space-between;
+      strong {
+        font-size: 14px;
+        color: #fff;
+        letter-spacing: -1px;
+        font-weight: 700;
+      }
+      .close {
+        width: 15px;
+        height: 15px;
+        background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
+          brightness(105%) contrast(103%);
+        text-indent: -9999em;
+        font-size: 0;
+        margin-bottom: 0 !important;
+      }
+    }
+    .toast-body {
+      padding: 0;
+      background-color: #fff;
+      .ow-layer-popup {
+        box-shadow: none;
+        width: 100%;
+        .layer-body {
+          // padding: 0;
+          .ct:not(:last-child) {
+            margin-bottom: 20px;
+          }
+        }
+      }
+    }
+  }
+}

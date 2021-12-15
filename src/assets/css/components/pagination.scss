@@ -1,0 +1,199 @@
+$clrs-achromatic: getColors("achromatic");
+$clrs-base: getColors("base");
+.erp-pagination-old {
+    display: flex;
+    justify-content: center;
+    >button {
+        display: inline-flex;
+        width: 24px;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #c0c0c0;
+        margin-left: -1px;
+        font-size: 13px;
+        color: nth($clrs-achromatic, 1);
+        &.first,
+        &.last,
+        &.next,
+        &.prev {
+            text-indent: -9999em;
+            font-size: 0;
+            border: 0;
+        }
+        &.first {
+            background-image: url("~@/assets/images/icon/icon_pagination_first.svg");
+        }
+        &.prev {
+            margin-right: 6px;
+            background-image: url("~@/assets/images/icon/icon_pagination_prev.svg");
+        }
+        &.next {
+            margin-left: 6px;
+            background-image: url("~@/assets/images/icon/icon_pagination_next.svg");
+        }
+        &.last {
+            background-image: url("~@/assets/images/icon/icon_pagination_last.svg");
+        }
+        &:hover,
+        &:focus,
+        &.active {
+            background-color: #333;
+            border-color: #333;
+            color: #fff;
+            z-index: 3;
+        }
+    }
+}
+
+// Pagination
+// $title: (
+//   // 탐색버튼 title
+//   title: Go to the,
+//   title2: Go to the First,
+// );
+// @function getTitles ( $findKey : 'text' ) {
+// 	$rlst : ();
+// 	@each $key , $value in $colors {
+// 		@if ( $key == unquote( $findKey )) {
+// 			$rlst: $value;
+// 		}
+// 	}
+// 	@return $rlst;
+// }
+.ow-pagination {
+    $b: '.btn[title^="Go to the"]';
+    @include d-flex(center,
+    center);
+    .pagination {
+        @extend .ow-pagination;
+    }
+    .btn,
+    .page-item {
+        margin: 0;
+        &:not(:first-child) {
+            margin-left: -1px;
+        }
+        @at-root #{$b},
+        .page-link {
+            @extend .ow-pagination;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            line-height: 1;
+            font-weight: normal !important;
+            border: 1px solid #c0c0c0;
+            border-radius: 0 !important;
+            color: nth($clrs-achromatic, 1);
+        }
+        &.go-first,
+        &.go-last,
+        &.go-next,
+        &.go-prev {
+            .page-link {
+                text-indent: -9999em;
+                font-size: 0;
+                border: 0;
+            }
+        }
+        &.go-first {
+            .page-link {
+                background-image: url("~@/assets/images/icon/icon_pagination_first.svg");
+            }
+        }
+        &.go-prev {
+            margin-right: 6px;
+            .page-link {
+                background-image: url("~@/assets/images/icon/icon_pagination_prev.svg");
+            }
+        }
+        &.go-next {
+            margin-left: 6px;
+            .page-link {
+                background-image: url("~@/assets/images/icon/icon_pagination_next.svg");
+            }
+        }
+        &.go-last {
+            .page-link {
+                background-image: url("~@/assets/images/icon/icon_pagination_last.svg");
+            }
+        }
+        &[class*="state-selected"],
+        &.active,
+        &:hover {
+            .page-link {
+                background-color: nth($clrs-achromatic, 2);
+                border-color: nth($clrs-achromatic, 2);
+                color: #fff;
+                z-index: 3;
+            }
+        }
+    }
+    #{$b} {
+        text-indent: -9999em;
+        border: 0;
+    }
+    $pBtns: ( B1: "first page",
+    B2: "previous step",
+    B3: "previous page",
+    B4: "next page",
+    B5: "next step",
+    B6: "last page" // L1: 'first page' 'icon_pagination_first',
+    // L2: 'previous step' 'icon_pagination_prev',
+    // L3: 'previous page' 'icon_pagination_prev',
+    // R1: 'next page' 'icon_pagination_next',
+    // R2: 'next step' 'icon_pagination_next',
+    // R3: 'last page' 'icon_pagination_last',
+    );
+    @function getBtns($findKey: "text") {
+        $list: ();
+        @each $key,
+        $value in $pBtns {
+            @if ($key==unquote($findKey)) {
+                $list: '[title^="Go to the #{$value}"]';
+            }
+        }
+        @return $list;
+    }
+    // @each $i , $key in $pBtns {
+    //   // $name: nth(getBtns, $i);
+    //   #{$b} {
+    //     content: '#{$i}#{$key}';
+    //   }
+    //   // #{getBtns("L+#{$i}")} {
+    //   //   background-image: url("~@/assets/images/icon/icon_pagination_first.svg");
+    //   // }
+    //   // ul:nth-child(3n + #{$i}) {
+    //   //   background-color: lighten($base-color, $i * 5%);
+    //   // }
+    // }
+    $pBtnsB1: getBtns("B1");
+    $pBtnsB2: getBtns("B2");
+    $pBtnsB3: getBtns("B3");
+    $pBtnsB4: getBtns("B4");
+    $pBtnsB5: getBtns("B5");
+    $pBtnsB6: getBtns("B6");
+    #{$pBtnsB1} {
+        background-image: url("~@/assets/images/icon/icon_pagination_first.svg");
+    }
+    #{$pBtnsB2},
+    #{$pBtnsB3} {
+        background-image: url("~@/assets/images/icon/icon_pagination_prev.svg");
+    }
+    #{$pBtnsB3} {
+        margin-right: 6px !important;
+    }
+    #{$pBtnsB4} {
+        margin-left: 6px !important;
+    }
+    #{$pBtnsB4},
+    #{$pBtnsB5} {
+        background-image: url("~@/assets/images/icon/icon_pagination_next.svg");
+    }
+    #{$pBtnsB6} {
+        background-image: url("~@/assets/images/icon/icon_pagination_last.svg");
+    }
+    #{$b}:disabled {
+        opacity: 0.5;
+    }
+}

@@ -1,0 +1,222 @@
+.ow-input {
+  display: inline-flex;
+  position: relative;
+  width: var(--width, 100%);
+  gap: var(--gap-input, 0);
+  input[type="text"],
+  input[type="password"] {
+    display: inline-flex;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 8px;
+    color: #333;
+    font-size: 12px;
+    border: 1px solid #bac1c9;
+    ::placeholder {
+      color: #bac1c9;
+    }
+
+    &:disabled {
+      border-color: #bfc6ce;
+      background-color: #edf0f2;
+      color: #adadad;
+    }
+  }
+
+  &.type-button {
+    input[type="text"] {
+      padding-right: 30px;
+    }
+  }
+
+  .form-control {
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: normal;
+    &:focus {
+      box-shadow: none;
+    }
+    &:disabled {
+      & + .btn-calendar {
+        cursor: initial;
+        filter: invert(65%) sepia(8%) saturate(35%) hue-rotate(161deg)
+          brightness(95%) contrast(93%);
+      }
+      & + .fa-clock {
+        color: #ccc;
+      }
+    }
+  }
+
+  .btn-search {
+    display: inline-flex;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 17px;
+    height: 17px;
+    background-image: url("~@/assets/images/icon/icon_search.svg");
+    text-indent: -9999em;
+    font-size: 0;
+    background-color: transparent;
+    border: 0;
+    &:hover {
+      filter: invert(31%) sepia(96%) saturate(4852%) hue-rotate(210deg)
+        brightness(105%) contrast(103%);
+    }
+  }
+  .btn-calendar {
+    display: inline-flex;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 15px;
+    background-image: url("~@/assets/images/icon/icon_calendar.svg");
+    text-indent: -9999em;
+    font-size: 0;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    &:hover {
+      filter: invert(31%) sepia(96%) saturate(4852%) hue-rotate(210deg)
+        brightness(105%) contrast(103%);
+    }
+  }
+
+  .fa-clock {
+    display: inline-flex;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  &.disabled {
+    .btn-calendar {
+      filter: invert(65%) sepia(8%) saturate(35%) hue-rotate(161deg)
+        brightness(95%) contrast(93%);
+    }
+  }
+}
+
+.ow-textarea {
+  display: inline-flex;
+  width: var(--width, 100%);
+  height: var(--height, auto);
+  padding: 6px 8px;
+  border: 1px solid #bac1c9;
+  background-color: #fff;
+  font-size: 12px;
+  line-height: 17px;
+  letter-spacing: -1px;
+  box-sizing: border-box;
+}
+
+.ow-search-wrap{
+  position: absolute;
+  top: 23px; left: 0;
+  width: 100%; border: 1px solid #bac1c9;
+  font-size: 12px;
+
+  .ow-search-list{
+    .ow-search-item{
+      display: flex;
+      padding: 4px 8px;
+      color: #333;
+      cursor: pointer;
+      &:hover, &.active{
+        background-color: #d4ecff;
+      }
+  
+      .name{
+        position: relative;
+        padding-right: 6px;
+        margin-right: 6px;
+        &:after{
+          content:"";
+          position: absolute;
+          right: 0; top: 50%;
+          transform: translateY(-50%);
+          display: inline-flex;
+          width: 1px; height: 10px;
+          background-color: #bac1c9;
+        }
+      }
+    }
+
+    .not-search-item{
+      padding: 4px 8px;
+      color: #333;
+    }
+  }
+
+  .ow-search-link{
+    display: block;
+    padding: 5px 0 10px;
+    text-align: center;
+    color: #176de2;
+    text-decoration: underline;
+  }
+}
+
+.ow-barcode-box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  background-color: #fffef3;
+  border: 1px solid #bac1c9;
+  font-size: 12px;
+  color: #333;
+}
+
+
+/* date-picker custom */
+.bootstrap-datetimepicker-widget .timepicker .timepicker-picker table td {
+  padding: 0 !important;
+  height: 30px !important;
+  line-height: 30px !important;
+}
+
+.bootstrap-datetimepicker-widget
+  .timepicker
+  .timepicker-picker
+  table
+  td.separator {
+  width: 20px !important;
+}
+
+.bootstrap-datetimepicker-widget .timepicker .timepicker-picker table td i,
+.bootstrap-datetimepicker-widget .timepicker .timepicker-picker table td span {
+  height: 30px !important;
+  line-height: 30px !important;
+}
+
+.table-condensed{
+  th, td{ border: 0 !important; }
+  th{ background-color: #fff !important; }
+}
+
+// ow-datapicker
+.datapicker-wrap{
+  display:flex;
+  align-items: center;
+  width:220px;
+  .mark{
+    background:transparent;
+  }
+  input{
+    width:105px;
+  }
+}
+.bootstrap-datetimepicker-widget{
+  width:300px;
+  th, td{
+    text-align: center !important;
+  }
+}
