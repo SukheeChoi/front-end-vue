@@ -1,15 +1,7 @@
 <template>
   <nav class="content_tab nav-tabs-row">
     <b-tabs nav-wrapper-class="nav-tabs-wrap" v-model="tabIndex">
-      <b-tab
-        v-for="tab in tabs"
-        :key="tab.name"
-        :title="tab.title"
-        @click="
-          to(tab);
-          subTabIndex = 0;
-        "
-      />
+      <b-tab v-for="tab in tabs" :key="tab.name" :title="tab.title" @click="to(tab)" />
     </b-tabs>
     <b-tabs id="sub-btn-wrap" class="nav-tabs-wrap" v-model="subTabIndex" v-if="this.currentTab">
       <b-tab v-for="child in currentTab.children" :key="child.name" :title="child.title" @click="to(child)" />
@@ -17,7 +9,7 @@
   </nav>
 </template>
 <script>
-import { useStore } from 'vuex';
+// import { useStore } from 'vuex';
 
 const tabs = [
   {
@@ -239,7 +231,14 @@ export default {
       return index;
     },
     to({ name }) {
-      this.$router.push({ name });
+      this.$router.push({ name }).then(() => {
+        // // 실패 처리
+        // if (isNavigationFailure(failure, NavigationFailureType.redirected)) {
+        //   failure.to.path = '/';
+        //   failure.from.path = '/';
+        // }
+        this.subTabIndex = this.getTabIndex(this.tabs[this.tabIndex].children || []);
+      });
     },
   },
 };
