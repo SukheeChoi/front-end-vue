@@ -8,7 +8,7 @@
   </header>
   <!-- //header -->
   <!-- row -->
-  <div class="row">
+  <div class="row mt-10">
     <div class="col-6">
       <!-- search -->
       <div class="search-zone">

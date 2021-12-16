@@ -7,7 +7,6 @@ class Login {
     }
 
     getUserInfo(url, id) {
-        console.log(id);
         const params = { "userId": id };
         return restApi.execute(url, params);
     }

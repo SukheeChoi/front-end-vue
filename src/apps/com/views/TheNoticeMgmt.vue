@@ -1,7 +1,7 @@
 <template>
   <!-- header -->
   <header class="headline-wrap">
-    <h1 class="h1">알림 설정</h1>
+    <h1 class="h1">알림 설정 가능 목록</h1>
     <div>
       <button class="ow-btn type-reference">조회</button>
       <button class="ow-btn type-state">추가</button>
@@ -12,7 +12,7 @@
     <h2 class="h2">알림 설정 가능 목록</h2>
   </div>
   <!-- search -->
-  <div class="search-zone">
+  <div class="search-zone mt-10">
     <div class="row">
       <div class="col-3">
         <label class="t">알림업무그룹</label>
@@ -42,40 +42,19 @@
   </div>
   <!-- //search -->
 
-  <div class="ow-grid">
-    <wj-flex-grid
-      headersVisibility="Column"
-      selectionMode="0"
-      :itemsSource="result"
-    >
-      <wj-flex-grid-column
-        :header="'checkboxColumn'"
-        :binding="'checkboxColumn'"
-        :width="50"
-        :isReadOnly="true"
-      >
+  <div class="ow-grid mt-10">
+    <wj-flex-grid headersVisibility="Column" selectionMode="0" :itemsSource="result">
+      <wj-flex-grid-column :header="'checkboxColumn'" :binding="'checkboxColumn'" :width="50" :isReadOnly="true">
         <wj-flex-grid-cell-template cellType="ColumnHeader">
           <input type="checkbox" v-model="highlightDownloads" />
         </wj-flex-grid-cell-template>
         <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
-          <input
-            v-model="cell.row.isCollapsed"
-            type="checkbox"
-            checked="false"
-          />
+          <input v-model="cell.row.isCollapsed" type="checkbox" checked="false" />
         </wj-flex-grid-cell-template>
       </wj-flex-grid-column>
-      <wj-flex-grid-column
-        :header="'알림업무그룹'"
-        :binding="'field1'"
-        width="*"
-      />
+      <wj-flex-grid-column :header="'알림업무그룹'" :binding="'field1'" width="*" />
       <wj-flex-grid-column :header="'알림업무'" :binding="'field2'" width="*" />
-      <wj-flex-grid-column
-        :header="'알림내용 및 설명'"
-        :binding="'field3'"
-        width="*"
-      />
+      <wj-flex-grid-column :header="'알림내용 및 설명'" :binding="'field3'" width="*" />
       <wj-flex-grid-column :header="'수신대상'" :binding="'field4'" width="*" />
       <wj-flex-grid-column :header="'작성시'" :binding="'field5'" width="*" />
       <wj-flex-grid-column :header="'수신시'" :binding="'field6'" width="*" />
@@ -114,40 +93,19 @@
     <!-- //control button -->
   </div>
   <!-- //sub title -->
-  <div class="ow-grid">
-    <wj-flex-grid
-      headersVisibility="Column"
-      selectionMode="0"
-      :itemsSource="result2"
-    >
-      <wj-flex-grid-column
-        :header="'checkboxColumn'"
-        :binding="'checkboxColumn'"
-        :width="50"
-        :isReadOnly="true"
-      >
+  <div class="ow-grid mt-10">
+    <wj-flex-grid headersVisibility="Column" selectionMode="0" :itemsSource="result2">
+      <wj-flex-grid-column :header="'checkboxColumn'" :binding="'checkboxColumn'" :width="50" :isReadOnly="true">
         <wj-flex-grid-cell-template cellType="ColumnHeader">
           <input type="checkbox" v-model="highlightDownloads" />
         </wj-flex-grid-cell-template>
         <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
-          <input
-            v-model="cell.row.isCollapsed"
-            type="checkbox"
-            checked="false"
-          />
+          <input v-model="cell.row.isCollapsed" type="checkbox" checked="false" />
         </wj-flex-grid-cell-template>
       </wj-flex-grid-column>
-      <wj-flex-grid-column
-        :header="'알림업무그룹'"
-        :binding="'field1'"
-        width="*"
-      />
+      <wj-flex-grid-column :header="'알림업무그룹'" :binding="'field1'" width="*" />
       <wj-flex-grid-column :header="'알림업무'" :binding="'field2'" width="*" />
-      <wj-flex-grid-column
-        :header="'알림내용 및 설명'"
-        :binding="'field3'"
-        width="*"
-      />
+      <wj-flex-grid-column :header="'알림내용 및 설명'" :binding="'field3'" width="*" />
       <wj-flex-grid-column :header="'작성시'" :binding="'field4'" width="*" />
       <wj-flex-grid-column :header="'수신시'" :binding="'field5'" width="*" />
       <wj-flex-grid-column :header="'완료시'" :binding="'field6'" width="*" />
@@ -187,7 +145,7 @@
   </div>
   <!-- //sub title -->
   <!-- 상세 table -->
-  <div class="ow-table-type-data">
+  <div class="ow-table-type-data mt-10">
     <table class="tbl-tpye-2">
       <colgroup>
         <col style="width: 200px" />
@@ -223,11 +181,7 @@
         <th>미확인시 반복알림</th>
         <td>
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
         <th>반복횟수</th>
@@ -244,21 +198,13 @@
         <th>작성시 알림</th>
         <td>
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
         <th>완료시 알림</th>
         <td>
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
       </tr>
@@ -266,21 +212,13 @@
         <th>수신시 알림</th>
         <td>
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
         <th>취소시 알림</th>
         <td>
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
       </tr>
@@ -288,21 +226,13 @@
         <th>상단뱃지에 추가</th>
         <td colspan="5">
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
         <th>오래된 항목 지우기</th>
         <td>
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
         <th>기간설정</th>
@@ -319,21 +249,13 @@
         <th>자동 알림창 표시</th>
         <td colspan="5">
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
         <th>전체알림해제</th>
         <td colspan="3">
           <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckDefault"
-            />
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
           </div>
         </td>
       </tr>

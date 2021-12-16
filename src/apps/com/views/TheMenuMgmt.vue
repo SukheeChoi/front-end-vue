@@ -1,14 +1,16 @@
 <template>
-  <!-- header -->
-  <header class="headline-wrap">
-    <h1 class="h1">메뉴관리</h1>
-    <div>
-      <button class="ow-btn type-reference">조회</button>
-    </div>
-  </header>
-  <!-- //header -->
   <!-- row -->
   <div class="row">
+    <!-- header -->
+    <header class="headline-wrap">
+      <h1 class="h1">메뉴관리</h1>
+      <div>
+        <button class="ow-btn type-reference">조회</button>
+      </div>
+    </header>
+    <!-- //header -->
+  </div>
+  <div class="row mt-10">
     <div class="col-6">
       <!-- search -->
       <div class="search-zone">
@@ -34,11 +36,10 @@
         </div>
       </div>
       <!-- //search -->
-      <!-- control button -->
+
       <div class="ow-flex-wrap mt-20">
         <h2 class="h2">화면 목록</h2>
       </div>
-      <!-- //control button -->
 
       <!-- grid -->
       <div class="ow-grid">
@@ -49,11 +50,20 @@
           :allowDragging="false"
           :allowSorting="false"
           selection-mode="Row"
-          :initialized="gridInitialized"
+          headersVisibility="Column"
+          :initialized="initializeGrid"
           class="mt-10"
           style="min-height: 374px; max-height: 374px"
           :isReadOnly="true"
         >
+          <wj-flex-grid-column :header="'checkboxColumn'" :binding="'checkboxColumn'" :width="50" :isReadOnly="true">
+            <wj-flex-grid-cell-template cellType="ColumnHeader">
+              <input type="checkbox" v-model="highlightDownloads" />
+            </wj-flex-grid-cell-template>
+            <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
+              <input v-model="cell.row.isCollapsed" type="checkbox" checked="false" />
+            </wj-flex-grid-cell-template>
+          </wj-flex-grid-column>
           <wj-flex-grid-column header="번호" :width="70">
             <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
               {{ new Intl.NumberFormat().format(pageSize * (currentPage - 1) + cell.row.index + 1) }}
@@ -66,7 +76,6 @@
           <wj-flex-grid-column binding="userNm" header="화면URL" width="*"></wj-flex-grid-column>
         </wj-flex-grid>
       </div>
-
       <!--// grid -->
     </div>
     <div class="col-6">
@@ -95,6 +104,7 @@
           </div>
         </div>
         <!-- //search -->
+
         <!-- control button -->
         <div class="ow-flex-wrap mt-20">
           <h2 class="h2">메뉴 목록</h2>
@@ -112,6 +122,7 @@
         </div>
         <!-- //control button -->
 
+        <!-- grid -->
         <div class="ow-grid">
           <wj-flex-grid
             headers-visibility="Column"
@@ -131,6 +142,7 @@
             <wj-flex-grid-column binding="name" header="대상" :width="'*'" />
           </wj-flex-grid>
         </div>
+        <!--// grid -->
       </div>
     </div>
   </div>
@@ -138,8 +150,6 @@
 </template>
 
 <script>
-import { CollectionView } from '@grapecity/wijmo';
-
 export default {
   name: 'Sample2_1',
   components: {},
@@ -150,7 +160,6 @@ export default {
       currentPage: 1, // [Mandatory] 현재 페이지 번호
       pageSize: 100, // [Mandatory] 그리드에 보여지는 행 수 (Default=10)
       maxPages: 10, // [Mandatory] Pagination 에 보여지는 숫자 개수 (Default=10 [1][2][3][4][5]..)
-      grid: null,
       currentTab: 0,
       result: [
         {
@@ -218,54 +227,20 @@ export default {
     };
   },
 
-  created() {
-    this.result2 = new CollectionView([], {
-      trackChanges: true,
-    });
-    this.getList(1);
-  },
+  created() {},
 
   methods: {
-    gridInitialized(grid) {
-      this.grid = grid;
-    },
-
-    async getList(page = 1) {
-      try {
-        if (page == 1) {
-          this.totalCount = 0; // Required to be initialized
+    initializeGrid(flex) {
+      flex.beginningEdit.addHandler((s, e) => {
+        let col = s.columns[e.col];
+        if (col.binding != 'checkboxColumn') {
+          let item = s.rows[e.row].dataItem;
+          if (item.checkboxColumn) {
+            e.cancel = true;
+          }
         }
-        this.currentPage = page; // Required to be set
-        this.result.sourceCollection = [];
-
-        const { totalCount, data } = await getData(page, this.pageSize);
-        this.totalCount = totalCount; // Required to be set
-        this.result.sourceCollection = data;
-      } catch (err) {}
+      });
     },
   },
 };
-
-// Get list from client side
-async function getData(pageNo, pageSize) {
-  const totalCount = 1999;
-  let startIndex = (pageNo - 1) * pageSize + 1;
-  let endIndex = startIndex + pageSize - 1;
-  if (endIndex > totalCount) {
-    endIndex = totalCount;
-  }
-
-  const data = [];
-  for (let i = startIndex; i <= endIndex; i++) {
-    data.push({
-      loginId: 'CODE_' + String(i).padStart(4, '0'),
-      userNm: 'NAME_' + String(i).padStart(4, '0'),
-    });
-  }
-
-  return {
-    totalCount,
-    data,
-  };
-}
 </script>

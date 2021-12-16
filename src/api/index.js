@@ -3,8 +3,8 @@ import store from '../store';
 import auth from "@/store/auth";
 
 const instance = axios.create({
-    //baseURL: process.env.OWS_BASE_URL,
-    baseURL: 'http://localhost:9080',
+    baseURL: process.env.VUE_APP_SERVER_IP,
+    //baseURL: 'http://localhost:9080',
     headers: {
         'Content-Type': 'application/json',
         "Authorization": ''
@@ -34,6 +34,12 @@ instance.interceptors.response.use(
     },
     function(error) {
         // 오류 응답을 처리
+
+        if (error.response.status === 401 ||
+            store.state.login.accessToken === null) {
+            window.location.href = "/oss-login"
+        }
+
         return Promise.reject(error);
     }
 );

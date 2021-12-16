@@ -58,7 +58,15 @@
   <!-- //control button -->
 
   <div class="ow-grid mt-10">
-    <wj-flex-grid :itemsSource="result" :isReadOnly="true" headersVisibility="Column">
+    <wj-flex-grid :itemsSource="result" :isReadOnly="true" selectionMode="Row" headersVisibility="Column">
+      <wj-flex-grid-column :header="'checkboxColumn'" :binding="'checkboxColumn'" :width="50" :isReadOnly="true">
+        <wj-flex-grid-cell-template cellType="ColumnHeader">
+          <input type="checkbox" v-model="highlightDownloads" />
+        </wj-flex-grid-cell-template>
+        <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
+          <input v-model="cell.row.isCollapsed" type="checkbox" checked="false" />
+        </wj-flex-grid-cell-template>
+      </wj-flex-grid-column>
       <wj-flex-grid-column :header="'번호'" :binding="'field1'" :width="70">
         <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
           {{ cell.row.index + 1 }}
