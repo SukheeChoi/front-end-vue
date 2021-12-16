@@ -4,6 +4,7 @@ import login from "./modules/login";
 
 export default createStore({
     plugins: [
+        /*
         createPersistedState({
             key: "user",
             paths: ["login"],
@@ -14,7 +15,8 @@ export default createStore({
                 return false;
             },
             storage: window.sessionStorage
-        })
+        })*/
+        createPersistedState()
     ],
     state: {},
     getters: {},
