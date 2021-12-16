@@ -2,12 +2,15 @@ export default [
   {
     path: '/com',
     name: 'com',
+    redirect: '/com/BatchMgmt',
     component: () => import('@/views/AppMain'),
-    props: {
-      left: false,
-    },
     children: [
       // 배치관리(BT)
+      {
+        path: 'Batch',
+        name: 'COMBT',
+        redirect: '/com/BatchMgmt',
+      },
       {
         path: 'BatchMgmt',
         name: 'COMBT001',
@@ -24,6 +27,11 @@ export default [
         component: () => import('@/apps/com/views/TheBatchHistory'),
       },
       // 권한관리(AU)
+      {
+        path: 'Auth',
+        name: 'COMAU',
+        redirect: '/com/UserMgmt',
+      },
       {
         path: 'UserMgmt',
         name: 'COMAU001',
@@ -76,6 +84,11 @@ export default [
       },
       // 데이터표준(ST)
       {
+        path: 'Standard',
+        name: 'COMST',
+        redirect: '/com/WordMgmt',
+      },
+      {
         path: 'WordMgmt',
         name: 'COMST001',
         component: () => import('@/apps/com/views/TheWordMgmt'),
@@ -97,6 +110,11 @@ export default [
       },
       // 보고서(RP)
       {
+        path: 'Report',
+        name: 'COMRP',
+        redirect: '/com/LoginHistory',
+      },
+      {
         path: 'LoginHistory',
         name: 'COMRP001',
         component: () => import('@/apps/com/views/TheLoginHistory'),
@@ -112,6 +130,11 @@ export default [
         component: () => import('@/apps/com/views/TheExcelHistory'),
       },
       // 설정(CF)
+      {
+        path: 'Configuration',
+        name: 'COMCF',
+        redirect: '/com/LangCode',
+      },
       {
         path: 'LangCode',
         name: 'COMCF001',
@@ -154,6 +177,11 @@ export default [
       },
       // 인터페이스(IF)
       {
+        path: 'Interface',
+        name: 'COMIF',
+        redirect: '/com/InterfaceMgmt',
+      },
+      {
         path: 'InterfaceMgmt',
         name: 'COMIF001',
         component: () => import('@/apps/com/views/TheInterfaceMgmt'),
@@ -164,6 +192,11 @@ export default [
         component: () => import('@/apps/com/views/TheInterfaceStatus'),
       },
       // 개인화 설정(PE)
+      {
+        path: 'Personalization',
+        name: 'COMPE',
+        redirect: '/com/PersonalInfo',
+      },
       {
         path: 'PersonalInfo',
         name: 'COMPE001',

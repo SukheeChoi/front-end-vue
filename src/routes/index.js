@@ -4,9 +4,20 @@ import store from '../store';
 
 const routes = [{
         path: '/',
+        redirect: '/main',
+    },
+    {
+        path: '/main',
         name: 'main',
         component: () =>
             import ('@/views/AppMain'),
+        // 임시
+        redirect: '/com',
+        props: {
+            left: {
+                show: true,
+            },
+        },
     },
     {
         path: '/login',
@@ -20,14 +31,8 @@ const routes = [{
             import ('@/views/AppNotFound'),
     },
     {
-        path: '/',
-        name: 'mainLayout',
-        component: () =>
-            import ('../views/layout/mainLayout.vue'),
-    },
-    {
         path: '/oss-login',
-        name: 'ossLogin',
+        name: 'login',
         component: () =>
             import ('../views/login/OssLogin.vue'),
     },
@@ -41,12 +46,6 @@ const routes = [{
     //   name: "supLogin",
     //   component: () => import ("../views/login/SupLogin.vue")
     // },
-    {
-        path: '/admin',
-        name: 'adminMain',
-        component: () =>
-            import ('../views/admin/Main.vue'),
-    },
 ];
 
 const apps = (process.env.VUE_APP_APPS || '').split(',');

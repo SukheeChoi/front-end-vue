@@ -40,7 +40,31 @@ export default {
     TheActionPlan,
     TheApproval,
   },
-  props: ['show'],
+  props: {
+    nav: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
+    left: {
+      type: Object,
+      default: function () {
+        return {
+          show: false,
+        };
+      },
+    },
+    right: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
+  },
+  setup(props, context) {
+    console.log('setup', props, context);
+  },
   mounted() {
     console.log(this.testProps);
   },
