@@ -9,6 +9,8 @@ const routes = [
     path: '/main',
     name: 'main',
     component: () => import('@/views/AppMain'),
+    // 임시
+    redirect: '/com',
     props: {
       left: {
         show: true,
