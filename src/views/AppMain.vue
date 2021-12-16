@@ -6,7 +6,7 @@
         <app-nav></app-nav>
         <app-section>
           <div class="row">
-            <app-article class="col fix-left" v-if="show">
+            <app-article class="col fix-left" v-if="left.show">
               <the-action-plan></the-action-plan>
               <the-approval></the-approval>
             </app-article>
