@@ -106,14 +106,15 @@
         </div>
       </template>
       <template v-if="currentTab == 1">
-        <div class="ow-tabs-side"></div>
-        <button class="ow-btn type-reference">조회</button>
+        <div class="ow-tabs-side">
+          <button class="ow-btn type-reference">조회</button>
+        </div>
       </template>
       <!-- //control button -->
     </div>
     <!-- //control button -->
     <!-- //sub title(탭 스타일) -->
-    <div class="tab-content">
+    <div class="tab-content pt-10">
       <div v-show="currentTab == 0">
         <!--  table -->
         <div class="ow-table-type-data">
@@ -227,7 +228,13 @@
         <!-- //search -->
         <!-- grid -->
         <div class="ow-grid">
-          <wj-flex-grid headersVisibility="Column" selectionMode="0" :itemsSource="resultTab2">
+          <wj-flex-grid
+            id="grid"
+            class="mt-10"
+            headersVisibility="Column"
+            selectionMode="Row"
+            :itemsSource="resultTab2"
+          >
             <wj-flex-grid-column :header="'번호'" :width="70">
               <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
                 {{ cell.row.index + 1 }}
