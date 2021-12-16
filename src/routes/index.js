@@ -3,8 +3,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [
   {
     path: '/',
+    redirect: '/main',
+  },
+  {
+    path: '/main',
     name: 'main',
     component: () => import('@/views/AppMain'),
+    props: {
+      left: {
+        show: true,
+      },
+    },
   },
   {
     path: '/login',
@@ -14,11 +23,6 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/AppNotFound'),
-  },
-  {
-    path: '/',
-    name: 'mainLayout',
-    component: () => import('../views/layout/mainLayout.vue'),
   },
   {
     path: '/oss-login',
@@ -35,11 +39,6 @@ const routes = [
   //   name: "supLogin",
   //   component: () => import ("../views/login/SupLogin.vue")
   // },
-  {
-    path: '/admin',
-    name: 'adminMain',
-    component: () => import('../views/admin/Main.vue'),
-  },
 ];
 
 const apps = (process.env.VUE_APP_APPS || '').split(',');
