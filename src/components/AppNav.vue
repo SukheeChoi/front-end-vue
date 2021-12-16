@@ -11,16 +11,12 @@
         "
       />
     </b-tabs>
-    <template v-if="currentTab && currentTab.children">
-      <b-tabs id="sub-btn-wrap" class="nav-tabs-wrap" v-model="subTabIndex">
-        <b-tab v-for="child in currentTab.children" :key="child.name" :title="child.title" @click="to(child)" />
-      </b-tabs>
-    </template>
+    <b-tabs id="sub-btn-wrap" class="nav-tabs-wrap" v-model="subTabIndex" v-if="this.currentTab">
+      <b-tab v-for="child in currentTab.children" :key="child.name" :title="child.title" @click="to(child)" />
+    </b-tabs>
   </nav>
 </template>
 <script>
-import { reactive, ref, onMounted, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
 const tabs = [
@@ -208,9 +204,6 @@ const tabs = [
   },
 ];
 
-// TODO
-// 1. onMounted에서 현재 viewname에 맞는 Tab 선택
-
 export default {
   name: 'AppNav',
   components: {},
@@ -223,35 +216,10 @@ export default {
   },
   computed: {
     currentTab() {
-      const name = this.$route.name;
-      for (const tab of this.tabs) {
-        if (name.startsWith(tab.name)) {
-          return tab;
-        }
-      }
-      return null;
+      return this.tabs[this.tabIndex];
     },
   },
-  setup(props, context) {
-    console.log('App Nav => props:', props, ', context:', context);
-
-    const router = useRouter();
-    const route = useRoute();
-
-    console.log('App Nav => router:', router, ', route:', route);
-
-    onMounted(() => {
-      console.log('Hi Mounted', props, this);
-      const store = useStore();
-      console.log('store:', store);
-      const r = ref(null);
-      console.log('r:', r);
-    });
-
-    return {};
-  },
   mounted() {
-    console.log('current tab:', this.currentTab);
     this.initialize();
   },
   methods: {
