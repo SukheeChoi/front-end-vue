@@ -1,20 +1,23 @@
 import axios from 'axios';
+import store from '../store';
+import auth from "@/store/auth";
 
 const instance = axios.create({
     //baseURL: process.env.OWS_BASE_URL,
     baseURL: 'http://localhost:9080',
     headers: {
         'Content-Type': 'application/json',
-        Authorization: '',
+        "Authorization": ''
     },
 });
 
 // 요청 인터셉터
-axios.interceptors.request.use(
+instance.interceptors.request.use(
     function(config) {
         // 요청을 보내기 전에 수행할 일
-        //config.headers.Authorization = `Bearer ${auth.state.accessToken}`
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem("token");
+        console.log()
+        config.headers.Authorization = `Bearer ${store.state.login.accessToken}`
+            //config.headers.Authorization = 'Bearer ' + localStorage.getItem("token");
         return config;
     },
     function(error) {
@@ -35,4 +38,4 @@ instance.interceptors.response.use(
     }
 );
 
-export { instance };
+export default instance;
