@@ -27,8 +27,8 @@ import AppSection from '@/components/AppSection';
 import AppArticle from '@/components/AppArticle';
 import AppAside from '@/components/AppAside';
 
-import TheActionPlan from '@/components/TheActionPlan';
-import TheApproval from '@/components/TheApproval';
+import TheActionPlan from '@/apps/tsk/components/TheActionPlan';
+import TheApproval from '@/apps/eap/components/TheApproval';
 
 export default {
   components: {
