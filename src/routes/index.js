@@ -36,16 +36,6 @@ const routes = [{
         component: () =>
             import ('../views/login/OssLogin.vue'),
     },
-    // {
-    //   path: "/part-timer-login",
-    //   name: "partTimerLogin",
-    //   component: () => import ("../views/login/PartTimerLogin.vue")
-    // },
-    // {
-    //   path: "/sup-login",
-    //   name: "supLogin",
-    //   component: () => import ("../views/login/SupLogin.vue")
-    // },
 ];
 
 const apps = (process.env.VUE_APP_APPS || '').split(',');
