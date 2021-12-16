@@ -1,14 +1,16 @@
 <template>
-  <!-- header -->
-  <header class="headline-wrap">
-    <h1 class="h1">업무그룹별 메뉴관리</h1>
-    <div>
-      <button class="ow-btn type-reference">조회</button>
-    </div>
-  </header>
-  <!-- //header -->
   <!-- row -->
   <div class="row">
+    <!-- header -->
+    <header class="headline-wrap">
+      <h1 class="h1">업무그룹별 메뉴관리</h1>
+      <div>
+        <button class="ow-btn type-reference">조회</button>
+      </div>
+    </header>
+    <!-- //header -->
+  </div>
+  <div class="row mt-10">
     <div class="col-6">
       <!-- search -->
       <div class="search-zone">
@@ -34,17 +36,16 @@
         </div>
       </div>
       <!-- //search -->
-      <!-- control button -->
+
       <div class="ow-flex-wrap mt-20">
         <h2 class="h2">메뉴 목록</h2>
       </div>
-      <!-- //control button -->
 
       <!-- grid -->
       <div class="ow-grid">
         <wj-flex-grid
           headers-visibility="Column"
-          selectionMode="0"
+          selectionMode="Row"
           :itemsSource="result"
           :child-items-path="['checks', 'earnings']"
           style="height: 500px"
@@ -55,7 +56,6 @@
           <wj-flex-grid-column binding="rate" header="사용" :width="'*'" />
         </wj-flex-grid>
       </div>
-
       <!--// grid -->
     </div>
     <div class="col-6">
@@ -84,6 +84,7 @@
           </div>
         </div>
         <!-- //search -->
+
         <!-- control button -->
         <div class="ow-flex-wrap mt-20">
           <h2 class="h2">업무그룹별 메뉴목록</h2>
@@ -104,6 +105,7 @@
         </div>
         <!-- //control button -->
 
+        <!-- grid -->
         <div class="ow-grid">
           <wj-flex-grid
             headers-visibility="Column"
@@ -117,6 +119,7 @@
             <wj-flex-grid-column binding="hours" header="사용" :width="'*'" :allow-sorting="false" />
           </wj-flex-grid>
         </div>
+        <!--// grid -->
       </div>
     </div>
   </div>

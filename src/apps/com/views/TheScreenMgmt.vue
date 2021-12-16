@@ -72,7 +72,7 @@
   <!-- //control button -->
 
   <div class="ow-grid mt-10">
-    <wj-flex-grid :itemsSource="result2" headersVisibility="Column" :initialized="initializeGrid">
+    <wj-flex-grid :itemsSource="result2" selection-mode="Row" headersVisibility="Column" :initialized="initializeGrid">
       <wj-flex-grid-column :header="'checkboxColumn'" :binding="'checkboxColumn'" :width="50" :isReadOnly="true">
         <wj-flex-grid-cell-template cellType="ColumnHeader">
           <input type="checkbox" v-model="highlightDownloads" />

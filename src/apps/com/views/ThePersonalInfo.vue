@@ -6,7 +6,7 @@
   <!-- //header -->
 
   <!-- 상세 table -->
-  <div class="row">
+  <div class="row mt-10">
     <div class="col-6">
       <table class="ow-table-type-info">
         <colgroup>
@@ -88,17 +88,8 @@
         <tr>
           <th>담당업무</th>
           <td>
-            <textarea
-              name=""
-              id=""
-              cols="80"
-              rows="5"
-              class="form-style"
-              placeholder="소프트웨어 개발"
-            ></textarea>
-            <span class="comment"
-              >* 담당업무를 간략하게 300자 이내로 작성해 주세요.</span
-            >
+            <textarea name="" id="" cols="80" rows="5" class="form-style" placeholder="소프트웨어 개발"></textarea>
+            <span class="comment">* 담당업무를 간략하게 300자 이내로 작성해 주세요.</span>
           </td>
         </tr>
         <tr>
@@ -124,9 +115,7 @@
                 <option value="">ko</option>
               </select>
             </div>
-            <span class="inB ml-05 inH-2 comment"
-              >* 설정하지 않으면 소속기관 언어셋 설정이 적용됩니다.</span
-            >
+            <span class="inB ml-05 inH-2 comment">* 설정하지 않으면 소속기관 언어셋 설정이 적용됩니다.</span>
           </td>
         </tr>
         <tr>
