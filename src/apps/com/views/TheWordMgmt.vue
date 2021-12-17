@@ -273,12 +273,12 @@
 </template>
 
 <script>
-import OwFlexGridCheckColumn from '../components/wijmo/grid/OwFlexGridCheckColumn.vue';
+//import OwFlexGridCheckColumn from '../components/wijmo/grid/OwFlexGridCheckColumn.vue';
 
 export default {
   name: 'Menu1_1',
   components: {
-    OwFlexGridCheckColumn,
+    //  OwFlexGridCheckColumn,
   },
 
   data: function () {
