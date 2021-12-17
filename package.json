@@ -15,9 +15,11 @@
     "core-js": "^3.6.5",
     "devextreme": "^21.2.4",
     "devextreme-vue": "^21.2.4",
+    "froala-editor": "^4.0.7",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "vue": "^3.0.0",
+    "vue-froala-wysiwyg": "^4.0.7",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0"
