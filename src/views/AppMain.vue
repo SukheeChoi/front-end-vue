@@ -16,19 +16,22 @@
           </div>
         </app-section>
       </main>
-      <app-aside></app-aside>
     </div>
   </div>
+  <app-footer></app-footer>
+  <app-aside ref="aside"></app-aside>
 </template>
 <script>
 import AppHeader from '@/components/AppHeader';
 import AppNav from '@/components/AppNav';
 import AppSection from '@/components/AppSection';
 import AppArticle from '@/components/AppArticle';
+import AppFooter from '@/components/AppFooter';
 import AppAside from '@/components/AppAside';
 
 import TheActionPlan from '@/apps/tsk/components/TheActionPlan';
 import TheApproval from '@/apps/eap/components/TheApproval';
+import { onMounted, ref, toRefs } from 'vue';
 
 export default {
   components: {
@@ -36,6 +39,7 @@ export default {
     AppNav,
     AppSection,
     AppArticle,
+    AppFooter,
     AppAside,
     TheActionPlan,
     TheApproval,
@@ -64,17 +68,19 @@ export default {
   },
   setup(props, context) {
     console.log('setup', props, context);
+
+    const aside = ref('aside');
+
+    return {
+      aside,
+    };
   },
   mounted() {
     console.log(this.testProps);
   },
 };
 </script>
-<style lang="scss" scoped>
-aside {
-  display: none;
-}
-</style>
+<style lang="scss" scoped></style>
 <style lang="sass">
 @import '@/assets/ow-admin.scss'
 </style>

@@ -11,6 +11,7 @@ module.exports = {
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src/'),
+        '@@': path.join(__dirname, 'src/apps/'),
       },
     },
     devtool: 'source-map',

@@ -1,10 +1,11 @@
 import { createStore } from 'vuex';
-import createPersistedState from "vuex-persistedstate";
-import login from "./modules/login";
+import createPersistedState from 'vuex-persistedstate';
+import login from './modules/login';
+import notification from '@/store/modules/notification';
 
 export default createStore({
-    plugins: [
-        /*
+  plugins: [
+    /*
         createPersistedState({
             key: "user",
             paths: ["login"],
@@ -16,12 +17,13 @@ export default createStore({
             },
             storage: window.sessionStorage
         })*/
-        createPersistedState()
-    ],
-    state: {},
-    getters: {},
-    mutations: {},
-    modules: {
-        login
-    }
+    createPersistedState(),
+  ],
+  state: {},
+  getters: {},
+  mutations: {},
+  modules: {
+    login,
+    notification,
+  },
 });

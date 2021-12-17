@@ -14,20 +14,20 @@
           <li>
             <a href="javascript:void(0);">
               <i class="person"><span class="sr-only">유저 아이콘</span></i>
-              <span>{{userInfo.prntOrgNm}}</span>
+              <span>{{ userInfo.prntOrgNm }}</span>
             </a>
           </li>
           <li>
-            <a href="javascript:void(0);">{{userInfo.orgNm}}</a>
+            <a href="javascript:void(0);">{{ userInfo.orgNm }}</a>
           </li>
           <li>
-            <a href="javascript:void(0);">{{userInfo.userNm}} {{userInfo.jbgrNm}}</a>
+            <a href="javascript:void(0);">{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a>
           </li>
         </ul>
 
         <div class="btns">
-          <button type="button" class="confirm">
-            알림<span class="count">23</span>
+          <button type="button" class="confirm" @click="openSidebar">
+            알림<span class="count">{{ badgeCount }}</span>
           </button>
           <button type="button" class="setting">설정</button>
           <button type="button" class="logout">로그아웃</button>
@@ -37,16 +37,42 @@
   </header>
 </template>
 <script>
-import store from "@/store"
+import store from '@/store';
+
+import { computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'AppHeader',
   data() {
     return {
-        //userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
-        userInfo : store.state.login.userInfo,
+      //userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
+      userInfo: store.state.login.userInfo,
       user: {},
     };
   },
+  setup() {
+    const store = useStore();
+
+    // Computed
+    const badgeCount = computed(() => store.getters.getBadgeCount);
+
+    // Methods
+    const openSidebar = () => {
+      store.commit('setOpenSidebar');
+    };
+
+    // Hooks
+    onMounted(() => {
+      store.commit('setCloseSidebar');
+    });
+
+    return {
+      openSidebar,
+      badgeCount,
+    };
+  },
+
   methods: {},
 };
 </script>
