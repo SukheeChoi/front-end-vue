@@ -63,9 +63,7 @@ export default {
     };
 
     // Hooks
-    onMounted(() => {
-      store.commit('setCloseSidebar');
-    });
+    onMounted(() => {});
 
     return {
       openSidebar,

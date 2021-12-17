@@ -7,8 +7,12 @@ const state = () => ({
   sidebar: {
     open: false,
   },
-  push: {
+  alert: {
     open: false,
+    user_name: '홍길동',
+    dept_name: '물류본부',
+    time: new Date(),
+    message: 'AA 제품 피킹 완료 - 주문서 내역을 확인후 빠른 처리가 요구됩니다.',
   },
 });
 
@@ -22,11 +26,11 @@ const mutations = {
   setCloseSidebar(state) {
     state.sidebar.open = false;
   },
-  setOpenPush(state) {
-    state.push.open = true;
+  setOpenAlert(state) {
+    state.alert.open = true;
   },
-  setClosePush(state) {
-    state.push.open = false;
+  setCloseAlert(state) {
+    state.alert.open = false;
   },
 };
 
@@ -35,6 +39,18 @@ const actions = {};
 const getters = {
   getBadgeCount(state) {
     return state.badge.count;
+  },
+  getAlertUserName(state) {
+    return state.alert.user_name;
+  },
+  getAlertDeptName(state) {
+    return state.alert.dept_name;
+  },
+  getAlertTime(state) {
+    return state.alert.time;
+  },
+  getAlertMessage(state) {
+    return state.alert.message;
   },
 };
 

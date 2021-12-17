@@ -97,28 +97,25 @@
     </transition>
     <!-- 사이드바 영역 E -->
     <!-- 푸시 알람 영역 S -->
-    <transition name="push">
-      <div class="ow-toast fixed-postion-bottom-right" v-if="push.open">
-        <div class="toast-area">
+    <transition name="alert">
+      <div class="ow-toast fixed-postion-bottom-right" v-if="alert.open">
+        <div class="toast-area" @click="check">
           <div class="toast-wrap">
             <div class="toast-top">
               <ul class="summary-list xs">
                 <li>
-                  <span class="head">홍길동</span>
+                  <span class="head">{{ alertUserName }}</span>
                 </li>
                 <li>
-                  <span>물류본부</span>
+                  <span>{{ alertDeptName }}</span>
                 </li>
                 <li>
-                  <span>10-22 11:50</span>
+                  <span>{{ alertTime }}</span>
                 </li>
               </ul>
             </div>
             <div class="toast-contents">
-              <p class="text-para">
-                AA 제품 피킹 완료 - 주문서 내역을 확인후 빠른 처리가 요구됩니다. 처리후 관련 내역을 담당 부서에
-                통보해처리후 관련 내역을 담당 부서에 통보해
-              </p>
+              <p class="text-para">{{ alertMessage }}</p>
             </div>
           </div>
         </div>
@@ -129,7 +126,7 @@
 </template>
 <script>
 import OwButton from '@/components/commons/OwButton';
-import { reactive, toRefs, onMounted } from 'vue';
+import { reactive, toRefs, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 export default {
   name: 'AppAside',
@@ -146,24 +143,52 @@ export default {
   setup() {
     const store = useStore();
 
-    const { sidebar, push } = store.state.notification;
+    const { sidebar, alert } = store.state.notification;
 
     const state = reactive({
       sidebar,
-      push,
+      alert,
     });
 
     // Computed
+    const alertUserName = computed(() => {
+      return store.getters.getAlertUserName;
+    });
+
+    const alertDeptName = computed(() => {
+      return store.getters.getAlertDeptName;
+    });
+
+    const alertTime = computed(() => {
+      return store.getters.getAlertTime;
+    });
+
+    const alertMessage = computed(() => {
+      return store.getters.getAlertMessage;
+    });
 
     // Methods
     const close = () => {
       store.commit('setCloseSidebar');
     };
 
-    onMounted(() => {});
+    const check = () => {};
+
+    // Hooks
+    onMounted(() => {
+      store.commit('setCloseSidebar');
+      store.commit('setCloseAlert');
+    });
 
     return {
+      // State
       ...toRefs(state),
+      // Computed
+      alertUserName,
+      alertDeptName,
+      alertTime,
+      alertMessage,
+      // Methods
       close,
     };
   },
@@ -180,15 +205,15 @@ export default {
  */
 .sidebar-enter-from,
 .sidebar-leave-to,
-.push-enter-from,
-.push-leave-to {
+.alert-enter-from,
+.alert-leave-to {
   opacity: 0;
 }
 
 .sidebar-enter-active,
 .sidebar-leave-active,
-.push-enter-active,
-.push-leave-active {
+.alert-enter-active,
+.alert-leave-active {
   transition: all 0.3s ease-out;
 }
 
@@ -197,8 +222,8 @@ export default {
   transform: translateX(90px);
 }
 
-.push-enter-from,
-.push-leave-to {
+.alert-enter-from,
+.alert-leave-to {
   transform: translateY(30px);
 }
 </style>
