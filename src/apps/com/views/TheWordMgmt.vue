@@ -289,128 +289,12 @@
 </template>
 
 <script>
-//import OwFlexGridCheckColumn from '../components/wijmo/grid/OwFlexGridCheckColumn.vue';
+import OwFlexGridCheckColumn from '../components/wijmo/grid/OwFlexGridCheckColumn.vue';
 
 export default {
-<<<<<<< HEAD
     name: 'Menu1_1',
     components: {
         OwFlexGridCheckColumn,
-=======
-  name: 'Menu1_1',
-  components: {
-    //  OwFlexGridCheckColumn,
-  },
-
-  data: function () {
-    return {
-      result: [
-        {
-          1: '소득발생',
-          2: 'ICOC',
-          3: 'Income Occurrence',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-10 11:17',
-        },
-        {
-          1: '수령인',
-          2: 'RECV',
-          3: 'Receiver',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-09 09:10',
-        },
-        {
-          1: '일일이제',
-          2: 'DATF',
-          3: 'Daily Transfer To Account',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-01 12:17',
-        },
-        {
-          1: '가전제품',
-          2: 'HMAP',
-          3: 'Home Applications',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-05 13:20',
-        },
-        {
-          1: '직원',
-          2: 'EMPL',
-          3: 'Employee',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-10 11:17',
-        },
-      ],
-      result2: [{ 1: '소득발총', 2: '이강훈', 3: '2021-10-18 09:31' }],
-      result_popup: [
-        {
-          checkboxColumn: '',
-          1: 'CUSTOMER',
-          2: '고객',
-          3: 'CUST',
-          4: '이강훈',
-          5: '2020-12-31 10:00',
-        },
-        {
-          checkboxColumn: '',
-          1: 'EMAIL',
-          2: '이메일',
-          3: 'EML',
-          4: '이강훈',
-          5: '2020-12-31 10:00',
-        },
-      ],
-      result_popup2: [
-        {
-          1: '소득발생',
-          2: 'ICOC',
-          3: 'Income Occurrence',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-10 11:17',
-        },
-        {
-          1: '수령인',
-          2: 'RECV',
-          3: 'Receiver',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-09 09:10',
-        },
-        {
-          1: '일일이제',
-          2: 'DATF',
-          3: 'Daily Transfer To Account',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-01 12:17',
-        },
-        {
-          1: '가전제품',
-          2: 'HMAP',
-          3: 'Home Applications',
-          4: '수식어',
-          5: '이강훈',
-          6: '2021-12-05 13:20',
-        },
-      ],
-      checkedValues: [],
-    };
-  },
-  computed: {
-    isAllChecked() {
-      return this.checkedValues.length === this.result_popup2.length;
-    },
-  },
-  methods: {
-    initForm(popup) {
-      this[popup.hostElement.id] = popup;
->>>>>>> 270aaf825ed6be4bf5289db129166f90241868aa
     },
 
     data: function () {
