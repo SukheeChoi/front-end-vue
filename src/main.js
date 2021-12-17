@@ -15,6 +15,9 @@ import { registerGridGrouppanel } from '@grapecity/wijmo.vue2.grid.grouppanel';
 import { registerNav } from '@grapecity/wijmo.vue2.nav';
 
 import mixin from '@/mixins';
+import { setLicenseKey } from '@grapecity/wijmo';
+
+setLicenseKey(process.env.VUE_APP_WIJMO_LICENSE_KEY);
 
 const app = createApp(App);
 
