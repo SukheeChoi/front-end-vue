@@ -12,9 +12,10 @@
 </template>
 <script>
 import { WjFlexGridColumn } from '@grapecity/wijmo.vue2.grid';
+import { nextTick } from 'vue';
 
 export default {
-    name: 'OwFlexGridCheckColumn',
+    name: 'OwCheckColumn',
     extends: WjFlexGridColumn,
     computed: {
         isAllChecked() {
@@ -28,10 +29,6 @@ export default {
         };
     },
     methods: {
-        setMaxLength(data) {
-            this.cellMaxLength = data.length;
-            console.log('최대 길이는 ?? ', this.cellMaxLength);
-        },
         allCheck(data, event) {
             let checkCol = document.getElementsByName('checkCol');
             let isChecked = event.target.checked;
@@ -41,7 +38,6 @@ export default {
             if (isChecked) {
                 this.checkedValues.push(...data);
             }
-            console.log(this.checkedValues);
             this.$emit('checkedData', this.checkedValues);
         },
         clickFunc(data, event) {
@@ -52,9 +48,15 @@ export default {
                 const index = this.checkedValues.indexOf(data);
                 this.checkedValues.splice(index, 1);
             }
-            console.log(this.checkedValues);
             this.$emit('checkedData', this.checkedValues);
         },
+    },
+    mounted() {
+        // this.cellMaxLength = document.getElementsByName('checkCol').length;
+        //nextTick().then(() => {});
+        console.log(this.$refs);
+        console.log('최대 길이는 ?? ', this.cellMaxLength);
+        debugger;
     },
 };
 </script>

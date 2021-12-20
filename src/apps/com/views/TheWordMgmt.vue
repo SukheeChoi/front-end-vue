@@ -289,12 +289,12 @@
 </template>
 
 <script>
-import OwFlexGridCheckColumn from '../components/wijmo/grid/OwFlexGridCheckColumn.vue';
+import CheckColumn from '../components/wijmo/grid/OwCheckColumn.vue';
 
 export default {
     name: 'Menu1_1',
     components: {
-        OwFlexGridCheckColumn,
+        OwCheckColumn,
     },
 
     data: function () {
@@ -394,7 +394,7 @@ export default {
                     6: '2021-12-05 13:20',
                 },
             ],
-            getValues: '',
+            getValues: [],
         };
     },
     methods: {
@@ -402,7 +402,7 @@ export default {
             this[popup.hostElement.id] = popup;
         },
         checkedData(checkedValues) {
-            this.getValues = checkedValues;
+            this.getValues = [...checkedValues];
         },
     },
 };
