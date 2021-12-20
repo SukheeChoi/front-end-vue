@@ -6,14 +6,28 @@
         <div class="lginGroup">
           <label for="selcectCompany">회사선택</label>
           <select id="" v-model="companyType">
-            <option value="" disabled selected hidden> 회사를 선택하세요</option>
+            <option value="" disabled selected hidden>회사를 선택하세요</option>
             <option value="osstem">오스템임플란트(주)</option>
             <option value="osstemPama">오스템파마</option>
           </select>
           <label for="inputLoginId">사원번호</label>
-          <input type="text" id="inputLoginId"  v-model="loginId"  ref="userId" placeholder="사원번호" @keyup.enter="onClickLogin">    
+          <input
+            type="text"
+            id="inputLoginId"
+            v-model="loginId"
+            ref="userId"
+            placeholder="사원번호"
+            @keyup.enter="onClickLogin"
+          />
           <label for="inputPassword">비밀번호</label>
-          <input type="password" id="inputPassword" v-model="password"  ref="password" placeholder="비밀번호" @keyup.enter="onClickLogin">
+          <input
+            type="password"
+            id="inputPassword"
+            v-model="password"
+            ref="password"
+            placeholder="비밀번호"
+            @keyup.enter="onClickLogin"
+          />
 
           <label>
             <input type="checkbox" class="k-checkbox mb-05" v-model="checkSaveUserId" />
@@ -48,8 +62,10 @@
           </dl>
 
           <button @click="getToken" class="btn-login">로그인</button>
-          <p class="adressMain">로그인 관련 문의는 담당 관리자에게 문의하세요.<br>
-            담당자 연락처: 02-1234-5678 / admin@osstem.com</p>
+          <p class="adressMain">
+            로그인 관련 문의는 담당 관리자에게 문의하세요.<br />
+            담당자 연락처: 02-1234-5678 / admin@osstem.com
+          </p>
           <p class="copyright">ⓒOsstem Implant Co.,LTD. All right reserved.</p>
         </div>
       </div>
@@ -58,25 +74,26 @@
 </template>
 
 <script>
-import router from "@/routes";
+import router from '@/routes';
 import axios from 'axios';
 import login from '@/api/login.js';
-export default{
-    name: "OssLogin",
-    data(){
-        return {
-            companyType: "osstem",
-            loginId: "",
-            password: "",
-            checkSaveUserId: false,
-        }
-    },
-    methods:{
-      /*
+import restApi from '@/api/restApi.js';
+export default {
+  name: 'OssLogin',
+  data() {
+    return {
+      companyType: 'osstem',
+      loginId: '',
+      password: '',
+      checkSaveUserId: false,
+    };
+  },
+  methods: {
+    /*
       async onClickLogin(){
         let loginId = this.loginId;
         console.log(this.password);
-        axios.post("http://localhost:9080/com/login/do-login", null,{ 
+        axios.post("http://localhost:9080/com/login/do-login", null,{
             params:{
             "loginId" : this.loginId,
             "password" : this.password
@@ -97,35 +114,42 @@ export default{
             const userInfo = response.data.data;
             localStorage.setItem("userInfo", JSON.stringify(userInfo));
             this.$router.push("/");
-            
+
           })
 
         })
-        
+
       },
       */
-      async getToken(){
-        const tokenData = await login.requestLogin("/com/login/do-login", this.loginId, this.password);
-        if(tokenData.data.data !== null){
-          const accessToken = tokenData.data.data;
-          //localStorage.setItem("token", accessToken);
-          //console.log(this.$store);
-          this.$store.commit("setToken", accessToken);
-          //console.log(test);
-          return await this.getUserInfo();
-        }
-        
-      },
-      async getUserInfo(){
-        const userData = await login.getUserInfo("/com/login/user-info", this.loginId);
-        if(userData.data.dat !==null){
-          const userInfo = userData.data.data;
-          //localStorage.setItem("userInfo", JSON.stringify(userInfo));
-          this.$store.commit("setUserInfo", userInfo);
-          this.$router.push("/");
-        }
-
+    async getToken() {
+      const tokenData = await login.requestLogin('/com/login/do-login', this.loginId, this.password);
+      if (tokenData.data.data !== null) {
+        const accessToken = tokenData.data.data;
+        //localStorage.setItem("token", accessToken);
+        //console.log(this.$store);
+        this.$store.commit('setToken', accessToken);
+        //console.log(test);
+        return await this.getUserInfo();
       }
-    }
-}
+    },
+    async getUserInfo() {
+      const userData = await login.getUserInfo('/com/login/user-info', this.loginId);
+      if (userData.data.data !== null) {
+        const userInfo = userData.data.data;
+        //localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        this.$store.commit('setUserInfo', userInfo);
+        return await this.getMenus();
+        //this.$router.push("/");
+      }
+    },
+    async getMenus() {
+      const menuData = await restApi.get('/com/menu/test', this.loginId);
+      if (menuData.data !== null) {
+        const menuList = menuData.data;
+        this.$store.commit('setMenus', menuList);
+        this.$router.push('/');
+      }
+    },
+  },
+};
 </script>

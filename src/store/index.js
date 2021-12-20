@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import login from './modules/login';
-import notification from '@/store/modules/notification';
+import menu from './modules/menu';
 
 export default createStore({
   plugins: [
@@ -24,6 +24,6 @@ export default createStore({
   mutations: {},
   modules: {
     login,
-    notification,
+    menu,
   },
 });

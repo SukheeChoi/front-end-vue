@@ -48,19 +48,17 @@
       <!-- grid -->
       <div class="ow-grid">
         <wj-flex-grid
-          id="grid"
-          ref="grid"
-          :items-source="result2"
-          :allowDragging="false"
-          :allowSorting="false"
-          selection-mode="Row"
-          :initialized="gridInitialized"
-          class="mt-10"
+          :deferResizing="true"
+          :showMarquee="true"
+          :itemsSource="result3"
+          :initialized="initGrid"
+          :child-items-path="['checks', 'earnings', 'group']"
+          :isReadOnly="false"
+          :isEditable="true"
           style="min-height: 280px; max-height: 280px"
-          :isReadOnly="true"
+          class="mt-10"
         >
           <wj-flex-grid-column binding="loginId" header="부서/개인" width="*"></wj-flex-grid-column>
-
           <wj-flex-grid-column binding="userNm" header="설정유무" width="*"></wj-flex-grid-column>
           <wj-flex-grid-column binding="userNm" header="화면배치" width="*"></wj-flex-grid-column>
         </wj-flex-grid>
@@ -212,7 +210,8 @@
 </template>
 
 <script>
-import { CollectionView } from '@grapecity/wijmo';
+import { Selector } from '@grapecity/wijmo.grid.selector';
+import { CollectionView, PropertyGroupDescription } from '@grapecity/wijmo';
 
 export default {
   name: 'Sample2_1',
@@ -226,6 +225,9 @@ export default {
       maxPages: 10, // [Mandatory] Pagination 에 보여지는 숫자 개수 (Default=10 [1][2][3][4][5]..)
       grid: null,
       currentTab: 0,
+      grouped: true,
+      selectedItems: [],
+      selector: null,
       result: [
         {
           name: 'Jack Smith',
@@ -289,6 +291,33 @@ export default {
         },
       ],
       result2: [],
+      result3: new CollectionView([
+        {
+          deptnm: '오스템임플란트',
+          checks: [
+            {
+              deptnm: 'OW개발총괄본부',
+              earnings: [
+                {
+                  deptnm: 'OW공통개발실',
+                  deptid: 30.0,
+                  useYn: 'Y',
+                  group: [{ deptnm: '사용자관리 업무그룹' }],
+                },
+                { deptnm: 'OW서비스개발실', deptid: 10.0, useYn: 'Y' },
+                { deptnm: 'OW물류개발실', deptid: 5.0, useYn: 'N' },
+              ],
+            },
+            {
+              deptnm: '국내영업총괄본부',
+              earnings: [
+                { deptnm: '서울동부영업본부', deptid: 20.0, useYn: 'Y' },
+                { deptnm: '경기영업본부', deptid: 20.0, useYn: 'Y' },
+              ],
+            },
+          ],
+        },
+      ]),
     };
   },
 
@@ -303,7 +332,22 @@ export default {
     gridInitialized(grid) {
       this.grid = grid;
     },
-
+    initGrid: function (grid) {
+      this.setGroups(true);
+      this.selector = new Selector(grid, {
+        itemChecked: () => {
+          this.selectedItems = grid.rows.filter((r) => r.isSelected);
+        },
+      });
+    },
+    setGroups: function (groupsOn) {
+      let groups = this.result3.groupDescriptions;
+      groups.clear();
+      if (groupsOn) {
+        groups.push(new PropertyGroupDescription('name'), new PropertyGroupDescription('checks'));
+      }
+      this.grouped = groupsOn;
+    },
     async getList(page = 1) {
       try {
         if (page == 1) {
