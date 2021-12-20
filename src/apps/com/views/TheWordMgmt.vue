@@ -260,13 +260,13 @@
                 />
               </wj-flex-grid-cell-template>
             </wj-flex-grid-column> -->
-                        <ow-flex-grid-check-column
+                        <ow-check-column
                             :header="'checkboxColumn'"
                             :binding="'checkboxColumn'"
                             :width="50"
                             checked="false"
                             @checkedData="checkedData"
-                        ></ow-flex-grid-check-column>
+                        ></ow-check-column>
                         <wj-flex-grid-column :header="'표준단어명'" :binding="'1'" :width="150" />
                         <wj-flex-grid-column :header="'표준약어'" :binding="'2'" :width="150" />
                         <wj-flex-grid-column :header="'영문명'" :binding="'3'" width="*" />
@@ -289,7 +289,7 @@
 </template>
 
 <script>
-import CheckColumn from '../components/wijmo/grid/OwCheckColumn.vue';
+import OwCheckColumn from '../components/wijmo/grid/OwCheckColumn.vue';
 
 export default {
     name: 'Menu1_1',
