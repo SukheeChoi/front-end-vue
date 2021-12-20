@@ -6,7 +6,6 @@ const state = () => ({
   // AppAside
   sidebar: {
     open: false,
-    alerts: [],
   },
   alert: {
     open: false,
@@ -33,13 +32,6 @@ const mutations = {
   setCloseAlert(state) {
     state.alert.open = false;
   },
-  setAlert(state, alert) {
-    state.alert = {
-      open: true,
-      ...alert,
-    };
-    state.sidebar.alerts.push(alert);
-  },
 };
 
 const actions = {};
@@ -47,12 +39,6 @@ const actions = {};
 const getters = {
   getBadgeCount(state) {
     return state.badge.count;
-  },
-  isOpenSidebar(state) {
-    return state.sidebar.open;
-  },
-  isOpenAlert(state) {
-    return state.alert.open;
   },
   getAlertUserName(state) {
     return state.alert.user_name;

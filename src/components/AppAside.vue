@@ -2,7 +2,7 @@
   <aside>
     <!-- 사이드바 영역 S -->
     <transition name="sidebar">
-      <div class="ow-toast toast-slide" v-if="isOpenSidebar">
+      <div class="ow-toast toast-slide" v-if="sidebar.open">
         <div class="toast-area-top mb-15">
           <ow-button type="icon" class="arrow" @click="close">
             <i class="triangle right"></i>
@@ -98,7 +98,7 @@
     <!-- 사이드바 영역 E -->
     <!-- 푸시 알람 영역 S -->
     <transition name="alert">
-      <div class="ow-toast fixed-postion-bottom-right" v-if="isOpenAlert">
+      <div class="ow-toast fixed-postion-bottom-right" v-if="alert.open">
         <div class="toast-area" @click="check">
           <div class="toast-wrap">
             <div class="toast-top">
@@ -126,7 +126,7 @@
 </template>
 <script>
 import OwButton from '@/components/commons/OwButton';
-import { reactive, computed, toRefs, onBeforeMount, onMounted } from 'vue';
+import { reactive, toRefs, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 export default {
   name: 'AppAside',
@@ -143,15 +143,14 @@ export default {
   setup() {
     const store = useStore();
 
+    const { sidebar, alert } = store.state.notification;
+
+    const state = reactive({
+      sidebar,
+      alert,
+    });
+
     // Computed
-    const isOpenSidebar = computed(() => {
-      return store.getters.isOpenSidebar;
-    });
-
-    const isOpenAlert = computed(() => {
-      return store.getters.isOpenAlert;
-    });
-
     const alertUserName = computed(() => {
       return store.getters.getAlertUserName;
     });
@@ -176,18 +175,15 @@ export default {
     const check = () => {};
 
     // Hooks
-    onBeforeMount(() => {
+    onMounted(() => {
       store.commit('setCloseSidebar');
       store.commit('setCloseAlert');
     });
-    onMounted(() => {});
 
     return {
       // State
-
+      ...toRefs(state),
       // Computed
-      isOpenSidebar,
-      isOpenAlert,
       alertUserName,
       alertDeptName,
       alertTime,
