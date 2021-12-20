@@ -125,10 +125,13 @@
         <!-- grid -->
         <div class="ow-grid">
           <wj-flex-grid
-            headers-visibility="Column"
-            selectionMode="0"
-            :itemsSource="result"
-            :child-items-path="['checks', 'earnings']"
+            :deferResizing="true"
+            :showMarquee="true"
+            :itemsSource="result3"
+            :initialized="initGrid"
+            :child-items-path="['checks', 'earnings', 'group']"
+            :isReadOnly="false"
+            :isEditable="true"
             style="height: 500px"
             class="mt-10"
           >
@@ -150,6 +153,8 @@
 </template>
 
 <script>
+import { Selector } from '@grapecity/wijmo.grid.selector';
+import { CollectionView, PropertyGroupDescription } from '@grapecity/wijmo';
 export default {
   name: 'Sample2_1',
   components: {},
@@ -161,68 +166,36 @@ export default {
       pageSize: 100, // [Mandatory] 그리드에 보여지는 행 수 (Default=10)
       maxPages: 10, // [Mandatory] Pagination 에 보여지는 숫자 개수 (Default=10 [1][2][3][4][5]..)
       currentTab: 0,
-      result: [
+      grouped: true,
+      selectedItems: [],
+      selector: null,
+      result3: new CollectionView([
         {
-          name: 'Jack Smith',
+          deptnm: '오스템임플란트',
           checks: [
             {
-              name: 'check1',
+              deptnm: 'OW개발총괄본부',
               earnings: [
-                { name: 'hourly', hours: 30.0, rate: 15.0 },
-                { name: 'overtime', hours: 10.0, rate: 20.0 },
-                { name: 'bonus', hours: 5.0, rate: 30.0 },
+                {
+                  deptnm: 'OW공통개발실',
+                  deptid: 30.0,
+                  useYn: 'Y',
+                  group: [{ deptnm: '사용자관리 업무그룹' }],
+                },
+                { deptnm: 'OW서비스개발실', deptid: 10.0, useYn: 'Y' },
+                { deptnm: 'OW물류개발실', deptid: 5.0, useYn: 'N' },
               ],
             },
             {
-              name: 'check2',
+              deptnm: '국내영업총괄본부',
               earnings: [
-                { name: 'hourly', hours: 20.0, rate: 18.0 },
-                { name: 'overtime', hours: 20.0, rate: 24.0 },
+                { deptnm: '서울동부영업본부', deptid: 20.0, useYn: 'Y' },
+                { deptnm: '경기영업본부', deptid: 20.0, useYn: 'Y' },
               ],
             },
           ],
         },
-        {
-          name: 'Bob Smith',
-          checks: [
-            {
-              name: 'check1',
-              earnings: [
-                { name: 'hourly', hours: 30.0, rate: 15.0 },
-                { name: 'overtime', hours: 10.0, rate: 20.0 },
-                { name: 'bonus', hours: 5.0, rate: 30.0 },
-              ],
-            },
-            {
-              name: 'check2',
-              earnings: [
-                { name: 'hourly', hours: 20.0, rate: 18.0 },
-                { name: 'overtime', hours: 20.0, rate: 24.0 },
-              ],
-            },
-          ],
-        },
-        {
-          name: 'Jane Smith',
-          checks: [
-            {
-              name: 'check1',
-              earnings: [
-                { name: 'hourly', hours: 30.0, rate: 15.0 },
-                { name: 'overtime', hours: 10.0, rate: 20.0 },
-                { name: 'bonus', hours: 5.0, rate: 30.0 },
-              ],
-            },
-            {
-              name: 'check2',
-              earnings: [
-                { name: 'hourly', hours: 20.0, rate: 18.0 },
-                { name: 'overtime', hours: 20.0, rate: 24.0 },
-              ],
-            },
-          ],
-        },
-      ],
+      ]),
       result2: [],
     };
   },
@@ -240,6 +213,22 @@ export default {
           }
         }
       });
+    },
+    initGrid: function (grid) {
+      this.setGroups(true);
+      this.selector = new Selector(grid, {
+        itemChecked: () => {
+          this.selectedItems = grid.rows.filter((r) => r.isSelected);
+        },
+      });
+    },
+    setGroups: function (groupsOn) {
+      let groups = this.result3.groupDescriptions;
+      groups.clear();
+      if (groupsOn) {
+        groups.push(new PropertyGroupDescription('name'), new PropertyGroupDescription('checks'));
+      }
+      this.grouped = groupsOn;
     },
   },
 };
