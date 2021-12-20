@@ -56,7 +56,6 @@ export default {
         //nextTick().then(() => {});
         console.log(this.$refs);
         console.log('최대 길이는 ?? ', this.cellMaxLength);
-        debugger;
     },
 };
 </script>
