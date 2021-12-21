@@ -1,11 +1,11 @@
 <template>
   <!-- header -->
-  <header class="headline-wrap">
+  <!-- <header class="headline-wrap">
     <h1 class="h1">업무그룹관리</h1>
     <div>
       <button class="ow-btn type-reference">조회</button>
     </div>
-  </header>
+  </header> -->
   <!-- //header -->
   <!-- search -->
   <div class="search-zone">
@@ -44,6 +44,9 @@
           </select>
         </div>
       </div>
+      <div>
+        <button class="ow-btn type-reference">조회</button>
+      </div>
     </div>
   </div>
   <!-- //search -->
@@ -58,34 +61,109 @@
   <!-- //control button -->
 
   <div class="ow-grid mt-10">
-    <wj-flex-grid :itemsSource="result" :isReadOnly="true" selectionMode="Row" headersVisibility="Column">
-      <wj-flex-grid-column :header="'checkboxColumn'" :binding="'checkboxColumn'" :width="50" :isReadOnly="true">
-        <wj-flex-grid-cell-template cellType="ColumnHeader">
-          <input type="checkbox" v-model="highlightDownloads" />
-        </wj-flex-grid-cell-template>
-        <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
-          <input v-model="cell.row.isCollapsed" type="checkbox" checked="false" />
-        </wj-flex-grid-cell-template>
-      </wj-flex-grid-column>
+    <wj-flex-grid
+      :itemsSource="result"
+      :isReadOnly="true"
+      selectionMode="Row"
+      headersVisibility="Column"
+    >
+      <ow-check-column
+        :header="'chk'"
+        :width="50"
+        :isReadOnly="true"
+        @checkedData="checkedData"
+      >
+      </ow-check-column>
       <wj-flex-grid-column :header="'번호'" :binding="'field1'" :width="70">
         <wj-flex-grid-cell-template cellType="Cell" v-slot="cell">
           {{ cell.row.index + 1 }}
         </wj-flex-grid-cell-template>
       </wj-flex-grid-column>
-      <wj-flex-grid-column :header="'시스템구분'" :binding="'field2'" width="*" />
-      <wj-flex-grid-column :header="'업무코드'" :binding="'field3'" width="*" />
-      <wj-flex-grid-column :header="'업무그룹ID'" :binding="'field4'" width="*" />
-      <wj-flex-grid-column :header="'업무그룹명'" :binding="'field5'" width="*" />
-      <wj-flex-grid-column :header="'업무그룹 설명'" :binding="'field6'" width="*" />
+      <wj-flex-grid-column
+        :header="'시스템구분'"
+        :binding="'field1'"
+        width="*"
+      />
+      <wj-flex-grid-column :header="'업무코드'" :binding="'field2'" width="*" />
+      <wj-flex-grid-column
+        :header="'업무그룹ID'"
+        :binding="'field3'"
+        width="*"
+      />
+      <wj-flex-grid-column
+        :header="'업무그룹명'"
+        :binding="'field4'"
+        width="*"
+      />
+      <wj-flex-grid-column
+        :header="'업무그룹 설명'"
+        :binding="'field5'"
+        width="*"
+      />
       <wj-flex-grid-column :header="'사용'" :binding="'field6'" width="*" />
     </wj-flex-grid>
+    <!--pagination-->
+    <div class="ow-flex-wrap">
+      <div class="item align-x-center">
+        <b-pagination
+          class="ow-pagination"
+          first-class="go-first"
+          prev-class="go-prev"
+          next-class="go-next"
+          last-class="go-last"
+          align="center"
+          v-model="currentPage"
+          :total-rows="rows"
+          :per-page="perPage"
+          :limit="10"
+          aria-controls="my-table"
+        ></b-pagination>
+      </div>
+      <div class="item pos-right">
+        <div class="counter-board">전체 <span>999</span> 건</div>
+      </div>
+    </div>
   </div>
+
+  <!-- chang data -->
+  <!-- <div class="col-xs-6">
+    <h4>Edited Items:</h4>
+    <wj-flex-grid
+      class="changed edited"
+      :itemsSource="result.itemsEdited"
+      :isReadOnly="true"
+    >
+    </wj-flex-grid>
+
+    <h4>Added Items:</h4>
+    <wj-flex-grid
+      class="changed added"
+      :itemsSource="result.itemsAdded"
+      :isReadOnly="true"
+    >
+    </wj-flex-grid>
+
+    <h4>Removed Items:</h4>
+    <wj-flex-grid
+      class="changed removed"
+      :itemsSource="result.itemsRemoved"
+      :isReadOnly="true"
+    >
+    </wj-flex-grid>
+  </div> -->
 </template>
 
 <script>
+import { CollectionView } from '@grapecity/wijmo';
+import axios from 'axios';
+import _ from 'lodash';
+import OwCheckColumn from '../components/wijmo/grid/OwCheckColumn.vue';
+
+const columns = { field1: '', field2: '', field3: '', field4: '' };
+
 export default {
   name: 'Menu',
-  components: {},
+  components: { OwCheckColumn },
 
   data: function () {
     return {
@@ -94,100 +172,87 @@ export default {
       pageable: true,
       selectedItems: [],
       selector: null,
-      columns: [
-        { title: '번호', field: '', width: '70px', cell: 'cellNum1' },
+      useYnList: ['Y', 'N'],
+      getValues: [],
+      result: new CollectionView(
+        [
+          {
+            field1: '',
+            field2: '',
+            field3: '',
+            field4: '',
+            field5: '',
+            field6: 'Y',
+          },
+          {
+            field1: '',
+            field2: '',
+            field3: '',
+            field4: '',
+            field5: '',
+            field6: 'Y',
+          },
+          {
+            field1: '',
+            field2: '',
+            field3: '',
+            field4: '',
+            field5: '',
+            field6: 'Y',
+          },
+          {
+            field1: '',
+            field2: '',
+            field3: '',
+            field4: '',
+            field5: '',
+            field6: 'Y',
+          },
+          {
+            field1: '',
+            field2: '',
+            field3: '',
+            field4: '',
+            field5: '',
+            field6: 'Y',
+          },
+        ],
         {
-          title: '권한그룹유형',
-          field: 'field2',
-          width: '',
-          cell: 'cellNum2',
-        },
-        {
-          title: '권한그룹ID',
-          field: 'field3',
-          width: '',
-          cell: 'cellNum3',
-        },
-        {
-          title: '권한그룹명',
-          field: 'field4',
-          width: '*',
-          cell: 'cellNum4',
-        },
-        {
-          title: '권한그룹 설명',
-          field: 'field5',
-          width: '',
-          cell: 'cellNum5',
-        },
-        { title: '순서', field: 'field6', width: '', cell: 'cellNum6' },
-        { title: '', field: '', width: '', cell: 'cellNum7' },
-      ],
-      result: [
-        {
-          '': '',
-          field2: '',
-          field3: '',
-          field4: '',
-          field5: '',
-          field6: '',
-          '': '',
-        },
-        {
-          '': '',
-          field2: '',
-          field3: '',
-          field4: '',
-          field5: '',
-          field6: '',
-          '': '',
-        },
-        {
-          '': '',
-          field2: '',
-          field3: '',
-          field4: '',
-          field5: '',
-          field6: '',
-          '': '',
-        },
-        {
-          '': '',
-          field2: '',
-          field3: '',
-          field4: '',
-          field5: '',
-          field6: '',
-          '': '',
-        },
-        {
-          '': '',
-          field2: '',
-          field3: '',
-          field4: '',
-          field5: '',
-          field6: '',
-          '': '',
-        },
-        {
-          '': '',
-          field2: '',
-          field3: '',
-          field4: '',
-          field5: '',
-          field6: '',
-          '': '',
-        },
-      ],
+          trackChanges: true,
+        }
+      ),
     };
   },
-  created() {
-    // this.result = this.createRandomData(7);
-    // this.result2 = this.createRandomData(7);
-    // this.result_p1 = this.createRandomData(10);
-    // this.result_p2 = this.createRandomData(10);
-  },
+  created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    initGrid(view) {
+      this.view = view;
+    },
+    getSearch() {
+      axios
+        .get(``)
+        .then()
+        .then((result) => {
+          //callback
+          result;
+          this.result.push(result.data);
+        });
+    },
+    addRow() {
+      let addData = _.cloneDeep(columns);
+      this.result.addNew(addData);
+      this.result.commitNew();
+      // console.log('view', view.itemsSource.items[0]);
+    },
+    delRow() {
+      for (let i = 0; i < this.getValues.length; i++) {
+        this.result.remove(this.getValues[i]);
+      }
+    },
+    checkedData(checkedValues) {
+      this.getValues = [...checkedValues];
+    },
+  },
 };
 </script>
