@@ -1,5 +1,5 @@
 module.exports = {
-  printWidth: 120, // [Default: 80] Specify the line length that the printer will wrap on.
+  printWidth: 80, // [Default: 80] Specify the line length that the printer will wrap on.
   tabWidth: 2, // [Default: 2] Specify the number of spaces per indentation-level.
   useTabs: false, // [Default: false] Indent lines with tabs instead of spaces.
   semi: true, // [Default: true] Print semicolons at the ends of statements.
