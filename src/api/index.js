@@ -28,6 +28,48 @@ instance.interceptors.request.use(
 
 // 응답 인터셉터
 instance.interceptors.response.use(
+
+    (response) => {
+        return response;
+    },
+    async(error) => {
+        const {
+            config,
+            response: { status },
+        } = error;
+
+        if (status == 401) {
+            if (error.response.data.message === 'STATUS_EXPIRED') {
+                const originalRequest = config;
+                //const refreshToken = await AsyncStorage.getItem('refreshToken');
+                const { data } = await axios.post(
+                    'http://localhost:9080/com/login/modify-token',
+                    null, {
+                        params: { userId: '25052408' },
+                    }
+                );
+
+                const newAccessToken = data.data;
+                store.commit('setToken', newAccessToken);
+                //isTokenRefreshing = false;
+                axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+                // 새로운 토큰으로 지연되었던 요청 진행
+                // onTokenRefreshed(newAccessToken);
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                return axios(originalRequest);
+            }
+            const retryOriginalRequest = new Promise((resolve) => {
+                addRefreshSubscriber((newAccessToken) => {
+                    originalRequest.headers.Authorization = 'Bearer ' + newAccessToken;
+                    resolve(axios(originalRequest));
+                });
+            });
+            return retryOriginalRequest;
+        }
+        return Promise.reject(error);
+    }
+
+    /*
     function(response) {
         // 응답 데이터를 가공
         return response;
@@ -42,6 +84,7 @@ instance.interceptors.response.use(
 
         return Promise.reject(error);
     }
+    */
 );
 
 export default instance;
