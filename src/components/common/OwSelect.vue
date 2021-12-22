@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 
 import _ from 'lodash';
 
@@ -30,11 +30,6 @@ export default {
       set: (value) =>
         emit('update:modelValue', _.isNumber(value) ? +value : value),
     });
-
-    onMounted(() => {
-      // update(props.modelValue);
-    });
-
     return {
       value,
     };
