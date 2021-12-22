@@ -29,8 +29,8 @@ import AppArticle from '@/components/AppArticle';
 import AppFooter from '@/components/AppFooter';
 import AppAside from '@/components/AppAside';
 
-import TheActionPlan from '@/apps/tsk/components/TheActionPlan';
-import TheApproval from '@/apps/eap/components/TheApproval';
+import TheActionPlan from '@@/tsk/components/TheActionPlan';
+import TheApproval from '@@/eap/components/TheApproval';
 import { onMounted, ref, toRefs } from 'vue';
 
 export default {

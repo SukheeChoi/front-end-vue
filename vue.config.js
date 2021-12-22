@@ -10,8 +10,8 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        '@': path.join(__dirname, 'src/'),
-        '@@': path.join(__dirname, 'src/app/'),
+        '@': path.resolve(__dirname, 'src/'),
+        '@@': path.resolve(__dirname, 'src/app/'),
       },
     },
     devtool: 'source-map',
