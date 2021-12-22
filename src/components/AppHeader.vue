@@ -3,6 +3,7 @@
     <div class="info-area">
       <h1 class="logo">OW OSSTEM</h1>
 
+      <!-- TODO Breadcrumb, 위치기반, e.g. 본부명 > 메뉴 1 > 메뉴 2 -->
       <ul class="location">
         <li><span>국내영업총괄본부(본부장)</span></li>
         <li><span>고객요청</span></li>
@@ -21,7 +22,9 @@
             <a href="javascript:void(0);">{{ userInfo.orgNm }}</a>
           </li>
           <li>
-            <a href="javascript:void(0);">{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a>
+            <a href="javascript:void(0);"
+              >{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a
+            >
           </li>
         </ul>
 

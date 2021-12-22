@@ -4,11 +4,11 @@
     <transition name="sidebar">
       <div class="ow-toast toast-slide" v-if="sidebar.open">
         <div class="toast-area-top mb-15">
-          <ow-button type="icon" class="arrow" @click="close">
+          <button class="ow-btn type-icon arrow" @click="close">
             <i class="triangle right"></i>
             <i class="triangle right"></i>
             <span class="sr-only">닫기</span>
-          </ow-button>
+          </button>
         </div>
         <div class="toast-top-option mb-20">
           <select class="ow-select dark">
@@ -36,10 +36,10 @@
                       <span>10-22 11:50</span>
                     </li>
                   </ul>
-                  <ow-button type="icon" class="cross">
+                  <button class="ow-btn type-icon cross" @click="close">
                     <i class="cross"></i>
                     <div class="sr-only">닫기</div>
-                  </ow-button>
+                  </button>
                 </div>
                 <div class="toast-contents">
                   <p class="text-para">AA 제품 피킹 완료 - 주문서 내역을 확인후 빠른 처리</p>
@@ -125,14 +125,11 @@
   </aside>
 </template>
 <script>
-import OwButton from '@/components/commons/OwButton';
 import { reactive, toRefs, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 export default {
   name: 'AppAside',
-  components: {
-    OwButton,
-  },
+  components: {},
   /**
    * context.attrs
    * context.slots
@@ -172,7 +169,7 @@ export default {
       store.commit('setCloseSidebar');
     };
 
-    const check = () => {};
+    // const check = () => {};
 
     // Hooks
     onMounted(() => {

@@ -75,9 +75,6 @@ export default {
       aside,
     };
   },
-  mounted() {
-    console.log(this.testProps);
-  },
 };
 </script>
 <style lang="scss" scoped></style>
