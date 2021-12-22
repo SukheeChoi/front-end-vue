@@ -41,7 +41,7 @@ $size-chk: 16px;
     margin-left: 10px;
   }
   label {
-    padding-left: $size-chk;
+    padding-left: calc($size-chk + 4px);
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -50,6 +50,7 @@ $size-chk: 16px;
     color: #333;
     letter-spacing: -1px;
     cursor: pointer;
+    white-space: nowrap;
     &:before {
       position: absolute;
       content: "";
@@ -59,6 +60,7 @@ $size-chk: 16px;
       flex: 0 0 auto;
       width: $size-chk;
       height: $size-chk;
+      margin-right: 4px;
       border: 1px solid $clr-checkbox-default;
       border-radius: 2px;
       background-color: #fff;
@@ -177,5 +179,26 @@ $size-chk: 16px;
     &:checked + span {
       background: url(~@/assets/images/icon/icon-check-custom-active.png) no-repeat 0 0 ;
     }
+  }
+}
+
+// toggle slide
+.form-check {
+  display: block;
+  min-height: 1.125rem;
+  padding-left: 2em;
+  margin-bottom: 0.125rem;
+}
+
+.form-switch {
+  padding-left: 2.8em;
+}
+
+.form-switch {
+  .form-check-input {
+    width: 2.3em;
+    height: 1.5em;
+    margin-left: -2.8em;
+    border-radius: 2.3em;
   }
 }

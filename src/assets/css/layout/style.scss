@@ -1,0 +1,77 @@
+$clrs-achromatic: getColors("achromatic");
+$clrs-base: getColors("base");
+$clrs-accent: getColors("accent");
+
+// 주문현황
+.state {
+  display: flex;
+  flex-direction: row ;
+  &-item {
+    display: flex;
+    align-items: center ;
+    font-size: 12px ;
+    color: nth($clrs-achromatic, 2);
+    letter-spacing: -.5px ;
+    line-height:19px; 
+    strong {
+      display: inline-flex;
+      margin-left: 2px ;
+      font-weight: 700 ;
+      &.color-type-1 { color : #e76617; }
+      &.color-type-2 { color : #6d39ef; }
+    }
+    &:not(:first-child):before {
+      content :"" ; 
+      display: inline-flex;
+      width: 1px; height: 12px; 
+      background-color: #c9c9c9;
+      margin: 0 10px ; 
+    }
+  }
+}
+
+.state-board {
+  display: flex;
+  width: 100% ; height:40px ; 
+  align-items: center ;
+  div {
+    position: relative;
+    flex : 1 ; 
+    text-align: center ;
+    color: nth($clrs-achromatic, 2);
+    font-size:12px ; 
+    &:not(:last-child):after { 
+      content :"" ; 
+      display: inline-flex;
+      position: absolute;
+      right : 0 ; top: 50%;  transform : translateY( -50% ) ; 
+      width: 1px; height:12px ;
+      background-color: #c9c9c9;
+     }
+    strong {
+      display: inline-flex;
+      margin-left: 2px ;
+      color: nth($clrs-accent, 1);
+    }
+  }
+}
+
+.chart-bottom-name{
+  position: relative;
+  height: 34px ;
+  align-items: center ;
+  justify-content: center ;
+  font-size:12px; font-weight: 700 ;
+  color: nth($clrs-achromatic, 2);
+  &:after {
+    content: "" ; 
+    display: inline-flex; 
+    position: absolute;
+    right:0; top:7px; bottom:7px; 
+    width: 1px ;
+    background-color: #d7dce3;
+  }
+  &.line-none:after {
+    content : none ; 
+  }
+}

@@ -1,17 +1,10 @@
-/* color-admin */
-
-// @import "./default/styles";
-
 /* bootstrap */
-
-@import "node_modules/bootstrap/scss/bootstrap";
+@import "~bootstrap/scss/bootstrap";
 
 /* fontawesome */
-
 @import 'https://use.fontawesome.com/releases/v5.15.0/css/all.css';
 
 /* ow common */
-
 @import "./common/_fonts";
 @import "./common/_root";
 @import "./common/_grid";
@@ -21,10 +14,9 @@
 @import "./common/_reset";
 @import "./common/_common";
 @import "./common/_single_class";
-@import "./common/ow-login.scss";
 
 /* ow components */
-
+@import "./components/header";
 @import "./components/sidebar";
 @import "./components/button";
 @import "./components/tab";
@@ -49,9 +41,11 @@
 @import "./components/scroll";
 @import "./components/toast";
 @import "./components/shuttle";
-@import "./components/layout";
+@import "./components/step";
+@import "./components/panel";
+@import "./components/card";
 
-/* ow style */
+@import "./layout/layout";  // flex, grid 레이아웃
+@import "./layout/style";   // 페이지 개별 스타일
 
-@import "./layout/layout";
-// @import "./layout/admin";
+@import "./layout/layout-guide";

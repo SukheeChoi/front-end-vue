@@ -1,0 +1,37 @@
+.ow-panel {
+  display: flex;
+  width: 100% ;
+  flex: 1 1 var(--size-panel, 0);
+  height: var(--height, 100%);
+  min-height: 0;
+  flex-direction: column;
+
+  .ow-panel-header {
+    display: flex;
+    height: 26px;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 0 12px;
+    background-color: #284077;
+    border-radius: 4px 4px 0 0;
+    color: #fff;
+    font-size: 13px;
+    .ow-panel-side {
+      margin-left: auto;
+    }
+  }
+  .ow-panel-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    // height: var(--height, 100%);
+    border: 2px solid #6980af;
+    border-top: 0;
+    background-color: #fff;
+    padding: var(--padding-panel, 10px 8px 20px);
+    &.scroll{
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
+}
