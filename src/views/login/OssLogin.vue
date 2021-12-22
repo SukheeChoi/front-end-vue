@@ -89,38 +89,6 @@ export default {
     };
   },
   methods: {
-    /*
-      async onClickLogin(){
-        let loginId = this.loginId;
-        console.log(this.password);
-        axios.post("http://localhost:9080/com/login/do-login", null,{
-            params:{
-            "loginId" : this.loginId,
-            "password" : this.password
-            }
-          }
-        )
-        .then((response) =>{
-          const token = response.data.data;
-          localStorage.setItem("token", token);
-          axios.defaults.headers.common['Authorization'] = `Bearer `+localStorage.getItem("token");
-          axios.post("http://localhost:9080/com/login/user-info", null, {
-            params:{
-              "userId" : loginId
-            }
-          })
-          .then((response) =>{
-            console.log(response);
-            const userInfo = response.data.data;
-            localStorage.setItem("userInfo", JSON.stringify(userInfo));
-            this.$router.push("/");
-
-          })
-
-        })
-
-      },
-      */
     async getToken() {
       const tokenData = await login.requestLogin('/com/login/do-login', this.loginId, this.password);
       if (tokenData.data.data !== null) {
