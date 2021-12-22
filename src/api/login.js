@@ -15,6 +15,11 @@ class Login {
         return restApi.get(url);
     }
 
+    requestModifyToken(url, id) {
+        const params = { "userId": id };
+        return restApi.approve(url, params);
+    }
+
 
 }
 export default new Login();
