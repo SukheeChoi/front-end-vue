@@ -5,7 +5,7 @@
   </ow-panel>
 </template>
 <script>
-import OwPanel from '@/components/commons/OwPanel';
+import OwPanel from '@/components/common/OwPanel';
 
 export default {
   name: 'Dummy2',

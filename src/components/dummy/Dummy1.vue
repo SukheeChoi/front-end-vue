@@ -10,7 +10,7 @@
   </ow-panel>
 </template>
 <script>
-import OwPanel from '@/components/commons/OwPanel';
+import OwPanel from '@/components/common/OwPanel';
 
 import OwCheckColumn from '@@/com/components/wijmo/grid/OwCheckColumn';
 

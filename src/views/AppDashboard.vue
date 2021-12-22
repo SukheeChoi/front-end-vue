@@ -19,7 +19,7 @@
 <script>
 import { reactive, ref } from 'vue';
 
-import OwPanel from '@/components/commons/OwPanel';
+import OwPanel from '@/components/common/OwPanel';
 
 export default {
   name: 'AppDashboard',
