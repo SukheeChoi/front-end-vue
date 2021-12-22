@@ -1,23 +1,32 @@
 <template>
   <div class="ow-select">
-    <select @input="input">
-      <option v-if="all" value="">전체</option>
-      <option v-for="{ value, name } in options" :key="value" :value="value">
+    <select :value="modelValue" @input="input">
+      <!-- prepend -->
+      <option v-for="{ value, name } in prepend" :key="value" :value="value">
+        {{ name }}
+      </option>
+      <!-- append -->
+      <option v-for="{ value, name } in append" :key="value" :value="value">
         {{ name }}
       </option>
     </select>
   </div>
 </template>
 <script>
-import { reactive, onMounted } from 'vue';
+import { onMounted } from 'vue';
+
+import _ from 'lodash';
+
 export default {
   name: 'OwSelect',
   props: {
-    all: {
-      type: Boolean,
-      default: true,
+    prepend: {
+      type: Array,
+      default: () => {
+        return [];
+      },
     },
-    options: {
+    append: {
       type: Array,
       default: () => {
         return [];
@@ -26,16 +35,16 @@ export default {
     modelValue: [String, Number],
   },
   setup(props, { emit }) {
-    const { all, options } = reactive(props);
+    const update = (value) => {
+      emit('update:modelValue', _.isNumber(props.modelValue) ? +value : value);
+    };
 
     const input = ({ target }) => {
-      emit('update:modelValue', target.value);
+      update(target.value);
     };
 
     onMounted(() => {
-      if (!all) {
-        emit('update:modelValue', options[0].value);
-      }
+      update(props.modelValue);
     });
 
     return {
