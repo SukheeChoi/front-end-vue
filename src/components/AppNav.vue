@@ -195,7 +195,7 @@ const tabs = [
     ],
   },
 ];
-import menu from '@/apps/com/store/menu'; // 작업 예정자 : kst
+//import menu from '@/apps/com/store/menu'; // 작업 예정자 : kst
 import store from '@/store';
 export default {
   name: 'AppNav',
