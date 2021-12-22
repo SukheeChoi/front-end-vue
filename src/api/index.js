@@ -58,13 +58,6 @@ instance.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return axios(originalRequest);
             }
-            const retryOriginalRequest = new Promise((resolve) => {
-                addRefreshSubscriber((newAccessToken) => {
-                    originalRequest.headers.Authorization = 'Bearer ' + newAccessToken;
-                    resolve(axios(originalRequest));
-                });
-            });
-            return retryOriginalRequest;
         }
         return Promise.reject(error);
     }
