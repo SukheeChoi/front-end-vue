@@ -67,10 +67,6 @@ $clrs-base: getColors("base");
 
 // Bootstrap Spin Button
 .b-form-spinbutton {
-  text-align: center;
-  overflow: hidden;
-  background-image: none;
-  padding: 0;
   &.ow-spin-type-02 {
     position: relative;
     display: inline-flex;

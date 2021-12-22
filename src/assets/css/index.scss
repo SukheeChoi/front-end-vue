@@ -1,5 +1,8 @@
+/* color-admin */
+// @import "./default/styles";
+
 /* bootstrap */
-@import "~bootstrap/scss/bootstrap";
+@import "node_modules/bootstrap/scss/bootstrap";
 
 /* fontawesome */
 @import 'https://use.fontawesome.com/releases/v5.15.0/css/all.css';
@@ -16,7 +19,6 @@
 @import "./common/_single_class";
 
 /* ow components */
-@import "./components/header";
 @import "./components/sidebar";
 @import "./components/button";
 @import "./components/tab";
@@ -41,11 +43,8 @@
 @import "./components/scroll";
 @import "./components/toast";
 @import "./components/shuttle";
-@import "./components/step";
-@import "./components/panel";
-@import "./components/card";
+@import "./components/layout";
 
-@import "./layout/layout";  // flex, grid 레이아웃
-@import "./layout/style";   // 페이지 개별 스타일
-
-@import "./layout/layout-guide";
+/* ow style */
+@import "./layout/layout";
+// @import "./layout/admin";
