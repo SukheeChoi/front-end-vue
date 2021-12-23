@@ -77,7 +77,6 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
-<style lang="sass">
-@import '@/assets/ow-admin.scss'
+<style lang="scss">
+@import '@/assets/ow-admin.scss';
 </style>
