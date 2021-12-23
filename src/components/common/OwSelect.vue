@@ -1,6 +1,6 @@
 <template>
   <div class="ow-select">
-    <select :value="value">
+    <select v-model="value">
       <slot></slot>
       <option v-for="{ value, name } in items" :key="value" :value="value">
         {{ name }}
@@ -25,11 +25,13 @@ export default {
     modelValue: [String, Number],
   },
   setup(props, { emit }) {
+    const isNumber = _.isNumber(value);
+
     const value = computed({
       get: () => props.modelValue,
-      set: (value) =>
-        emit('update:modelValue', _.isNumber(value) ? +value : value),
+      set: (value) => emit('update:modelValue', isNumber ? +value : value),
     });
+
     return {
       value,
     };
