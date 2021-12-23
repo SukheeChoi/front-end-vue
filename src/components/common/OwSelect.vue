@@ -1,8 +1,8 @@
 <template>
   <div class="ow-select">
-    <select v-model="value">
+    <select v-model="selectedValue">
       <slot></slot>
-      <option v-for="{ value, name } in items" :key="value" :value="value">
+      <option v-for="{ name, value } in items" :key="value" :value="value">
         {{ name }}
       </option>
     </select>
@@ -10,8 +10,6 @@
 </template>
 <script>
 import { computed } from 'vue';
-
-import _ from 'lodash';
 
 export default {
   name: 'OwSelect',
@@ -25,15 +23,21 @@ export default {
     modelValue: [String, Number],
   },
   setup(props, { emit }) {
-    const isNumber = _.isNumber(value);
+    const isNumber = computed(() => {
+      return (
+        props.modelValue instanceof Number ||
+        typeof props.modelValue === 'number'
+      );
+    });
 
-    const value = computed({
+    const selectedValue = computed({
       get: () => props.modelValue,
-      set: (value) => emit('update:modelValue', isNumber ? +value : value),
+      set: (value) =>
+        emit('update:modelValue', isNumber.value ? +value : value),
     });
 
     return {
-      value,
+      selectedValue,
     };
   },
 };
