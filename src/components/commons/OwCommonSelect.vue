@@ -4,7 +4,7 @@
 <script>
 import { reactive, onMounted } from 'vue';
 
-import OwSelect from '@/components/commons/OwSelect';
+import OwSelect from '@/components/common/OwSelect';
 
 export default {
   name: 'OwCommonSelect',
