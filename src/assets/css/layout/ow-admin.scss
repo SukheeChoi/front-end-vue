@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import "css/common/common_unit";
+// @import "./common/common_unit";
 
 /**
  * @author UI team
@@ -10,6 +10,75 @@
     --input-w-100: 100px;
     --input-w-150: 150px;
     --input-w-200: 200px;
+}
+
+// layout
+.d-flex {
+    @include d-flex(normal, normal);
+}
+
+.flex-align-center {
+    @include flex-(align-items, center);
+}
+
+.flex-justify-center {
+    @include flex-(justify-content, center);
+}
+
+.flex-direction-column {
+    @include flex-(flex-direction, column);
+}
+
+// margin auto
+.ml-auto {
+    margin-left: auto !important;
+}
+
+.mr-auto {
+    margin-right: auto !important;
+}
+
+// align
+.ta-l {
+    text-align: left !important;
+}
+
+.ta-c {
+    text-align: center !important;
+}
+
+.ta-r {
+    text-align: right !important;
+}
+
+// main left
+.col {
+    $fix: 'fix';
+
+    &[class*=#{$fix}] {
+        flex: 0 0 auto;
+    }
+
+    &.#{$fix}-left {
+        width: 446px;
+    }
+}
+
+[class^=container] {
+    .ow-panel {
+        height: auto;
+    }
+}
+
+// admin/mainLayout.vue 예제 헤더구조
+.tabs + .tabs {
+    padding-top: calc(var(--bs-gutter) - $border-width);
+    background-color: nth($clrs-achromatic, 9);
+    border-top: $border-width solid nth($color-border, 3);
+}
+
+.wrap .content .content_body {
+    background-color: white
 }
 
 .flex-container {
@@ -194,7 +263,7 @@ fieldset {
     width: 260px;
     height: 266px;
     margin: 60px 60px 0;
-    background: url('~@/assets/images/img-profile.jpg') no-repeat;
+    background: url('~@/assets/images/admin/img-profile.jpg') no-repeat;
     background-size: 100%;
     border: 2px solid #999;
 }
@@ -228,7 +297,7 @@ table {
     margin: 0 auto;
     width: calc(100vw - 20px);
     height: calc(100vh - 89px);
-    background: url("~@/assets/images/img-login-bg.jpg") 0 0 no-repeat;
+    background: url("~@/assets/images/admin/img-login-bg.jpg") 0 0 no-repeat;
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -293,13 +362,13 @@ table {
         &.mark {
             width: 25px;
             height: 25px;
-            background: url('~@/assets/images/img-importance.png') no-repeat -25px 0;
+            background: url('~@/assets/images/admin/img-importance.png') no-repeat -25px 0;
             background-size: 45px;
 
             &.on {
                 width: 25px;
                 height: 25px;
-                background: url('~@/assets/images/img-importance.png') no-repeat 0 0;
+                background: url('~@/assets/images/admin/img-importance.png') no-repeat 0 0;
                 background-size: 45px;
             }
         }
@@ -340,7 +409,7 @@ table {
     .ico {
         width: 17px;
         height: 17px;
-        background: url('~@/assets/images/btn-searchbar-search-hs.png') no-repeat center;
+        background: url('~@/assets/images/admin/btn-searchbar-search-hs.png') no-repeat center;
     }
 }
 
@@ -384,13 +453,13 @@ textarea {
         &.ico-arr-left {
             width: 42px;
             height: 42px;
-            background: transparent url('~@/assets/images/ico-arr.png') no-repeat 0 0;
+            background: transparent url('~@/assets/images/admin/ico-arr.png') no-repeat 0 0;
         }
 
         &.ico-arr-right {
             width: 42px;
             height: 42px;
-            background: transparent url('~@/assets/images/ico-arr.png') no-repeat -43px 0;
+            background: transparent url('~@/assets/images/admin/ico-arr.png') no-repeat -43px 0;
         }
     }
 }
@@ -423,4 +492,58 @@ textarea {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.08);
     z-index: 9999;
+}
+
+// li style
+.summary-list {
+    display: flex;
+
+    li {
+        @include d-flex(center, center);
+        position: relative;
+        flex: 1;
+        line-height: 1;
+
+        &::after {
+            position: absolute;
+            content: "";
+            top: 50%;
+            right: 0;
+            width: 1px;
+            height: 12px;
+            background-color: #c9c9c9;
+            transform: translateY(-50%);
+        }
+
+        &:last-child::after {
+            display: none;
+        }
+
+        span {
+            &.head {
+                font-weight: bold;
+            }
+
+            &.point {
+                color: nth($clrs-accent, 1);
+            }
+
+            +.point {
+                margin-left: 2px;
+            }
+        }
+    }
+
+    &.xs {
+        justify-content: inherit;
+
+        li {
+            flex: inherit;
+
+            &:not(:last-child) {
+                padding-right: calc(var(--bs-gutter) * 2);
+                margin-right: calc(var(--bs-gutter) * 2);
+            }
+        }
+    }
 }

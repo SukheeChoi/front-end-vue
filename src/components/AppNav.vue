@@ -1,9 +1,9 @@
 <template>
   <nav class="content_tab nav-tabs-row">
-    <b-tabs nav-wrapper-class="nav-tabs-wrap" v-model="tabIndex">
+    <b-tabs nav-wrapper-class="ow-tabs" v-model="tabIndex">
       <b-tab v-for="tab in tabs" :key="tab.name" :title="tab.title" @click="to(tab)" />
     </b-tabs>
-    <b-tabs id="sub-btn-wrap" class="nav-tabs-wrap" v-model="subTabIndex" v-if="this.currentTab">
+    <b-tabs id="sub-btn-wrap" class="ow-tabs" v-model="subTabIndex" v-if="this.currentTab">
       <b-tab v-for="child in currentTab.children" :key="child.name" :title="child.title" @click="to(child)" />
     </b-tabs>
   </nav>

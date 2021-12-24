@@ -6,7 +6,7 @@
             <!-- content -->
             <div class="content">
                 <div class="content_tab">
-                    <b-tabs nav-wrapper-class="nav-tabs-wrap" v-model="tabIdx">
+                    <b-tabs nav-wrapper-class="ow-tabs" v-model="tabIdx">
                         <b-tab
                             v-for="{ tab, title } in tabs"
                             :key="tab"
@@ -26,7 +26,7 @@
 
                 <div class="content_tab" v-if="tabIdx === 0">
                     <b-tabs
-                        nav-wrapper-class="nav-tabs-wrap"
+                        nav-wrapper-class="ow-tabs"
                         v-model="subTabIdx"
                     >
                         <b-tab
@@ -45,7 +45,7 @@
 
                 <div class="content_tab" v-if="tabIdx === 1">
                     <b-tabs
-                        nav-wrapper-class="nav-tabs-wrap"
+                        nav-wrapper-class="ow-tabs"
                         v-model="subTabIdx"
                     >
                         <b-tab
@@ -64,7 +64,7 @@
 
                 <div class="content_tab" v-if="tabIdx === 2">
                     <b-tabs
-                        nav-wrapper-class="nav-tabs-wrap"
+                        nav-wrapper-class="ow-tabs"
                         v-model="subTabIdx"
                     >
                         <b-tab
@@ -82,7 +82,7 @@
                 </div>
                 <div class="content_tab" v-if="tabIdx === 3">
                     <b-tabs
-                        nav-wrapper-class="nav-tabs-wrap"
+                        nav-wrapper-class="ow-tabs"
                         v-model="subTabIdx"
                     >
                         <b-tab
@@ -101,7 +101,7 @@
 
                 <div class="content_tab" v-if="tabIdx === 4">
                     <b-tabs
-                        nav-wrapper-class="nav-tabs-wrap"
+                        nav-wrapper-class="ow-tabs"
                         v-model="subTabIdx"
                     >
                         <b-tab
@@ -133,7 +133,7 @@
             <!-- content -->
             <!-- <div class="content">
         <div class="content_tab">
-            <b-tabs nav-wrapper-class="nav-tabs-wrap" v-model="tabIdx">
+            <b-tabs nav-wrapper-class="ow-tabs" v-model="tabIdx">
                 <b-tab
                     v-for="tab in tabs"
                     :key="tab"
@@ -147,7 +147,7 @@
                 </b-tab>
             </b-tabs>
             <template v-if="showSubTab">
-              <div id="sub-btn-wrap" class="nav-tabs-wrap"></div>
+              <div id="sub-btn-wrap" class="ow-tabs"></div>
             </template>
         </div>
         <div class="content_body" ref="content_body">
