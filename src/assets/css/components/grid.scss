@@ -2,17 +2,17 @@ $grid-name: ".ow-grid";
 
 $clrs-achromatic: getColors("achromatic");
 $clrs-base: getColors("base");
+$clrs-border: getColors("border");
 
 // 그리드 레이아웃 기본 박스 클래스
 // 위즈모 그리드 추가시 아래 클래스로 된 div 영역안에 넣어야합니다.
 #{$grid-name}-wrap {
+  width: 100% ;
   display: flex;
   flex: 1 1 0;
   overflow: hidden;
   // 부모 영역 만큼 스크롤 추가하기 위한 클래스
-  &.size-full {
-    height: 100%;
-  }
+  &.size-full { height: 100%; }
 
   // 그리드영역 그림자 추가
   &.type-shadow{
@@ -25,55 +25,100 @@ $clrs-base: getColors("base");
 // 기본 그리드 스타일 클래스
 // 위즈모 그리드 태그에 추가합니다.
 #{$grid-name} {
+
+  // 변수 리스트
+  $cell-height : 35px ; 
+
   position: relative;
-  border-radius: 0 !important;
-  height: var(--height, auto) !important;
 
-  // header cell
-  .wj-colheaders {
-    .wj-cell {
-      border-bottom: 3px solid #e2e6ec !important ;
-      &.wj-header {
-        color: nth($clrs-achromatic, 2);
-        background-color: #fff;
-        border-right: 0;
+  // wrap
+  &.wj-content{
+    border-radius: 0 ;
+    border: 1px solid nth($clrs-border, 1);
+  }
 
-        &:before {
-          content: "";
-          position: absolute;
-          top: 50%;
-          right: 0;
-          transform: translateY(-50%);
-          display: block;
-          width: 1px;
-          height: 20px;
-          background-color: #d7dce3;
-        }
-        &:last-child {
-          border-right: 0;
-          &:before {
-            display: none;
+  &.type-header-group{
+    .wj-colheaders {
+      .wj-cell {
+        border-bottom-width:1px !important ; 
+        &.wj-header {
+          &:after {
+            top:0 ; bottom : 0 ; 
           }
         }
       }
-    }
+      .wj-row {
+        &:last-child {
+          .wj-cell.wj-header.border-right-sm{
+            &:after {
+              top:7px; bottom:7px; 
+            }
+          }
+        }
+      } // end of wj-row
+    } // end of wj-colheaders
   }
-  .wj-topleft {
-    .wj-row {
-      .wj-cell {
-        border-bottom: 3px solid #e2e6ec !important ;
+
+  // headers & footer shadow
+  [wj-part=bl], [wj-part=cf], [wj-part=ch], [wj-part=tl] {
+    @include box-shadow(0,2px,4px,0.12);
+    position: relative;
+    z-index: 1;
+    @at-root #{$grid-name} {
+      [wj-part=bl],
+      [wj-part=cf] {
+        @include box-shadow(0,-2px,4px,0.12);
+      }
+    }
+    
+    @at-root #{$grid-name} {
+      // headers & footer index
+      [wj-part=cf],
+      [wj-part=ch] {
+        z-index: 4 !important;
       }
     }
   }
-
-  // 전체 셀
+  
+  // 전체 셀 스타일(공통)
   .wj-cell {
-    display: inline-flex;
-    align-items: center ;
-    padding: 0px 20px;
-    height:35px ;
-    border-color: #d7dce3;
+    // display: inline-flex;
+    // align-items: center ;
+    
+    padding: 0px 8px;
+    height:$cell-height ;
+    line-height:$cell-height ;
+    border-color: nth($clrs-border, 1);
     color: nth($clrs-achromatic, 2);
+
+    // 셀 안에 텍스트가 아닌 블록 요소들어갈 경우 가운데 정렬
+    &.y-align-center{
+      display: flex;
+      align-items: center ;
+      line-height: 1; 
+    }
+
+    // 헤더 셀 스타일
+    &.wj-header {
+      justify-content: center;
+      color: nth($clrs-achromatic, 2);
+      background-color: #fff;
+      &:not(:last-child) { 
+        border-right : 0 ; 
+        &:after {
+          content :"" ; 
+          display: block;
+          width: 1px ; 
+          position: absolute;
+          right : 0 ; top: 7px; bottom: 7px ;  
+          background-color: nth($clrs-border, 1);
+        }
+      }
+      // 헤더 정렬 클래스 ( 태그에 cssClassAll="" 로 적용 필요 )
+      &.ta-c { text-align: center ; }
+      &.ta-l { text-align: left ; }
+      &.ta-r { text-align: right ; }
+    }
 
     &.wj-group {
       background-color: #fff;
@@ -81,7 +126,7 @@ $clrs-base: getColors("base");
 
     // 짝수 행만 선택
     &.wj-alt {
-      background-color: #f1f5f9;
+      background-color: nth($clrs-achromatic, 11);
     }
 
     // 커스텀용 클래스
@@ -95,33 +140,86 @@ $clrs-base: getColors("base");
     &.high-value {
       color: red;
     }
+
     &.low-value {
       color: blue;
     }
-    &.wj-align-center{
+
+    // text align
+    // &.wj-header.wj-align-left,
+    // &.wj-header.wj-align-right {
+    //   justify-content: center !important;
+    // }
+
+    &.wj-align-left {
+      justify-content: flex-start;
+    }
+
+    &.wj-align-center {
       justify-content: center;
     }
+
+    &.wj-align-right {
+      justify-content: flex-end;
+    }
+    
+    // custom style
+    &.no-border-right {
+      border-right: 0;
+    }
+
+    // 전체(합계)셀 스타일
+    &.cell-total{
+      background-color: #f1f1f1;
+    }
   }
+  
   // body 영역
   .wj-cells {
     // 선택했을 때 스타일
-    .wj-cell.wj-state-selected {
-      background-color: #d8f3fd;
-      color: #000cff;
-    }
-    .wj-cell.wj-state-multi-selected {
-      background-color: #d8f3fd;
-      color: #000cff;
-    }
-
-    .wj-row {
-      &:last-child {
-        .wj-cell {
-          // border-bottom: 0;
+    .wj-cell {
+      &.wj-state-selected {
+        background-color: #fff;
+        color: inherit;
+      }
+      &.wj-state-multi-selected {
+        @extend .wj-state-selected;
+      }
+      &.wj-alt {
+        &.wj-state-selected {
+          background-color: nth($clrs-achromatic, 11);
+        }
+        &.wj-state-multi-selected {
+          @extend .wj-state-selected;
         }
       }
-      .wj-cell:last-child {
-        border-right: 0;
+    }
+  }
+
+  // status
+  .wj-flexgrid {
+    // selectionMode
+    .wj-marquee {
+      box-shadow: 0 0 0 1px nth($clrs-base, 12), inset 0 0 0 2px nth($clrs-base, 12);
+    }
+  }
+
+  // cell border style
+  .wj-cell {
+    &[class*=wj-frozen-] {
+      border-color: nth($clrs-border, 1);
+    }
+
+    @at-root {
+      #{$grid-name} .wj-multirow .wj-cell {
+        &.wj-group-end {
+          @extend [class*=wj-frozen-];
+        }
+        &.wj-record-end {
+          &:not(.wj-header) {
+            @extend [class*=wj-frozen-];
+          }
+        }
       }
     }
   }

@@ -135,8 +135,7 @@ $radius: 2px;
   display: flex;
   
   &.column {
-    @extend .flex-direction-column;
-
+    flex-direction: column ;
     padding: 0 $gap;
   }
 
@@ -284,5 +283,220 @@ $radius: 2px;
 
   .ow-tree-body {
     padding: calc(var(--bs-gutter) * 0.5);
+  }
+}
+
+// 피킹시간 설정 박스
+.notifi{
+  display: flex;
+  flex-direction: column ;
+  width: 100% ;
+  &-row {
+    width: 100% ;
+    display: flex;
+    border : 1px solid #979797; 
+    border-radius: 4px ;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(14, 31, 53, 0.1), 0 1px 4px 0 rgba(14, 31, 53, 0.12);
+    &:not(:last-child) { margin-bottom: 8px ; }
+  }
+  &-col{
+    position: relative;
+    display: flex;
+    flex : 1 1 auto ;
+    height: 48px ;
+    align-items: center ;
+    &.count{ 
+      flex : 0 0 46px ; 
+      justify-content: center ; 
+      color: nth($clrs-achromatic, 6);
+      font-weight: 700 ;
+    }
+    &.btns{
+      flex : 0 0 84px ; 
+      gap:4px ; 
+    }
+    &.time{ flex-basis: 2 ; }
+    &:not(.count){
+      padding-left: 20px ;
+      &:before {
+        content :"" ; 
+        display: inline-flex;
+        width: 1px; 
+        height:auto ;
+        position: absolute;
+        left: 0 ; top:13px; bottom:13px; 
+        background-color: #d7dce3;
+      }
+    }
+    dl {
+      display: flex;
+      dt , dd {
+        display: flex;
+        align-items: center ;
+        font-size:12px ; 
+        letter-spacing: -1px; 
+        color: nth($clrs-achromatic, 2);
+      }
+      dt{
+        margin-right: 10px ;
+        font-weight: 700 ;
+        &:before {
+          content:""; 
+          display: inline-flex;
+          width: 4px; height:4px;
+          margin-right: 4px ;
+          background-color: #3b3b3b ;
+        }
+      }
+    }
+  }
+}
+
+.tree-memu-type-1{
+  display: flex;
+  flex-direction: column ;
+  width: var( --menu-size , 100% ) ;
+
+  > .menu-item {
+    > .menu-btn {
+      position: relative;
+      display: flex;
+      width: 100% ; height: 32px ;
+      align-items: center ;
+      padding:0 16px ; 
+      color: nth($clrs-achromatic, 2);
+      font-size:13px; 
+      font-weight: 700 ;
+      letter-spacing: -.5px ;
+      background-color: #fff;
+      box-shadow: 0 4px 8px 0 rgba(14, 31, 53, 0.1), 0 1px 4px 0 rgba(14, 31, 53, 0.12) , inset 0 -1px 0 0 #e2e6ec;
+      // box-shadow: inset 0 -1px 0 0 #e2e6ec;
+      .arrow {
+        position: absolute;
+        right: 0 ; top: 0; 
+        display: flex;
+        width: 32px; height:32px ;
+        align-items: center ; justify-content: center ;
+        &:after {
+          content :"" ; 
+          display: inline-flex;
+          border-bottom: 2px solid #525c68;
+          border-right: 2px solid #525c68;
+          width: 8px;
+          height: 8px;
+          transform: translateY( -2px ) rotate(45deg);
+        }
+      }
+    }
+    &.expand {
+      > .menu-btn {
+        .arrow {
+          &:after {
+            transform: translateY( 2px ) rotate(-135deg);
+          }
+        }
+      }
+      > .menu-submenu { display: flex ;}
+    }
+  }
+  .menu-submenu {
+    display: none;
+    flex-direction: column ;
+    gap:4px ; 
+    padding:10px ; 
+    .menu-btn {
+      position: relative;
+      display: flex;
+      width: 100% ; height:24px; 
+      align-items: center ;
+      justify-content: center ;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) ;
+      border: solid 1px #cbd5de;
+      background-color: #fff;
+      font-size:13px ; 
+      color:#666 ; 
+      font-weight: 700 ;
+
+      &.active {
+        background-color: #5d7b92;
+        border-color:#506574 ; 
+        color:#fff ; 
+      }
+
+      &.add {
+        justify-content: flex-start;
+        padding-left:22px ;
+        margin-top:6px ;
+        &:after {
+          content :"" ; 
+          display: inline-flex;
+          width: 10px ; height:10px; 
+          position: absolute;
+          right: 10px; top:50%; transform:translateY( -50% ) ; 
+          background: url(~@/assets/images/icon/icon-add.png) no-repeat 0 0;
+        }
+      }
+    }
+  }
+}
+
+.tree-memu-type-2{
+  position: relative;
+  display: flex;
+  width:var( --menu-size, 100% ) ;  height:100% ; 
+  padding:8px; 
+  overflow-y:auto ; 
+  flex-direction: column ;
+  border : 1px solid #d7dce3;
+  line-height: 1.5 ;
+
+  .menu-info{
+    position: absolute;
+    right : 15px ; top: 8px ; 
+    font-size:10px; 
+    color: nth($clrs-achromatic, 2);
+    letter-spacing: -.5px ;
+  }
+  .menu-item {
+    .menu-btn{
+      display: flex;
+      font-size:12px;
+      color: nth($clrs-achromatic, 2);
+      letter-spacing: -.5px ;
+      align-items: center ;
+      strong { font-weight: 700 ;}
+    }
+    .menu-submenu {
+      flex-direction: column ;
+      display: none ;
+      padding-left: 10px ; 
+    } 
+
+    &.has-sub > .menu-btn { // 서브 메뉴를 가지고 있는 경우에만 아이콘 표시
+      &:before {
+        content :"" ; 
+        display: inline-flex;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 6px 0 6px 10px;
+        border-color: transparent transparent transparent nth($clrs-achromatic, 2);
+        margin-right: 4px ;
+      }
+    }
+
+    &.expand.has-sub {
+      > .menu-btn {
+        &:before {
+          transform: rotate(90deg);
+        }
+      }
+      > .menu-submenu { display: flex ; }
+    }
+
+    &:not(.has-sub) {
+      padding-left: 14px ;
+    }
   }
 }

@@ -6,7 +6,7 @@
             <!-- content -->
             <div class="content">
                 <div class="content_tab">
-                    <b-tabs nav-wrapper-class="nav-tabs-wrap" v-model="tabIdx">
+                    <b-tabs nav-wrapper-class="ow-tabs" v-model="tabIdx">
                         <b-tab
                             v-for="tab in tabs"
                             :key="tab"
@@ -2377,7 +2377,3 @@
 </template>
 
 <script src="@/views/layout/script/mainLayout.js" />
-
-<style lang="sass">
-@import '@/assets/ow-admin.scss'
-</style>
