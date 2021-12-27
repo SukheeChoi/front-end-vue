@@ -48,6 +48,7 @@
   </wj-popup>
 </template>
 <script>
+import { PopupTrigger } from '@grapecity/wijmo.input';
 import { ref, computed, onMounted } from 'vue';
 const POPUP_SIZES = {
   XS: { width: 400, height: 320 },
@@ -87,6 +88,8 @@ export default {
     let control, accept, cancel;
 
     const show = (_accept = () => {}, _cancel = () => {}) => {
+      control.value.hideTrigger = PopupTrigger.None;
+
       control.value.show(true);
 
       accept = _accept;
