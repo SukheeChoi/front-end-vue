@@ -86,16 +86,8 @@ export default {
 
     let control, accept, cancel;
 
-    const onAccept = (e) => {
-      resolvedPromise.then(accept.call(this, e)).then(control.hide());
-    };
-
-    const onCancel = (e) => {
-      resolvedPromise.then(cancel.call(this, e)).then(control.hide());
-    };
-
     const show = (_accept = () => {}, _cancel = () => {}) => {
-      control.show(true);
+      control.value.show(true);
 
       accept = _accept;
       cancel = _cancel;
@@ -103,16 +95,29 @@ export default {
       return resolvedPromise;
     };
 
+    const onAccept = (e) => {
+      resolvedPromise.then(accept.call(this, e)).then(control.value.hide());
+    };
+
+    const onCancel = (e) => {
+      resolvedPromise.then(cancel.call(this, e)).then(control.value.hide());
+    };
+
+    const getControl = () => {
+      return control;
+    };
+
     onMounted(() => {
-      control = root.value.control;
+      control = ref(root.value.control);
     });
 
     return {
       root,
-      onAccept,
-      onCancel,
       size,
       show,
+      onAccept,
+      onCancel,
+      getControl,
     };
   },
 };
