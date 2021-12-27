@@ -1,6 +1,20 @@
 $clrs-achromatic: getColors("achromatic");
 $clrs-base: getColors("base");
 
+// Bootstrap reset
+.modal-backdrop {
+  opacity: 0.5;
+}
+
+.tooltip.b-tooltip {
+  display: block;
+  opacity: 0.9;
+  outline: 0;
+}
+.tooltip.b-tooltip.fade:not(.show) {
+  opacity: 0;
+}
+
 // wijmo, Bootstrap popup 사이즈 정의
 .wj-popup,
 .modal-dialog {

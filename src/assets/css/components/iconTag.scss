@@ -1,11 +1,18 @@
-.ow-tag {
+$clrs-achromatic: getColors("achromatic");
+$clrs-base: getColors("base");
+$clrs-border: getColors("border");
+$ow-tag: ".ow-tag";
+
+#{$ow-tag} {
   $size: 16px;
+  $size-group: 24px;
   $radius: 2px;
   display: inline-flex;
   height: $size;
+  line-height: $size ;
   padding: 0 6px;
   align-items: center;
-  background-color: #2b8ad1;
+  background-color: nth($clrs-base, 3);
   border-radius: $radius;
   color: #fff;
   font-size: 10px;
@@ -66,6 +73,18 @@
       color: #5bb4d1;
       letter-spacing: -0.8px;
       background-color: #fff;
+    }
+  }
+
+  &-group {
+    display: flex;
+    height: $size-group;
+    align-items: center ;
+    padding: 0 10px ; 
+    gap:10px ; 
+    border : 1px solid nth($clrs-border, 2) ; 
+    border-radius: 3px ;
+    #{$ow-tag} {
     }
   }
 }

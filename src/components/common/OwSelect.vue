@@ -1,23 +1,20 @@
 <template>
   <div class="ow-select">
-    <select @input="input">
-      <option v-if="all" value="">전체</option>
-      <option v-for="{ value, name } in options" :key="value" :value="value">
+    <select v-model="selectedValue">
+      <slot></slot>
+      <option v-for="{ name, value } in items" :key="value" :value="value">
         {{ name }}
       </option>
     </select>
   </div>
 </template>
 <script>
-import { reactive, onMounted } from 'vue';
+import { computed } from 'vue';
+
 export default {
   name: 'OwSelect',
   props: {
-    all: {
-      type: Boolean,
-      default: true,
-    },
-    options: {
+    items: {
       type: Array,
       default: () => {
         return [];
@@ -26,20 +23,21 @@ export default {
     modelValue: [String, Number],
   },
   setup(props, { emit }) {
-    const { all, options } = reactive(props);
+    const isNumber = computed(() => {
+      return (
+        props.modelValue instanceof Number ||
+        typeof props.modelValue === 'number'
+      );
+    });
 
-    const input = ({ target }) => {
-      emit('update:modelValue', target.value);
-    };
-
-    onMounted(() => {
-      if (!all) {
-        emit('update:modelValue', options[0].value);
-      }
+    const selectedValue = computed({
+      get: () => props.modelValue,
+      set: (value) =>
+        emit('update:modelValue', isNumber.value ? +value : value),
     });
 
     return {
-      input,
+      selectedValue,
     };
   },
 };

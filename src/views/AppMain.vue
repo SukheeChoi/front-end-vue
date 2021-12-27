@@ -1,4 +1,5 @@
 <template>
+  <ow-spinner :loading="false"></ow-spinner>
   <div id="main">
     <app-header></app-header>
     <div id="wrap" class="wrap">
@@ -32,6 +33,7 @@ import AppAside from '@/components/AppAside';
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
 import { onMounted, ref, toRefs } from 'vue';
+import OwSpinner from '@/components/common/OwSpinner';
 
 export default {
   components: {
@@ -43,6 +45,7 @@ export default {
     AppAside,
     TheActionPlan,
     TheApproval,
+    OwSpinner,
   },
   props: {
     nav: {
@@ -77,7 +80,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
-<style lang="sass">
-@import '@/assets/ow-admin.scss'
-</style>

@@ -28,10 +28,6 @@ table {
     height: var(--size-height);
     vertical-align: middle;
   }
-
-  th {
-    background-color: nth($clrs-achromatic, 11);
-  }
 }
 
 #{$table-name} {
@@ -41,17 +37,10 @@ table {
 
     th {
       position: relative;
-      font-weight: bold;
+      color: nth($clrs-achromatic, 2);
       text-align: center;
-      background-color: white;
-      
-      &:not(:first-child) {
-        border-left: 0;
-      }
-      
-      &:not(:last-child) {
-        border-right: 0;
-      }
+      border-right: 0;
+      background-color: #fff;
 
       &:not(:last-child)::after {
         position: absolute;
@@ -59,7 +48,7 @@ table {
         top: 50%;
         right: 0;
         width: 1px;
-        height: 20px;
+        height: calc(100% - 16px);
         background-color: nth($clrs-border, 1);
         transform: translateY(-50%);
       }
@@ -67,7 +56,8 @@ table {
   }
 
   th, td {
-    background-color: white
+    @include border(1px, nth($clrs-border, 1));
+    background-color: white;
   }
 
   td {
@@ -93,7 +83,7 @@ table {
 
   &.has-scroll {
     overflow-y: auto;
-    margin-right: -10px;
+    margin-right: -7px;
     height: var(--scrollheight, 200px);
   }
 
@@ -110,46 +100,43 @@ table {
   > div {
     position: relative;
   }
-  table {
-    width: 100%;
-  }
+
   .thead-wrap {
     z-index: 2;
     .thead {
-      box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.26);
+      @include border(1px, nth($clrs-border, 1));
+      @include box-shadow(0,2px,4px,0.12);
+
       thead {
         th {
           position: relative;
-          height: $size-height;
+          color: nth($clrs-achromatic, 2);
           text-align: center;
-          vertical-align: middle;
-          font-size: 12px;
-          letter-spacing: -1px;
-          font-weight: 700;
-          color: nth($clrs, 2);
-
-          &:not(:last-child):after {
-            content: "";
-            display: inline-flex;
-            width: 1px;
-            height: 20px;
-            background-color: #d7dce3;
+          border-right: 0;
+          border-left: 0;
+          background-color: #fff;
+    
+          &:not(:first-child)::before {
             position: absolute;
-            right: 0;
+            content: '';
             top: 50%;
+            left: 0;
+            width: 1px;
+            height: calc(100% - 16px);
+            background-color: nth($clrs-border, 1);
             transform: translateY(-50%);
           }
         }
       }
     }
+    + .tbody-wrap {
+      margin-top: -1px;
+    }
   }
   .tbody-wrap {
     z-index: 1;
     .tbody {
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-      table-layout: fixed;
       tbody {
-        // box-shadow: 0 1px 6px 0 rgb(0 0 0 / 26%);
         th,
         td {
           height: $size-height;
@@ -158,7 +145,6 @@ table {
           font-size: 12px;
           letter-spacing: -1px;
           color: nth($clrs, 2);
-          border: 1px solid #e2e6ec;
           padding: 0 5px;
           &.ta-l {
             padding: 0 22px;
@@ -173,15 +159,24 @@ table {
         tr.highlight {
           th,
           td {
-            background-color: #f1f5f9;
+            background-color: nth($clrs-achromatic, 11);
           }
         }
       }
     }
-    &.has-scroll {
+    &.body-has-scroll {
       overflow-y: auto;
-      margin-right: -10px;
+      margin-right: -7px;
       height: var(--scrollheight, 200px);
+    }
+  }
+
+  &.wrap-has-scroll{
+    height: var(--scrollheight, 200px);
+    overflow-y:auto ;
+    .thead-wrap{
+      position:sticky ; 
+      left: 0 ; top:0 ; 
     }
   }
 }
@@ -192,7 +187,6 @@ table.ow-table-type-info {
   tr {
     th,
     td {
-      border: 1px solid #e2e6ec;
       color: nth($clrs, 2);
       letter-spacing: -1px;
       text-align: left;
