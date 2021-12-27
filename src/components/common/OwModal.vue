@@ -2,7 +2,7 @@
   <wj-popup :style="`--max-width: ${size.width}px`" ref="root">
     <!-- 타이틀 -->
     <div class="modal-header">
-      <h5 class="modal-title">제목입니다.</h5>
+      <h5 class="modal-title">{{ title }}</h5>
       <button type="button" class="wj-hide close" @click="onCancel">
         &#120;
       </button>
