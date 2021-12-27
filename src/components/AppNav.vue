@@ -8,7 +8,7 @@
         @click="to(tab)"
       />
     </b-tabs>
-    <!-- <b-tabs
+    <b-tabs
       class="ow-tabs"
       v-model="subTabIndex"
       v-if="currentTab && currentTab.children"
@@ -19,7 +19,7 @@
         :title="child.title"
         @click="to(child)"
       />
-    </b-tabs> -->
+    </b-tabs>
   </nav>
 </template>
 <script>
@@ -224,11 +224,13 @@ export default {
   },
   computed: {
     currentTab() {
-      return this.tabs[this.tabIndex];
+      return this.tabs[this.tabIndex] || this.tabs[0];
     },
   },
   mounted() {
     this.initialize();
+    console.log('this.tabIndex', this.tabIndex);
+    console.log('this.currentTab', this.currentTab);
   },
   methods: {
     initialize() {
