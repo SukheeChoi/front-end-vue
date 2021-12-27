@@ -1,5 +1,5 @@
 <template>
-  <header id="header" class="header">
+  <header class="header">
     <div class="info-area">
       <h1 class="logo">OW OSSTEM</h1>
 

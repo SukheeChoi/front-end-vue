@@ -4,16 +4,18 @@
     <app-header></app-header>
     <div id="wrap" class="wrap">
       <main class="content">
-        <app-nav></app-nav>
-        <app-section>
-          <div class="row">
-            <app-article class="col fix-left" v-if="left.show">
-              <the-action-plan></the-action-plan>
-              <the-approval></the-approval>
-            </app-article>
-            <app-article class="col">
-              <router-view></router-view>
-            </app-article>
+        <app-nav class="content_tab" />
+        <app-section class="content_body">
+          <div class="container-fluid">
+            <div class="row">
+              <app-article class="col fix-left" v-if="left.show">
+                <the-action-plan></the-action-plan>
+                <the-approval></the-approval>
+              </app-article>
+              <app-article class="col">
+                <router-view></router-view>
+              </app-article>
+            </div>
           </div>
         </app-section>
       </main>

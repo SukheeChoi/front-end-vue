@@ -1,11 +1,25 @@
 <template>
-  <nav class="content_tab nav-tabs-row">
-    <b-tabs nav-wrapper-class="ow-tabs" v-model="tabIndex">
-      <b-tab v-for="tab in tabs" :key="tab.name" :title="tab.title" @click="to(tab)" />
+  <nav>
+    <b-tabs class="ow-tabs" v-model="tabIndex">
+      <b-tab
+        v-for="tab in tabs"
+        :key="tab.name"
+        :title="tab.title"
+        @click="to(tab)"
+      />
     </b-tabs>
-    <b-tabs id="sub-btn-wrap" class="ow-tabs" v-model="subTabIndex" v-if="this.currentTab">
-      <b-tab v-for="child in currentTab.children" :key="child.name" :title="child.title" @click="to(child)" />
-    </b-tabs>
+    <!-- <b-tabs
+      class="ow-tabs"
+      v-model="subTabIndex"
+      v-if="currentTab && currentTab.children"
+    >
+      <b-tab
+        v-for="child in currentTab.children"
+        :key="child.name"
+        :title="child.title"
+        @click="to(child)"
+      />
+    </b-tabs> -->
   </nav>
 </template>
 <script>
@@ -219,7 +233,9 @@ export default {
   methods: {
     initialize() {
       this.tabIndex = this.getTabIndex(this.tabs);
-      this.subTabIndex = this.getTabIndex(this.tabs[this.tabIndex].children || []);
+      this.subTabIndex = this.getTabIndex(
+        (this.tabs[this.tabIndex] && this.tabs[this.tabIndex].children) || []
+      );
     },
     getTabIndex(tabs) {
       const { name } = this.$route;
@@ -239,7 +255,9 @@ export default {
         //   failure.to.path = '/';
         //   failure.from.path = '/';
         // }
-        this.subTabIndex = this.getTabIndex(this.tabs[this.tabIndex].children || []);
+        this.subTabIndex = this.getTabIndex(
+          this.tabs[this.tabIndex].children || []
+        );
       });
     },
   },
