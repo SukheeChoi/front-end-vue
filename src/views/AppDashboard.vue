@@ -36,16 +36,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-.ow-flex-wrap {
-  --wrap: wrap;
-
-  height: 100%;
-
-  .item {
-    .ow-panel {
-      height: 100%;
-    }
-  }
-}
-</style>

@@ -42,8 +42,6 @@ $content-scroll-flag : 1536px;
     overflow-x: auto;
 
     .content_body {
-      padding-top: var(--bs-gutter);
-      padding-bottom: var(--bs-gutter);
       position: relative;
       flex: 1;
       border-top: 1px solid nth($clrs-border, 3);
@@ -195,10 +193,8 @@ $content-scroll-flag : 1536px;
   gap: var(--gap, 4px);
   width: 100%;  
   padding-top: var(--padding-top, 0);
-  height:var(--wrap-height, auto) ; 
+  height:var(--wrap-height, 100%) ; 
   padding:var(--wrap-padding, 0 ) ; 
-  // padding-top: var(--padding-top, 0);
-  // align-items: var(--align-item, center);
   
   // 아이템 column 방향으로 지정 기본은 방향은 row
   &.dir-col{ flex-direction: column; }
@@ -226,7 +222,6 @@ $content-scroll-flag : 1536px;
     display: flex;
     gap: var(--gap-item, 0px);
     flex: 1;
-    align-items: var(--align-item, center);
     // 단락을 구분지어주는 라인
     &-bar{
       display: inline-flex;
@@ -534,8 +529,8 @@ $content-scroll-flag : 1536px;
   &.row-6-set{ @include grid-set('row', 6); }
 
   .ow-content {
-    padding: var(--padding-content, 8px 8px 8px);
-    gap: var(--gap-content, 10px);
+    padding: var(--bs-gutter);
+    gap: calc(var(--bs-gutter) * .5);
     background-color: var(--bg, #fff);
   }
 }

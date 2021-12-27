@@ -6,13 +6,15 @@
       <main class="content">
         <app-nav class="content_tab" />
         <app-section class="content_body">
-          <div class="container-fluid">
-            <div class="row">
-              <app-article class="col fix-left" v-if="left.show">
-                <the-action-plan></the-action-plan>
-                <the-approval></the-approval>
+          <div class="ow-content">
+            <div class="ow-flex-wrap">
+              <app-article class="size-fix" style="--size: 446px;" v-if="left.show">
+                <div class="ow-flex-wrap dir-col">
+                  <the-action-plan></the-action-plan>
+                  <the-approval></the-approval>
+                </div>
               </app-article>
-              <app-article class="col">
+              <app-article>
                 <router-view></router-view>
               </app-article>
             </div>

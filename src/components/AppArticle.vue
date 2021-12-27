@@ -1,5 +1,5 @@
 <template>
-  <article class="ow-content">
+  <article class="item">
     <slot></slot>
   </article>
 </template>
