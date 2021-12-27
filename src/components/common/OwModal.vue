@@ -87,7 +87,7 @@ export default {
 
     let control, accept, cancel;
 
-    const show = (_accept = () => {}, _cancel = () => {}) => {
+    const open = (_accept = () => {}, _cancel = () => {}) => {
       control.value.hideTrigger = PopupTrigger.None;
 
       control.value.show(true);
@@ -96,6 +96,10 @@ export default {
       cancel = _cancel;
 
       return resolvedPromise;
+    };
+
+    const close = () => {
+      control.value.hide();
     };
 
     const onAccept = (e) => {
@@ -117,7 +121,8 @@ export default {
     return {
       root,
       size,
-      show,
+      open,
+      close,
       onAccept,
       onCancel,
       getControl,
@@ -128,8 +133,13 @@ export default {
 <style lang="scss" scoped>
 .wj-popup {
   max-width: var(--max-width, 400px) !important;
+  max-height: var(--max-height, 320px) !important;
   .modal-body {
     .layer-body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100px;
       max-height: calc(var(--max-height, 320px) - 36px - 62px) !important;
       overflow-y: auto;
       word-break: break-word;
