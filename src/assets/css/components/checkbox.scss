@@ -1,204 +1,205 @@
-$checkbox-name: ".ow-checkbox";
-
-$clrs : getColors( 'base' ) ;
+$checkbox-name: '.ow-checkbox';
+$clrs: getColors('base');
 $clr-checkbox-default: #8c96a5;
-$clr-checkbox-checked: nth( $clrs, 7 ) ;
-$clr-checkbox-checked-line: nth( $clrs, 2 ) ;
+$clr-checkbox-checked: nth($clrs, 7);
+$clr-checkbox-checked-line: nth($clrs, 2);
 $clr-checkbox-disabled: #edf0f2;
 $clr-checkbox-disabled-line: #bfc6ce;
-
 $size-chk: 16px;
-
 .checkbox-group {
-  display: inline-flex;
-  height: 24px;
-  align-items: center;
-  padding: 0 8px;
-  background-color: #e1e6ea;
-  border-radius: 2px;
-  .btn-check-all {
     display: inline-flex;
-    height: 20px;
-    padding: 0 10px;
+    height: 24px;
     align-items: center;
+    padding: 0 8px;
+    background-color: #e1e6ea;
     border-radius: 2px;
-    border: solid 1px $clr-checkbox-checked-line;
-    background-color: $clr-checkbox-checked;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: -1px;
-  }
-  &.has-btn {
-    padding: 0 10px 0 2px;
-  }
+    .btn-check-all {
+        display: inline-flex;
+        height: 20px;
+        padding: 0 10px;
+        align-items: center;
+        border-radius: 2px;
+        border: solid 1px $clr-checkbox-checked-line;
+        background-color: $clr-checkbox-checked;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: -1px;
+    }
+    &.has-btn {
+        padding: 0 10px 0 2px;
+    }
 }
 
 #{$checkbox-name} {
-  display: inline-flex;
-  user-select: none;
-  @at-root .checkbox-group &:not(:first-child) {
-    margin-left: 10px;
-  }
-  label {
-    padding-left: calc($size-chk + 4px);
-    position: relative;
     display: inline-flex;
-    align-items: center;
-    height: $size-chk;
-    font-size: 12px;
-    color: #333;
-    letter-spacing: -1px;
-    cursor: pointer;
-    white-space: nowrap;
-    &:before {
-      position: absolute;
-      content: "";
-      top: 50%;
-      left: 0;
-      display: inline-flex;
-      flex: 0 0 auto;
-      width: $size-chk;
-      height: $size-chk;
-      margin-right: 4px;
-      border: 1px solid $clr-checkbox-default;
-      border-radius: 2px;
-      background-color: #fff;
-      transform: translateY(-50%);
+    user-select: none;
+    @at-root .checkbox-group &:not(:first-child) {
+        margin-left: 10px;
     }
-    &:hover:before {
-      border-color: $clr-checkbox-checked-line;
-    }
-    span {
-      font-weight: 400;
-    }
-  }
-  input[type="checkbox"] {
-    display: none;
-    &:checked + label {
-      // 체크상태 이미지 다운이 안되서 나중에 처리할 예정
-      &:before {
-        background-color: $clr-checkbox-checked;
-        border-color: $clr-checkbox-checked-line;
-        background-image: url("~@/assets/images/icon/icon_check.svg");
-        background-position: 50% 50%;
-        background-repeat: no-repeat;
-      }
-    }
-    &:disabled + label {
-      &:before {
-        background-color: $clr-checkbox-disabled;
-        border-color: $clr-checkbox-disabled-line;
-      }
-    }
-  }
-  &.disabled {
     label {
-      color: #9b9ea0;
-    }
-  }
-  &.right {
-    label {
-      padding-left: 0;
-      &:before {
-        content: none;
-      }
-      &:after {
-        content: "";
+        padding-left: calc($size-chk + 4px);
+        position: relative;
         display: inline-flex;
-        flex: 0 0 auto;
-        width: $size-chk;
+        align-items: center;
         height: $size-chk;
-        margin-left: 4px;
-        border: 1px solid $clr-checkbox-default;
-        border-radius: 2px;
-        background-color: #fff;
-      }
-    }
-    input[type="checkbox"] {
-      display: none;
-      &:checked + label {
-        // 체크상태 이미지 다운이 안되서 나중에 처리할 예정
-        &:after {
-          background-color: $clr-checkbox-checked;
-          border-color: $clr-checkbox-checked-line;
-          background-image: url("~@/assets/images/icon/icon_check.svg");
-          background-position: 50% 50%;
-          background-repeat: no-repeat;
+        font-size: 12px;
+        line-height: 100%;
+        color: #333;
+        letter-spacing: -1px;
+        cursor: pointer;
+        white-space: nowrap;
+        &:before {
+            position: absolute;
+            content: '';
+            top: 50%;
+            left: 0;
+            display: inline-flex;
+            flex: 0 0 auto;
+            width: $size-chk;
+            height: $size-chk;
+            margin-right: 4px;
+            border: 1px solid $clr-checkbox-default;
+            border-radius: 2px;
+            background-color: #fff;
+            transform: translateY(-50%);
         }
-      }
-      &:disabled + label {
-        &:after {
-          background-color: $clr-checkbox-disabled;
-          border-color: $clr-checkbox-disabled-line;
+        &:hover:before {
+            border-color: $clr-checkbox-checked-line;
         }
-      }
+        span {
+            font-weight: 400;
+        }
     }
-  }
-  &.title {
-    label {
-      font-weight: 700;
+    input[type='checkbox'] {
+        display: none;
+        &:checked+label {
+            // 체크상태 이미지 다운이 안되서 나중에 처리할 예정
+            &:before {
+                background-color: $clr-checkbox-checked;
+                border-color: $clr-checkbox-checked-line;
+                background-image: url('~@/assets/images/icon/icon_check.svg');
+                background-position: 50% 50%;
+                background-repeat: no-repeat;
+            }
+        }
+        &:disabled+label {
+            &:before {
+                background-color: $clr-checkbox-disabled;
+                border-color: $clr-checkbox-disabled-line;
+            }
+        }
     }
-  }
+    &.disabled {
+        label {
+            color: #9b9ea0;
+        }
+    }
+    &.right {
+        label {
+            padding-left: 0;
+            &:before {
+                content: none;
+            }
+            &:after {
+                content: '';
+                display: inline-flex;
+                flex: 0 0 auto;
+                width: $size-chk;
+                height: $size-chk;
+                margin-left: 4px;
+                border: 1px solid $clr-checkbox-default;
+                border-radius: 2px;
+                background-color: #fff;
+            }
+        }
+        input[type='checkbox'] {
+            display: none;
+            &:checked+label {
+                // 체크상태 이미지 다운이 안되서 나중에 처리할 예정
+                &:after {
+                    background-color: $clr-checkbox-checked;
+                    border-color: $clr-checkbox-checked-line;
+                    background-image: url('~@/assets/images/icon/icon_check.svg');
+                    background-position: 50% 50%;
+                    background-repeat: no-repeat;
+                }
+            }
+            &:disabled+label {
+                &:after {
+                    background-color: $clr-checkbox-disabled;
+                    border-color: $clr-checkbox-disabled-line;
+                }
+            }
+        }
+    }
+    &.title {
+        label {
+            font-weight: 700;
+        }
+    }
+    &+& {
+        margin-left: 10px;
+    }
 }
 
 .checkbox-title-wrap {
-  display: inline-flex;
-  align-items: center;
-  > dt {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: -1.08px;
-    color: #333;
-    margin-right: 6px;
-  }
+    display: inline-flex;
+    align-items: center;
+    >dt {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -1.08px;
+        color: #333;
+        margin-right: 6px;
+    }
 }
 
 // 위즈모 그리드 내 체크박스
-.ow-grid-wrap .ow-grid .wj-cells .wj-cell{
-  label {
-    display: inline-flex;
-    align-items: center ;
-  }
-  .wj-cell-check{
-    position: absolute;
-    width: 0;
-    height: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 0;
-    margin : 0 ; 
-    & + span {
-      display: inline-flex;
-      cursor: pointer;
-      width: 34px;
-      height: 26px;
-      margin: 0;
-      background: url(~@/assets/images/icon/icon-check-custom.png) no-repeat 0 0 ;
+.ow-grid-wrap .ow-grid .wj-cells .wj-cell {
+    label {
+        display: inline-flex;
+        align-items: center;
     }
-    &:checked + span {
-      background: url(~@/assets/images/icon/icon-check-custom-active.png) no-repeat 0 0 ;
+    .wj-cell-check {
+        position: absolute;
+        width: 0;
+        height: 0;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        margin: 0;
+        &+span {
+            display: inline-flex;
+            cursor: pointer;
+            width: 34px;
+            height: 26px;
+            margin: 0;
+            background: url(~@/assets/images/icon/icon-check-custom.png) no-repeat 0 0;
+        }
+        &:checked+span {
+            background: url(~@/assets/images/icon/icon-check-custom-active.png) no-repeat 0 0;
+        }
     }
-  }
 }
 
 // toggle slide
 .form-check {
-  display: block;
-  min-height: 1.125rem;
-  padding-left: 2em;
-  margin-bottom: 0.125rem;
+    display: block;
+    min-height: 1.125rem;
+    padding-left: 2em;
+    margin-bottom: 0.125rem;
 }
 
 .form-switch {
-  padding-left: 2.8em;
+    padding-left: 2.8em;
 }
 
 .form-switch {
-  .form-check-input {
-    width: 2.3em;
-    height: 1.5em;
-    margin-left: -2.8em;
-    border-radius: 2.3em;
-  }
+    .form-check-input {
+        width: 2.3em;
+        height: 1.5em;
+        margin-left: -2.8em;
+        border-radius: 2.3em;
+    }
 }
