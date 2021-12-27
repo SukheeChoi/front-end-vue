@@ -22,7 +22,6 @@ export default {
     let show = reactive(props.loading);
 
     // onMounted(() => {
-    console.log('mounted!!!!!!!!!!');
     setTimeout(() => (show = false), 3000);
     // });
     return {
