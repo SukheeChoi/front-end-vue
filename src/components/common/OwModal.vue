@@ -1,5 +1,8 @@
 <template>
-  <wj-popup :style="`--max-width: ${size.width}px`" ref="root">
+  <wj-popup
+    :style="`--max-width: ${size.width}px; --max-height: ${size.height}px;`"
+    ref="root"
+  >
     <!-- 타이틀 -->
     <div class="modal-header">
       <h5 class="modal-title">{{ title }}</h5>
