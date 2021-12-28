@@ -7,9 +7,9 @@
         <app-nav class="content_tab" />
         <app-section class="content_body">
           <div class="ow-content">
-            <div class="ow-flex-wrap">
+            <div class="ow-flex-wrap size-full">
               <app-article class="size-fix" style="--size: 446px;" v-if="left.show">
-                <div class="ow-flex-wrap dir-col">
+                <div class="ow-flex-wrap dir-col size-full">
                   <the-action-plan></the-action-plan>
                   <the-approval></the-approval>
                 </div>

@@ -1,14 +1,14 @@
 <template>
-  <div class="ow-flex-wrap dir-col">
+  <div class="ow-flex-wrap dir-col size-full">
     <div class="item">
-      <div class="ow-flex-wrap">
+      <div class="ow-flex-wrap size-full">
         <div class="item" v-for="component in components" :key="component">
           <component :is="component.default"></component>
         </div>
       </div>
     </div>
     <div class="item">
-      <div class="ow-flex-wrap">
+      <div class="ow-flex-wrap size-full">
         <div class="item" v-for="component in components" :key="component">
           <component :is="component.default"></component>
         </div>

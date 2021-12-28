@@ -4,6 +4,7 @@ $panel-name: ".ow-panel";
   width: 100% ;
   flex: 1 1 var(--size-panel, 0);
   height: var(--height, 100%);
+  min-height: 0;
   flex-direction: column;
 
   .ow-panel-header {
@@ -36,11 +37,11 @@ $panel-name: ".ow-panel";
     display: flex;
     flex-direction: column;
     flex: 1;
+    // height: var(--height, 100%);
     border: 2px solid #6980af;
     border-top: 0;
     background-color: #fff;
     padding: var(--ow-gutter);
-    overflow-y: auto;
     &.scroll{
       overflow-x: hidden;
       overflow-y: auto;

@@ -51,25 +51,6 @@
     text-align: right !important;
 }
 
-// main left
-.col {
-    $fix: 'fix';
-
-    &[class*=#{$fix}] {
-        flex: 0 0 auto;
-    }
-
-    &.#{$fix}-left {
-        width: 446px;
-    }
-}
-
-[class^=container] {
-    .ow-panel {
-        height: auto;
-    }
-}
-
 // admin/mainLayout.vue 예제 헤더구조
 .tabs + .tabs {
     padding-top: calc(var(--bs-gutter) - $border-width);
