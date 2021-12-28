@@ -210,9 +210,6 @@ $content-scroll-flag : 1536px;
   // 상단으로 수직 정렬
   &.items-y-top{ align-items: flex-start; }
 
-  // 중앙으로 수직 정렬
-  &.items-y-center{ align-items: center; }
-
   &.item-size-content { // 하위 item 사이즈 컨텐츠만큼만 적용
     > .item { flex : 0 0 auto }
   }
@@ -227,6 +224,7 @@ $content-scroll-flag : 1536px;
     display: flex;
     gap: var(--gap-item, 0px);
     flex: 1;
+    align-items: var(--align-item, center);
     // 단락을 구분지어주는 라인
     &-bar{
       display: inline-flex;
