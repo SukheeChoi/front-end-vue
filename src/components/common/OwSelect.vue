@@ -1,6 +1,6 @@
 <template>
   <div class="ow-select" ref="root">
-    <select v-model="selectedValue">
+    <select :id="expando" v-model="selectedValue">
       <slot></slot>
       <option v-for="{ name, value } in items" :key="value" :value="value">
         {{ name }}
@@ -27,7 +27,7 @@ export default {
     const root = ref(null);
 
     const expando = computed(() => {
-      return 'ow-input-' + ('' + Math.random()).replace(/\D/g, '');
+      return 'ow-select-' + ('' + Math.random()).replace(/\D/g, '');
     });
 
     const isNumber = computed(() => {
@@ -55,6 +55,7 @@ export default {
 
     return {
       root,
+      expando,
       selectedValue,
     };
   },
