@@ -3,24 +3,43 @@
   <div id="main">
     <app-header></app-header>
     <div id="wrap" class="wrap">
-      <main class="content">
-        <app-nav class="content_tab" />
-        <app-section class="content_body">
-          <div class="ow-content">
-            <div class="ow-flex-wrap size-full">
-              <app-article class="size-fix" style="--size: 446px;" v-if="left.show">
-                <div class="ow-flex-wrap dir-col size-full">
+      <div class="content">
+        <app-nav class="content_tab"></app-nav>
+        <main class="content_body">
+          <div
+            class="ow-container col-2-set"
+            :class="{ 'main__article--show-left': hasLeft }"
+            style="--size-1: 0; --gap-container: 0"
+            ref="container"
+          >
+            <!-- Left -->
+            <div class="ow-content" :class="{ 'pr-2': hasLeft }">
+              <app-article
+                class="ow-flex-wrap dir-col size-full"
+                v-show="left.show"
+              >
+                <div
+                  class="item size-fix"
+                  style="--size: 70%; --bg: transparent"
+                >
                   <the-action-plan></the-action-plan>
+                </div>
+                <div class="item">
                   <the-approval></the-approval>
                 </div>
               </app-article>
-              <app-article>
-                <router-view></router-view>
+            </div>
+            <!-- Right -->
+            <div class="ow-content" :class="{ 'pl-2': hasLeft }">
+              <app-article class="ow-flex-wrap size-full">
+                <div class="item">
+                  <router-view></router-view>
+                </div>
               </app-article>
             </div>
           </div>
-        </app-section>
-      </main>
+        </main>
+      </div>
     </div>
   </div>
   <app-footer></app-footer>
@@ -36,7 +55,7 @@ import AppAside from '@/components/AppAside';
 
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
-import { onMounted, ref, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import OwSpinner from '@/components/common/OwSpinner';
 
 export default {
@@ -76,11 +95,18 @@ export default {
   setup(props, context) {
     console.log('setup', props, context);
 
-    const aside = ref('aside');
+    const hasLeft = computed(() => props.left.show);
 
     return {
-      aside,
+      hasLeft,
     };
   },
 };
 </script>
+<style lang="scss" scoped>
+.main__article--show-left {
+  &.ow-container {
+    --size-1: 446px !important;
+  }
+}
+</style>

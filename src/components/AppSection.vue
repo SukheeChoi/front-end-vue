@@ -1,8 +1,6 @@
 <template>
-  <section>
-    <div class="ow-container">
-      <slot></slot>
-    </div>
+  <section class="content_body">
+    <slot></slot>
   </section>
 </template>
 <script>

@@ -1,7 +1,9 @@
 <template>
   <header class="header">
     <div class="info-area">
-      <h1 class="logo">OW OSSTEM</h1>
+      <router-link :to="{ name: 'main' }">
+        <h1 class="logo">OW OSSTEM</h1>
+      </router-link>
 
       <!-- TODO Breadcrumb, 위치기반, e.g. 본부명 > 메뉴 1 > 메뉴 2 -->
       <ul class="location">
