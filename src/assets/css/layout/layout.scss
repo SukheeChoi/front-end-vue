@@ -193,8 +193,10 @@ $content-scroll-flag : 1536px;
   gap: var(--gap, 4px);
   width: 100%;  
   padding-top: var(--padding-top, 0);
-  height:var(--wrap-height, 100%) ; 
+  height:var(--wrap-height, auto) ; 
   padding:var(--wrap-padding, 0 ) ; 
+  // padding-top: var(--padding-top, 0);
+  // align-items: var(--align-item, center);
   
   // 아이템 column 방향으로 지정 기본은 방향은 row
   &.dir-col{ flex-direction: column; }
@@ -207,6 +209,9 @@ $content-scroll-flag : 1536px;
 
   // 상단으로 수직 정렬
   &.items-y-top{ align-items: flex-start; }
+
+  // 중앙으로 수직 정렬
+  &.items-y-center{ align-items: center; }
 
   &.item-size-content { // 하위 item 사이즈 컨텐츠만큼만 적용
     > .item { flex : 0 0 auto }
