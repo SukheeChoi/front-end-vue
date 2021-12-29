@@ -21,35 +21,65 @@ export class GridApi extends CollectionView {
         return this.items.length;
     }
 
-    getList(qry = {}, paging = {}) {
-        let opt = paging;
+    async getData() {
+        const totalCount = 10;
 
-        if (paging.pageNo) {
-            opt = {
-                pageNo: paging.pageNo,
-                pageSize: paging.pageSize,
-            };
+        const data = [];
+        for (let i = 0; i <= totalCount; i++) {
+            // for(let i=startIndex; i<=endIndex; i++){
+            data.push({
+                systemDiv: 'SYSTEM_' + String(i).padStart(4, '0'),
+                bizCd: 'BIZCODE_' + String(i).padStart(4, '0'),
+                bizGrpId: '',
+                bizGrpNm: '',
+                bizGrpDesc: '',
+                useYn: 'Y',
+            });
         }
 
-        let reqData = restApi.getList(this._uri, Object.assign(qry, opt), this._id);
-
-        if (reqData && reqData.data.length > 0) {
-            this.clear();
-            this.push(reqData.data);
-        }
+        return {
+            totalCount,
+            data,
+        };
     }
+
+    async getList() {
+        // setTimeout(() => restApi.getList('http://localhost:8000'), 3000);
+
+        const { data } = await this.getData();
+        this.sourceCollection = data;
+        // setTimeout(() => this.push(data), 3000);
+        // this.result.sourceCollection = data;
+    }
+
+    // getList(qry = {}, paging = {}) {
+    //     let opt = paging;
+
+    //     if (paging.pageNo) {
+    //         opt = {
+    //             pageNo: paging.pageNo,
+    //             pageSize: paging.pageSize,
+    //         };
+    //     }
+
+    // let reqData = restApi.getList(this._uri, Object.assign(qry, opt), this._id);
+
+    //     if (reqData && reqData.data.length > 0) {
+    //         this.clear();
+    //         this.push(reqData.data);
+    //     }
+    // }
 
     addRow() {
         let addData = _.cloneDeep(this._model);
         addData.rowStatus = 'C';
-
         this.addNew(addData);
         this.commitNew();
     }
 
     delRow() {
         if (this._values.length == 0) {
-            alert('먼저 삭제할 자료를 선택하시기 바랍니다.');
+            alert('삭제할 자료를 선택하세요.');
             return;
         }
 
@@ -60,23 +90,19 @@ export class GridApi extends CollectionView {
         let delList = [];
 
         for (let value of this._values) {
-            if (value.rowStatus != 'C') {
-                delList.push(value);
+            //remove가 실행되어야 itemsRemoved에 데이터가 쌓인다.
+            this.remove(value);
+        }
+
+        if (this.itemsRemoved.length > 0) {
+            for (let i = 0; i < this.itemsRemoved.length; i++) {
+                delList.push(this.itemsRemoved.at(i));
             }
         }
 
-        if (delList.length == 0) {
-            for (let value of this._values) {
-                if (value.rowStatus == 'C') {
-                    this.remove(value);
-                }
-            }
-
-            alert('저장되지 않은 추가된 자료만 삭제되었습니다.');
-            return;
+        if (delList.length > 0) {
+            restApi.removeList(this._uri, delList, this._id);
         }
-
-        restApi.removeList(this._uri, delList, this._id);
     }
 
     save() {
@@ -103,7 +129,7 @@ export class GridApi extends CollectionView {
             }
         }
 
-        restApi.save(this._uri, saveList, this._id);
+        restApi.saveList(this._uri, saveList, this._id);
     }
 
     rowChanged(view, e) {
