@@ -103,7 +103,7 @@ export class GridApi extends CollectionView {
             }
         }
 
-        restApi.saveList(this._uri, saveList, this._id);
+        restApi.save(this._uri, saveList, this._id);
     }
 
     rowChanged(view, e) {
