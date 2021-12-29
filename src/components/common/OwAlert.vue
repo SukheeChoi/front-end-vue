@@ -41,9 +41,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-::v-deep {
-  .modal-header {
-    height: 0px;
-  }
+:deep(.modal-header) {
+  height: 0px;
 }
 </style>

@@ -70,8 +70,7 @@ export default {
       transition: all 250ms;
     }
   }
-
-  ::v-deep(.ow-content) {
+  :deep(.ow-content) {
     --bs-gutter: 0;
   }
 }
