@@ -82,9 +82,8 @@ export default {
 
         panels.value.splice(source_index, 1, target_panel);
         panels.value.splice(target_index, 1, source_panel);
-
-        Control.invalidateAll();
       }
+      Control.invalidateAll();
     };
 
     const dragend = () => {

@@ -6,7 +6,7 @@
       <div class="content">
         <app-nav class="content_tab"></app-nav>
         <main class="content_body">
-          <div
+          <app-section
             class="ow-container col-2-set"
             :class="{ 'main__article--show-left': hasLeft }"
             style="--size-1: 0; --gap-container: 0"
@@ -37,7 +37,7 @@
                 </div>
               </app-article>
             </div>
-          </div>
+          </app-section>
         </main>
       </div>
     </div>
@@ -55,7 +55,7 @@ import AppAside from '@/components/AppAside';
 
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { computed } from 'vue';
 import OwSpinner from '@/components/common/OwSpinner';
 
 export default {

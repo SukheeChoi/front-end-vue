@@ -1,5 +1,5 @@
 <template>
-  <section class="content_body">
+  <section>
     <slot></slot>
   </section>
 </template>
