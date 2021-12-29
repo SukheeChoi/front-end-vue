@@ -56,7 +56,6 @@ import AppAside from '@/components/AppAside';
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
 import { computed } from 'vue';
-import OwSpinner from '@/components/common/OwSpinner';
 
 export default {
   components: {
@@ -68,7 +67,6 @@ export default {
     AppAside,
     TheActionPlan,
     TheApproval,
-    OwSpinner,
   },
   props: {
     nav: {
