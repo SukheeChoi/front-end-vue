@@ -8,7 +8,7 @@ export class GridApi extends CollectionView {
     _model = '';
     _values = [];
     _oldVal = null;
-    _currentRow = 0;
+    // _currentRow = 0;
 
     constructor(uri, model, id = '') {
         super([], { trackChanges: true });
@@ -70,14 +70,14 @@ export class GridApi extends CollectionView {
     //     }
     // }
 
-    addRow() {
+    add() {
         let addData = _.cloneDeep(this._model);
-        addData.rowStatus = 'C';
+        addData.status = 'C';
         this.addNew(addData);
         this.commitNew();
     }
 
-    delRow() {
+    del() {
         if (this._values.length == 0) {
             alert('삭제할 자료를 선택하세요.');
             return;
@@ -132,26 +132,18 @@ export class GridApi extends CollectionView {
         restApi.saveList(this._uri, saveList, this._id);
     }
 
-    rowChanged(view, e) {
-        this._currentRow = view.selection.row;
-        this._oldVal = String(view.getCellData(e.row, e.col));
-    }
+    cellEditEnding(view, e) {
+        const oldVal = view.getCellData(e.row, e.col),
+            newVal = view.activeEditor.value;
 
-    rowEditEnding(view, e) {
-        if (this.sourceCollection[this._currentRow].rowStatus == 'C') {
+        if (view.getCellData(e.row, 'status') == 'C') {
             return;
         }
 
-        let newVal = String(view.getCellData(e.row, e.col));
-
-        if (this._oldVal == newVal) {
+        if (oldVal == newVal) {
             return;
         }
-
-        let updateData = this.itemsEdited;
-        this.sourceCollection[this._currentRow].rowStatus = 'U';
-        this.editItem(updateData);
-        this.commitEdit();
+        view.setCellData(e.row, 'status', 'U');
     }
 
     validation() {
