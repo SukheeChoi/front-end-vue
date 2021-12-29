@@ -21,37 +21,6 @@ export class GridApi extends CollectionView {
         return this.items.length;
     }
 
-    // async getData() {
-    //     const totalCount = 1999;
-
-    //     const data = [];
-    //     for (let i = 0; i <= totalCount; i++) {
-    //         // for(let i=startIndex; i<=endIndex; i++){
-    //         data.push({
-    //             systemDiv: 'SYSTEM_' + String(i).padStart(4, '0'),
-    //             bizCd: 'BIZCODE_' + String(i).padStart(4, '0'),
-    //             bizGrpId: '',
-    //             bizGrpNm: '',
-    //             bizGrpDesc: '',
-    //             useYn: 'Y',
-    //         });
-    //     }
-
-    //     return {
-    //         totalCount,
-    //         data,
-    //     };
-    // }
-
-    // async getList() {
-    //     // setTimeout(() => restApi.getList('http://localhost:8000'), 3000);
-
-    //     const { data } = await this.getData();
-    //     // console.log('push완료', data);
-    //     setTimeout(() => this.push(data), 3000);
-    //     // this.result.sourceCollection = data;
-    // }
-
     getList(qry = {}, paging = {}) {
         let opt = paging;
 
@@ -62,7 +31,7 @@ export class GridApi extends CollectionView {
             };
         }
 
-        let reqData = restApi.getList(this._uri, Object.assign(qry, opt));
+        let reqData = restApi.getList(this._uri, Object.assign(qry, opt), this._id);
 
         if (reqData && reqData.data.length > 0) {
             this.clear();
@@ -72,7 +41,7 @@ export class GridApi extends CollectionView {
 
     addRow() {
         let addData = _.cloneDeep(this._model);
-        addData.rowState = 'C';
+        addData.rowStatus = 'C';
 
         this.addNew(addData);
         this.commitNew();
@@ -91,14 +60,14 @@ export class GridApi extends CollectionView {
         let delList = [];
 
         for (let value of this._values) {
-            if (value.rowState != 'C') {
+            if (value.rowStatus != 'C') {
                 delList.push(value);
             }
         }
 
         if (delList.length == 0) {
             for (let value of this._values) {
-                if (value.rowState == 'C') {
+                if (value.rowStatus == 'C') {
                     this.remove(value);
                 }
             }
@@ -107,7 +76,7 @@ export class GridApi extends CollectionView {
             return;
         }
 
-        restApi.removeList(this._uri, delList);
+        restApi.removeList(this._uri, delList, this._id);
     }
 
     save() {
@@ -134,7 +103,7 @@ export class GridApi extends CollectionView {
             }
         }
 
-        restApi.saveList(this._uri, saveList);
+        restApi.saveList(this._uri, saveList, this._id);
     }
 
     rowChanged(view, e) {
@@ -143,7 +112,7 @@ export class GridApi extends CollectionView {
     }
 
     rowEditEnding(view, e) {
-        if (this.sourceCollection[this._currentRow].rowState == 'C') {
+        if (this.sourceCollection[this._currentRow].rowStatus == 'C') {
             return;
         }
 
@@ -154,7 +123,7 @@ export class GridApi extends CollectionView {
         }
 
         let updateData = this.itemsEdited;
-        this.sourceCollection[this._currentRow].rowState = 'U';
+        this.sourceCollection[this._currentRow].rowStatus = 'U';
         this.editItem(updateData);
         this.commitEdit();
     }
