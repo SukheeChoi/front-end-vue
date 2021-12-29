@@ -38,7 +38,7 @@ $size-chk: 16px;
         margin-left: 10px;
     }
     label {
-        padding-left: calc($size-chk + 4px);
+        padding-left: calc(#{$size-chk} + 4px);
         position: relative;
         display: inline-flex;
         align-items: center;
