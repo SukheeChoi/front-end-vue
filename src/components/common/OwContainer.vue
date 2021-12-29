@@ -6,6 +6,7 @@
 <script>
 export default {
   name: 'OwContainer',
+  props: {},
   setup(props, context) {
     const slots = context.slots.default();
     let counts = 0;

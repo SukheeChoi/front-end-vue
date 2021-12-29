@@ -30,20 +30,11 @@
 <script>
 import { ref } from 'vue';
 
-import OwContainer from '@/components/common/OwContainer';
-import OwContent from '@/components/common/OwContent';
-
-import OwPanel from '@/components/common/OwPanel';
-
 import { Control } from '@grapecity/wijmo';
 
 export default {
   name: 'AppDashboard',
-  components: {
-    OwContainer,
-    OwContent,
-    OwPanel,
-  },
+  components: {},
   props: ['components'],
   setup(props) {
     const root = ref(null);

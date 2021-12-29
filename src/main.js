@@ -14,6 +14,8 @@ import { registerGridFilter } from '@grapecity/wijmo.vue2.grid.filter';
 import { registerGridGrouppanel } from '@grapecity/wijmo.vue2.grid.grouppanel';
 import { registerNav } from '@grapecity/wijmo.vue2.nav';
 
+import { registerOwComponents } from '@/components/common';
+
 import mixin from '@/mixins';
 import { setLicenseKey } from '@grapecity/wijmo';
 
@@ -33,6 +35,8 @@ registerGridDetail(app);
 registerGridFilter(app);
 registerGridGrouppanel(app);
 registerNav(app);
+
+registerOwComponents(app);
 
 app.mixin(mixin);
 
