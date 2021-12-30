@@ -4,17 +4,18 @@
     <div class="ow-radio">
       <input
         type="radio"
-        :id="`${expando}-${index}`"
-        :name="expando"
+        :id="`${unique}-${index}`"
+        :name="unique"
         :value="value"
         v-model="checkedValue"
       />
-      <label :for="`${expando}-${index}`">{{ name }}</label>
+      <label :for="`${unique}-${index}`">{{ name }}</label>
     </div>
   </template>
 </template>
 <script>
 import { computed } from 'vue';
+import { expando } from '@/utils';
 export default {
   name: 'OwRadio',
   props: {
@@ -27,9 +28,7 @@ export default {
     modelValue: String,
   },
   setup(props, { emit }) {
-    const expando = computed(() => {
-      return 'ow-radio-' + ('' + Math.random()).replace(/\D/g, '');
-    });
+    const unique = computed(() => expando('ow-radio'));
 
     const checkedValue = computed({
       get: () => props.modelValue,
@@ -37,7 +36,7 @@ export default {
     });
 
     return {
-      expando,
+      unique,
       checkedValue,
     };
   },

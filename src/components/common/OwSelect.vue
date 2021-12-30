@@ -1,6 +1,6 @@
 <template>
   <div class="ow-select" ref="root">
-    <select :id="expando" v-model="selectedValue">
+    <select :id="unique" v-model="selectedValue">
       <slot></slot>
       <option v-for="{ name, value } in items" :key="value" :value="value">
         {{ name }}
@@ -10,7 +10,7 @@
 </template>
 <script>
 import { ref, computed, onMounted } from 'vue';
-
+import { expando } from '@/utils';
 export default {
   name: 'OwSelect',
   props: {
@@ -26,9 +26,7 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const expando = computed(() => {
-      return 'ow-select-' + ('' + Math.random()).replace(/\D/g, '');
-    });
+    const unique = computed(() => expando('ow-select'));
 
     const isNumber = computed(() => {
       return (
@@ -47,7 +45,7 @@ export default {
       if (props.label) {
         const label = document.createElement('label');
         label.classList.add('t');
-        label.setAttribute('for', expando.value);
+        label.setAttribute('for', unique.value);
         label.textContent = props.label;
         root.value.parentNode.insertBefore(label, root.value);
       }
@@ -55,7 +53,7 @@ export default {
 
     return {
       root,
-      expando,
+      unique,
       selectedValue,
     };
   },

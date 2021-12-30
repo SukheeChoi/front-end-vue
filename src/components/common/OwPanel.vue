@@ -1,6 +1,6 @@
 <template>
   <div
-    :id="expando"
+    :id="unique"
     class="ow-panel"
     :draggable="draggable"
     @dragstart="dragstart($event)"
@@ -24,7 +24,7 @@
 </template>
 <script>
 import { computed, ref } from 'vue';
-
+import { expando } from '@/utils';
 export default {
   name: 'OwPanel',
   props: {
@@ -36,18 +36,16 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const expando = computed(() => {
-      return 'ow-panel-' + ('' + Math.random()).replace(/\D/g, '');
-    });
+    const unique = computed(() => expando('ow-panel'));
 
-    const dragstart = (event) => emit('drag-start', { event, expando });
-    const dragover = (event) => emit('drag-over', { event, expando });
-    const dragfinish = (event) => emit('drag-finish', { event, expando });
-    const dragend = (event) => emit('drag-end', { event, expando });
+    const dragstart = (event) => emit('drag-start', { event, unique });
+    const dragover = (event) => emit('drag-over', { event, unique });
+    const dragfinish = (event) => emit('drag-finish', { event, unique });
+    const dragend = (event) => emit('drag-end', { event, unique });
 
     return {
       root,
-      expando,
+      unique,
       dragstart,
       dragover,
       dragfinish,
