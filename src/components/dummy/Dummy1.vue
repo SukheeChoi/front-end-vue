@@ -50,14 +50,15 @@
         <button type="button" class="ow-btn type-base" @click="openModal">
           Modal open
         </button>
-        <ow-alert message="오류가 발생했습니다." ref="alert" />
         <button type="button" class="ow-btn type-base" @click="openAlert">
           Alert open
         </button>
-        <ow-confirm message="동의합니까?" ref="confirm" />
         <button type="button" class="ow-btn type-base" @click="openConfirm">
           Confirm open
         </button>
+      </ow-content>
+      <ow-content>
+        <ow-linked-select :links="links"></ow-linked-select>
       </ow-content>
     </ow-container>
   </ow-panel>
@@ -72,6 +73,8 @@ import OwRadio from '@/components/common/OwRadio';
 
 import OwCheckColumn from '@@/com/components/wijmo/grid/OwCheckColumn';
 
+import OwLinkedSelect from '@/components/common/OwLinkedSelect';
+
 import OwModal from '@/components/common/OwModal';
 import { createApp, inject } from '@vue/runtime-dom';
 
@@ -85,6 +88,7 @@ export default {
     OwModal,
     OwContainer,
     OwContent,
+    OwLinkedSelect,
   },
   data() {
     return {
@@ -116,6 +120,27 @@ export default {
         { name: '라디오3', value: '라디오3' },
       ],
       checkedValue: '',
+      links: [
+        {
+          label: '메인',
+          items: [
+            {
+              name: 'main1',
+              value: 'main1',
+            },
+            {
+              name: 'main2',
+              value: 'main2',
+            },
+          ],
+          value: '',
+        },
+        {
+          label: '서브',
+          items: [],
+          value: '',
+        },
+      ],
     };
   },
   mounted() {

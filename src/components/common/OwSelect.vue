@@ -1,6 +1,6 @@
 <template>
   <div class="ow-select" ref="root">
-    <select :id="unique" v-model="selectedValue">
+    <select :id="unique" :disabled="items.length === 0" v-model="selectedValue">
       <slot></slot>
       <option v-for="{ name, value } in items" :key="value" :value="value">
         {{ name }}
