@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { expando } from '@/utils';
 export default {
   name: 'OwPanel',
