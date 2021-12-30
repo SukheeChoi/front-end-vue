@@ -1,11 +1,11 @@
 <template>
   <div class="ow-input" ref="root">
-    <input :id="expando" type="text" v-model="inputValue" />
+    <input :id="unique" type="text" v-model="inputValue" />
   </div>
 </template>
 <script>
 import { ref, computed, onMounted } from 'vue';
-
+import { expando } from '@/utils';
 export default {
   name: 'OwInput',
   props: {
@@ -15,9 +15,7 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const expando = computed(() => {
-      return 'ow-input-' + ('' + Math.random()).replace(/\D/g, '');
-    });
+    const unique = expando('ow-input');
 
     const inputValue = computed({
       get: () => props.modelValue,
@@ -28,7 +26,7 @@ export default {
       if (props.label) {
         const label = document.createElement('label');
         label.classList.add('t');
-        label.setAttribute('for', expando.value);
+        label.setAttribute('for', unique);
         label.textContent = props.label;
         root.value.parentNode.insertBefore(label, root.value);
       }
@@ -36,7 +34,7 @@ export default {
 
     return {
       root,
-      expando,
+      unique,
       inputValue,
     };
   },

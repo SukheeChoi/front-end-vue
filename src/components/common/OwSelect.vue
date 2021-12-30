@@ -26,7 +26,7 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const unique = computed(() => expando('ow-select'));
+    const unique = expando('ow-select');
 
     const isNumber = computed(() => {
       return (
@@ -45,7 +45,7 @@ export default {
       if (props.label) {
         const label = document.createElement('label');
         label.classList.add('t');
-        label.setAttribute('for', unique.value);
+        label.setAttribute('for', unique);
         label.textContent = props.label;
         root.value.parentNode.insertBefore(label, root.value);
       }

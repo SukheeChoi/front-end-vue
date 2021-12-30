@@ -33,7 +33,7 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const unique = computed(() => expando('ow-checkbox'));
+    const unique = expando('ow-checkbox');
 
     const checkedValues = computed({
       get: () => props.modelValue,

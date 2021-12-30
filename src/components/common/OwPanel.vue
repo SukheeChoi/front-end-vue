@@ -36,7 +36,7 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const unique = computed(() => expando('ow-panel'));
+    const unique = expando('ow-panel');
 
     const dragstart = (event) => emit('drag-start', { event, unique });
     const dragover = (event) => emit('drag-over', { event, unique });
