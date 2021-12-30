@@ -28,7 +28,7 @@ export default {
     modelValue: String,
   },
   setup(props, { emit }) {
-    const unique = computed(() => expando('ow-radio'));
+    const unique = expando('ow-radio');
 
     const checkedValue = computed({
       get: () => props.modelValue,

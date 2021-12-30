@@ -73,8 +73,7 @@ import OwRadio from '@/components/common/OwRadio';
 import OwCheckColumn from '@@/com/components/wijmo/grid/OwCheckColumn';
 
 import OwModal from '@/components/common/OwModal';
-import OwAlert from '@/components/common/OwAlert';
-import OwConfirm from '@/components/common/OwConfirm';
+import { createApp, inject } from '@vue/runtime-dom';
 
 export default {
   name: 'Dummy1',
@@ -84,8 +83,6 @@ export default {
     OwSelect,
     OwRadio,
     OwModal,
-    OwAlert,
-    OwConfirm,
     OwContainer,
     OwContent,
   },
@@ -124,6 +121,10 @@ export default {
   mounted() {
     console.log(this.columns);
   },
+  setup() {
+    const $dialog = inject('$dialog');
+    console.log('$dialog1', $dialog);
+  },
   methods: {
     onAccept: function (...args) {
       console.log('onAccept:', args);
@@ -131,16 +132,24 @@ export default {
     onCancel: function (...args) {
       console.log('onCancel:', args);
     },
-    openModal: function () {
-      this.$refs.modal.open();
+    openModal: async function () {
+      const ok = await this.$refs.modal.open();
+      console.log('modal ok', ok);
     },
-    openAlert: function () {
-      console.log('open alert', this.$refs);
-      this.$refs.alert.open();
+    openAlert: async function () {
+      // console.log('open alert', this.$refs);
+      console.dir('this.$dialog');
+      // const ok = await this.$dialog.alert('hi');
+      const ok = await this.alert('hi');
+      console.log('dummy ok', ok);
+      // this.$dialog.alert();
+      // this.$refs.alert.open();
+      //this.$store.dispatch('openDialog', { instance: this });
     },
-    openConfirm: function () {
-      console.log('open confirm', this.$refs);
-      this.$refs.confirm.open();
+    openConfirm: async function () {
+      console.dir('this.$dialog');
+      const ok = await this.$dialog.confirm('hi');
+      console.log('dummy ok', ok);
     },
   },
   watch: {

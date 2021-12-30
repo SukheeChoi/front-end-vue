@@ -6,9 +6,7 @@
     <!-- 타이틀 -->
     <div class="modal-header">
       <h5 class="modal-title">{{ title }}</h5>
-      <button type="button" class="wj-hide close" @click="onCancel">
-        &#120;
-      </button>
+      <button type="button" class="close" @click="cancel">&#120;</button>
     </div>
     <div class="modal-body">
       <div class="layer-body" :style="`--max-height: ${size.height}px`">
@@ -17,23 +15,19 @@
       <div class="layer-foot">
         <div class="actions">
           <slot name="action">
-            <!-- onCancel -->
             <button
               type="button"
               class="ow-btn type-base color-gray"
-              ref="cancel"
               @click.prevent="onCancel"
             >
-              취소
+              {{ cancelButtonText }}
             </button>
-            <!-- onAccept -->
             <button
               type="button"
               class="ow-btn type-base color-dark"
-              ref="accept"
               @click.prevent="onAccept"
             >
-              확인
+              {{ acceptButtonText }}
             </button>
           </slot>
         </div>
@@ -41,8 +35,8 @@
         <template v-if="once">
           <div class="once">
             <div class="ow-checkbox">
-              <input type="checkbox" id="aaaa" />
-              <label for="aaaa">팝업창 다시보지 않음</label>
+              <input type="checkbox" :id="unique" />
+              <label :for="unique">팝업창 다시보지 않음</label>
             </div>
           </div>
         </template>
@@ -52,8 +46,12 @@
 </template>
 <script>
 import { PopupTrigger } from '@grapecity/wijmo.input';
-import { ref, computed, onMounted } from 'vue';
-const POPUP_SIZES = {
+
+import { ref, computed, onMounted, reactive, toRefs } from 'vue';
+
+import { expando } from '@/utils';
+
+const P = {
   XS: { width: 400, height: 320 },
   S: { width: 620, height: 522 },
   M: { width: 740, height: 522 },
@@ -63,6 +61,7 @@ const POPUP_SIZES = {
   XXXL: { width: 1541, height: 870 },
   XXXXL: { width: 1904, height: 913 },
 };
+
 export default {
   name: 'OwPopup',
   props: {
@@ -80,55 +79,57 @@ export default {
     },
   },
   setup(props) {
-    const size = computed(() => {
-      return POPUP_SIZES[props.type.toUpperCase()] || POPUP_SIZES.XS;
+    const state = reactive({
+      control: null,
+      unique: expando('ow-modal-once'),
+      acceptButtonText: '',
+      cancelButtonText: '',
+      size: computed(() => P[props.type.toUpperCase()] || P.XS),
+      resolvePromise: null,
+      prepareAccept: () => true,
+      prepareCancel: () => true,
     });
 
     const root = ref(null);
 
-    const resolvedPromise = Promise.resolve();
-
-    let control, accept, cancel;
-
-    const open = (_accept = () => {}, _cancel = () => {}) => {
-      control.value.hideTrigger = PopupTrigger.None;
-
-      control.value.show(true);
-
-      accept = _accept;
-      cancel = _cancel;
-
-      return resolvedPromise;
+    const open = (accept, cancel, options = {}) => {
+      return new Promise((resolve) => {
+        state.control.hideTrigger = PopupTrigger.None;
+        state.control.show(true);
+        state.acceptButtonText = options.acceptButtonText || '확인';
+        state.cancelButtonText = options.cancelButtonText || '취소';
+        if (accept && typeof accept === 'function') {
+          state.prepareAccept = accept;
+        }
+        if (cancel && typeof cancel === 'function') {
+          state.prepareCancel = accept;
+        }
+        state.resolvePromise = resolve;
+      });
     };
 
-    const close = () => {
-      control.value.hide();
+    const onAccept = () => {
+      if (state.prepareAccept(state.control)) {
+        state.resolvePromise(true);
+      }
     };
-
-    const onAccept = (e) => {
-      resolvedPromise.then(accept.call(this, e)).then(control.value.hide());
-    };
-
-    const onCancel = (e) => {
-      resolvedPromise.then(cancel.call(this, e)).then(control.value.hide());
-    };
-
-    const getControl = () => {
-      return control;
+    const onCancel = () => {
+      if (state.prepareCancel(state.control)) {
+        state.resolvePromise(false);
+        state.control.hide();
+      }
     };
 
     onMounted(() => {
-      control = ref(root.value.control);
+      state.control = root.value.control;
     });
 
     return {
       root,
-      size,
+      ...toRefs(state),
       open,
-      close,
       onAccept,
       onCancel,
-      getControl,
     };
   },
 };

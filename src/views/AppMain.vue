@@ -1,5 +1,4 @@
 <template>
-  <ow-spinner :loading="false"></ow-spinner>
   <div id="main">
     <app-header></app-header>
     <div id="wrap" class="wrap">
@@ -8,12 +7,12 @@
         <main class="content_body">
           <app-section
             class="ow-container col-2-set"
-            :class="{ 'main__article--show-left': hasLeft }"
+            :class="{ 'main__article--open-left': openLeft }"
             style="--size-1: 0; --gap-container: 0"
             ref="container"
           >
             <!-- Left -->
-            <div class="ow-content" :class="{ 'pr-2': hasLeft }">
+            <div class="ow-content" :class="{ 'pr-2': openLeft }">
               <app-article
                 class="ow-flex-wrap dir-col size-full"
                 v-show="left.show"
@@ -30,7 +29,7 @@
               </app-article>
             </div>
             <!-- Right -->
-            <div class="ow-content" :class="{ 'pl-2': hasLeft }">
+            <div class="ow-content" :class="{ 'pl-2': openLeft }">
               <app-article class="ow-flex-wrap size-full">
                 <div class="item">
                   <router-view></router-view>
@@ -44,6 +43,8 @@
   </div>
   <app-footer></app-footer>
   <app-aside ref="aside"></app-aside>
+  <ow-spinner :loading="false"></ow-spinner>
+  <ow-dialog ref="dialog"></ow-dialog>
 </template>
 <script>
 import AppHeader from '@/components/AppHeader';
@@ -55,7 +56,9 @@ import AppAside from '@/components/AppAside';
 
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
-import { computed } from 'vue';
+
+import { ref, computed, inject } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   components: {
@@ -90,19 +93,32 @@ export default {
       },
     },
   },
-  setup(props, context) {
-    console.log('setup', props, context);
+  setup(props) {
+    // Dialog Setting
+    const dialog = ref('dialog');
+    const $dialog = inject('$dialog');
+    $dialog.alert = async (message) => {
+      return await dialog.value.open({ type: 'alert', message });
+    };
+    $dialog.confirm = async (message) => {
+      return await dialog.value.open({ type: 'confirm', message });
+    };
 
-    const hasLeft = computed(() => props.left.show);
+    const store = useStore();
+
+    console.log('store', store);
+
+    const openLeft = computed(() => props.left.show);
 
     return {
-      hasLeft,
+      openLeft,
+      dialog,
     };
   },
 };
 </script>
 <style lang="scss" scoped>
-.main__article--show-left {
+.main__article--open-left {
   &.ow-container {
     --size-1: 446px !important;
   }
