@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <template v-if="label">
-      <label :for="unique" class="t">{{ label }}</label>
-    </template>
+  <div class="ow-combobox" ref="root">
     <wj-combo-box
       :id="unique"
       :itemsSource="dataMap.collectionView"
@@ -17,7 +14,7 @@
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { expando } from '@/utils';
 
 export default {
@@ -46,6 +43,8 @@ export default {
     modelValue: [String, Number, Object],
   },
   setup(props, { emit }) {
+    const root = ref(null);
+
     const dataMap = computed(() => {
       let items = props.items;
       if (items instanceof Array) {
@@ -73,7 +72,18 @@ export default {
       () => emit('update:modelValue', control.value.selectedValue)
     );
 
+    onMounted(() => {
+      if (props.label) {
+        const label = document.createElement('label');
+        label.setAttribute('for', props.unique);
+        label.classList.add('t');
+        label.textContent = props.label;
+        root.value.parentNode.insertBefore(label, root.value);
+      }
+    });
+
     return {
+      root,
       dataMap,
       initialized,
     };
