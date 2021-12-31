@@ -1,5 +1,6 @@
 <template>
-  <wj-combo-box :itemsSource="items" :initialized="initialized"> </wj-combo-box>
+  <wj-combo-box id="11111" :itemsSource="items" :initialized="initialized">
+  </wj-combo-box>
 </template>
 <script>
 import { reactive } from 'vue';
