@@ -5,13 +5,6 @@
       <ow-content>
         <wj-flex-grid :items-source="items">
           <ow-check-column :width="30" compare-key="name" v-model="columns" />
-          <wj-flex-grid-column header="셀렉트" :width="100">
-            <wj-flex-grid-cell-template cellType="Cell">
-              <ow-select :items="selectItems" v-model="selectedValue">
-                <option value="">전체</option>
-              </ow-select>
-            </wj-flex-grid-cell-template>
-          </wj-flex-grid-column>
           <wj-flex-grid-column header="라디오" :width="200">
             <wj-flex-grid-cell-template cellType="Cell">
               <ow-radio :items="radioItems" v-model="checkedValue" />
@@ -26,13 +19,6 @@
         </wj-flex-grid>
         <wj-flex-grid :items-source="items">
           <ow-check-column :width="30" compare-key="name" v-model="columns" />
-          <wj-flex-grid-column header="셀렉트" :width="100">
-            <wj-flex-grid-cell-template cellType="Cell">
-              <ow-select :items="selectItems" v-model="selectedValue">
-                <option value="">전체</option>
-              </ow-select>
-            </wj-flex-grid-cell-template>
-          </wj-flex-grid-column>
           <wj-flex-grid-column header="라디오" :width="200">
             <wj-flex-grid-cell-template cellType="Cell">
               <ow-radio :items="radioItems" v-model="checkedValue" />
@@ -58,7 +44,21 @@
         </button>
       </ow-content>
       <ow-content>
-        <ow-linked-select :links="links"></ow-linked-select>
+        <ow-select
+          label="items1"
+          :items="items1"
+          v-model="itemsValue"
+        ></ow-select>
+        <ow-select
+          label="items2"
+          :items="items2"
+          v-model="itemsValue"
+        ></ow-select>
+        <ow-select
+          label="items3"
+          :items="items3"
+          v-model="itemsValue"
+        ></ow-select>
       </ow-content>
     </ow-container>
   </ow-panel>
@@ -73,10 +73,11 @@ import OwRadio from '@/components/common/OwRadio';
 
 import OwCheckColumn from '@@/com/components/wijmo/grid/OwCheckColumn';
 
-import OwLinkedSelect from '@/components/common/OwLinkedSelect';
-
 import OwModal from '@/components/common/OwModal';
 import { createApp, inject } from '@vue/runtime-dom';
+
+import { CollectionView } from '@grapecity/wijmo';
+import { DataMap } from '@grapecity/wijmo.grid';
 
 export default {
   name: 'Dummy1',
@@ -88,7 +89,6 @@ export default {
     OwModal,
     OwContainer,
     OwContent,
-    OwLinkedSelect,
   },
   data() {
     return {
@@ -106,6 +106,29 @@ export default {
           name: '최',
         },
       ],
+      items1: new DataMap(
+        [
+          { name: '김name', value: '김value', etc: '김etc' },
+          { name: '이name', value: '이value', etc: '이etc' },
+          { name: '박name', value: '박value', etc: '박etc' },
+          { name: '최name', value: '최value', etc: '최etc' },
+        ],
+        'value',
+        'name'
+      ),
+      items2: new CollectionView([
+        { name: '김name', value: '김value', etc: '김etc' },
+        { name: '이name', value: '이value', etc: '이etc' },
+        { name: '박name', value: '박value', etc: '박etc' },
+        { name: '최name', value: '최value', etc: '최etc' },
+      ]),
+      items3: [
+        { name: '김name', value: '김value', etc: '김etc' },
+        { name: '이name', value: '이value', etc: '이etc' },
+        { name: '박name', value: '박value', etc: '박etc' },
+        { name: '최name', value: '최value', etc: '최etc' },
+      ],
+      itemsValue: '',
       columns: [{ name: '박' }],
       selectItems: [
         { name: '셀렉트1', value: '셀렉트1' },
@@ -144,13 +167,15 @@ export default {
     };
   },
   mounted() {
-    console.log(this.columns);
+    console.log('this', this);
   },
-  setup() {
-    const $dialog = inject('$dialog');
-    console.log('$dialog1', $dialog);
-  },
+  setup() {},
   methods: {
+    items2init: function (combo) {
+      console.log('items2init', combo);
+      this.asdf = combo;
+      console.log('items2init', this.asdf);
+    },
     onAccept: function (...args) {
       console.log('onAccept:', args);
     },
@@ -183,6 +208,11 @@ export default {
         console.log('watch column:', value);
       },
       deep: true,
+    },
+    itemsValue: {
+      handler(value) {
+        console.log('watch itemsValue', value);
+      },
     },
   },
 };
