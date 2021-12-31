@@ -17,7 +17,7 @@ export default {
     unique: {
       type: String,
       default: () => {
-        return expando('ow-select');
+        return expando('ow-input');
       },
     },
     modelValue: [String, Number, Object],
