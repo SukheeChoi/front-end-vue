@@ -1,6 +1,5 @@
 <template>
-  <wj-combo-box id="11111" :itemsSource="items" :initialized="initialized">
-  </wj-combo-box>
+  <wj-combo-box :itemsSource="items" :initialized="initialized"> </wj-combo-box>
 </template>
 <script>
 import { reactive } from 'vue';
@@ -15,8 +14,6 @@ export default {
       default: '',
     },
     options: String,
-    linked: String,
-    filter: String,
   },
   setup(props) {
     const { codeGroup } = reactive(props);
@@ -66,6 +63,11 @@ export default {
           { biz: 8, code: 2, name: 'JOB' },
           { biz: 9, code: 3, name: 'SIF' },
           { biz: 10, code: 3, name: 'SAL' },
+        ];
+      } else if (codeGroup == 'useYn') {
+        reqData = [
+          { name: 'Y', value: 'Y' },
+          { name: 'N', value: 'N' },
         ];
       }
     }

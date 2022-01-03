@@ -7,8 +7,6 @@ export class GridApi extends CollectionView {
     _uri = '';
     _model = '';
     _values = [];
-    _oldVal = null;
-    // _currentRow = 0;
 
     constructor(uri, model, id = '') {
         super([], { trackChanges: true });
@@ -21,54 +19,83 @@ export class GridApi extends CollectionView {
         return this.items.length;
     }
 
-    async getData() {
-        const totalCount = 10;
+    //-----------조회 테스트용 start -----------//
+    // async getData(opt) {
+    //     const totalCount = opt.totalCount;
+    //     let startIndex = (opt.pageNo - 1) * opt.pageSize + 1;
+    //     let endIndex = startIndex + opt.pageSize - 1;
+    //     if (endIndex > totalCount) {
+    //         endIndex = totalCount;
+    //     }
 
-        const data = [];
-        for (let i = 0; i <= totalCount; i++) {
-            // for(let i=startIndex; i<=endIndex; i++){
-            data.push({
-                systemDiv: 'SYSTEM_' + String(i).padStart(4, '0'),
-                bizCd: 'BIZCODE_' + String(i).padStart(4, '0'),
-                bizGrpId: '',
-                bizGrpNm: '',
-                bizGrpDesc: '',
-                useYn: 'Y',
-            });
-        }
+    //     const data = [];
+    //     for (let i = startIndex; i <= endIndex; i++) {
+    //         data.push({
+    //             systemDiv: 'SYSTEM_' + String(i).padStart(4, '0'),
+    //             bizCd: 'BIZCODE_' + String(i).padStart(4, '0'),
+    //             bizGrpId: '',
+    //             bizGrpNm: String(i).padStart(4, '0'),
+    //             bizGrpDesc: '',
+    //             useYn: 'Y',
+    //         });
+    //     }
 
-        return {
-            totalCount,
-            data,
-        };
-    }
+    //     return {
+    //         totalCount,
+    //         data,
+    //     };
+    // }
 
-    async getList() {
-        // setTimeout(() => restApi.getList('http://localhost:8000'), 3000);
-
-        const { data } = await this.getData();
-        this.sourceCollection = data;
-        // setTimeout(() => this.push(data), 3000);
-        // this.result.sourceCollection = data;
-    }
-
-    // getList(qry = {}, paging = {}) {
+    // async getList(qry = {}, paging = {}) {
     //     let opt = paging;
 
     //     if (paging.pageNo) {
     //         opt = {
     //             pageNo: paging.pageNo,
     //             pageSize: paging.pageSize,
+    //             totalCount: paging.totalCount,
     //         };
     //     }
 
-    // let reqData = restApi.getList(this._uri, Object.assign(qry, opt), this._id);
-
-    //     if (reqData && reqData.data.length > 0) {
-    //         this.clear();
-    //         this.push(reqData.data);
-    //     }
+    //     const { data } = await this.getData(opt);
+    //     this.sourceCollection = data;
+    //     // setTimeout(() => this.push(data), 3000);
     // }
+
+    //-----------조회 테스트용 end -----------//
+
+    async getList(qry = {}, paging = {}) {
+        let opt = paging;
+
+        if (paging.pageNo) {
+            opt = {
+                pageNo: paging.pageNo,
+                pageSize: paging.pageSize,
+                totalCount: paging.totalCount,
+            };
+        }
+
+        let startIndex = (opt.pageNo - 1) * opt.pageSize + 1;
+        let endIndex = startIndex + opt.pageSize - 1;
+        if (endIndex > opt.totalCount) {
+            endIndex = opt.totalCount;
+        }
+
+        let reqData = await restApi.getList(
+            this._uri,
+            Object.assign(qry, opt),
+            this._id
+        );
+
+        console.log('reqData', reqData);
+        console.log('this.sourceCollection', this.sourceCollection);
+        if (reqData) {
+            this.sourceCollection = reqData.data.data;
+            // for (let i = startIndex; i <= endIndex; i++) {
+            //     this.sourceCollection.push(reqData.data.data[i]);
+            // }
+        }
+    }
 
     add() {
         let addData = _.cloneDeep(this._model);
