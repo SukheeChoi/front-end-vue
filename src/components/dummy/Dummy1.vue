@@ -68,13 +68,11 @@ import OwContainer from '@/components/common/OwContainer';
 import OwContent from '@/components/common/OwContent';
 import OwPanel from '@/components/common/OwPanel';
 
-import OwSelect from '@/components/common/OwSelect';
 import OwRadio from '@/components/common/OwRadio';
 
 import OwCheckColumn from '@@/com/components/wijmo/grid/OwCheckColumn';
 
 import OwModal from '@/components/common/OwModal';
-import { createApp, inject } from '@vue/runtime-dom';
 
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
@@ -84,7 +82,6 @@ export default {
   components: {
     OwPanel,
     OwCheckColumn,
-    OwSelect,
     OwRadio,
     OwModal,
     OwContainer,
@@ -108,27 +105,27 @@ export default {
       ],
       items1: new DataMap(
         [
-          { name: '김name', value: '김value', etc: '김etc' },
-          { name: '이name', value: '이value', etc: '이etc' },
-          { name: '박name', value: '박value', etc: '박etc' },
-          { name: '최name', value: '최value', etc: '최etc' },
+          { name: '김name', value: 1, etc: '김etc' },
+          { name: '이name', value: 2, etc: '이etc' },
+          { name: '박name', value: 3, etc: '박etc' },
+          { name: '최name', value: 4, etc: '최etc' },
         ],
         'value',
         'name'
       ),
       items2: new CollectionView([
-        { name: '김name', value: '김value', etc: '김etc' },
-        { name: '이name', value: '이value', etc: '이etc' },
-        { name: '박name', value: '박value', etc: '박etc' },
-        { name: '최name', value: '최value', etc: '최etc' },
+        { name: '김name', value: 1, etc: '김etc' },
+        { name: '이name', value: 2, etc: '이etc' },
+        { name: '박name', value: 3, etc: '박etc' },
+        { name: '최name', value: 4, etc: '최etc' },
       ]),
       items3: [
-        { name: '김name', value: '김value', etc: '김etc' },
-        { name: '이name', value: '이value', etc: '이etc' },
-        { name: '박name', value: '박value', etc: '박etc' },
-        { name: '최name', value: '최value', etc: '최etc' },
+        { name: '김name', value: 1, etc: '김etc' },
+        { name: '이name', value: 2, etc: '이etc' },
+        { name: '박name', value: 3, etc: '박etc' },
+        { name: '최name', value: 4, etc: '최etc' },
       ],
-      itemsValue: '',
+      itemsValue: 0,
       columns: [{ name: '박' }],
       selectItems: [
         { name: '셀렉트1', value: '셀렉트1' },

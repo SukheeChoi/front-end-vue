@@ -14,7 +14,7 @@
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 
-import { computed, ref, watch, onMounted } from 'vue';
+import { computed, ref, watch, onMounted, reactive } from 'vue';
 import { expando } from '@/utils';
 
 export default {
@@ -30,7 +30,7 @@ export default {
     items: {
       type: Object,
       default: () => {
-        return new CollectionView();
+        return new DataMap(new CollectionView(), 'value', 'name');
       },
       validator: (items) => {
         return (
@@ -46,20 +46,19 @@ export default {
     const root = ref(null);
 
     const dataMap = computed(() => {
-      let items = props.items;
-      if (items instanceof Array) {
-        items = new CollectionView(items);
+      if (
+        props.items instanceof Array ||
+        props.items instanceof CollectionView
+      ) {
+        return reactive(new DataMap(props.items, 'value', 'name'));
       }
-      if (items instanceof CollectionView) {
-        items = new DataMap(items, 'value', 'name');
-      }
-      return items;
+      return props.items;
     });
 
     const control = ref({ selectedValue: props.modelValue });
     const initialized = (combo) => {
-      combo.selectedValue = control.value.selectedValue;
       control.value = combo;
+      control.value.selectedValue = combo.selectedValue;
     };
 
     watch(

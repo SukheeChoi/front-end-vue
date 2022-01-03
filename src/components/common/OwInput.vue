@@ -20,7 +20,7 @@ export default {
         return expando('ow-input');
       },
     },
-    modelValue: [String, Number],
+    modelValue: [String],
   },
   setup(props, { emit }) {
     const root = ref(null);
