@@ -1,9 +1,9 @@
 <template>
   <div class="loginWrap">
-    <div class="owLiginWarp">
+    <div class="owLoginWarp">
       <div class="owLogin">
         <div class="mainLogin"><i>Oway</i></div>
-        <div class="lginGroup">
+        <div class="loginGroup">
           <label for="selcectCompany">회사선택</label>
           <select id="" v-model="companyType">
             <option value="" disabled selected hidden>회사를 선택하세요</option>
