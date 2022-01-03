@@ -6,6 +6,7 @@ module.exports = {
     port: process.env.VUE_APP_SERVER_PORT,
     https: false,
     overlay: false,
+    disableHostCheck: true
   },
   configureWebpack: {
     resolve: {

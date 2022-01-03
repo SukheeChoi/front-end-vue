@@ -51,25 +51,6 @@
     text-align: right !important;
 }
 
-// main left
-.col {
-    $fix: 'fix';
-
-    &[class*=#{$fix}] {
-        flex: 0 0 auto;
-    }
-
-    &.#{$fix}-left {
-        width: 446px;
-    }
-}
-
-[class^=container] {
-    .ow-panel {
-        height: auto;
-    }
-}
-
 // admin/mainLayout.vue 예제 헤더구조
 .tabs + .tabs {
     padding-top: calc(var(--bs-gutter) - $border-width);
@@ -215,17 +196,11 @@ fieldset {
     }
 
     label.t {
+        @include ellipsis(1);
         position: relative;
-        min-width: 25%;
+        width: 118px;
         font-weight: bold;
         white-space: nowrap;
-
-        // col-6 이하 min-width
-        @for $i from 1 through 6 {
-            @at-root .col-#{$i} & {
-                min-width: 35%;
-            }
-        }
         
         &::before {
             content: '';

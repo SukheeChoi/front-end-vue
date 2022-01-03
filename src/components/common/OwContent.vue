@@ -1,10 +1,10 @@
 <template>
-  <section>
+  <div class="ow-content">
     <slot></slot>
-  </section>
+  </div>
 </template>
 <script>
 export default {
-  name: 'AppSection',
+  name: 'OwContent',
 };
 </script>

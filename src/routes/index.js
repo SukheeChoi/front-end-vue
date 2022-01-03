@@ -34,12 +34,7 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/AppNotFound'),
-  },
-  {
-    path: '/oss-login',
-    name: 'login',
-    component: () => import('../views/login/OssLogin.vue'),
-  },
+  }
 ];
 
 const apps = (process.env.VUE_APP_APPS || '').split(',');

@@ -41,7 +41,7 @@ $panel-name: ".ow-panel";
     border: 2px solid #6980af;
     border-top: 0;
     background-color: #fff;
-    padding: var(--padding-panel, 10px 8px 20px);
+    padding: var(--ow-gutter);
     &.scroll{
       overflow-x: hidden;
       overflow-y: auto;

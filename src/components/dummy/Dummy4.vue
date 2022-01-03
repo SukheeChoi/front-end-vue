@@ -1,7 +1,7 @@
 <template>
   <ow-panel>
     <template #title> Dummy4 Title </template>
-    <template #body> Dummy4 Body </template>
+    Dummy4 Body
   </ow-panel>
 </template>
 <script>

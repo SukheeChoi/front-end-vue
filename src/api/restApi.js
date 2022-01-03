@@ -1,57 +1,52 @@
 import http from "./index";
 
 const RestApi = {
-    get(url, params) {
-        return http.get(url, { params: params });
+    get(url, params = {}, id = "") {
+        return http.get(url + "/get" + id, { params });
     },
 
-    getList(url, params) {
-        return http.get(url, params);
+    getList(url, params = {}, id = "") {
+        return http.get(url + "/get" + id + "List", { params });
     },
 
-    add(url, params) {
-        return http.post(url, params);
+    add(url, params = {}, id = "") {
+        return http.post(url + "/add" + id, { params });
     },
 
-    addList(url, params) {
-        return http.post(url, params);
+    addList(url, params = {}, id = "") {
+        return http.post(url + "/add" + id + "List", { params });
     },
 
-    modify(url, params) {
-        return http.post(url, params);
+    modify(url, params = {}, id = "") {
+        return http.post(url + "/modify" + id, { params });
     },
 
-    modifyList(url, params) {
-        return http.post(url, params);
+    modifyList(url, params = {}, id = "") {
+        return http.post(url + "/modify" + id + "List", { params });
     },
 
-    remove(url, params) {
-        return http.post(url, params);
+    remove(url, params = {}, id = "") {
+        return http.post(url + "/remove" + id, { params });
     },
 
-    removeList(url, params) {
-        return http.post(url, params);
+    removeList(url, params = {}, id = "") {
+        return http.post(url + "/remove" + id + "List", { params });
     },
 
-    save(url, params) {
-        return http.post(url, params);
+    save(url, params = {}, id = "") {
+        return http.post(url + "/save" + id, { params });
     },
 
-    approve(url, params) {
-        //return http.post(url, params);
-        return http.post(url, null, {
-            params: params
-        })
+    approve(url, params = {}, id = "") {
+        return http.post(url + "/approve" + id, { params });
     },
 
-    cancel(url, params) {
-        return http.post(url, params);
+    cancel(url, params = {}, id = "") {
+        return http.post(url + "/cancel" + id, { params });
     },
 
-    execute(url, params) {
-        return http.post(url, null, {
-            params: params
-        })
+    execute(url, params = {}, id = "") {
+        return http.post(url + "/execute" + id, { params });
     }
 }
 

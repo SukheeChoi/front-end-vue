@@ -4,17 +4,18 @@
     <div class="ow-checkbox">
       <input
         type="checkbox"
-        :id="`${expando}-${index}`"
-        :name="expando"
+        :id="`${unique}-${index}`"
+        :name="unique"
         :value="value"
         v-model="checkedValues"
       />
-      <label :for="`${expando}-${index}`">{{ name }}</label>
+      <label :for="`${unique}-${index}`">{{ name }}</label>
     </div>
   </template>
 </template>
 <script>
 import { computed } from 'vue';
+import { expando } from '@/utils';
 export default {
   name: 'OwCheckbox',
   props: {
@@ -32,9 +33,7 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const expando = computed(() => {
-      return 'ow-checkbox-' + ('' + Math.random()).replace(/\D/g, '');
-    });
+    const unique = expando('ow-checkbox');
 
     const checkedValues = computed({
       get: () => props.modelValue,
@@ -42,7 +41,7 @@ export default {
     });
 
     return {
-      expando,
+      unique,
       checkedValues,
     };
   },

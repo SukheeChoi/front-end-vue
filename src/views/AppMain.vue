@@ -1,26 +1,50 @@
 <template>
-  <ow-spinner :loading="false"></ow-spinner>
   <div id="main">
     <app-header></app-header>
     <div id="wrap" class="wrap">
-      <main class="content">
-        <app-nav></app-nav>
-        <app-section>
-          <div class="row">
-            <app-article class="col fix-left" v-if="left.show">
-              <the-action-plan></the-action-plan>
-              <the-approval></the-approval>
-            </app-article>
-            <app-article class="col">
-              <router-view></router-view>
-            </app-article>
-          </div>
-        </app-section>
-      </main>
+      <div class="content">
+        <app-nav class="content_tab"></app-nav>
+        <main class="content_body">
+          <app-section
+            class="ow-container col-2-set"
+            :class="{ 'main__article--open-left': openLeft }"
+            style="--size-1: 0; --gap-container: 0"
+            ref="container"
+          >
+            <!-- Left -->
+            <div class="ow-content" :class="{ 'pr-2': openLeft }">
+              <app-article
+                class="ow-flex-wrap dir-col size-full"
+                v-show="left.show"
+              >
+                <div
+                  class="item size-fix"
+                  style="--size: 70%; --bg: transparent"
+                >
+                  <the-action-plan></the-action-plan>
+                </div>
+                <div class="item">
+                  <the-approval></the-approval>
+                </div>
+              </app-article>
+            </div>
+            <!-- Right -->
+            <div class="ow-content" :class="{ 'pl-2': openLeft }">
+              <app-article class="ow-flex-wrap size-full">
+                <div class="item">
+                  <router-view></router-view>
+                </div>
+              </app-article>
+            </div>
+          </app-section>
+        </main>
+      </div>
     </div>
   </div>
   <app-footer></app-footer>
   <app-aside ref="aside"></app-aside>
+  <ow-spinner :loading="false"></ow-spinner>
+  <ow-dialog ref="dialog"></ow-dialog>
 </template>
 <script>
 import AppHeader from '@/components/AppHeader';
@@ -32,8 +56,9 @@ import AppAside from '@/components/AppAside';
 
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
-import { onMounted, ref, toRefs } from 'vue';
-import OwSpinner from '@/components/common/OwSpinner';
+
+import { ref, computed, inject } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   components: {
@@ -45,7 +70,6 @@ export default {
     AppAside,
     TheActionPlan,
     TheApproval,
-    OwSpinner,
   },
   props: {
     nav: {
@@ -69,14 +93,34 @@ export default {
       },
     },
   },
-  setup(props, context) {
-    console.log('setup', props, context);
+  setup(props) {
+    // Dialog Setting
+    const dialog = ref('dialog');
+    const $dialog = inject('$dialog');
+    $dialog.alert = async (message) => {
+      return await dialog.value.open({ type: 'alert', message });
+    };
+    $dialog.confirm = async (message) => {
+      return await dialog.value.open({ type: 'confirm', message });
+    };
 
-    const aside = ref('aside');
+    const store = useStore();
+
+    console.log('store', store);
+
+    const openLeft = computed(() => props.left.show);
 
     return {
-      aside,
+      openLeft,
+      dialog,
     };
   },
 };
 </script>
+<style lang="scss" scoped>
+.main__article--open-left {
+  &.ow-container {
+    --size-1: 446px !important;
+  }
+}
+</style>

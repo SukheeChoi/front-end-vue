@@ -42,8 +42,6 @@ $content-scroll-flag : 1536px;
     overflow-x: auto;
 
     .content_body {
-      padding-top: var(--bs-gutter);
-      padding-bottom: var(--bs-gutter);
       position: relative;
       flex: 1;
       border-top: 1px solid nth($clrs-border, 3);
@@ -534,8 +532,8 @@ $content-scroll-flag : 1536px;
   &.row-6-set{ @include grid-set('row', 6); }
 
   .ow-content {
-    padding: var(--padding-content, 8px 8px 8px);
-    gap: var(--gap-content, 10px);
+    padding: var(--bs-gutter);
+    gap: calc(var(--bs-gutter) * .5);
     background-color: var(--bg, #fff);
   }
 }

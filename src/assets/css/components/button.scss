@@ -426,6 +426,17 @@ $ow-btn: ".ow-btn";
       &:disabled {
         background: url(~@/assets/images/icon/icon-modify-dis.png) no-repeat 0 0;
       }
+      &.no-border {
+        &,
+        &:disabled,
+        &:hover {
+          width: 18px;
+          height: 18px;
+          background-image: url(~@/assets/images/icon/icon-modify-transparent.svg);
+          background-position: 50% 50%;
+          background-color: transparent;
+        }
+      }
     }
     &.print {
       background: url(~@/assets/images/icon/icon-print.png) no-repeat 0 0;
@@ -453,6 +464,17 @@ $ow-btn: ".ow-btn";
       }
       &:disabled {
         background: url(~@/assets/images/icon/icon-added-dis.png) no-repeat 0 0;
+      }
+      &.no-border {
+        &,
+        &:disabled,
+        &:hover {
+          width: 17px;
+          height: 17px;
+          background-image: url(~@/assets/images/icon/icon-added-transparent.svg);
+          background-position: 50% 50%;
+          background-color: transparent;
+        }
       }
     }
     &.file {

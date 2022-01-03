@@ -123,7 +123,8 @@
 
 /* 말줄임 */
 @mixin ellipsis($line) {
-  @if ($line=='1') {
+  @if ($line==1) {
+    display: block !important;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
