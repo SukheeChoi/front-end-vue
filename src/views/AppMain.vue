@@ -123,4 +123,7 @@ export default {
     --size-1: 446px !important;
   }
 }
+.content_body {
+  border: none !important;
+}
 </style>
