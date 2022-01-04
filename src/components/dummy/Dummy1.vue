@@ -67,6 +67,10 @@
           :items="checkedItems"
           v-model="checkedValues"
         ></ow-filter-checkbox>
+        <ow-filter-radio
+          :items="radioItems"
+          v-model="checkedValue"
+        ></ow-filter-radio>
       </ow-grid-content>
     </ow-grid-container>
   </ow-panel>
@@ -80,6 +84,7 @@ import OwCheckColumn from '@@/com/components/wijmo/grid/OwCheckColumn';
 
 import OwModal from '@/components/common/OwModal';
 import OwFilterCheckbox from '@/components/common/OwFilterCheckbox';
+import OwFilterRadio from '@/components/common/OwFilterRadio';
 
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
@@ -92,6 +97,7 @@ export default {
     OwRadio,
     OwModal,
     OwFilterCheckbox,
+    OwFilterRadio,
   },
   data() {
     return {

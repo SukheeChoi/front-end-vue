@@ -19,6 +19,12 @@ import { expando } from '@/utils';
 export default {
   name: 'OwRadio',
   props: {
+    unique: {
+      type: String,
+      default: () => {
+        return expando('ow-radio');
+      },
+    },
     items: {
       type: Array,
       default: () => {
@@ -28,15 +34,12 @@ export default {
     modelValue: String,
   },
   setup(props, { emit }) {
-    const unique = expando('ow-radio');
-
     const checkedValue = computed({
       get: () => props.modelValue,
       set: (value) => emit('update:modelValue', value),
     });
 
     return {
-      unique,
       checkedValue,
     };
   },
