@@ -1,8 +1,9 @@
 <template>
-  <wj-combo-box :itemsSource="items" :initialized="initialized"> </wj-combo-box>
+  <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all">
+  </wj-combo-box>
 </template>
 <script>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { CollectionView } from '@grapecity/wijmo';
 import restApi from '@/api/restApi.js';
 
@@ -14,12 +15,17 @@ export default {
       default: '',
     },
     options: String,
+    all: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const { codeGroup } = reactive(props);
 
     let items = reactive(new CollectionView([]));
     let reqData = null;
+    let all = ref(props.all);
 
     const uri = '/com/';
     const id = '';
@@ -87,6 +93,11 @@ export default {
 
     if (reqData && reqData.length > 0) {
       items.sourceCollection = reqData;
+    }
+
+    if (all.value) {
+      const allData = { code: 'all', name: '전체' };
+      items.sourceCollection.splice(0, 0, allData);
     }
 
     return {
