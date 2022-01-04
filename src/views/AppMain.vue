@@ -43,7 +43,7 @@
   </div>
   <app-footer></app-footer>
   <app-aside ref="aside"></app-aside>
-  <ow-spinner :loading="false"></ow-spinner>
+  <!-- <ow-spinner :loading="false"></ow-spinner> -->
   <ow-dialog ref="dialog"></ow-dialog>
 </template>
 <script>
@@ -97,11 +97,11 @@ export default {
     // Dialog Setting
     const dialog = ref('dialog');
     const $dialog = inject('$dialog');
-    $dialog.alert = async (message) => {
-      return await dialog.value.open({ type: 'alert', message });
+    $dialog.alert = (message) => {
+      return dialog.value.open({ type: 'alert', message });
     };
-    $dialog.confirm = async (message) => {
-      return await dialog.value.open({ type: 'confirm', message });
+    $dialog.confirm = (message) => {
+      return dialog.value.open({ type: 'confirm', message });
     };
 
     const store = useStore();
