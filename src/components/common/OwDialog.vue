@@ -53,7 +53,14 @@ export default {
 
     const root = ref(null);
 
-    const open = (options = {}) => {
+    const open = (
+      options = {
+        type: 'alert',
+        message: '',
+        acceptButtonText: '확인',
+        cancelButtonText: '취소',
+      }
+    ) => {
       return new Promise((resolve) => {
         state.control.hideTrigger = PopupTrigger.None;
         state.control.show(true);
