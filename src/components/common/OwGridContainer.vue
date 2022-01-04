@@ -1,31 +1,30 @@
 <template>
-  <div class="ow-container" :class="containerClass" :style="containerStyle">
+  <div class="ow-container" :style="computedStyle">
     <slot></slot>
   </div>
 </template>
 <script>
+import { computed } from 'vue';
+
+import _ from 'lodash';
+
 export default {
   name: 'OwGridContainer',
   props: {},
-  setup(props, context) {
-    const slots = context.slots.default();
-    let counts = 0;
-    for (const slot of slots) {
-      if (slot.type.name === 'OwGridContent') {
-        counts += 1;
-      }
-    }
-    const sizes = [];
-    for (let i = 0, length = counts - 1; i < length; i += 1) {
-      sizes.push(`--size-${i + 1}:auto;`);
-    }
+  setup(props, { slots }) {
+    const slot_defaults = slots.default();
 
-    const containerClass = `row-${counts}-set`;
-    const containerStyle = sizes.join(';');
+    const computedStyle = computed(() => {
+      const rows = slot_defaults.length;
+      return {
+        'grid-template-rows': _.repeat('minmax(0, auto) ', rows - 1).concat(
+          'minmax(0, 1fr)'
+        ),
+      };
+    });
 
     return {
-      containerClass,
-      containerStyle,
+      computedStyle,
     };
   },
 };
