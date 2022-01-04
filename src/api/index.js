@@ -56,32 +56,32 @@ instance.interceptors.response.use(
 
         if (status == 401 || status == 500) {
             console.log(error.response.data);
-            if (error.response.data.message === '401') {
-                const originalRequest = config;
-                //const refreshToken = await AsyncStorage.getItem('refreshToken');
-                const { data } = await axios.post(
-                  process.env.VUE_APP_SERVER_IP + '/com/Auth/ModifyToken',
-                  null,
-                  {
-                    params: { userId: store.state.login.userInfo.userId },
-                  }
-                );
+            if (error.response.data.message === 'STATUS_EXPIRED') {
+              const originalRequest = config;
+              //const refreshToken = await AsyncStorage.getItem('refreshToken');
+              const { data } = await axios.post(
+                process.env.VUE_APP_SERVER_IP + '/com/Auth/ModifyToken',
+                null,
+                {
+                  params: { userId: store.state.login.userInfo.userId },
+                }
+              );
 
-                const newAccessToken = data.data;
-                store.commit('setToken', newAccessToken);
-                //isTokenRefreshing = false;
-                axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
-                // 새로운 토큰으로 지연되었던 요청 진행
-                // onTokenRefreshed(newAccessToken);
-                //originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                //return axios(originalRequest);
-                onTokenRefreshed(newAccessToken);
+              const newAccessToken = data.data;
+              store.commit('setToken', newAccessToken);
+              //isTokenRefreshing = false;
+              axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+              // 새로운 토큰으로 지연되었던 요청 진행
+              // onTokenRefreshed(newAccessToken);
+              //originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+              //return axios(originalRequest);
+              onTokenRefreshed(newAccessToken);
             }
             // token 재발급 되는 동안 요청을 RefreshSubscribers에 저장
             const retryOriginalRequest = new Promise((resolve) => {
-                addRefreshSubscriber((accessToken) => {
-                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                    resolve(axios(originalRequest));
+                addRefreshSubscriber((newAccessToken) => {
+                  originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                  resolve(axios(originalRequest));
                 });
             });
             return retryOriginalRequest;
