@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
+import store from '../store';
 const routes = [
   {
     path: '/',
@@ -54,6 +54,23 @@ for (const app of apps) {
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  console.log('routing wait....................');
+  /*
+  console.log("routing wait....................");
+  if (to.fullPath !== '/login') {
+    router.push({path:'/login'})
+    next("/login")
+  }
+  */
+  const devMode = true;
+  if (devMode === false && to.fullPath !=='/login' && store.state.login.accessToken.length <= 0) {
+    console.log("auth error")
+    router.push("/login")
+  }
+  next();
 });
 
 export default router;
