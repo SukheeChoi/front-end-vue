@@ -19,6 +19,12 @@ import { expando } from '@/utils';
 export default {
   name: 'OwCheckbox',
   props: {
+    unique: {
+      type: String,
+      default: () => {
+        return expando('ow-checkbox');
+      },
+    },
     items: {
       type: Array,
       default: () => {
@@ -33,15 +39,12 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const unique = expando('ow-checkbox');
-
     const checkedValues = computed({
       get: () => props.modelValue,
       set: (value) => emit('update:modelValue', value),
     });
 
     return {
-      unique,
       checkedValues,
     };
   },
