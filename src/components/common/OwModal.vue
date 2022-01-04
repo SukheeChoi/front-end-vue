@@ -86,38 +86,38 @@ export default {
       cancelButtonText: '',
       size: computed(() => P[props.type.toUpperCase()] || P.XS),
       resolvePromise: null,
-      prepareAccept: () => true,
-      prepareCancel: () => true,
+      beforeAccept: () => true,
     });
 
     const root = ref(null);
 
-    const open = (accept, cancel, options = {}) => {
+    const open = (
+      accept,
+      options = {
+        acceptButtonText: '확인',
+        cancelButtonText: '취소',
+      }
+    ) => {
       return new Promise((resolve) => {
         state.control.hideTrigger = PopupTrigger.None;
         state.control.show(true);
         state.acceptButtonText = options.acceptButtonText || '확인';
         state.cancelButtonText = options.cancelButtonText || '취소';
         if (accept && typeof accept === 'function') {
-          state.prepareAccept = accept;
-        }
-        if (cancel && typeof cancel === 'function') {
-          state.prepareCancel = accept;
+          state.beforeAccept = accept;
         }
         state.resolvePromise = resolve;
       });
     };
 
     const onAccept = () => {
-      if (state.prepareAccept(state.control)) {
-        state.resolvePromise(true);
+      if (state.beforeAccept()) {
+        state.resolvePromise({ ok: true, control: state.control });
       }
     };
     const onCancel = () => {
-      if (state.prepareCancel(state.control)) {
-        state.resolvePromise(false);
-        state.control.hide();
-      }
+      state.resolvePromise({ ok: false, control: state.control });
+      state.control.hide();
     };
 
     onMounted(() => {
