@@ -61,7 +61,6 @@ instance.interceptors.response.use(
               //const refreshToken = await AsyncStorage.getItem('refreshToken');
               const { data } = await axios.post(
                 process.env.VUE_APP_SERVER_IP + '/com/Auth/ModifyToken',
-                null,
                 {
                   params: { userId: store.state.login.userInfo.userId },
                 }
