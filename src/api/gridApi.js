@@ -19,51 +19,6 @@ export class GridApi extends CollectionView {
         return this.items.length;
     }
 
-    //-----------조회 테스트용 start -----------//
-    // async getData(opt) {
-    //     const totalCount = opt.totalCount;
-    //     let startIndex = (opt.pageNo - 1) * opt.pageSize + 1;
-    //     let endIndex = startIndex + opt.pageSize - 1;
-    //     if (endIndex > totalCount) {
-    //         endIndex = totalCount;
-    //     }
-
-    //     const data = [];
-    //     for (let i = startIndex; i <= endIndex; i++) {
-    //         data.push({
-    //             systemDiv: 'SYSTEM_' + String(i).padStart(4, '0'),
-    //             bizCd: 'BIZCODE_' + String(i).padStart(4, '0'),
-    //             bizGrpId: '',
-    //             bizGrpNm: String(i).padStart(4, '0'),
-    //             bizGrpDesc: '',
-    //             useYn: 'Y',
-    //         });
-    //     }
-
-    //     return {
-    //         totalCount,
-    //         data,
-    //     };
-    // }
-
-    // async getList(qry = {}, paging = {}) {
-    //     let opt = paging;
-
-    //     if (paging.pageNo) {
-    //         opt = {
-    //             pageNo: paging.pageNo,
-    //             pageSize: paging.pageSize,
-    //             totalCount: paging.totalCount,
-    //         };
-    //     }
-
-    //     const { data } = await this.getData(opt);
-    //     this.sourceCollection = data;
-    //     // setTimeout(() => this.push(data), 3000);
-    // }
-
-    //-----------조회 테스트용 end -----------//
-
     async getList(qry = {}, paging = {}) {
         let opt = paging;
 
@@ -87,21 +42,16 @@ export class GridApi extends CollectionView {
             this._id
         );
 
-        console.log('reqData', reqData);
-        console.log('this.sourceCollection', this.sourceCollection);
-        if (reqData) {
-            this.sourceCollection = reqData.data.data;
-            // for (let i = startIndex; i <= endIndex; i++) {
-            //     this.sourceCollection.push(reqData.data.data[i]);
-            // }
-        }
+        this.sourceCollection = reqData.data.data;
     }
 
     add() {
         let addData = _.cloneDeep(this._model);
         addData.status = 'C';
-        this.addNew(addData);
-        this.commitNew();
+
+        this.sourceCollection.splice(0, 0, addData);
+        this.itemsAdded.push(addData);
+        this.refresh();
     }
 
     del() {
