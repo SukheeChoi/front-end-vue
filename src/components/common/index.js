@@ -1,25 +1,31 @@
 import OwCheckbox from '@/components/common/OwCheckbox';
-import OwContainer from '@/components/common/OwContainer';
-import OwContent from '@/components/common/OwContent';
 import OwDialog from '@/components/common/OwDialog';
+import OwFlexContainer from '@/components/common/OwFlexContainer';
+import OwFlexContent from '@/components/common/OwFlexContent';
+import OwGridContainer from '@/components/common/OwGridContainer';
+import OwGridContent from '@/components/common/OwGridContent';
 import OwInput from '@/components/common/OwInput';
 import OwModal from '@/components/common/OwModal';
 import OwPanel from '@/components/common/OwPanel';
 import OwRadio from '@/components/common/OwRadio';
 import OwSelect from '@/components/common/OwSelect';
 import OwSpinner from '@/components/common/OwSpinner';
+import OwTab from '@/components/common/OwTab';
 
 const COMMON_COMPONENTS = {
   OwCheckbox,
-  OwContainer,
-  OwContent,
   OwDialog,
+  OwFlexContainer,
+  OwFlexContent,
+  OwGridContainer,
+  OwGridContent,
   OwInput,
   OwModal,
   OwPanel,
   OwRadio,
   OwSelect,
   OwSpinner,
+  OwTab,
 };
 
 export function registerOwComponents(app) {

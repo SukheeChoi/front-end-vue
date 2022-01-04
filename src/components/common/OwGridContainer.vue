@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-  name: 'OwContainer',
+  name: 'OwGridContainer',
   props: {},
   setup(props, context) {
     const slots = context.slots.default();
