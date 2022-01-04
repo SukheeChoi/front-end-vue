@@ -1,14 +1,14 @@
 import restApi from "./restApi";
 
 class Login {
-    requestLogin(url, id, pw) {
-        const params = { "loginId": id, "password": pw };
+    requestLogin(url, id, pw, type) {
+        const params = { "loginId": id, "password": pw, "userType": type };
         return restApi.approve(url, params);
     }
 
     getUserInfo(url, id) {
         const params = { "userId": id };
-        return restApi.execute(url, params);
+        return restApi.get(url, params);
     }
 
     getUserAuth(url) {

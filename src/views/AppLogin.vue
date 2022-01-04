@@ -44,17 +44,17 @@
             <dd>
               <div class="radio-group">
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio7" name="radio-group-3" />
+                  <input type="radio" id="ow-radio7" name="radio-group-3" value="osstem"/>
                   <label for="ow-radio7">정직원</label>
                 </div>
 
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio9" name="radio-group-3" />
+                  <input type="radio" id="ow-radio9" name="radio-group-3" value="partner"/>
                   <label for="ow-radio9">협력사</label>
                 </div>
 
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio10" name="radio-group-3" />
+                  <input type="radio" id="ow-radio10" name="radio-group-3" value="contractor"/>
                   <label for="ow-radio10">도급직원</label>
                 </div>
               </div>
@@ -90,18 +90,21 @@ export default {
   },
   methods: {
     async getToken() {
-      const tokenData = await login.requestLogin('/com/login/do-login', this.loginId, this.password);
+      const tokenData = await login.requestLogin('/com/Auth/Login', this.loginId, this.password, 'osstem');
       if (tokenData.data.data !== null) {
-        const accessToken = tokenData.data.data;
+        const jsonObjData = JSON.parse(tokenData.data.data);
+        const accessToken = jsonObjData.accessToken;
+        const ttl = jsonObjData.ttl;
         //localStorage.setItem("token", accessToken);
-        //console.log(this.$store);
+        console.log(this.$store);
         this.$store.commit('setToken', accessToken);
+        this.$store.commit('setTtl', ttl);
         //console.log(test);
         return await this.getUserInfo();
       }
     },
     async getUserInfo() {
-      const userData = await login.getUserInfo('/com/login/user-info', this.loginId);
+      const userData = await login.getUserInfo('/com/Auth/UserInfo', this.loginId);
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         //localStorage.setItem("userInfo", JSON.stringify(userInfo));
@@ -111,7 +114,7 @@ export default {
       }
     },
     async getMenus() {
-      const menuData = await restApi.get('/com/menu/test', this.loginId);
+      const menuData = await restApi.get('/com/menu', this.loginId);
       if (menuData.data !== null) {
         const menuList = menuData.data;
         this.$store.commit('setMenus', menuList);

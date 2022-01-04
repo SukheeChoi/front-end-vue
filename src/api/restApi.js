@@ -38,7 +38,7 @@ const RestApi = {
     },
 
     approve(url, params = {}, id = "") {
-        return http.post(url + "/approve" + id, { params });
+        return http.post(url + "/approve" + id, null, { params });
     },
 
     cancel(url, params = {}, id = "") {
