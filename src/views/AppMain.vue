@@ -60,6 +60,8 @@ import TheApproval from '@@/eap/components/TheApproval';
 import { ref, computed, inject } from 'vue';
 import { useStore } from 'vuex';
 
+import _ from 'lodash';
+
 export default {
   components: {
     AppHeader,
@@ -97,11 +99,31 @@ export default {
     // Dialog Setting
     const dialog = ref('dialog');
     const $dialog = inject('$dialog');
-    $dialog.alert = (message) => {
-      return dialog.value.open({ type: 'alert', message });
+    $dialog.alert = (message, options = {}) => {
+      return dialog.value.open(
+        _.assignIn(
+          {
+            type: 'alert',
+            message,
+            acceptButtonText: '확인',
+            cancelButtonText: '취소',
+          },
+          options
+        )
+      );
     };
-    $dialog.confirm = (message) => {
-      return dialog.value.open({ type: 'confirm', message });
+    $dialog.confirm = (message, options = {}) => {
+      return dialog.value.open(
+        _.assignIn(
+          {
+            type: 'confirm',
+            message,
+            acceptButtonText: '확인',
+            cancelButtonText: '취소',
+          },
+          options
+        )
+      );
     };
 
     const store = useStore();

@@ -1,10 +1,10 @@
 export default {
   methods: {
-    alert: function (message) {
-      return this.$dialog.alert(message);
+    alert: function (message, options) {
+      return this.$dialog.alert(message, options);
     },
-    confirm: function (message) {
-      return this.$dialog.confirm(message);
+    confirm: function (message, options) {
+      return this.$dialog.confirm(message, options);
     },
   },
 };

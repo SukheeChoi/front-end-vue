@@ -53,21 +53,14 @@ export default {
 
     const root = ref(null);
 
-    const open = (
-      options = {
-        type: 'alert',
-        message: '',
-        acceptButtonText: '확인',
-        cancelButtonText: '취소',
-      }
-    ) => {
+    const open = (options) => {
       return new Promise((resolve) => {
         state.control.hideTrigger = PopupTrigger.None;
         state.control.show(true);
-        state.type = options.type || 'alert';
-        state.message = options.message || '';
-        state.acceptButtonText = options.acceptButtonText || '확인';
-        state.cancelButtonText = options.cancelButtonText || '취소';
+        state.type = options.type;
+        state.message = options.message;
+        state.acceptButtonText = options.acceptButtonText;
+        state.cancelButtonText = options.cancelButtonText;
         state.resolvePromise = resolve;
       });
     };
