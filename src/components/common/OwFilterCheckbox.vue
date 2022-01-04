@@ -54,14 +54,17 @@ export default {
       set: (value) => emit('update:modelValue', value),
     });
 
-    const allCheck = () => {
-      checkedValues.value.splice(0);
-      checkedValues.value.push(...props.items.map((item) => item.value));
-    };
-
     const isAllCheck = computed(
       () => props.items.length === checkedValues.value.length
     );
+
+    const allCheck = () => {
+      const isNotFull = !isAllCheck.value;
+      checkedValues.value.splice(0);
+      if (isNotFull) {
+        checkedValues.value.push(...props.items.map((item) => item.value));
+      }
+    };
 
     return {
       isAllCheck,
