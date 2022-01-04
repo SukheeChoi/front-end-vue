@@ -5,13 +5,13 @@
 </template>
 <script>
 export default {
-  name: 'OwContainer',
+  name: 'OwGridContainer',
   props: {},
   setup(props, context) {
     const slots = context.slots.default();
     let counts = 0;
     for (const slot of slots) {
-      if (slot.type.name === 'OwContent') {
+      if (slot.type.name === 'OwGridContent') {
         counts += 1;
       }
     }

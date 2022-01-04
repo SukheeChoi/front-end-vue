@@ -1,36 +1,38 @@
 <template>
   <ow-panel>
     <template #title> Dummy1 Title </template>
-    <ow-container>
-      <ow-content>
-        <wj-flex-grid :items-source="items">
-          <ow-check-column :width="30" compare-key="name" v-model="columns" />
-          <wj-flex-grid-column header="라디오" :width="200">
-            <wj-flex-grid-cell-template cellType="Cell">
-              <ow-radio :items="radioItems" v-model="checkedValue" />
-            </wj-flex-grid-cell-template>
-          </wj-flex-grid-column>
-          <wj-flex-grid-column header="이미지">
-            <wj-flex-grid-cell-template cellType="Cell">
-              <img src="@/assets/images/logo.png" />
-            </wj-flex-grid-cell-template>
-          </wj-flex-grid-column>
-          <wj-flex-grid-column header="이름" binding="name" />
-        </wj-flex-grid>
-        <wj-flex-grid :items-source="items">
-          <ow-check-column :width="30" compare-key="name" v-model="columns" />
-          <wj-flex-grid-column header="라디오" :width="200">
-            <wj-flex-grid-cell-template cellType="Cell">
-              <ow-radio :items="radioItems" v-model="checkedValue" />
-            </wj-flex-grid-cell-template>
-          </wj-flex-grid-column>
-          <wj-flex-grid-column header="이미지">
-            <wj-flex-grid-cell-template cellType="Cell">
-              <img src="@/assets/images/logo.png" />
-            </wj-flex-grid-cell-template>
-          </wj-flex-grid-column>
-          <wj-flex-grid-column header="이름" binding="name" />
-        </wj-flex-grid>
+    <ow-grid-container>
+      <ow-grid-content>
+        <ow-grid>
+          <wj-flex-grid :items-source="items" class="ow-grid">
+            <ow-check-column :width="30" compare-key="name" v-model="columns" />
+            <wj-flex-grid-column header="라디오" :width="200">
+              <wj-flex-grid-cell-template cellType="Cell">
+                <ow-radio :items="radioItems" v-model="checkedValue" />
+              </wj-flex-grid-cell-template>
+            </wj-flex-grid-column>
+            <wj-flex-grid-column header="이미지">
+              <wj-flex-grid-cell-template cellType="Cell">
+                <img src="@/assets/images/logo.png" />
+              </wj-flex-grid-cell-template>
+            </wj-flex-grid-column>
+            <wj-flex-grid-column header="이름" binding="name" />
+          </wj-flex-grid>
+          <wj-flex-grid :items-source="items">
+            <ow-check-column :width="30" compare-key="name" v-model="columns" />
+            <wj-flex-grid-column header="라디오" :width="200">
+              <wj-flex-grid-cell-template cellType="Cell">
+                <ow-radio :items="radioItems" v-model="checkedValue" />
+              </wj-flex-grid-cell-template>
+            </wj-flex-grid-column>
+            <wj-flex-grid-column header="이미지">
+              <wj-flex-grid-cell-template cellType="Cell">
+                <img src="@/assets/images/logo.png" />
+              </wj-flex-grid-cell-template>
+            </wj-flex-grid-column>
+            <wj-flex-grid-column header="이름" binding="name" />
+          </wj-flex-grid>
+        </ow-grid>
 
         <ow-modal type="XS" :once="false" ref="modal"> aa </ow-modal>
         <button type="button" class="ow-btn type-base" @click="openModal">
@@ -42,8 +44,8 @@
         <button type="button" class="ow-btn type-base" @click="openConfirm">
           Confirm open
         </button>
-      </ow-content>
-      <ow-content>
+      </ow-grid-content>
+      <ow-grid-content>
         <ow-select
           label="items1"
           :items="items1"
@@ -59,13 +61,17 @@
           :items="items3"
           v-model="itemsValue"
         ></ow-select>
-      </ow-content>
-    </ow-container>
+      </ow-grid-content>
+      <ow-grid-content>
+        <ow-filter-checkbox
+          :items="checkedItems"
+          v-model="checkedValues"
+        ></ow-filter-checkbox>
+      </ow-grid-content>
+    </ow-grid-container>
   </ow-panel>
 </template>
 <script>
-import OwContainer from '@/components/common/OwContainer';
-import OwContent from '@/components/common/OwContent';
 import OwPanel from '@/components/common/OwPanel';
 
 import OwRadio from '@/components/common/OwRadio';
@@ -73,6 +79,7 @@ import OwRadio from '@/components/common/OwRadio';
 import OwCheckColumn from '@@/com/components/wijmo/grid/OwCheckColumn';
 
 import OwModal from '@/components/common/OwModal';
+import OwFilterCheckbox from '@/components/common/OwFilterCheckbox';
 
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
@@ -84,8 +91,7 @@ export default {
     OwCheckColumn,
     OwRadio,
     OwModal,
-    OwContainer,
-    OwContent,
+    OwFilterCheckbox,
   },
   data() {
     return {
@@ -140,6 +146,12 @@ export default {
         { name: '라디오3', value: '라디오3' },
       ],
       checkedValue: '',
+      checkedItems: [
+        { name: '체크1', value: '체크1' },
+        { name: '체크2', value: '체크2' },
+        { name: '체크3', value: '체크3' },
+      ],
+      checkedValues: [],
       links: [
         {
           label: '메인',
@@ -210,6 +222,9 @@ export default {
       handler(value) {
         console.log('watch itemsValue', value);
       },
+    },
+    checkedValues: {
+      handler() {},
     },
   },
 };
