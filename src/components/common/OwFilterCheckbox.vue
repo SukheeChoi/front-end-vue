@@ -72,17 +72,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.btn-check-all {
-  display: inline-flex;
-  height: 20px;
-  padding: 0 10px;
-  align-items: center;
-  border-radius: 2px;
-  border: solid 1px $clr-checkbox-checked-line;
-  background-color: $clr-checkbox-checked;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: -1px;
-}
+// .btn-check-all {
+//   display: inline-flex;
+//   height: 20px;
+//   padding: 0 10px;
+//   align-items: center;
+//   border-radius: 2px;
+//   border: solid 1px $clr-checkbox-checked-line;
+//   background-color: $clr-checkbox-checked;
+//   color: #fff;
+//   font-size: 12px;
+//   font-weight: 700;
+//   letter-spacing: -1px;
+// }
 </style>
