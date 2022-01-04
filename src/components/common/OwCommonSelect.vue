@@ -75,6 +75,37 @@ export default {
           { name: 'Y', value: 'Y' },
           { name: 'N', value: 'N' },
         ];
+      } else if (codeGroup == 'totalSearch') {
+        reqData = [
+          {
+            name: '단어명',
+            value: '1',
+          },
+          {
+            name: '영문명',
+            value: '2',
+          },
+          {
+            name: '약어',
+            value: '3',
+          },
+          {
+            name: '정의',
+            value: '4',
+          },
+          {
+            name: '요청일자',
+            value: '5',
+          },
+          {
+            name: '요청업무코드',
+            value: '6',
+          },
+          {
+            name: '요청자명',
+            value: '7',
+          },
+        ];
       }
     }
 
