@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import { CollectionView } from '@grapecity/wijmo';
+import OwModal from '@/components/common/OwModal';
 
 export class GridApi extends CollectionView {
     _id = '';
@@ -15,39 +16,27 @@ export class GridApi extends CollectionView {
         this._model = model;
     }
 
-    getRowCount() {
+    async getRowCount() {
         return this.items.length;
     }
 
     async getList(qry = {}, paging = {}) {
         let opt = paging;
+        let reqData = await restApi.getList(this._uri, Object.assign(qry, opt), this._id);
 
-        if (paging.pageNo) {
-            opt = {
-                pageNo: paging.pageNo,
-                pageSize: paging.pageSize,
-                totalCount: paging.totalCount,
-            };
-        }
+        opt.totalCount = reqData.data.data.body.totalCount;
 
-        let startIndex = (opt.pageNo - 1) * opt.pageSize + 1;
-        let endIndex = startIndex + opt.pageSize - 1;
-        if (endIndex > opt.totalCount) {
-            endIndex = opt.totalCount;
-        }
+        console.log('reqData', reqData);
+        console.log('opt.totalCount', opt.totalCount);
 
-        let reqData = await restApi.getList(
-            this._uri,
-            Object.assign(qry, opt),
-            this._id
-        );
+        this.sourceCollection = reqData.data.data.body.data;
 
-        this.sourceCollection = reqData.data.data;
+        return opt.totalCount;
     }
 
     add() {
         let addData = _.cloneDeep(this._model);
-        addData.status = 'C';
+        addData.rowStatus = 'C';
 
         this.sourceCollection.splice(0, 0, addData);
         this.itemsAdded.push(addData);
@@ -113,14 +102,14 @@ export class GridApi extends CollectionView {
         const oldVal = view.getCellData(e.row, e.col),
             newVal = view.activeEditor.value;
 
-        if (view.getCellData(e.row, 'status') == 'C') {
+        if (view.getCellData(e.row, 'rowStatus') == 'C') {
             return;
         }
 
         if (oldVal == newVal) {
             return;
         }
-        view.setCellData(e.row, 'status', 'U');
+        view.setCellData(e.row, 'rowStatus', 'U');
     }
 
     validation() {
