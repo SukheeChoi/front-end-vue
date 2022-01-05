@@ -3,6 +3,7 @@
     <wj-combo-box
       :id="unique"
       :text-changed="textChanged"
+      :placeholder="placeholder"
       :initialized="initialized"
     ></wj-combo-box>
   </div>
@@ -19,6 +20,10 @@ export default {
       default: () => {
         return expando('ow-input');
       },
+    },
+    placeholder: {
+      type: String,
+      default: '',
     },
     modelValue: [String],
   },

@@ -5,6 +5,7 @@
       :itemsSource="dataMap.collectionView"
       :display-member-path="dataMap.displayMemberPath"
       :selected-value-path="dataMap.selectedValuePath"
+      :placeholder="placeholder"
       :initialized="initialized"
     >
     </wj-combo-box>
@@ -26,6 +27,10 @@ export default {
       default: () => {
         return expando('ow-select');
       },
+    },
+    placeholder: {
+      type: String,
+      default: '',
     },
     items: {
       type: Object,

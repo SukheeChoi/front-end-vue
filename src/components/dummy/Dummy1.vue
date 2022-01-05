@@ -43,6 +43,7 @@
         <ow-select label="items1" :items="items1" v-model="itemsValue"></ow-select>
         <ow-select label="items2" :items="items2" v-model="itemsValue"></ow-select>
         <ow-select label="items3" :items="items3" v-model="itemsValue"></ow-select>
+        <ow-input placeholder="asdfsadfasdf"></ow-input>
       </ow-content>
       <ow-content>
         <ow-filter-checkbox :items="checkedItems" v-model="checkedValues"></ow-filter-checkbox>
@@ -113,7 +114,7 @@ export default {
         { name: '박name', value: 3, etc: '박etc' },
         { name: '최name', value: 4, etc: '최etc' },
       ],
-      itemsValue: 0,
+      itemsValue: 4,
       columns: [{ name: '박' }],
       selectItems: [
         { name: '셀렉트1', value: '셀렉트1' },
