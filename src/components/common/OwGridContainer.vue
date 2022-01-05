@@ -4,22 +4,23 @@
   </div>
 </template>
 <script>
-import { computed } from 'vue';
-
-import _ from 'lodash';
+import { computed, ref } from 'vue';
 
 export default {
   name: 'OwGridContainer',
-  props: {},
+  props: {
+    gap: {
+      type: Number,
+      default: 4,
+    },
+  },
   setup(props, { slots }) {
-    const slot_defaults = slots.default();
-
+    const rows = (slots && slots.default && slots.default().length - 1) || 0;
+    const gap = ref(props.gap);
     const computedStyle = computed(() => {
-      const rows = slot_defaults.length;
       return {
-        'grid-template-rows': _.repeat('minmax(0, auto) ', rows - 1).concat(
-          'minmax(0, 1fr)'
-        ),
+        'grid-template-rows': `repeat(${rows}, auto) 1fr`,
+        '--gap-container': `${gap.value}px`,
       };
     });
 

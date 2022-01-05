@@ -13,6 +13,7 @@ export default {
       default: '',
       validator: (justify) => {
         return [
+          '',
           'flex-start',
           'flex-end',
           'center',
@@ -26,6 +27,7 @@ export default {
       default: '',
       validator: (align) => {
         return [
+          '',
           'flex-start',
           'flex-end',
           'center',
