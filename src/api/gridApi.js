@@ -1,19 +1,23 @@
 import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import { CollectionView } from '@grapecity/wijmo';
-import OwModal from '@/components/common/OwModal';
 
 export class GridApi extends CollectionView {
     _id = '';
     _uri = '';
     _model = '';
     _values = [];
+    _vm = null;
 
     constructor(uri, model, id = '') {
         super([], { trackChanges: true });
         this._id = id;
         this._uri = uri;
         this._model = model;
+    }
+
+    setInstance(vm) {
+        this._vm = vm;
     }
 
     async getRowCount() {
@@ -43,13 +47,14 @@ export class GridApi extends CollectionView {
         this.refresh();
     }
 
-    del() {
+    async del() {
         if (this._values.length == 0) {
-            alert('삭제할 자료를 선택하세요.');
+            this._vm.alert('삭제할 자료를 선택하세요.');
             return;
         }
 
-        if (!confirm('선택하신 자료를 삭제하시겠습니까?')) {
+        const ok = await this._vm.confirm('선택하신 자료를 삭제하시겠습니까?');
+        if (!ok) {
             return;
         }
 
@@ -71,13 +76,14 @@ export class GridApi extends CollectionView {
         }
     }
 
-    save() {
+    async save() {
         if (this.itemsAdded.length + this.itemsEdited.length == 0) {
-            alert('신규로 추가된 자료나 수정된 자료가 없습니다.');
+            this._vm.alert('신규로 추가된 자료나 수정된 자료가 없습니다.');
             return;
         }
 
-        if (!confirm('수정 혹은 추가된 자료를 저장하시겠습니까?')) {
+        const ok = await this._vm.confirm('수정 혹은 추가된 자료를 저장하시겠습니까?');
+        if (!ok) {
             return;
         }
 
