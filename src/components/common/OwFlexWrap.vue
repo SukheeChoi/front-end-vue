@@ -1,17 +1,13 @@
 <template>
-  <div class="item" :class="computedClass" :style="computedStyle">
+  <div class="ow-flex-wrap" :style="computedStyle">
     <slot></slot>
   </div>
 </template>
 <script>
 import { computed } from 'vue';
 export default {
-  name: 'OwFlexContent',
+  name: 'OwFlexWrap',
   props: {
-    fix: {
-      type: Boolean,
-      default: false,
-    },
     justify: {
       type: String,
       default: '',
@@ -32,20 +28,15 @@ export default {
     },
   },
   setup(props) {
-    const computedClass = computed(() => {
-      return {
-        'size-fix': props.fix,
-      };
-    });
     const computedStyle = computed(() => {
       return {
         'justify-content': props.justify,
         'align-items': props.align,
-        '--gap-item': `${props.gap}px`,
+        '--gap': `${props.gap}px`,
       };
     });
+
     return {
-      computedClass,
       computedStyle,
     };
   },

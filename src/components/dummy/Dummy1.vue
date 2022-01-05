@@ -1,8 +1,8 @@
 <template>
   <ow-panel>
     <template #title> Dummy1 Title </template>
-    <ow-grid-container>
-      <ow-grid-content>
+    <ow-container>
+      <ow-content>
         <ow-grid>
           <wj-flex-grid :items-source="items" class="ow-grid">
             <ow-check-column :width="30" compare-key="name" v-model="columns" />
@@ -35,44 +35,20 @@
         </ow-grid>
 
         <ow-modal type="XS" :once="false" ref="modal"> aa </ow-modal>
-        <button type="button" class="ow-btn type-base" @click="openModal">
-          Modal open
-        </button>
-        <button type="button" class="ow-btn type-base" @click="openAlert">
-          Alert open
-        </button>
-        <button type="button" class="ow-btn type-base" @click="openConfirm">
-          Confirm open
-        </button>
-      </ow-grid-content>
-      <ow-grid-content>
-        <ow-select
-          label="items1"
-          :items="items1"
-          v-model="itemsValue"
-        ></ow-select>
-        <ow-select
-          label="items2"
-          :items="items2"
-          v-model="itemsValue"
-        ></ow-select>
-        <ow-select
-          label="items3"
-          :items="items3"
-          v-model="itemsValue"
-        ></ow-select>
-      </ow-grid-content>
-      <ow-grid-content>
-        <ow-filter-checkbox
-          :items="checkedItems"
-          v-model="checkedValues"
-        ></ow-filter-checkbox>
-        <ow-filter-radio
-          :items="radioItems"
-          v-model="checkedValue"
-        ></ow-filter-radio>
-      </ow-grid-content>
-    </ow-grid-container>
+        <button type="button" class="ow-btn type-base" @click="openModal">Modal open</button>
+        <button type="button" class="ow-btn type-base" @click="openAlert">Alert open</button>
+        <button type="button" class="ow-btn type-base" @click="openConfirm">Confirm open</button>
+      </ow-content>
+      <ow-content>
+        <ow-select label="items1" :items="items1" v-model="itemsValue"></ow-select>
+        <ow-select label="items2" :items="items2" v-model="itemsValue"></ow-select>
+        <ow-select label="items3" :items="items3" v-model="itemsValue"></ow-select>
+      </ow-content>
+      <ow-content>
+        <ow-filter-checkbox :items="checkedItems" v-model="checkedValues"></ow-filter-checkbox>
+        <ow-filter-radio :items="radioItems" v-model="checkedValue"></ow-filter-radio>
+      </ow-content>
+    </ow-container>
   </ow-panel>
 </template>
 <script>

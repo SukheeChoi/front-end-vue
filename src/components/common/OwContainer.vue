@@ -7,7 +7,7 @@
 import { computed, ref } from 'vue';
 
 export default {
-  name: 'OwGridContainer',
+  name: 'OwContainer',
   props: {
     gap: {
       type: Number,
