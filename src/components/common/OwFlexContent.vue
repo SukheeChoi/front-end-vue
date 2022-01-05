@@ -16,29 +16,19 @@ export default {
       type: String,
       default: '',
       validator: (justify) => {
-        return [
-          '',
-          'flex-start',
-          'flex-end',
-          'center',
-          'space-between',
-          'space-around',
-        ].includes(justify);
+        return ['', 'flex-start', 'flex-end', 'center', 'space-between', 'space-around'].includes(justify);
       },
     },
     align: {
       type: String,
       default: '',
       validator: (align) => {
-        return [
-          '',
-          'flex-start',
-          'flex-end',
-          'center',
-          'baseline',
-          'stretch',
-        ].includes(align);
+        return ['', 'flex-start', 'flex-end', 'center', 'baseline', 'stretch'].includes(align);
       },
+    },
+    gap: {
+      type: Number,
+      default: 0,
     },
   },
   setup(props) {
@@ -51,6 +41,7 @@ export default {
       return {
         'justify-content': props.justify,
         'align-items': props.align,
+        '--gap-item': `${props.gap}px`,
       };
     });
     return {
