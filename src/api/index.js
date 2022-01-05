@@ -17,11 +17,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
     function(config) {
         // 요청을 보내기 전에 수행할 일
-        
+        /*
         if (store.state.login.accessToken.length <= 0 || store.state.login.userInfo.length <= 0) {
             router.push('/login');
         }
-        
+        */
         config.headers.Authorization = `Bearer ${store.state.login.accessToken}`
             //config.headers.Authorization = 'Bearer ' + localStorage.getItem("token");
         return config;
@@ -77,7 +77,12 @@ instance.interceptors.response.use(
               //return axios(originalRequest);
               onTokenRefreshed(newAccessToken);
             }
+            if (error.response.data.message === 'STATUS_MALFORMED') {
+                
+            }
+
             // token 재발급 되는 동안 요청을 RefreshSubscribers에 저장
+        
             const retryOriginalRequest = new Promise((resolve) => {
                 addRefreshSubscriber((newAccessToken) => {
                   originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
