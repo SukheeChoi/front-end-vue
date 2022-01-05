@@ -33,11 +33,7 @@ export default {
         return new DataMap(new CollectionView(), 'value', 'name');
       },
       validator: (items) => {
-        return (
-          items instanceof DataMap ||
-          items instanceof CollectionView ||
-          items instanceof Array
-        );
+        return items instanceof DataMap || items instanceof CollectionView || items instanceof Array;
       },
     },
     modelValue: [String, Number, Object],
@@ -46,10 +42,7 @@ export default {
     const root = ref(null);
 
     const dataMap = computed(() => {
-      if (
-        props.items instanceof Array ||
-        props.items instanceof CollectionView
-      ) {
+      if (props.items instanceof Array || props.items instanceof CollectionView) {
         return reactive(new DataMap(props.items, 'value', 'name'));
       }
       return props.items;
@@ -89,4 +82,23 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+label.t {
+  position: relative;
+  width: 118px;
+  font-weight: bold;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #333;
+    vertical-align: text-top;
+    margin-top: 6px;
+    margin-right: 4px;
+  }
+}
+</style>

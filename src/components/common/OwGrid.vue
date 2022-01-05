@@ -90,7 +90,7 @@ export default {
     );
     watch(
       () => state.pageSize,
-      () => (state.pageNo = 1)
+      () => emit('pageChange', (state.pageNo = 1), state.pageSize)
     );
 
     return {
