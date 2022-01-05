@@ -50,8 +50,8 @@ export default {
 
     const control = ref({ selectedValue: props.modelValue });
     const initialized = (combo) => {
+      combo.selectedValue = control.value.selectedValue;
       control.value = combo;
-      control.value.selectedValue = combo.selectedValue;
     };
 
     watch(
