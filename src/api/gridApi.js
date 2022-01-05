@@ -28,14 +28,14 @@ export class GridApi extends CollectionView {
         let opt = paging;
         let reqData = await restApi.getList(this._uri, Object.assign(qry, opt), this._id);
 
-        opt.totalCount = reqData.data.data.body.totalCount;
+        // opt.totalCount = reqData.data.data.body.totalCount;
 
         console.log('reqData', reqData);
-        console.log('opt.totalCount', opt.totalCount);
+        // console.log('opt.totalCount', opt.totalCount);
 
-        this.sourceCollection = reqData.data.data.body.data;
+        this.sourceCollection = reqData.data.data;
 
-        return opt.totalCount;
+        // return opt.totalCount;
     }
 
     add() {
@@ -48,6 +48,7 @@ export class GridApi extends CollectionView {
     }
 
     async del() {
+        console.log('여기이이', this._vm);
         if (this._values.length == 0) {
             this._vm.alert('삭제할 자료를 선택하세요.');
             return;
