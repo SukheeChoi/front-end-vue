@@ -1,37 +1,33 @@
 <template>
   <div class="ow-grid-wrap">
-    <ow-flex-container class="dir-col">
-      <ow-flex-content class="headline-wrap">
-        <ow-flex-container>
+    <ow-flex-wrap class="dir-col">
+      <ow-flex-item class="headline-wrap">
+        <ow-flex-wrap>
           <!-- left top -->
-          <ow-flex-content class="align-x-start">
+          <ow-flex-item class="align-x-start">
             <slot name="left"></slot>
-          </ow-flex-content>
+          </ow-flex-item>
           <!-- right top -->
-          <ow-flex-content class="align-x-end">
+          <ow-flex-item class="align-x-end">
             <slot name="right"></slot>
-          </ow-flex-content>
-        </ow-flex-container>
-      </ow-flex-content>
+          </ow-flex-item>
+        </ow-flex-wrap>
+      </ow-flex-item>
       <!-- grid -->
-      <ow-flex-content>
+      <ow-flex-item>
         <slot></slot>
-      </ow-flex-content>
+      </ow-flex-item>
       <!-- pagination -->
-      <ow-flex-content class="mt-5 mb-5">
+      <ow-flex-item class="mt-5 mb-5">
         <template v-if="state.hasPagination">
-          <ow-flex-container>
-            <ow-flex-content class="align-x-start" style="--gap-item: 2px">
+          <ow-flex-wrap>
+            <ow-flex-item class="align-x-start" style="--gap-item: 2px">
               <button type="button" class="ow-button type-icon">
                 <i class="fas fa-cog fa-fw" />
               </button>
-              <ow-select
-                :items="state.pageSizeList"
-                v-model="state.pageSize"
-                style="--width: 80px"
-              />
-            </ow-flex-content>
-            <ow-flex-content class="align-x-center">
+              <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
+            </ow-flex-item>
+            <ow-flex-item class="align-x-center">
               <b-pagination
                 class="ow-pagination"
                 first-class="go-first"
@@ -43,16 +39,16 @@
                 :limit="10"
                 v-model="state.pageNo"
               />
-            </ow-flex-content>
-            <ow-flex-content class="align-x-end">
+            </ow-flex-item>
+            <ow-flex-item class="align-x-end">
               <div class="counter-board">
                 전체 <span> {{ state.totalCount }} </span> 건
               </div>
-            </ow-flex-content>
-          </ow-flex-container>
+            </ow-flex-item>
+          </ow-flex-wrap>
         </template>
-      </ow-flex-content>
-    </ow-flex-container>
+      </ow-flex-item>
+    </ow-flex-wrap>
   </div>
 </template>
 <script>
