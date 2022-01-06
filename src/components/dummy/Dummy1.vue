@@ -49,7 +49,13 @@
       </ow-content>
       <ow-content>
         <ow-filter-checkbox :items="checkedItems" v-model="checkedValues"></ow-filter-checkbox>
-        <ow-filter-radio :items="radioItems" v-model="checkedValue"></ow-filter-radio>
+      </ow-content>
+      <ow-content>
+        <ow-flex-wrap>
+          <ow-flex-item fix style="width: 300px">
+            <ow-filter-radio :items="filterItems" v-model="checkedFilterValue"></ow-filter-radio>
+          </ow-flex-item>
+        </ow-flex-wrap>
       </ow-content>
     </ow-container>
   </ow-panel>
@@ -137,6 +143,19 @@ export default {
         { name: '체크3', value: '체크3' },
       ],
       checkedValues: [],
+      filterItems: [
+        { name: '전체', value: '' },
+        { name: '라디오1', value: '라디오1' },
+        { name: '라디오2', value: '라디오2' },
+        { name: '라디오3', value: '라디오3' },
+        { name: '라디오4', value: '라디오4' },
+        { name: '라디오5', value: '라디오5' },
+        { name: '라디오6', value: '라디오6' },
+        { name: '라디오7', value: '라디오7' },
+        { name: '라디오8', value: '라디오8' },
+        { name: '라디오9', value: '라디오9' },
+      ],
+      checkedFilterValue: '',
       links: [
         {
           label: '메인',
