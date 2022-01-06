@@ -25,15 +25,17 @@ export class GridApi extends CollectionView {
     }
 
     async getList(qry = {}, opt = {}) {
-        const _opt = {
-            pageNo: opt.pageNo,
-            pageSize: opt.pageSize,
-        };
-        qry = Object.assign({}, qry, _opt);
+        let _opt = {};
 
-        let reqData = await restApi.getList(this._uri, qry, this._id);
+        if (opt.pageNo && opt.pageSize) {
+            _opt = {
+                pageNo: opt.pageNo,
+                pageSize: opt.pageSize,
+            };
+        }
 
-        this.sourceCollection = reqData.data.data;
+        let resData = await restApi.getList(this._uri, Object.assign(qry, _opt), this._id);
+        this.sourceCollection = resData.data.data;
     }
 
     add() {
@@ -52,6 +54,7 @@ export class GridApi extends CollectionView {
         }
 
         const ok = await this._vm.confirm('선택하신 자료를 삭제하시겠습니까?');
+
         if (!ok) {
             return;
         }
@@ -59,7 +62,6 @@ export class GridApi extends CollectionView {
         let delList = [];
 
         for (let value of this._values) {
-            //remove가 실행되어야 itemsRemoved에 데이터가 쌓인다.
             this.remove(value);
         }
 
@@ -70,7 +72,7 @@ export class GridApi extends CollectionView {
         }
 
         if (delList.length > 0) {
-            restApi.removeList(this._uri, delList, this._id);
+            this.refreshQuery(await restApi.removeList(this._uri, delList, this._id));
         }
     }
 
@@ -99,7 +101,17 @@ export class GridApi extends CollectionView {
             }
         }
 
-        restApi.saveList(this._uri, saveList, this._id);
+        this.refreshQuery(await restApi.save(this._uri, saveList, this._id));
+    }
+
+    async refreshQuery(resData) {
+        if (resData.data) {
+            if (resData.data.code == "OK") {
+                this.getList();
+            } else {
+                await this._vm.alert(resData.data.message);
+            }
+        }
     }
 
     cellEditEnding(view, e) {
@@ -113,6 +125,7 @@ export class GridApi extends CollectionView {
         if (oldVal == newVal) {
             return;
         }
+
         view.setCellData(e.row, 'rowStatus', 'U');
     }
 
