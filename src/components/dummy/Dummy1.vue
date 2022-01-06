@@ -38,6 +38,8 @@
         <button type="button" class="ow-btn type-base" @click="openModal">Modal open</button>
         <button type="button" class="ow-btn type-base" @click="openAlert">Alert open</button>
         <button type="button" class="ow-btn type-base" @click="openConfirm">Confirm open</button>
+        <button type="button" class="ow-btn type-base" @click="$i18n.locale = 'ko'">ko</button>
+        <button type="button" class="ow-btn type-base" @click="$i18n.locale = 'en'">en</button>
       </ow-content>
       <ow-content>
         <ow-select label="items1" :items="items1" v-model="itemsValue"></ow-select>

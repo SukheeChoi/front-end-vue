@@ -1,9 +1,11 @@
 import { createI18n } from 'vue-i18n';
 
 import ko from '@/locales/ko';
+import en from '@/locales/en';
 
 const messages = {
   ko,
+  en,
 };
 
 export default createI18n({
