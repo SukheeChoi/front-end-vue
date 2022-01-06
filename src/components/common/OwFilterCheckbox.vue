@@ -1,6 +1,8 @@
 <template>
   <div class="checkbox-group has-btn" ref="root">
-    <button type="button" class="btn-check-all" :class="{ active: isAllCheck }" @click="allCheck">전체</button>
+    <template v-if="all">
+      <button type="button" class="btn-check-all" :class="{ active: isAllCheck }" @click="allCheck">전체</button>
+    </template>
     <template v-for="({ name, value }, index) in items" :key="value">
       <slot></slot>
       <div class="ow-checkbox">
@@ -25,6 +27,10 @@ export default {
     label: {
       type: String,
       default: '',
+    },
+    all: {
+      type: Boolean,
+      default: false,
     },
     items: {
       type: Array,

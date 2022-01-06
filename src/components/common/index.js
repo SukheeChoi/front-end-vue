@@ -74,7 +74,6 @@ const dialogDefaultOptions = {
 };
 
 export function implementOwDialog(ref) {
-  // setup
   $dialog.alert = (message, options = {}) => {
     return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options));
   };
