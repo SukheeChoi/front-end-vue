@@ -1,5 +1,5 @@
 <template>
-  <template v-if="show">
+  <template v-if="showLoadingImage">
     <div class="spinner-wrap">
       <div class="spinner-border text-primary" role="status">
         <span class="sr-only">Loading...</span>
@@ -9,23 +9,16 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 export default {
   name: 'Spinner',
-  props: {
-    loading: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  setup(props) {
-    let show = reactive(props.loading);
+  setup() {
+    const store = useStore();
+    const showLoadingImage = computed(() => store.getters.getShowLoadingImage);
 
-    // onMounted(() => {
-    setTimeout(() => (show = false), 3000);
-    // });
     return {
-      show,
+      showLoadingImage,
     };
   },
 };

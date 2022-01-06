@@ -13,14 +13,8 @@
           >
             <!-- Left -->
             <div class="ow-content" :class="{ 'pr-2': openLeft }">
-              <app-article
-                class="ow-flex-wrap dir-col size-full"
-                v-show="left.show"
-              >
-                <div
-                  class="item size-fix"
-                  style="--size: 70%; --bg: transparent"
-                >
+              <app-article class="ow-flex-wrap dir-col size-full" v-show="left.show">
+                <div class="item size-fix" style="--size: 70%; --bg: transparent">
                   <the-action-plan></the-action-plan>
                 </div>
                 <div class="item">
@@ -43,7 +37,8 @@
   </div>
   <app-footer></app-footer>
   <app-aside ref="aside"></app-aside>
-  <!-- <ow-spinner :loading="false"></ow-spinner> -->
+
+  <ow-spinner></ow-spinner>
   <ow-dialog ref="dialog"></ow-dialog>
 </template>
 <script>
@@ -128,11 +123,13 @@ export default {
 
     const store = useStore();
 
-    console.log('store', store);
+    console.log('showLoadingImage', store.state.showLoadingImage);
+    const showLoading = computed(() => store.state.showLoadingImage);
 
     const openLeft = computed(() => props.left.show);
 
     return {
+      showLoading,
       openLeft,
       dialog,
     };
