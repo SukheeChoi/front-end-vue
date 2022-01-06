@@ -1,3 +1,11 @@
+import { registerCore } from '@grapecity/wijmo.vue2.core';
+import { registerInput } from '@grapecity/wijmo.vue2.input';
+import { registerGrid } from '@grapecity/wijmo.vue2.grid';
+import { registerGridDetail } from '@grapecity/wijmo.vue2.grid.detail';
+import { registerGridFilter } from '@grapecity/wijmo.vue2.grid.filter';
+import { registerGridGrouppanel } from '@grapecity/wijmo.vue2.grid.grouppanel';
+import { registerNav } from '@grapecity/wijmo.vue2.nav';
+
 import OwCheckbox from '@/components/common/OwCheckbox';
 import OwContainer from '@/components/common/OwContainer';
 import OwContent from '@/components/common/OwContent';
@@ -16,6 +24,16 @@ import OwSpinner from '@/components/common/OwSpinner';
 import OwTab from '@/components/common/OwTab';
 
 import _ from 'lodash';
+
+export function registerWijmo(app) {
+  registerCore(app);
+  registerInput(app);
+  registerGrid(app);
+  registerGridDetail(app);
+  registerGridFilter(app);
+  registerGridGrouppanel(app);
+  registerNav(app);
+}
 
 const COMMON_COMPONENTS = {
   OwCheckbox,
@@ -40,6 +58,7 @@ export function registerOwComponents(app) {
   for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
     app.component(name, component);
   }
+  app.provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
 }
 
 const $dialog = {
@@ -53,10 +72,6 @@ const dialogDefaultOptions = {
   acceptButtonText: '확인',
   cancelButtonText: '취소',
 };
-
-export function registerOwDialog(app) {
-  app.provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
-}
 
 export function implementOwDialog(ref) {
   // setup
