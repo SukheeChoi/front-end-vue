@@ -15,6 +15,8 @@ import OwSelect from '@/components/common/OwSelect';
 import OwSpinner from '@/components/common/OwSpinner';
 import OwTab from '@/components/common/OwTab';
 
+import _ from 'lodash';
+
 const COMMON_COMPONENTS = {
   OwCheckbox,
   OwContainer,
@@ -40,10 +42,36 @@ export function registerOwComponents(app) {
   }
 }
 
+const $dialog = {
+  alert: () => {},
+  success: () => {},
+  error: () => {},
+  confirm: () => {},
+};
+
+const dialogDefaultOptions = {
+  acceptButtonText: '확인',
+  cancelButtonText: '취소',
+};
+
 export function registerOwDialog(app) {
-  const $dialog = {
-    alert: () => {},
-    confirm: () => {},
-  };
   app.provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
+}
+
+export function implementOwDialog(ref) {
+  // setup
+  $dialog.alert = (message, options = {}) => {
+    return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options));
+  };
+  $dialog.success = (message, options = {}) => {
+    return ref.value.open(
+      _.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'success' })
+    );
+  };
+  $dialog.error = (message, options = {}) => {
+    return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'error' }));
+  };
+  $dialog.confirm = (message, options = {}) => {
+    return ref.value.open(_.assignIn({ type: 'confirm', message }, dialogDefaultOptions, options));
+  };
 }

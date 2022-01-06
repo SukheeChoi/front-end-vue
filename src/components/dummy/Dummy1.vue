@@ -182,7 +182,7 @@ export default {
       // console.log('open alert', this.$refs);
       console.dir('this.$dialog');
       // const ok = await this.$dialog.alert('hi');
-      const ok = await this.alert('hi');
+      const ok = await this.error(this.$t('hello.world'));
       console.log('dummy ok', ok);
       // this.$dialog.alert();
       // this.$refs.alert.open();

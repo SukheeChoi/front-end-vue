@@ -52,10 +52,10 @@ import AppAside from '@/components/AppAside';
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
 
-import { ref, computed, inject } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 
-import _ from 'lodash';
+import { implementOwDialog } from '@/components/common';
 
 export default {
   components: {
@@ -93,33 +93,7 @@ export default {
   setup(props) {
     // Dialog Setting
     const dialog = ref('dialog');
-    const $dialog = inject('$dialog');
-    $dialog.alert = (message, options = {}) => {
-      return dialog.value.open(
-        _.assignIn(
-          {
-            type: 'alert',
-            message,
-            acceptButtonText: '확인',
-            cancelButtonText: '취소',
-          },
-          options
-        )
-      );
-    };
-    $dialog.confirm = (message, options = {}) => {
-      return dialog.value.open(
-        _.assignIn(
-          {
-            type: 'confirm',
-            message,
-            acceptButtonText: '확인',
-            cancelButtonText: '취소',
-          },
-          options
-        )
-      );
-    };
+    implementOwDialog(dialog);
 
     const store = useStore();
 
