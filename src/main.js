@@ -47,3 +47,5 @@ registerOwDialog(app);
 app.mixin(mixin);
 
 app.mount('#app');
+
+export { app };
