@@ -5,16 +5,15 @@ import store from '@/store';
 import i18n from '@/locales';
 
 import BootStrapVue from 'bootstrap-vue-3';
-
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
+import mixin from '@/mixins';
+
+import { setLicenseKey } from '@grapecity/wijmo';
 import '@grapecity/wijmo.styles/wijmo.css';
 
 import { registerWijmo, registerOwComponents } from '@/components/common';
-
-import mixin from '@/mixins';
-import { setLicenseKey } from '@grapecity/wijmo';
 
 setLicenseKey(process.env.VUE_APP_WIJMO_LICENSE_KEY);
 

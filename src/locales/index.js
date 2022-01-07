@@ -9,8 +9,8 @@ const messages = {
 };
 
 function loadMessage() {
-  const locales = require.context('@/app', true, /(\/locales\/).*\.json$/);
-  for (const key of locales.keys()) {
+  const context = require.context('@/app', true, /(\/locales\/).*\.json$/);
+  for (const key of context.keys()) {
     const unit = key.match(/[a-z]+/).at(0);
     const locale = key
       .match(/([A-Za-z0-9-_]+)\./)
@@ -20,7 +20,7 @@ function loadMessage() {
       if (typeof messages[locale] === 'undefined') {
         messages[locale] = {};
       }
-      messages[locale][unit] = locales(key) || {};
+      messages[locale][unit] = context(key) || {};
     }
   }
 }
