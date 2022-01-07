@@ -4,9 +4,16 @@
       <button type="button" class="ow-filter-btn-move prev" @click="move('prev')">&#60;</button>
     </template>
     <ul class="ow-filter-list" ref="filter">
-      <template v-for="({ name, value }, index) in items" :key="value">
+      <template v-for="({ name, value, disabled = false }, index) in items" :key="value">
         <li>
-          <input type="radio" :id="`${unique}-${index}`" :name="unique" :value="value" v-model="checkedValue" />
+          <input
+            type="radio"
+            :id="`${unique}-${index}`"
+            :name="unique"
+            :value="value"
+            :disabled="disabled"
+            v-model="checkedValue"
+          />
           <label :for="`${unique}-${index}`" class="ow-filter-button">
             {{ name }}
           </label>

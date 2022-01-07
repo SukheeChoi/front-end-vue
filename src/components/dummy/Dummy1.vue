@@ -140,7 +140,7 @@ export default {
       checkedValue: '',
       checkedItems: [
         { name: '체크1', value: '체크1' },
-        { name: '체크2', value: '체크2' },
+        { name: '체크2', value: '체크2', disabled: true },
         { name: '체크3', value: '체크3' },
       ],
       checkedValues: [],
@@ -148,7 +148,7 @@ export default {
         { name: '전체', value: '' },
         { name: '라디오1', value: '라디오1' },
         { name: '라디오2', value: '라디오2' },
-        { name: '라디오3', value: '라디오3' },
+        { name: '라디오3', value: '라디오3', disabled: true },
         { name: '라디오4', value: '라디오4' },
         { name: '라디오5', value: '라디오5' },
         { name: '라디오6', value: '라디오6' },

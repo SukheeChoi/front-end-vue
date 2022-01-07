@@ -1,8 +1,15 @@
 <template>
-  <template v-for="({ name, value }, index) in items" :key="value">
+  <template v-for="({ name, value, disabled = false }, index) in items" :key="value">
     <slot></slot>
     <div class="ow-radio">
-      <input type="radio" :id="`${unique}-${index}`" :name="unique" :value="value" v-model="checkedValue" />
+      <input
+        type="radio"
+        :id="`${unique}-${index}`"
+        :name="unique"
+        :value="value"
+        :disabled="disabled"
+        v-model="checkedValue"
+      />
       <label :for="`${unique}-${index}`">{{ name }}</label>
     </div>
   </template>
