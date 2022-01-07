@@ -75,7 +75,7 @@ export default {
     const state = reactive({
       pageSize: ref(props.pageSize),
       pageNo: ref(props.pageNo),
-      totalCount: ref(props.totalCount),
+      totalCount: computed(() => props.totalCount),
       hasPagination: computed(() => props.totalCount > props.pageSize),
       pageSizeList: computed(() =>
         [10, 20, 50, 100].map((value) => {
@@ -91,10 +91,6 @@ export default {
     watch(
       () => state.pageSize,
       () => emit('pageChange', (state.pageNo = 1), state.pageSize)
-    );
-    watch(
-      () => props.totalCount,
-      () => (state.totalCount = props.totalCount)
     );
 
     return {
