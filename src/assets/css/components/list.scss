@@ -500,3 +500,95 @@ $radius: 2px;
     }
   }
 }
+
+// 위즈모 List
+.ow-tree-menu{
+  &.type-1 {}
+  &.type-2 {
+    display: flex;
+    flex-direction: column ;
+    width: var( --menu-size , 100% ) ;
+    overflow: visible ;
+
+    > .wj-nodelist{
+      // 1depth
+      > .wj-node{
+        position: relative;
+        display: flex;
+        width: 100% ; height: 32px ;
+        align-items: center ;
+        padding:0 16px ; 
+        color: nth($clrs-achromatic, 2);
+        font-size:13px; 
+        font-weight: 700 ;
+        letter-spacing: -.5px ;
+        background-color: #fff;
+        box-shadow: 0 4px 8px 0 rgba(14, 31, 53, 0.1), 0 1px 4px 0 rgba(14, 31, 53, 0.12) , inset 0 -1px 0 0 #e2e6ec;
+        &:before {
+          position: absolute;
+          right : 10px; top:50% ; 
+          margin:0; opacity: 1 ;
+          display: inline-flex;
+          border-bottom: 2px solid #525c68;
+          border-right: 2px solid #525c68;
+          border-top:0 ; 
+          border-left: 0 ; 
+          width: 8px;
+          height: 8px;
+          transform: translateY( -50% ) rotate(-135deg);
+        }
+        &.wj-state-collapsed{
+          &:before {
+            transform: translateY( -50% ) rotate(45deg);
+          }
+        }
+        .wj-node-text{}
+        // 닫혀있을 경우
+        &.wj-state-collapsed{}
+      }
+      // 2depth
+      > .wj-nodelist{
+        display: flex;
+        padding:10px ; 
+        flex-direction: column ;
+        gap:4px ; 
+        .wj-node{
+          position: relative;
+          display: flex;
+          width: 100% ; height:24px; 
+          align-items: center ;
+          justify-content: center ;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) ;
+          border: solid 1px #cbd5de;
+          background-color: #fff;
+          font-size:13px ; 
+          color:#666 ; 
+          font-weight: 700 ;
+          padding:0; 
+          &:before {
+            content : none ; 
+          }
+          &:not(.add-item).wj-state-selected{
+            background-color: #5d7b92;
+            border-color:#506574 ; 
+            color:#fff ; 
+          }
+          &.add-item {
+            justify-content: flex-start;
+            padding-left:22px ;
+            margin-top:6px ;
+            &:after {
+              content :"" ; 
+              display: inline-flex;
+              width: 10px ; height:10px; 
+              position: absolute;
+              right: 10px; top:50%; transform:translateY( -50% ) ; 
+              background: url(~@/assets/images/icon/icon-add.png) no-repeat 0 0;
+            }
+          }
+          .wj-node-text{}
+        }
+      }
+    }
+  }
+}
