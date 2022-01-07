@@ -674,32 +674,17 @@ $ow-btn: ".ow-btn";
       position: relative;
       .triangle {
         @include pos-center;
-        width: 6px;
-        height: 6px;
+        width: 8px;
+        height: 8px;
         border: 1px solid #fff;
         border-width: 0 0 2px 2px;
         transform: translate(-50%, -50%) rotate(45deg);
-        &.black {
-          border-color: #525c68;
-        }
-        &.top {
-          transform: translate(-50%, -50%) rotate(135deg);
-        }
         &.right {
           transform: translate(-50%, -50%) rotate(-135deg);
-        }
-        &.bottom {
-          transform: translate(-50%, -50%) rotate(315deg);
         }
         + .triangle {
           left: 10px;
         }
-      }
-      &.circle {
-        @include xs(16, 16, 0);
-        @include box-shadow(0,2px,4px,0.12);
-        border-radius: 50%;
-        background-color: nth($clrs-achromatic, 6);
       }
     }
     &.cross {
