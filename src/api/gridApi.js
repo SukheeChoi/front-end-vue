@@ -22,11 +22,24 @@ export class GridApi extends CollectionView {
         this._newValues = utils.copyDefaultValues(model);
     }
 
-    setInstance(vm, view, qry = {}, opt = {}) {
+    setInstance(vm, view, qry = null, opt = null, autoLoading = true) {
         this._vm = vm;
+        view.cellEditEnding.addHandler(this.valid);
+
+        if (qry == null) {
+            qry = this._vm.qry;
+        }
+
+        if (opt == null) {
+            opt = this._vm.opt;
+        }
+
         this._qry = qry;
         this._opt = opt;
-        view.cellEditEnding.addHandler(this.valid);
+
+        if (autoLoading) {
+            this.getList();
+        }
     }
 
     async getRowCount() {
@@ -69,17 +82,19 @@ export class GridApi extends CollectionView {
         let delList = [];
 
         for (let value of this._values) {
-            this.remove(value);
-        }
-
-        if (this.itemsRemoved.length > 0) {
-            for (let i = 0; i < this.itemsRemoved.length; i++) {
-                delList.push(this.itemsRemoved.at(i));
+            if (value.rowStatus != 'C') {
+                delList.push(value);
             }
         }
 
         if (delList.length > 0) {
             this.refreshQuery(await restApi.removeList(this._uri, delList, this._id));
+        } else {
+            for (let value of this._values) {
+                if (value.rowStatus == 'C') {
+                    this.remove(value);
+                }
+            }
         }
     }
 
