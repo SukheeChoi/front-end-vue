@@ -25,7 +25,7 @@ export default {
       type: String,
       default: '',
     },
-    modelValue: String,
+    modelValue: [String],
   },
   setup(props, { emit }) {
     const root = ref(null);

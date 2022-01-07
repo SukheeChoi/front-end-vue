@@ -58,13 +58,6 @@
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-content>
-      <ow-content>
-        <ow-flex-wrap>
-          <ow-flex-item>
-            <ow-input-date label="date"></ow-input-date>
-          </ow-flex-item>
-        </ow-flex-wrap>
-      </ow-content>
     </ow-container>
   </ow-panel>
 </template>
@@ -174,7 +167,6 @@ export default {
         { name: '일', value: 'sun' },
       ],
       checkedRadioButtonValue: '월',
-      selectedInputDate: '',
       links: [
         {
           label: '메인',

@@ -51,8 +51,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-.size-fix {
-  --bg: transparent;
-}
-</style>
