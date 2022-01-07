@@ -1,12 +1,17 @@
 import _ from 'lodash';
 import restApi from '@/api/restApi.js';
+import utils from '@/utils/commUtils.js';
+import ValidatorTypes from '@/utils/commVTypes.js';
 import { CollectionView } from '@grapecity/wijmo';
 
 export class GridApi extends CollectionView {
     _id = '';
     _uri = '';
+    _qry = {};
+    _opt = {};
     _model = '';
     _values = [];
+    _newValues = [];
     _vm = null;
 
     constructor(uri, model, id = '') {
@@ -14,34 +19,36 @@ export class GridApi extends CollectionView {
         this._id = id;
         this._uri = uri;
         this._model = model;
+        this._newValues = utils.copyDefaultValues(model);
     }
 
-    setInstance(vm) {
+    setInstance(vm, view, qry = {}, opt = {}) {
         this._vm = vm;
+        this._qry = qry;
+        this._opt = opt;
+        view.cellEditEnding.addHandler(this.valid);
     }
 
     async getRowCount() {
         return this.items.length;
     }
 
-    async getList(qry = {}, opt = {}) {
-        let _opt = {};
+    async getList() {
+        let opt = {};
 
-        if (opt.pageNo && opt.pageSize) {
-            _opt = {
-                pageNo: opt.pageNo,
-                pageSize: opt.pageSize,
+        if (this._opt.pageNo && this._opt.pageSize) {
+            opt = {
+                pageNo: this._opt.pageNo,
+                pageSize: this._opt.pageSize,
             };
         }
 
-        let resData = await restApi.getList(this._uri, Object.assign(qry, _opt), this._id);
+        let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
         this.sourceCollection = resData.data.data;
     }
 
     add() {
-        let addData = _.cloneDeep(this._model);
-        addData.rowStatus = 'C';
-
+        let addData = _.cloneDeep(this._newValues);
         this.sourceCollection.splice(0, 0, addData);
         this.itemsAdded.push(addData);
         this.refresh();
@@ -107,16 +114,16 @@ export class GridApi extends CollectionView {
     async refreshQuery(resData) {
         if (resData.data) {
             if (resData.data.code == "OK") {
-                this.getList();
+                await this.getList();
             } else {
                 await this._vm.alert(resData.data.message);
             }
         }
     }
 
-    cellEditEnding(view, e) {
+    static markRecordStatus(view, e) {
         const oldVal = view.getCellData(e.row, e.col),
-            newVal = view.activeEditor.value;
+              newVal = view.activeEditor.value;
 
         if (view.getCellData(e.row, 'rowStatus') == 'C') {
             return;
@@ -129,7 +136,23 @@ export class GridApi extends CollectionView {
         view.setCellData(e.row, 'rowStatus', 'U');
     }
 
-    validation() {
-        alert('');
+    valid(view, e) {
+        let col = view.columns[e.col];
+        let fields = view.itemsSource._model.fields;
+        let index = fields.findIndex((field) => field.id === col.binding);
+        let field = fields[index];
+
+        if (field.vType) {
+            let result = ValidatorTypes[field.vType + 'Validator'](view.activeEditor.value, field);
+
+            if (!result.isValid) {
+              e.cancel = true;
+              e.stayInEditMode = true;
+              alert(result.message);
+              return;
+            }
+        }
+
+         GridApi.markRecordStatus(view, e);
     }
 }
