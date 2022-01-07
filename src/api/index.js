@@ -2,6 +2,7 @@ import axios from 'axios';
 import store from '../store';
 import auth from '@/store/auth';
 import router from '@/routes';
+import { app } from '@/main';
 //import { resolve } from 'core-js/fn/promise';
 
 const instance = axios.create({
@@ -20,15 +21,16 @@ instance.interceptors.request.use(
         store.commit('setShowLoadingImage', true);
         // 요청을 보내기 전에 수행할 일
         /*
-                                if (store.state.login.accessToken.length <= 0 || store.state.login.userInfo.length <= 0) {
-                                    router.push('/login');
-                                }
-                                */
+                                                        if (store.state.login.accessToken.length <= 0 || store.state.login.userInfo.length <= 0) {
+                                                            router.push('/login');
+                                                        }
+                                                        */
         config.headers.Authorization = `Bearer ${store.state.login.accessToken}`;
         //config.headers.Authorization = 'Bearer ' + localStorage.getItem("token");
         return config;
     },
     function(error) {
+        app.config.globalProperties.$dialog.alert('요청에 실패하였습니다.');
         store.commit('setShowLoadingImage', false);
         // 오류 요청을 보내기전 수행할 일
         return Promise.reject(error);
@@ -86,29 +88,31 @@ instance.interceptors.response.use(
                     resolve(axios(originalRequest));
                 });
             });
+            app.config.globalProperties.$dialog.alert('응답에 실패하였습니다.');
             store.commit('setShowLoadingImage', false);
             return retryOriginalRequest;
         }
+        app.config.globalProperties.$dialog.alert('응답에 실패하였습니다.');
         store.commit('setShowLoadingImage', false);
         return Promise.reject(error);
     }
 
     /*
-                function(response) {
-                    // 응답 데이터를 가공
-                    return response;
-                },
-                function(error) {
-                    // 오류 응답을 처리
+                            function(response) {
+                                // 응답 데이터를 가공
+                                return response;
+                            },
+                            function(error) {
+                                // 오류 응답을 처리
 
-                    if (error.response.status === 401 ||
-                        store.state.login.accessToken === null) {
-                        window.location.href = "/oss-login"
-                    }
+                                if (error.response.status === 401 ||
+                                    store.state.login.accessToken === null) {
+                                    window.location.href = "/oss-login"
+                                }
 
-                    return Promise.reject(error);
-                }
-                */
+                                return Promise.reject(error);
+                            }
+                            */
 );
 
 export default instance;
