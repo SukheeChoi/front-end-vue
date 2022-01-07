@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { expando } from '@/utils';
 export default {
   name: 'OwFilterRadio',
@@ -49,7 +49,13 @@ export default {
 
     const overflow = ref(false);
 
-    const getContentRect = (dom) => DOMRectReadOnly.fromRect(dom.getBoundingClientRect());
+    const getContentRect = (dom) => {
+      let boundingClientRect;
+      if (dom) {
+        boundingClientRect = dom.getBoundingClientRect();
+      }
+      return DOMRectReadOnly.fromRect(boundingClientRect);
+    };
 
     let index = 0;
     const move = (direction) => {
@@ -82,17 +88,22 @@ export default {
       }
     };
 
-    onMounted(() => {
-      const observer = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const { width: outerWidth } = entry.contentRect;
-          const { width: innerWidth } = getContentRect(filter.value);
-          if (entry.target === root.value) {
-            overflow.value = outerWidth < innerWidth;
-          }
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        console.log('entry', entry);
+        const { width: outerWidth } = entry.contentRect;
+        const { width: innerWidth } = getContentRect(filter.value);
+        if (entry.target === root.value) {
+          overflow.value = outerWidth < innerWidth;
         }
-      });
+      }
+    });
+    onMounted(() => {
       observer.observe(root.value);
+    });
+
+    onUnmounted(() => {
+      observer.disconnect();
     });
 
     return {
