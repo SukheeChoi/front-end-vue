@@ -92,6 +92,10 @@ export default {
       () => state.pageSize,
       () => emit('pageChange', (state.pageNo = 1), state.pageSize)
     );
+    watch(
+      () => props.totalCount,
+      () => (state.totalCount = props.totalCount)
+    );
 
     return {
       state,
