@@ -119,6 +119,8 @@ export default {
 
     const myMenuList = ref([]);
 
+    const isCollapse = ref(false);
+
     const compose = (list, name, init = true) => {
       if (init) {
         myMenuList.value.splice(0);
@@ -127,14 +129,13 @@ export default {
       for (const menu of list) {
         const matched = menu.name === name;
         if (matched || (menu.children && compose(menu.children, name, false))) {
-          return myMenuList.value.unshift({ list, index: index, hide: false }) > 0;
+          const hide = isCollapse.value && myMenuList.value.length > 1;
+          return myMenuList.value.unshift({ list, index: index, hide }) > 0;
         }
         index += 1;
       }
       return false;
     };
-
-    const isCollapse = ref(false);
 
     const hasCollapse = (level) => {
       return myMenuList.value.length > 2 && level === myMenuList.value.length - 1;
