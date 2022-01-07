@@ -23,6 +23,7 @@ $tabs-name: ".ow-tabs";
 
   display: flex;
   justify-content: flex-start;
+  overflow-y: hidden;
 
   @at-root .ow-content-wrap{
     padding: var(--bs-gutter) 3px;
@@ -35,7 +36,6 @@ $tabs-name: ".ow-tabs";
   }
 
   @at-root .ow-tab-content{
-    position: relative;
     min-height: 86px;
     padding: 10px;
     background-color: nth($color-achromatic, 13);
@@ -85,7 +85,6 @@ $tabs-name: ".ow-tabs";
 
       .nav-link{
         padding: 0 calc(var(--bs-gutter) * 2);
-        margin-bottom: 0;
         height: 26px;
         line-height: 100%;
         display: inline-flex;
