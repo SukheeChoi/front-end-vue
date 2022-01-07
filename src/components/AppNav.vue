@@ -114,7 +114,7 @@ export default {
   name: 'AppNav',
   data() {
     return {
-      toggle: false,
+      toggle: true,
     }
   },
   components: {},
@@ -174,6 +174,9 @@ export default {
     position: absolute;
     bottom: 4px;
     left: -7px;
+    &.fold {
+      transform: rotate(180deg);
+    }
   }
 }
 </style>
