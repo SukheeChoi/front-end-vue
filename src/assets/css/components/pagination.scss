@@ -1,8 +1,6 @@
 $clrs-achromatic: getColors("achromatic");
 $clrs-base: getColors("base");
 
-$size: 24px;
-
 .ow-pagination-old {
   display: flex;
   justify-content: center;
@@ -49,22 +47,79 @@ $size: 24px;
   }
 }
 
-.ow-pagination {
-  @include d-flex(center, center);
+// Pagination
+// $title: (
+//   // 탐색버튼 title
+//   title: Go to the,
+//   title2: Go to the First,
+// );
 
+// @function getTitles ( $findKey : 'text' ) {
+// 	$rlst : (); 
+// 	@each $key , $value in $colors {
+// 		@if ( $key == unquote( $findKey )) {
+// 			$rlst: $value; 
+// 		}
+// 	}
+// 	@return $rlst; 
+// }
+
+.ow-pagination {
+  $b: '.btn[title^="Go to the"]';
+  @include d-flex(center, center);
+  .pagination {
+    @extend .ow-pagination;
+  }
+  .btn,
   .page-item {
-    width: $size;
-    height: $size;
-    
+    margin: 0;
     &:not(:first-child) {
       margin-left: -1px;
-      
-      // 기본 스타일 제거
+    }
+    @at-root #{$b},
+    .page-link {
+      @extend .ow-pagination;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      line-height: 1;
+      font-weight: normal !important;
+      border: 1px solid #c0c0c0;
+      border-radius: 0 !important;
+      color: nth($clrs-achromatic, 1);
+    }
+    &.go-first,
+    &.go-last,
+    &.go-next,
+    &.go-prev {
       .page-link {
-        margin-left: 0;
+        text-indent: -9999em;
+        font-size: 0;
+        border: 0;
       }
     }
-    
+    &.go-first {
+      .page-link {
+        background-image: url("~@/assets/images/icon/icon_pagination_first.svg");
+      }
+    }
+    &.go-prev {
+      margin-right: 6px;
+      .page-link {
+        background-image: url("~@/assets/images/icon/icon_pagination_prev.svg");
+      }
+    }
+    &.go-next {
+      margin-left: 6px;
+      .page-link {
+        background-image: url("~@/assets/images/icon/icon_pagination_next.svg");
+      }
+    }
+    &.go-last {
+      .page-link {
+        background-image: url("~@/assets/images/icon/icon_pagination_last.svg");
+      }
+    }
     &[class*=state-selected],
     &.active,
     &:hover {
@@ -75,145 +130,88 @@ $size: 24px;
         z-index: 3;
       }
     }
-
-    &[class*=go-] {
-      .page-link {
-        &,
-        &.active,
-        &:hover {
-          border-color: transparent;
-          background-color: transparent;
-        }
-      }
-    }
   }
 
-  .page-link {
-    @extend .ow-pagination;
-    padding: 0;
-    width: $size;
-    height: $size;
-    line-height: 1;
-    border-color: #c0c0c0;
-    color: nth($clrs-achromatic, 1);
-
-    &:focus {
-      box-shadow: none;
-    }
+  #{$b} {
+    text-indent: -9999em;
+    border: 0;
   }
 
-  $goBtn: (
-    'first',
-    'prev-step', // step img 추가요청
-    'prev',
-    'next',
-    'next-step', // step img 추가요청
-    'last',
+  $pBtns: (
+    B1: 'first page',
+    B2: 'previous step',
+    B3: 'previous page',
+    B4: 'next page',
+    B5: 'next step',
+    B6: 'last page'
+    // L1: 'first page' 'icon_pagination_first',
+    // L2: 'previous step' 'icon_pagination_prev',
+    // L3: 'previous page' 'icon_pagination_prev',
+    // R1: 'next page' 'icon_pagination_next',
+    // R2: 'next step' 'icon_pagination_next',
+    // R3: 'last page' 'icon_pagination_last'
   );
 
-  @each $name in $goBtn {
-    .go-#{$name} {
-      text-indent: -9999em;
-      font-size: 0;
-      background-image: url("~@/assets/images/icon/icon_pagination_#{$name}.svg");
-      background-position: 50%;
-
-      @if ($name == 'prev') {
-        margin-right: calc(#{$size} * 0.25);
-      } @else if ($name == 'next') {
-        margin-left: calc(#{$size} * 0.25) !important;
+  @function getBtns ( $findKey : 'text' ) {
+    $list : (); 
+    @each $key , $value in $pBtns {
+      @if ( $key == unquote( $findKey )) {
+        $list: '[title^="Go to the #{$value}"]'; 
       }
     }
-  }
-  
-  .page-link:disabled {
-    // opacity: 0.65;
+    @return $list;
   }
 
-  // 임시 fontawesome
-  @mixin arrow($c) {
-    position: relative;
-    font-family: 'Font Awesome 5 Free';
-    font-size: inherit;
-    font-weight: 600;
-    text-indent: 0;
-    background-image: none;
-    background-color: #f5f5f5;
-    @content;
-
-    &::after {
-      margin-left: -0.2rem;
-      content: '#{$c}';
-      letter-spacing: -0.18rem;
-      font-size: 10px;
-      color: #3f3f3f;
-    }
-  }
-
-  .go-first-img {
-    @include arrow(\f053 \f053 \f053);
-  }
-  
-  .go-last-img {
-    @include arrow(\f054 \f054 \f054);
-  }
-}
-
-.ow-pagination-layout {
-  @include d-flex(normal, center);
-  width: 100%;
-
-  .ow-pagination-wrap {
-    @extend .ow-pagination-layout;
-  }
-  
-  &.center {
-    .ow-pagination-wrap {
-      justify-content: center;
-    }
-  }
-
-  &.col-2-set {
-    .ow-pagination-wrap {
-      .page-number {
-        position: absolute;
-        right: 0;
-      }
-    }
-  }
-
-  &.col-3-set {
-    .item:first-child {
-      position: absolute;
-      left: 0;
-    }
+  // @each $i , $key in $pBtns {
+  //   // $name: nth(getBtns, $i);
+  //   #{$b} {
+  //     content: '#{$i}#{$key}';
+  //   }
+  //   // #{getBtns("L+#{$i}")} {
+  //   //   background-image: url("~@/assets/images/icon/icon_pagination_first.svg");
+  //   // }
     
-    .ow-pagination-wrap {
-      justify-content: center;
-    }
+  //   // ul:nth-child(3n + #{$i}) {
+  //   //   background-color: lighten($base-color, $i * 5%);
+  //   // }
+  // }
 
-    .page-number {
-      position: absolute;
-      right: 0;
-    }
+  $pBtnsB1: getBtns("B1");
+  $pBtnsB2: getBtns("B2");
+  $pBtnsB3: getBtns("B3");
+  $pBtnsB4: getBtns("B4");
+  $pBtnsB5: getBtns("B5");
+  $pBtnsB6: getBtns("B6");
+
+  #{$pBtnsB1} {
+    background-image: url("~@/assets/images/icon/icon_pagination_first.svg");
   }
-}
-
-.ow-pagination {
-  + .page-number {
-    margin-left: calc(var(--bs-gutter) * 2);
+  #{$pBtnsB2},
+  #{$pBtnsB3} {
+    background-image: url("~@/assets/images/icon/icon_pagination_prev.svg");
   }
-}
+  #{$pBtnsB3} {
+    margin-right: 6px !important;
+  }
+  #{$pBtnsB4} {
+    margin-left: 6px !important;
+  }
+  #{$pBtnsB4},
+  #{$pBtnsB5} {
+    background-image: url("~@/assets/images/icon/icon_pagination_next.svg");
+  }
+  #{$pBtnsB6} {
+    background-image: url("~@/assets/images/icon/icon_pagination_last.svg");
+  }
+  #{$b}:disabled {
+    opacity: 0.5;
+  }
 
-.page-number {
-  @include d-flex(normal, center);
-
-  &-item {
-    font-size: 11px;
-    color: #888;
-
-    &:not(:first-child) {
-      margin-left: var(--bs-gutter);
+  // bootstarp style
+  [class*=btn] {
+    &,
+    &:focus {
+      box-shadow: none;
     }
   }
 }
