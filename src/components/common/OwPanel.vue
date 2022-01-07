@@ -56,6 +56,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .ow-panel {
+  .ow-panel-body {
+    height: 100%;
+    overflow: auto;
+  }
   &[draggable='true'] {
     &.drag-over {
       border: 1px dashed rgba(0, 0, 0, 1);

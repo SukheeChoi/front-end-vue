@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import store from '../store';
+import store from '@/store';
+
 const routes = [
   {
     path: '/',
@@ -34,22 +35,34 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/AppNotFound'),
-  }
+  },
 ];
 
-const apps = (process.env.VUE_APP_APPS || '').split(',');
-
-for (const app of apps) {
-  let module;
-  try {
-    module = require(`@@/${app.trim().toLowerCase()}/routes`);
-    if (module && module.default && Array.isArray(module.default)) {
+function loadRoutes() {
+  const context = require.context('@/app', true, /(\/routes\/)index\.js$/);
+  for (const key of context.keys()) {
+    const module = context(key);
+    if (module.default) {
       routes.push(...module.default);
     }
-  } catch (error) {
-    console.error(error);
   }
 }
+
+loadRoutes();
+
+// const apps = (process.env.VUE_APP_APPS || '').split(',');
+
+// for (const app of apps) {
+//   let module;
+//   try {
+//     module = require(`@@/${app.trim().toLowerCase()}/routes`);
+//     if (module && module.default && Array.isArray(module.default)) {
+//       routes.push(...module.default);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -66,9 +79,9 @@ router.beforeEach((to, from, next) => {
   }
   */
   const devMode = true;
-  if (devMode === false && to.fullPath !=='/login' && store.state.login.accessToken.length <= 0) {
-    console.log("auth error")
-    router.push("/login")
+  if (devMode === false && to.fullPath !== '/login' && store.state.login.accessToken.length <= 0) {
+    console.log('auth error');
+    router.push('/login');
   }
   next();
 });

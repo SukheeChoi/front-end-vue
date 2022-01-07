@@ -38,6 +38,8 @@
         <button type="button" class="ow-btn type-base" @click="openModal">Modal open</button>
         <button type="button" class="ow-btn type-base" @click="openAlert">Alert open</button>
         <button type="button" class="ow-btn type-base" @click="openConfirm">Confirm open</button>
+        <button type="button" class="ow-btn type-base" @click="$i18n.locale = 'ko'">ko</button>
+        <button type="button" class="ow-btn type-base" @click="$i18n.locale = 'en'">en</button>
       </ow-content>
       <ow-content>
         <ow-select label="items1" :items="items1" v-model="itemsValue"></ow-select>
@@ -47,7 +49,22 @@
       </ow-content>
       <ow-content>
         <ow-filter-checkbox :items="checkedItems" v-model="checkedValues"></ow-filter-checkbox>
-        <ow-filter-radio :items="radioItems" v-model="checkedValue"></ow-filter-radio>
+      </ow-content>
+      <ow-content>
+        <ow-flex-wrap>
+          <ow-flex-item fix style="width: 300px">
+            <ow-filter-radio :items="filterItems" v-model="checkedFilterValue"></ow-filter-radio>
+            <ow-radio-button :items="radioButtonItems" v-model="checkedRadioButtonValue" light></ow-radio-button>
+          </ow-flex-item>
+        </ow-flex-wrap>
+      </ow-content>
+      <ow-content>
+        <ow-flex-wrap>
+          <ow-flex-item>
+            <ow-input-date label="date" ref="before" :after="after" v-model="selectedInputDate1"></ow-input-date>
+            <ow-input-date ref="after" :before="before" v-model="selectedInputDate2"></ow-input-date>
+          </ow-flex-item>
+        </ow-flex-wrap>
       </ow-content>
     </ow-container>
   </ow-panel>
@@ -131,10 +148,35 @@ export default {
       checkedValue: '',
       checkedItems: [
         { name: '체크1', value: '체크1' },
-        { name: '체크2', value: '체크2' },
+        { name: '체크2', value: '체크2', disabled: true },
         { name: '체크3', value: '체크3' },
       ],
       checkedValues: [],
+      filterItems: [
+        { name: '전체', value: '' },
+        { name: '라디오1', value: '라디오1' },
+        { name: '라디오2', value: '라디오2' },
+        { name: '라디오3', value: '라디오3', disabled: true },
+        { name: '라디오4', value: '라디오4' },
+        { name: '라디오5', value: '라디오5' },
+        { name: '라디오6', value: '라디오6' },
+        { name: '라디오7', value: '라디오7' },
+        { name: '라디오8', value: '라디오8' },
+        { name: '라디오9', value: '라디오9' },
+      ],
+      checkedFilterValue: '',
+      radioButtonItems: [
+        { name: '월', value: 'mon' },
+        { name: '화', value: 'tue' },
+        { name: '수', value: 'wed' },
+        { name: '목', value: 'tur' },
+        { name: '금', value: 'fri' },
+        { name: '토', value: 'sat' },
+        { name: '일', value: 'sun' },
+      ],
+      checkedRadioButtonValue: '월',
+      selectedInputDate1: '2021-01-01',
+      selectedInputDate2: '2021-01-01',
       links: [
         {
           label: '메인',
@@ -156,10 +198,14 @@ export default {
           value: '',
         },
       ],
+      after: undefined,
+      before: undefined,
     };
   },
   mounted() {
     console.log('this', this);
+    this.before = this.$refs.before;
+    this.after = this.$refs.after;
   },
   setup() {},
   methods: {
@@ -182,7 +228,7 @@ export default {
       // console.log('open alert', this.$refs);
       console.dir('this.$dialog');
       // const ok = await this.$dialog.alert('hi');
-      const ok = await this.alert('hi');
+      const ok = await this.error(this.$t('hello.world'));
       console.log('dummy ok', ok);
       // this.$dialog.alert();
       // this.$refs.alert.open();
@@ -208,6 +254,16 @@ export default {
     },
     checkedValues: {
       handler() {},
+    },
+    selectedInputDate1: {
+      handler(value) {
+        console.log('watch selectedInputDate1', value);
+      },
+    },
+    selectedInputDate2: {
+      handler(value) {
+        console.log('watch selectedInputDate2', value);
+      },
     },
   },
 };

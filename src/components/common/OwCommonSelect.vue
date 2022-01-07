@@ -1,6 +1,5 @@
 <template>
-  <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all">
-  </wj-combo-box>
+  <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all"> </wj-combo-box>
 </template>
 <script>
 import { reactive, ref } from 'vue';
@@ -36,7 +35,7 @@ export default {
       }
 
       if (!option.selectedValuePath) {
-        option.selectedValuePath = 'code';
+        option.selectedValuePath = 'value';
       }
     };
 
@@ -44,31 +43,31 @@ export default {
     function getList(codeGroup) {
       if (codeGroup == 'system') {
         reqData = [
-          { code: 0, name: 'CMG' },
-          { code: 1, name: 'PAL' },
-          { code: 2, name: 'SEI' },
-          { code: 3, name: 'SAM' },
+          { value: 0, name: 'CMG' },
+          { value: 1, name: 'PAL' },
+          { value: 2, name: 'SEI' },
+          { value: 3, name: 'SAM' },
         ];
       } else if (codeGroup == 'biz') {
         reqData = [
-          { biz: 0, code: 0, name: 'CIF' },
-          { biz: 1, code: 0, name: 'COM' },
-          { biz: 2, code: 0, name: 'OXF' },
-          { biz: 3, code: 0, name: 'EAP' },
-          { biz: 4, code: 0, name: 'TSK' },
-          { biz: 5, code: 1, name: 'LIF' },
-          { biz: 5, code: 1, name: 'LCM' },
-          { biz: 5, code: 1, name: 'LOG' },
-          { biz: 5, code: 1, name: 'PAT' },
-          { biz: 5, code: 1, name: 'MAL' },
-          { biz: 5, code: 1, name: 'MEM' },
-          { biz: 6, code: 2, name: 'EIF' },
-          { biz: 7, code: 2, name: 'SVC' },
-          { biz: 8, code: 2, name: 'OIC' },
-          { biz: 8, code: 2, name: 'INT' },
-          { biz: 8, code: 2, name: 'JOB' },
-          { biz: 9, code: 3, name: 'SIF' },
-          { biz: 10, code: 3, name: 'SAL' },
+          { biz: 0, value: 0, name: 'CIF' },
+          { biz: 1, value: 0, name: 'COM' },
+          { biz: 2, value: 0, name: 'OXF' },
+          { biz: 3, value: 0, name: 'EAP' },
+          { biz: 4, value: 0, name: 'TSK' },
+          { biz: 5, value: 1, name: 'LIF' },
+          { biz: 5, value: 1, name: 'LCM' },
+          { biz: 5, value: 1, name: 'LOG' },
+          { biz: 5, value: 1, name: 'PAT' },
+          { biz: 5, value: 1, name: 'MAL' },
+          { biz: 5, value: 1, name: 'MEM' },
+          { biz: 6, value: 2, name: 'EIF' },
+          { biz: 7, value: 2, name: 'SVC' },
+          { biz: 8, value: 2, name: 'OIC' },
+          { biz: 8, value: 2, name: 'INT' },
+          { biz: 8, value: 2, name: 'JOB' },
+          { biz: 9, value: 3, name: 'SIF' },
+          { biz: 10, value: 3, name: 'SAL' },
         ];
       } else if (codeGroup == 'useYn') {
         reqData = [
@@ -127,7 +126,7 @@ export default {
     }
 
     if (all.value) {
-      const allData = { code: 'all', name: '전체' };
+      const allData = { value: 'all', name: '전체' };
       items.sourceCollection.splice(0, 0, allData);
     }
 

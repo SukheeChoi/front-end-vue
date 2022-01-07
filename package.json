@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",
+    "prod": "vue-cli-service serve --mode production",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -20,6 +21,7 @@
     "moment": "^2.29.1",
     "vue": "^3.0.0",
     "vue-froala-wysiwyg": "^4.0.7",
+    "vue-i18n": "^9.2.0-beta.26",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0"
