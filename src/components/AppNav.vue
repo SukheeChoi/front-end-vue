@@ -7,7 +7,13 @@
           :key="name"
           :title="title"
           @click="$router.push({ name })"
-        />
+        >
+          <template v-if="toggle">
+            <div class="ow-tabs-toggle">
+              <button class="ow-btn type-icon arrow circle"><i class="triangle top"></i><span class="sr-only">아이콘</span></button>
+            </div>
+          </template>
+        </b-tab>
       </b-tabs>
     </template>
   </nav>
@@ -106,6 +112,11 @@ const MenuList = [
 
 export default {
   name: 'AppNav',
+  data() {
+    return {
+      toggle: false,
+    }
+  },
   components: {},
   setup() {
     const store = useStore();
@@ -159,5 +170,10 @@ export default {
   //   height: 10px;
   //   background-color: red;
   // }
+  .ow-tabs-toggle {
+    position: absolute;
+    bottom: 4px;
+    left: -7px;
+  }
 }
 </style>

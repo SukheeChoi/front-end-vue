@@ -500,6 +500,8 @@ $content-scroll-flag : 1536px;
   grid-template-rows: repeat(var(--row, 1), minmax(0, 1fr));
   gap: var(--gap-container, 4px);
   height: 100%;
+  // gird vertical align #issue
+  align-items: baseline;
 
   @mixin grid-set( $direction, $count ){
     @if $direction == 'col'{
