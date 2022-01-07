@@ -1,17 +1,18 @@
 <template>
-  <template v-for="({ name, value }, index) in items" :key="value">
-    <slot></slot>
-    <div class="ow-radio">
+  <div class="radio-button-group" :class="{ light }">
+    <template v-for="({ name, value }, index) in items" :key="value">
       <input type="radio" :id="`${unique}-${index}`" :name="unique" :value="value" v-model="checkedValue" />
-      <label :for="`${unique}-${index}`">{{ name }}</label>
-    </div>
-  </template>
+      <label class="radio-button" :for="`${unique}-${index}`">
+        {{ name }}
+      </label>
+    </template>
+  </div>
 </template>
 <script>
 import { computed } from 'vue';
 import { expando } from '@/utils';
 export default {
-  name: 'OwRadio',
+  name: 'OwRadioButton',
   props: {
     unique: {
       type: String,
@@ -24,6 +25,10 @@ export default {
       default: () => {
         return [];
       },
+    },
+    light: {
+      type: Boolean,
+      default: false,
     },
     modelValue: String,
   },
@@ -39,4 +44,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>

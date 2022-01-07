@@ -54,6 +54,7 @@
         <ow-flex-wrap>
           <ow-flex-item fix style="width: 300px">
             <ow-filter-radio :items="filterItems" v-model="checkedFilterValue"></ow-filter-radio>
+            <ow-radio-button :items="radioButtonItems" v-model="checkedRadioButtonValue" light></ow-radio-button>
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-content>
@@ -156,6 +157,16 @@ export default {
         { name: '라디오9', value: '라디오9' },
       ],
       checkedFilterValue: '',
+      radioButtonItems: [
+        { name: '월', value: 'mon' },
+        { name: '화', value: 'tue' },
+        { name: '수', value: 'wed' },
+        { name: '목', value: 'tur' },
+        { name: '금', value: 'fri' },
+        { name: '토', value: 'sat' },
+        { name: '일', value: 'sun' },
+      ],
+      checkedRadioButtonValue: '월',
       links: [
         {
           label: '메인',

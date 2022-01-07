@@ -90,7 +90,6 @@ export default {
 
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        console.log('entry', entry);
         const { width: outerWidth } = entry.contentRect;
         const { width: innerWidth } = getContentRect(filter.value);
         if (entry.target === root.value) {

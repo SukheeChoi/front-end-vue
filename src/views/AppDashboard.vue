@@ -1,6 +1,7 @@
 <template>
+  <!-- TODO 화면 구성에 대한 작업이 필요함. 3x2, 2x2 등등 -->
   <div class="ow-flex-wrap dir-col size-full" ref="root">
-    <div class="item" style="height: 50%">
+    <div class="item" style="height: calc(50% - 2px)">
       <div class="ow-flex-wrap size-full">
         <div class="item" v-for="{ default: panel } in panels" :key="panel.__hmrId">
           <component
@@ -14,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div class="item" style="height: 50%">
+    <div class="item" style="height: calc(50% - 2px)">
       <div class="ow-flex-wrap size-full">
         <div class="item" v-for="component in components" :key="component">
           <component :is="component.default"></component>

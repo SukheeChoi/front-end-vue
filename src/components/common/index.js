@@ -19,6 +19,7 @@ import OwInput from '@/components/common/OwInput';
 import OwModal from '@/components/common/OwModal';
 import OwPanel from '@/components/common/OwPanel';
 import OwRadio from '@/components/common/OwRadio';
+import OwRadioButton from '@/components/common/OwRadioButton';
 import OwSelect from '@/components/common/OwSelect';
 import OwSpinner from '@/components/common/OwSpinner';
 import OwTab from '@/components/common/OwTab';
@@ -49,6 +50,7 @@ const COMMON_COMPONENTS = {
   OwModal,
   OwPanel,
   OwRadio,
+  OwRadioButton,
   OwSelect,
   OwSpinner,
   OwTab,
