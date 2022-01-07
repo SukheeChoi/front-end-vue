@@ -27,7 +27,8 @@ export default {
       type: String,
       default: 'yyyy-MM-dd',
     },
-    link: Object,
+    before: Object,
+    after: Object,
     modelValue: {
       type: String,
       default: ({ format }) => {
@@ -35,14 +36,12 @@ export default {
       },
     },
   },
-  setup(props, { emit, root: r }) {
+  setup(props, { emit }) {
     const root = ref(null);
-
-    const $moment = inject('$moment');
 
     const control = ref({ text: props.modelValue });
     const initialized = (calendar) => {
-      if ($moment(control.value.text, props.format).isValid()) {
+      if (Globalize.parseDate(control.value.text, props.format)) {
         calendar.value = control.value.text;
       } else {
         calendar.value = Globalize.format(new Date(), props.format);
@@ -69,9 +68,24 @@ export default {
     );
 
     watch(
-      () => props.link,
+      () => props.before && props.before.modelValue,
       () => {
-        console.log('props.link', props.link);
+        const before = Globalize.parseDate(props.before.modelValue, props.before.format);
+        const after = Globalize.parseDate(props.modelValue, props.format);
+        if (after < before) {
+          setText(Globalize.format(before, props.format));
+        }
+      }
+    );
+
+    watch(
+      () => props.after && props.after.modelValue,
+      () => {
+        const before = Globalize.parseDate(props.modelValue, props.format);
+        const after = Globalize.parseDate(props.after.modelValue, props.after.format);
+        if (after < before) {
+          setText(Globalize.format(after, props.format));
+        }
       }
     );
 
@@ -83,7 +97,6 @@ export default {
         label.textContent = props.label;
         root.value.parentNode.insertBefore(label, root.value);
       }
-      console.log('r', r);
     });
 
     return {
@@ -91,7 +104,6 @@ export default {
       initialized,
       textChanged,
       setText,
-      r,
     };
   },
 };
