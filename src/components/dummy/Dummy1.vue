@@ -61,7 +61,8 @@
       <ow-content>
         <ow-flex-wrap>
           <ow-flex-item>
-            <ow-input-date label="date"></ow-input-date>
+            <ow-input-date label="date" ref="before" :after="after" v-model="selectedInputDate1"></ow-input-date>
+            <ow-input-date ref="after" :before="before" v-model="selectedInputDate2"></ow-input-date>
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-content>
@@ -174,7 +175,8 @@ export default {
         { name: '일', value: 'sun' },
       ],
       checkedRadioButtonValue: '월',
-      selectedInputDate: '',
+      selectedInputDate1: '2021-01-01',
+      selectedInputDate2: '2021-01-01',
       links: [
         {
           label: '메인',
@@ -196,10 +198,14 @@ export default {
           value: '',
         },
       ],
+      after: undefined,
+      before: undefined,
     };
   },
   mounted() {
     console.log('this', this);
+    this.before = this.$refs.before;
+    this.after = this.$refs.after;
   },
   setup() {},
   methods: {
@@ -248,6 +254,16 @@ export default {
     },
     checkedValues: {
       handler() {},
+    },
+    selectedInputDate1: {
+      handler(value) {
+        console.log('watch selectedInputDate1', value);
+      },
+    },
+    selectedInputDate2: {
+      handler(value) {
+        console.log('watch selectedInputDate2', value);
+      },
     },
   },
 };
