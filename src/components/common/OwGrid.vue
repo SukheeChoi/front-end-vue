@@ -19,14 +19,14 @@
       </ow-flex-item>
       <!-- pagination -->
       <ow-flex-item class="mt-5 mb-5">
-        <template v-if="state.hasPagination">
-          <ow-flex-wrap>
-            <ow-flex-item class="align-x-start" style="--gap-item: 2px">
-              <button type="button" class="ow-button type-icon">
-                <i class="fas fa-cog fa-fw" />
-              </button>
-              <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
-            </ow-flex-item>
+        <ow-flex-wrap>
+          <ow-flex-item class="align-x-start" style="--gap-item: 2px">
+            <button type="button" class="ow-button type-icon">
+              <i class="fas fa-cog fa-fw" />
+            </button>
+            <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
+          </ow-flex-item>
+          <template v-if="state.hasPagination">
             <ow-flex-item class="align-x-center">
               <b-pagination
                 class="ow-pagination"
@@ -40,13 +40,13 @@
                 v-model="state.pageNo"
               />
             </ow-flex-item>
-            <ow-flex-item class="align-x-end">
-              <div class="counter-board">
-                전체 <span> {{ state.totalCount }} </span> 건
-              </div>
-            </ow-flex-item>
-          </ow-flex-wrap>
-        </template>
+          </template>
+          <ow-flex-item class="align-x-end">
+            <div class="counter-board">
+              전체 <span> {{ state.totalCount }} </span> 건
+            </div>
+          </ow-flex-item>
+        </ow-flex-wrap>
       </ow-flex-item>
     </ow-flex-wrap>
   </div>
