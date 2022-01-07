@@ -119,7 +119,7 @@ export default {
 
     const myMenuList = ref([]);
 
-    const isCollapse = ref(false);
+    const isCollapse = ref(true);
 
     const compose = (list, name, init = true) => {
       if (init) {
