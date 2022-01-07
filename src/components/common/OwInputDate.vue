@@ -11,7 +11,7 @@
 </template>
 <script>
 import { Globalize } from '@grapecity/wijmo';
-import { ref, watch, onMounted, inject } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { expando } from '@/utils';
 export default {
   name: 'OwInputDate',
