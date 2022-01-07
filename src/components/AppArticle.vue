@@ -1,5 +1,5 @@
 <template>
-  <article>
+  <article class="ow-article">
     <slot></slot>
   </article>
 </template>
@@ -8,3 +8,8 @@ export default {
   name: 'AppArticle',
 };
 </script>
+<style lang="scss" scoped>
+.ow-article {
+  overflow: auto;
+}
+</style>

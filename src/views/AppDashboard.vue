@@ -1,12 +1,8 @@
 <template>
   <div class="ow-flex-wrap dir-col size-full" ref="root">
-    <div class="item">
+    <div class="item" style="height: 50%">
       <div class="ow-flex-wrap size-full">
-        <div
-          class="item"
-          v-for="{ default: panel } in panels"
-          :key="panel.__hmrId"
-        >
+        <div class="item" v-for="{ default: panel } in panels" :key="panel.__hmrId">
           <component
             :is="panel"
             draggable
@@ -18,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div class="item">
+    <div class="item" style="height: 50%">
       <div class="ow-flex-wrap size-full">
         <div class="item" v-for="component in components" :key="component">
           <component :is="component.default"></component>
@@ -72,9 +68,7 @@ export default {
       }
       if (source && target) {
         event.preventDefault();
-        const detectedPanels = Array.from(
-          root.value.querySelectorAll('.ow-panel[draggable]')
-        );
+        const detectedPanels = Array.from(root.value.querySelectorAll('.ow-panel[draggable]'));
         const source_index = detectedPanels.indexOf(source);
         const source_panel = panels.value[source_index];
         const target_index = detectedPanels.indexOf(target);
