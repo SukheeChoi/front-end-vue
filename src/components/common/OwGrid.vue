@@ -42,9 +42,7 @@
             </ow-flex-item>
           </template>
           <ow-flex-item class="align-x-end">
-            <div class="counter-board">
-              전체 <span> {{ state.totalCount }} </span> 건
-            </div>
+            <div class="counter-board">전체<span>{{ state.totalCount }}</span>건</div>
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>
@@ -59,6 +57,10 @@ export default {
   components: {},
   props: {
     pageSize: {
+        type: Number,
+        default: 10,
+      },
+    pageSize: {
       type: Number,
       default: 10,
     },
@@ -70,27 +72,66 @@ export default {
       type: Number,
       default: 0,
     },
+    opt: {
+      type: Object
+    },
+    store: {
+      default: null
+    },
+    pageSizeList: {
+      type: Array,
+      default: [5, 10, 20, 30, 50, 100, 150, 300, 500]
+    }
   },
   setup(props, { emit }) {
-    const state = reactive({
-      pageSize: ref(props.pageSize),
-      pageNo: ref(props.pageNo),
-      totalCount: computed(() => props.totalCount),
-      hasPagination: computed(() => props.totalCount > props.pageSize),
-      pageSizeList: computed(() =>
-        [10, 20, 50, 100].map((value) => {
+    let tmpState = {};
+
+    if (props.opt && props.opt.pageNo) {
+      tmpState = reactive({
+        store: ref(props.store),
+        pageSize: ref(props.opt.pageSize),
+        pageNo: ref(props.opt.pageNo),
+        totalCount: computed(() => props.opt.totalCount),
+        hasPagination: computed(() => props.opt.totalCount > props.opt.pageSize),
+        pageSizeList: computed(() => props.pageSizeList.map((value) => {
           return { name: `${value}건`, value };
         })
-      ),
-    });
+      )
+      });
+    } else {
+      tmpState = reactive({
+        pageSize: ref(props.pageSize),
+        pageNo: ref(props.pageNo),
+        totalCount: computed(() => props.totalCount),
+        hasPagination: computed(() => props.totalCount > props.pageSize),
+        pageSizeList: computed(() => props.pageSizeList.map((value) => {
+            return { name: `${value}건`, value };
+          })
+        )
+      });
+    }
+
+    const state = tmpState;
 
     watch(
       () => state.pageNo,
-      () => emit('pageChange', state.pageNo, state.pageSize)
+      () => {
+         if (state.store != null) {
+           state.store.getList(state.pageNo, state.pageSize);
+         } else {
+           emit('pageChange', state.pageNo, state.pageSize);
+         }
+       }
     );
     watch(
       () => state.pageSize,
-      () => emit('pageChange', (state.pageNo = 1), state.pageSize)
+      () => {
+        if (state.store != null) {
+          state.store.getList(state.pageNo, state.pageSize);
+        } else {
+          emit('pageChange', (state.pageNo = 1), state.pageSize);
+        }
+      }
     );
 
     return {
