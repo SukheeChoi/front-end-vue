@@ -185,7 +185,15 @@ export class GridApi extends CollectionView {
             if (!result.isValid) {
               e.cancel = true;
               e.stayInEditMode = true;
-              alert(result.message);
+
+              let edtHandler = view._edtHdl;
+              let rng = edtHandler._rng;
+              let cell = view.cells.getCellElement(rng.row, rng.col);
+
+              if (cell) {
+                  edtHandler._setCellError(cell, result.message);
+              }
+
               return;
             }
         }
