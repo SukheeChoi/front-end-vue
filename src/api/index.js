@@ -15,7 +15,8 @@ const instance = axios.create({
 
 // 요청 인터셉터
 instance.interceptors.request.use(
-    function(config) {
+    function (config) {
+        console.log(config);
         // Loading Image
         store.commit('setShowLoadingImage', true);
         config.headers.Authorization = `Bearer ${store.state.login.accessToken}`;
@@ -41,7 +42,7 @@ const addRefreshSubscriber = (callback) => {
 
 function handleError(responseData){
   // 권한 오류
-  if (responseData.code === 401) {
+  if (responseData.code === '401') {
       handleAuthError(responseData);
   }else {//일반적인 오류
     app.config.globalProperties.$dialog.alert('응답에 실패하였습니다.');
@@ -67,8 +68,9 @@ let isTokenRefreshing = false;
 // 응답 인터셉터
 instance.interceptors.response.use(
     (response) => {
-        const { config } = response;
+        console.log(response);
         const responseCode = response.data.code;
+        const { config } = response;
 
         if (responseCode !== 'OK') {
             if (!isTokenRefreshing) {
@@ -83,9 +85,11 @@ instance.interceptors.response.use(
                     resolve(axios(config));
                 });
             });
+            isTokenRefreshing = false;
+            store.commit('setShowLoadingImage', false);
             return retryRequest;
         }
-  
+        
         store.commit('setShowLoadingImage', false);
         return response;
     },
@@ -97,7 +101,7 @@ instance.interceptors.response.use(
         } = error;
 
         app.config.globalProperties.$dialog.alert('오류가 발생했습니다. 관리자에 문의해주세요');
-        const $dialog = app.inject('$dialog');
+        //const $dialog = app.inject('$dialog');
         store.commit('setShowLoadingImage', false);
         return Promise.reject(error);
     }

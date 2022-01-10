@@ -3,6 +3,8 @@ export default {
     state: {
         accessToken: '',
         userInfo: '',
+        ttl:'',
+        menus:'',
     },
     getters: {
     },
@@ -15,6 +17,9 @@ export default {
         },
         setUserInfo(state, payload) {
             state.userInfo = payload
+        },
+        setMenus(state, payload) {
+            state.menus = payload
         }
     },
 

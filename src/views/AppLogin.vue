@@ -109,8 +109,8 @@ export default {
     async getMenus() {
       const menuData = await restApi.get('/com/menu', this.loginId);
       if (menuData.data !== null) {
-        const menuList = menuData.data;
-        this.$store.commit('setMenus', menuList);
+        const menuList = menuData.data.data;
+        this.$store.commit('setMenus', JSON.parse(menuList));
         this.$router.push('/');
       }
     },
