@@ -5,6 +5,7 @@
 import { reactive, ref } from 'vue';
 import { CollectionView } from '@grapecity/wijmo';
 import restApi from '@/api/restApi.js';
+import { useStore } from 'vuex';
 
 export default {
   name: 'OwCommonSelect',
@@ -41,40 +42,13 @@ export default {
 
     //getlist test
     function getList(codeGroup) {
-      if (codeGroup == 'system') {
-        reqData = [
-          { value: 0, name: 'CMG' },
-          { value: 1, name: 'PAL' },
-          { value: 2, name: 'SEI' },
-          { value: 3, name: 'SAM' },
-        ];
-      } else if (codeGroup == 'biz') {
-        reqData = [
-          { biz: 0, value: 0, name: 'CIF' },
-          { biz: 1, value: 0, name: 'COM' },
-          { biz: 2, value: 0, name: 'OXF' },
-          { biz: 3, value: 0, name: 'EAP' },
-          { biz: 4, value: 0, name: 'TSK' },
-          { biz: 5, value: 1, name: 'LIF' },
-          { biz: 5, value: 1, name: 'LCM' },
-          { biz: 5, value: 1, name: 'LOG' },
-          { biz: 5, value: 1, name: 'PAT' },
-          { biz: 5, value: 1, name: 'MAL' },
-          { biz: 5, value: 1, name: 'MEM' },
-          { biz: 6, value: 2, name: 'EIF' },
-          { biz: 7, value: 2, name: 'SVC' },
-          { biz: 8, value: 2, name: 'OIC' },
-          { biz: 8, value: 2, name: 'INT' },
-          { biz: 8, value: 2, name: 'JOB' },
-          { biz: 9, value: 3, name: 'SIF' },
-          { biz: 10, value: 3, name: 'SAL' },
-        ];
-      } else if (codeGroup == 'useYn') {
-        reqData = [
-          { name: 'Y', value: 'Y' },
-          { name: 'N', value: 'N' },
-        ];
-      } else if (codeGroup == 'totalSearch') {
+
+      reqData = useStore().state.comData[codeGroup];
+      if(reqData) {
+        return reqData;
+      }
+
+      if (codeGroup == 'totalSearch') {
         reqData = [
           {
             name: '단어명',
@@ -126,8 +100,13 @@ export default {
     }
 
     if (all.value) {
-      const allData = { value: 'all', name: '전체' };
-      items.sourceCollection.splice(0, 0, allData);
+      if (items.sourceCollection.length > 0) {
+        if (items.sourceCollection[0].value != "all") {
+          const allData = { value: 'all', name: '전체' };
+          items.sourceCollection.splice(0, 0, allData);
+        }
+
+      }
     }
 
     return {
