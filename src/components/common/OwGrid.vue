@@ -26,7 +26,6 @@
             </button>
             <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
           </ow-flex-item>
-          <template v-if="state.hasPagination">
             <ow-flex-item class="align-x-center">
               <b-pagination
                 class="ow-pagination"
@@ -40,7 +39,6 @@
                 v-model="state.pageNo"
               />
             </ow-flex-item>
-          </template>
           <ow-flex-item class="align-x-end">
             <div class="counter-board">전체<span>{{ state.totalCount }}</span>건</div>
           </ow-flex-item>
@@ -126,6 +124,15 @@ export default {
     watch(
       () => state.pageSize,
       () => {
+        
+        //현재 데이터 있는 페이지로 이동
+        if (state.totalCount > 0) {
+            let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
+            if (state.pageNo > tempPageNo) {
+                state.pageNo = tempPageNo;
+            }
+        }
+
         if (state.store != null) {
           state.store.getList(state.pageNo, state.pageSize);
         } else {
