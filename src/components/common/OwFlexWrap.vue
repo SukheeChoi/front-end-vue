@@ -1,13 +1,17 @@
 <template>
-  <div class="ow-flex-wrap" :style="computedStyle">
+  <div class="ow-flex-wrap" :class="classes" :style="style">
     <slot></slot>
   </div>
 </template>
 <script>
-import { computed } from 'vue';
+import { reactive, computed, toRefs } from 'vue';
 export default {
   name: 'OwFlexWrap',
   props: {
+    col: {
+      type: Boolean,
+      default: false,
+    },
     justify: {
       type: String,
       default: '',
@@ -28,16 +32,23 @@ export default {
     },
   },
   setup(props) {
-    const computedStyle = computed(() => {
-      return {
-        'justify-content': props.justify,
-        'align-items': props.align,
-        '--gap': `${props.gap}px`,
-      };
+    const state = reactive({
+      classes: computed(() => {
+        return {
+          'dir-col': props.col,
+        };
+      }),
+      style: computed(() => {
+        return {
+          'justify-content': props.justify,
+          'align-items': props.align,
+          '--gap': `${props.gap}px`,
+        };
+      }),
     });
 
     return {
-      computedStyle,
+      ...toRefs(state),
     };
   },
 };

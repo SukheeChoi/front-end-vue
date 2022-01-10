@@ -1,10 +1,10 @@
 <template>
-  <div class="ow-container" :style="computedStyle">
+  <div class="ow-container" :style="style">
     <slot></slot>
   </div>
 </template>
 <script>
-import { computed, ref } from 'vue';
+import { reactive, computed, toRefs } from 'vue';
 
 export default {
   name: 'OwContainer',
@@ -16,16 +16,18 @@ export default {
   },
   setup(props, { slots }) {
     const rows = (slots && slots.default && slots.default().length - 1) || 0;
-    const gap = ref(props.gap);
-    const computedStyle = computed(() => {
-      return {
-        'grid-template-rows': `repeat(${rows}, auto) 1fr`,
-        '--gap-container': `${gap.value}px`,
-      };
+
+    const state = reactive({
+      style: computed(() => {
+        return {
+          'grid-template-rows': `repeat(${rows}, auto) 1fr`,
+          '--gap-container': `${props.gap}px`,
+        };
+      }),
     });
 
     return {
-      computedStyle,
+      ...toRefs(state),
     };
   },
 };

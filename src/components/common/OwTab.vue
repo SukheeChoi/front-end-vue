@@ -2,9 +2,9 @@
   <div class="tabs">
     <div class="ow-tabs type-content">
       <ul class="nav nav-tabs">
-        <template v-for="(item, tabIndex) in items" :key="item">
-          <li class="nav-item" @click="click(tabIndex)">
-            <a class="nav-link" :class="{ active: currentIndex === tabIndex }">
+        <template v-for="(item, index) in items" :key="item">
+          <li class="nav-item" @click="click(index)">
+            <a class="nav-link" :class="{ active: isActive(index) }">
               {{ item }}
             </a>
           </li>
@@ -17,7 +17,6 @@
   </div>
 </template>
 <script>
-import { ref, watch } from 'vue';
 export default {
   name: 'OwTab',
   props: {
@@ -33,17 +32,17 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const currentIndex = ref(props.modelValue);
-
-    const click = (tabIndex) => {
-      currentIndex.value = tabIndex;
+    const click = (index) => {
+      emit('update:modelValue', index);
     };
 
-    watch(currentIndex, () => emit('update:modelValue', currentIndex));
+    const isActive = (index) => {
+      return props.modelValue === index;
+    };
 
     return {
-      currentIndex,
       click,
+      isActive,
     };
   },
 };
