@@ -22,7 +22,7 @@ export class GridApi extends CollectionView {
         this._newValues = utils.copyDefaultValues(model);
     }
 
-    setInstance(vm, view, qry = null, opt = null, autoLoading = true) {
+    init(vm, view, qry = null, opt = null, autoLoading = true) {
         this._vm = vm;
         view.cellEditEnding.addHandler(this.valid);
 
@@ -46,8 +46,13 @@ export class GridApi extends CollectionView {
         return this.items.length;
     }
 
-    async getList() {
+    async getList(pageNo = -1, pageSize = -1) {
         let opt = {};
+
+        if (pageNo > 0) {
+            this._opt.pageNo = pageNo;
+            this._opt.pageSize = pageSize;
+        }
 
         if (this._opt.pageNo && this._opt.pageSize) {
             opt = {
@@ -57,7 +62,13 @@ export class GridApi extends CollectionView {
         }
 
         let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
-        this.sourceCollection = resData.data.data;
+
+        if (resData.data.code == "OK") {
+            this.sourceCollection = resData.data.data;
+            this._opt.totalCount = resData.data.totalCount;
+        } else {
+            await this._vm.alert(resData.data.message);
+        }
     }
 
     add() {
