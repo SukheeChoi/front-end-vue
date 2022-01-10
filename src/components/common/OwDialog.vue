@@ -85,6 +85,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .wj-popup {
+  width: 100%;
   max-width: 400px !important;
   max-height: 320px !important;
   .modal-body {

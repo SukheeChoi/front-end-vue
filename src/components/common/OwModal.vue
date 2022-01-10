@@ -1,12 +1,9 @@
 <template>
-  <wj-popup
-    :style="`--max-width: ${size.width}px; --max-height: ${size.height}px;`"
-    ref="root"
-  >
+  <wj-popup :style="`--max-width: ${size.width}px; --max-height: ${size.height}px;`" ref="root">
     <!-- 타이틀 -->
     <div class="modal-header">
       <h5 class="modal-title">{{ title }}</h5>
-      <button type="button" class="close" @click="cancel">&#120;</button>
+      <button type="button" class="close" @click="onCancel">&#120;</button>
     </div>
     <div class="modal-body">
       <div class="layer-body" :style="`--max-height: ${size.height}px`">
@@ -15,18 +12,10 @@
       <div class="layer-foot">
         <div class="actions">
           <slot name="action">
-            <button
-              type="button"
-              class="ow-btn type-base color-gray"
-              @click.prevent="onCancel"
-            >
+            <button type="button" class="ow-btn type-base color-gray" @click.prevent="onCancel">
               {{ cancelButtonText }}
             </button>
-            <button
-              type="button"
-              class="ow-btn type-base color-dark"
-              @click.prevent="onAccept"
-            >
+            <button type="button" class="ow-btn type-base color-dark" @click.prevent="onAccept">
               {{ acceptButtonText }}
             </button>
           </slot>
@@ -136,6 +125,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .wj-popup {
+  width: 100%;
   max-width: var(--max-width, 400px) !important;
   max-height: var(--max-height, 320px) !important;
   .modal-body {
