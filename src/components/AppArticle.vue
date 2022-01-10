@@ -8,8 +8,4 @@ export default {
   name: 'AppArticle',
 };
 </script>
-<style lang="scss" scoped>
-.ow-article {
-  overflow: auto;
-}
-</style>
+<style lang="scss" scoped></style>
