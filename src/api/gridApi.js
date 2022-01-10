@@ -11,8 +11,10 @@ export class GridApi extends CollectionView {
     _opt = {};
     _model = '';
     _values = [];
+    _orgValues = [];
     _newValues = [];
     _vm = null;
+    _gridView = null;
 
     constructor(uri, model, id = '') {
         super([], { trackChanges: true });
@@ -24,6 +26,7 @@ export class GridApi extends CollectionView {
 
     init(vm, view, qry = null, opt = null, autoLoading = true) {
         this._vm = vm;
+        this._gridView = view;
         view.cellEditEnding.addHandler(this.valid);
 
         if (qry == null) {
@@ -42,8 +45,9 @@ export class GridApi extends CollectionView {
         }
     }
 
-    async getRowCount() {
-        return this.items.length;
+    undo() {
+        this.clearChanges();
+        this.sourceCollection = _.cloneDeep(this._orgValues);
     }
 
     async getList(pageNo = -1, pageSize = -1) {
@@ -64,6 +68,7 @@ export class GridApi extends CollectionView {
         let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
 
         if (resData.data.code == "OK") {
+            this._orgValues = _.cloneDeep(resData.data.data);
             this.sourceCollection = resData.data.data;
             this._opt.totalCount = resData.data.totalCount;
         } else {
@@ -73,7 +78,13 @@ export class GridApi extends CollectionView {
 
     add() {
         let addData = _.cloneDeep(this._newValues);
-        this.sourceCollection.splice(0, 0, addData);
+
+        if (this._gridView.newRowAtTop) {
+            this.sourceCollection.splice(0, 0, addData);
+        } else {
+            this.sourceCollection.push(addData);
+        }
+
         this.itemsAdded.push(addData);
         this.refresh();
     }
@@ -174,7 +185,15 @@ export class GridApi extends CollectionView {
             if (!result.isValid) {
               e.cancel = true;
               e.stayInEditMode = true;
-              alert(result.message);
+
+              let edtHandler = view._edtHdl;
+              let rng = edtHandler._rng;
+              let cell = view.cells.getCellElement(rng.row, rng.col);
+
+              if (cell) {
+                  edtHandler._setCellError(cell, result.message);
+              }
+
               return;
             }
         }
