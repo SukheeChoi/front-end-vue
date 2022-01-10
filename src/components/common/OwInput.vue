@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { reactive, ref, watch, onMounted } from 'vue';
 import { expando } from '@/utils';
 export default {
   name: 'OwInput',
@@ -25,29 +25,34 @@ export default {
       type: String,
       default: '',
     },
-    modelValue: [String],
+    modelValue: String,
   },
   setup(props, { emit }) {
     const root = ref(null);
 
-    const control = ref({ text: props.modelValue });
+    const state = reactive({
+      control: {
+        text: props.modelValue,
+      },
+    });
+
     const initialized = (combo) => {
-      combo.text = control.value.text;
-      control.value = combo;
+      combo.text = state.control.text;
+      state.control = combo;
     };
 
     const textChanged = (combo) => {
-      control.value.text = combo.text;
+      state.control.text = combo.text;
     };
 
     watch(
       () => props.modelValue,
-      () => (control.value.text = props.modelValue)
+      () => (state.control.text = props.modelValue)
     );
 
     watch(
-      () => control.value.text,
-      () => emit('update:modelValue', control.value.text)
+      () => state.control.text,
+      () => emit('update:modelValue', state.control.text)
     );
 
     onMounted(() => {

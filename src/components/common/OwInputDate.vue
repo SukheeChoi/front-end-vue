@@ -11,7 +11,7 @@
 </template>
 <script>
 import { Globalize } from '@grapecity/wijmo';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, reactive } from 'vue';
 import { expando } from '@/utils';
 export default {
   name: 'OwInputDate',
@@ -39,32 +39,37 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const control = ref({ text: props.modelValue });
+    const state = reactive({
+      control: {
+        text: props.modelValue,
+      },
+    });
+
     const initialized = (calendar) => {
-      if (Globalize.parseDate(control.value.text, props.format)) {
-        calendar.value = control.value.text;
+      if (Globalize.parseDate(state.control.text, props.format)) {
+        calendar.value = state.control.text;
       } else {
         calendar.value = Globalize.format(new Date(), props.format);
       }
-      control.value = calendar;
+      state.control = calendar;
     };
 
     const textChanged = (calendar) => {
-      control.value.text = calendar.text;
+      state.control.text = calendar.text;
     };
 
     const setText = (text) => {
-      control.value.text = text;
+      state.control.text = text;
     };
 
     watch(
       () => props.modelValue,
-      () => (control.value.text = props.modelValue)
+      () => (state.control.text = props.modelValue)
     );
 
     watch(
-      () => control.value.text,
-      () => emit('update:modelValue', control.value.text)
+      () => state.control.text,
+      () => emit('update:modelValue', state.control.text)
     );
 
     watch(
