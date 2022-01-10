@@ -92,14 +92,7 @@ export default {
     async getToken() {
       const tokenData = await login.requestLogin('/com/Auth/Login', this.loginId, this.password, 'osstem');
       if (tokenData.data.data !== null) {
-        const jsonObjData = JSON.parse(tokenData.data.data);
-        const accessToken = jsonObjData.accessToken;
-        const ttl = jsonObjData.ttl;
-        //localStorage.setItem("token", accessToken);
-        console.log(this.$store);
-        this.$store.commit('setToken', accessToken);
-        this.$store.commit('setTtl', ttl);
-        //console.log(test);
+        login.setAuth(tokenData);
         return await this.getUserInfo();
       }
     },
