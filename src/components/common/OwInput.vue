@@ -1,4 +1,7 @@
 <template>
+  <template v-if="label">
+    <label class="t" :for="unique">{{ label }}</label>
+  </template>
   <div class="ow-combobox" ref="root">
     <wj-combo-box
       :id="unique"
@@ -9,7 +12,7 @@
   </div>
 </template>
 <script>
-import { reactive, ref, watch, onMounted } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { expando } from '@/utils';
 export default {
   name: 'OwInput',
@@ -55,16 +58,6 @@ export default {
       () => emit('update:modelValue', state.control.text)
     );
 
-    onMounted(() => {
-      if (props.label) {
-        const label = document.createElement('label');
-        label.setAttribute('for', props.unique);
-        label.classList.add('t');
-        label.textContent = props.label;
-        root.value.parentNode.insertBefore(label, root.value);
-      }
-    });
-
     return {
       root,
       initialized,
@@ -74,6 +67,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.t {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
 .ow-combobox:after {
   display: none;
 }
