@@ -1,4 +1,4 @@
-import { comCode } from '@/api/comCode.js';
+import { ComCode } from '@/api/comCode.js';
 
 export default {
     beforeCreate() {
@@ -17,8 +17,10 @@ export default {
         confirm: function(message, options) {
             return this.$dialog.confirm(message, options);
         },
-        getCode: function(code) {
-            return comCode.get(code);
+        getCode: function(code, displayFormat, selectedValuePath, displayMemberPath) {
+            const store = this.$store.state.comData;
+            const comCode = new ComCode(store);
+            return comCode.get(code, displayFormat, selectedValuePath, displayMemberPath);
         }
     },
 };

@@ -7,9 +7,9 @@ export default {
         ],
         system: [
             { value: 'CMG', name: '공통' },
-            { value: 'PAL', name: 'PAL' },
-            { value: 'SEI', name: 'SEI' },
-            { value: 'SAM', name: 'SAM' },
+            { value: 'PAL', name: '생산물류' },
+            { value: 'SEI', name: '서비스교육' },
+            { value: 'SAM', name: '영업마케팅' },
         ],
         bizCd: [
             { linkValue: 'CMG', value: 'CIF', name: '업무공통 인터페이스' },

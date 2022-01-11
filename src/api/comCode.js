@@ -6,7 +6,7 @@ let _store = {};
 // const _store = useStore().state.comData;
 const url = '/com/CommonCode';
 
-export class comCode {
+export class ComCode {
 
     async populateList(codeList) {
         let reqList = [];
@@ -41,18 +41,7 @@ export class comCode {
         }
     }
 
-    constructor(codeList, value, name) {
-        _store = useStore().state.comData;
-        const items = _store[codeList];
-
-        if (!value) {
-            value = 'value'
-        }
-
-        if (!name) {
-            name = 'name'
-        }
-
-        // return new DataMap(items, String(value), String(name));
+    constructor(store) {
+        _store = store;
     }
 }
