@@ -11,9 +11,6 @@
             </li>
           </template>
         </ul>
-        <div>
-          <slot name="right"></slot>
-        </div>
       </div>
     </div>
   </template>
@@ -64,7 +61,10 @@ export default {
 a {
   cursor: pointer;
 }
-.ow-tabs {
-  justify-content: space-between;
+.tabs {
+  width: 100%;
+  .ow-tabs {
+    justify-content: space-between;
+  }
 }
 </style>
