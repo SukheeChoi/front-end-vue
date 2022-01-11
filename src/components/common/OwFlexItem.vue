@@ -12,6 +12,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    gap: {
+      type: Number,
+      default: 0,
+    },
+    toRight: {
+      type: Boolean,
+      default: false,
+    },
     justify: {
       type: String,
       default: '',
@@ -26,15 +34,12 @@ export default {
         return ['', 'flex-start', 'flex-end', 'center', 'baseline', 'stretch'].includes(align);
       },
     },
-    gap: {
-      type: Number,
-      default: 0,
-    },
   },
   setup(props) {
     const computedClass = computed(() => {
       return {
         'size-fix': props.fix,
+        'align-to-right': props.toRight,
       };
     });
     const computedStyle = computed(() => {
