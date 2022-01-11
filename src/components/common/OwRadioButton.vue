@@ -44,3 +44,8 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.radio-button-group {
+  display: inline-flex;
+}
+</style>

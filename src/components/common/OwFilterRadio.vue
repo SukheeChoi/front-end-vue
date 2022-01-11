@@ -1,4 +1,7 @@
 <template>
+  <template v-if="label">
+    <div class="title-field">{{ label }}</div>
+  </template>
   <div class="ow-filter" ref="root">
     <template v-if="overflow">
       <button type="button" class="ow-filter-btn-move prev" @click="move('prev')">&#60;</button>
@@ -31,6 +34,7 @@ import { expando } from '@/utils';
 export default {
   name: 'OwFilterRadio',
   props: {
+    label: String,
     unique: {
       type: String,
       default: () => {
@@ -104,6 +108,7 @@ export default {
         }
       }
     });
+
     onMounted(() => {
       observer.observe(root.value);
     });
