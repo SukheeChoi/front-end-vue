@@ -28,6 +28,14 @@ export class ComCode {
         return new DataMap(_store[code], selectedValuePath, displayMemberPath);
     }
 
+    getValue(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
+        if (_store[code] == null) {
+            // loadList([code]);
+        }
+
+        return _store[code];
+    }
+
     loadList(reqList) {
         if (reqList.length > 0) {
             // let resData = await restApi.getList(url, reqList);
