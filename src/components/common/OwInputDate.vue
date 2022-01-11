@@ -1,4 +1,7 @@
 <template>
+  <template v-if="label">
+    <label class="t" :for="unique">{{ label }}</label>
+  </template>
   <div class="ow-input" ref="root">
     <wj-input-date
       class="ow-calendar"
@@ -11,7 +14,7 @@
 </template>
 <script>
 import { Globalize } from '@grapecity/wijmo';
-import { ref, watch, onMounted, reactive } from 'vue';
+import { ref, watch, reactive } from 'vue';
 import { expando } from '@/utils';
 export default {
   name: 'OwInputDate',
@@ -94,16 +97,6 @@ export default {
       }
     );
 
-    onMounted(() => {
-      if (props.label) {
-        const label = document.createElement('label');
-        label.setAttribute('for', props.unique);
-        label.classList.add('t');
-        label.textContent = props.label;
-        root.value.parentNode.insertBefore(label, root.value);
-      }
-    });
-
     return {
       root,
       initialized,
@@ -113,3 +106,9 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.t {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+</style>

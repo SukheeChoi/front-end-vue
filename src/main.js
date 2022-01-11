@@ -8,8 +8,6 @@ import BootStrapVue from 'bootstrap-vue-3';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
-import moment from 'moment';
-
 import mixin from '@/mixins';
 
 import { setLicenseKey } from '@grapecity/wijmo';
@@ -31,8 +29,6 @@ registerWijmo(app);
 registerOwComponents(app);
 
 app.mixin(mixin);
-
-app.provide('$moment', (app.config.globalProperties.$moment = moment));
 
 app.mount('#app');
 
