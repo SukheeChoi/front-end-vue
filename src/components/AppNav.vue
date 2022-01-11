@@ -21,7 +21,7 @@ import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
-const MenuList = [
+let MenuList = [
   { title: '메인', name: 'main' },
   {
     title: '공통관리',
@@ -113,6 +113,11 @@ export default {
   components: {},
   setup() {
     const store = useStore();
+
+    if(store.state.login.menus.length > 0){
+      console.log("menu length > 0")
+      MenuList = store.state.login.menus;
+    }
 
     const route = useRoute();
     const currentRouteName = computed(() => route.name);
