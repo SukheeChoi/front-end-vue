@@ -2,9 +2,11 @@ import restApi from '@/api/restApi.js';
 import { DataMap } from '@grapecity/wijmo.grid';
 import { useStore } from 'vuex';
 
+let _store = {};
+// const _store = useStore().state.comData;
+const url = '/com/CommonCode';
+
 export class comCode {
-    // _store = {};
-    // const url = '/com/CommonCode';
 
     async populateList(codeList) {
         let reqList = [];
@@ -15,20 +17,21 @@ export class comCode {
             }
         }
 
-        loadList(reqList);
+        this.loadList(reqList);
     }
 
-    get(code) {
+    get(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
         if (_store[code] == null) {
-            loadList([code]);
+            // loadList([code]);
         }
 
-        return _store[code];
+        return new DataMap(_store[code], selectedValuePath, displayMemberPath);
     }
 
     loadList(reqList) {
         if (reqList.length > 0) {
-            let resData = await restApi.getList(url, reqList);
+            // let resData = await restApi.getList(url, reqList);
+            let resData = null;
 
             if (resData.data.totalSize > 0) {
                 for (var codeMap of resData.data.data) {
@@ -38,11 +41,9 @@ export class comCode {
         }
     }
 
-    // const items = useStore().state.comData[codeGroup];
     constructor(codeList, value, name) {
         _store = useStore().state.comData;
-        const items = useStore().state.comData[codeList];
-        // if (items.length > 0) {
+        const items = _store[codeList];
 
         if (!value) {
             value = 'value'
@@ -52,7 +53,6 @@ export class comCode {
             name = 'name'
         }
 
-        return new DataMap(items, String(value), String(name));
-        // }
+        // return new DataMap(items, String(value), String(name));
     }
 }
