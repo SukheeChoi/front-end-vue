@@ -21,6 +21,11 @@ export default {
             const store = this.$store.state.comData;
             const comCode = new ComCode(store);
             return comCode.get(code, displayFormat, selectedValuePath, displayMemberPath);
+        },
+        getValue: function(code, displayFormat, selectedValuePath, displayMemberPath) {
+            const store = this.$store.state.comData;
+            const comCode = new ComCode(store);
+            return comCode.getValue(code, displayFormat, selectedValuePath, displayMemberPath);
         }
     },
 };

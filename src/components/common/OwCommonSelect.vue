@@ -19,6 +19,9 @@ export default {
       type: Boolean,
       default: true,
     },
+    linkCombo: {
+      type: String
+    }
   },
   setup(props) {
     const { codeGroup } = reactive(props);

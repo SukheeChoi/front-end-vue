@@ -97,7 +97,6 @@ export default {
 
     const store = useStore();
 
-    console.log('showLoadingImage', store.state.showLoadingImage);
     const showLoading = computed(() => store.state.showLoadingImage);
 
     const openLeft = computed(() => props.left.show);

@@ -2,7 +2,8 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView } from '@grapecity/wijmo';
+import { CollectionView, closest } from '@grapecity/wijmo';
+import { Control } from '@grapecity/wijmo.grid';
 
 export class GridApi extends CollectionView {
     _id = '';
@@ -160,7 +161,7 @@ export class GridApi extends CollectionView {
 
     static markRecordStatus(view, e) {
         const oldVal = view.getCellData(e.row, e.col),
-              newVal = view.activeEditor.value;
+            newVal = view.activeEditor.value;
 
         if (view.getCellData(e.row, 'rowStatus') == 'C') {
             return;
@@ -183,21 +184,21 @@ export class GridApi extends CollectionView {
             let result = ValidatorTypes[field.vType + 'Validator'](view.activeEditor.value, field);
 
             if (!result.isValid) {
-              e.cancel = true;
-              e.stayInEditMode = true;
+                e.cancel = true;
+                e.stayInEditMode = true;
 
-              let edtHandler = view._edtHdl;
-              let rng = edtHandler._rng;
-              let cell = view.cells.getCellElement(rng.row, rng.col);
+                let edtHandler = view._edtHdl;
+                let rng = edtHandler._rng;
+                let cell = view.cells.getCellElement(rng.row, rng.col);
 
-              if (cell) {
-                  edtHandler._setCellError(cell, result.message);
-              }
+                if (cell) {
+                    edtHandler._setCellError(cell, result.message);
+                }
 
-              return;
+                return;
             }
         }
 
-         GridApi.markRecordStatus(view, e);
+        GridApi.markRecordStatus(view, e);
     }
 }
