@@ -15,7 +15,7 @@
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 
-import { computed, ref, watch, onMounted, reactive } from 'vue';
+import { computed, ref, watch, onMounted, reactive, toRefs } from 'vue';
 import { expando } from '@/utils';
 
 export default {
@@ -46,27 +46,31 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const dataMap = computed(() => {
-      if (props.items instanceof Array || props.items instanceof CollectionView) {
-        return reactive(new DataMap(props.items, 'value', 'name'));
-      }
-      return props.items;
+    const state = reactive({
+      dataMap: computed(() => {
+        if (props.items instanceof Array || props.items instanceof CollectionView) {
+          return new DataMap(props.items, 'value', 'name');
+        }
+        return props.items;
+      }),
+      control: {
+        selectedValue: props.modelValue,
+      },
     });
 
-    const control = ref({ selectedValue: props.modelValue });
     const initialized = (combo) => {
-      combo.selectedValue = control.value.selectedValue;
-      control.value = combo;
+      combo.selectedValue = state.control.selectedValue;
+      state.control = combo;
     };
 
     watch(
       () => props.modelValue,
-      () => (control.value.selectedValue = props.modelValue)
+      () => (state.control.selectedValue = props.modelValue)
     );
 
     watch(
-      () => control.value.selectedValue,
-      () => emit('update:modelValue', control.value.selectedValue)
+      () => state.control.selectedValue,
+      () => emit('update:modelValue', state.control.selectedValue)
     );
 
     onMounted(() => {
@@ -81,7 +85,7 @@ export default {
 
     return {
       root,
-      dataMap,
+      ...toRefs(state),
       initialized,
     };
   },

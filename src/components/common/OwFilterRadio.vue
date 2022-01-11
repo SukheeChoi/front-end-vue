@@ -47,7 +47,7 @@ export default {
   },
   setup(props, { emit }) {
     const root = ref(null);
-    const filter = ref('filter');
+    const filter = ref(null);
 
     const checkedValue = computed({
       get: () => props.modelValue,

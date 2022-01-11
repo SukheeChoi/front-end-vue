@@ -45,7 +45,7 @@
         <ow-select label="items1" :items="items1" v-model="itemsValue"></ow-select>
         <ow-select label="items2" :items="items2" v-model="itemsValue"></ow-select>
         <ow-select label="items3" :items="items3" v-model="itemsValue"></ow-select>
-        <ow-input placeholder="asdfsadfasdf"></ow-input>
+        <ow-input placeholder="asdfsadfasdf" v-model="inputValue"></ow-input>
       </ow-content>
       <ow-content>
         <ow-filter-checkbox :items="checkedItems" v-model="checkedValues"></ow-filter-checkbox>
@@ -139,6 +139,7 @@ export default {
         { name: '셀렉트3', value: '셀렉트3' },
       ],
       selectedValue: '',
+      inputValue: 'www',
       radioItems: [
         { name: '전체', value: '' },
         { name: '라디오1', value: '라디오1' },
@@ -263,6 +264,11 @@ export default {
     selectedInputDate2: {
       handler(value) {
         console.log('watch selectedInputDate2', value);
+      },
+    },
+    inputValue: {
+      handler(value) {
+        console.log('watch inputValue', value);
       },
     },
   },
