@@ -1,6 +1,6 @@
 <template>
-<div class="ow-combobox" style="width: var(--input-w-150)">
-  <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all"> </wj-combo-box>
+  <div class="ow-combobox" style="width: var(--input-w-150)">
+    <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all" :reqSelect="reqSelect"> </wj-combo-box>
   </div>
 </template>
 <script>
@@ -18,10 +18,14 @@ export default {
     options: String,
     all: {
       type: Boolean,
-      default: true,
+      default: true
     },
     linkCombo: {
       type: String
+    },
+    reqSelect: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {
@@ -30,6 +34,7 @@ export default {
     let items = reactive(new CollectionView([]));
     let reqData = null;
     let all = ref(props.all);
+    let reqSelect = ref(props.reqSelect);
 
     const initialized = (option) => {
       if (!option.displayMemberPath) {
@@ -42,7 +47,6 @@ export default {
     };
 
     function getList(codeGroup) {
-
       reqData = ComCode.get(codeGroup);
       if(reqData) {
         return reqData;
@@ -86,8 +90,8 @@ export default {
       getList(codeGroup);
     }
 
-    if (reqData && reqData.length > 0) {
-      items.sourceCollection = reqData;
+    if (reqData && !reqData.isEmpty) {
+      items.sourceCollection = reqData.collectionView.sourceCollection;
     }
 
     if (all.value) {
@@ -96,7 +100,15 @@ export default {
           const allData = { value: 'all', name: '전체' };
           items.sourceCollection.splice(0, 0, allData);
         }
+      }
+    }
 
+    if (reqSelect.value) {
+      if (items.sourceCollection.length > 0) {
+        if (items.sourceCollection[0].value != "reqSelect") {
+          const selectData = { value: null, name: '선택하세요.' };
+          items.sourceCollection.splice(0, 0, selectData);
+        }
       }
     }
 
