@@ -58,7 +58,7 @@ export default {
 
     const lookup = () => {
       if (props.search) {
-        emit('lookup');
+        emit('lookup', state.control.text);
       }
     };
 
