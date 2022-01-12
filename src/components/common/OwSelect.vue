@@ -1,5 +1,8 @@
 <template>
-  <div class="ow-combobox" ref="root">
+  <template v-if="label">
+    <label class="t" :for="unique">{{ label }}</label>
+  </template>
+  <div class="ow-combobox" ref="root" v-bind="$attrs">
     <wj-combo-box
       :id="unique"
       :itemsSource="dataMap.collectionView"
@@ -15,7 +18,7 @@
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 
-import { computed, ref, watch, onMounted, reactive, toRefs } from 'vue';
+import { computed, ref, watch, reactive, toRefs } from 'vue';
 import { expando } from '@/utils';
 
 export default {
@@ -49,7 +52,7 @@ export default {
     const state = reactive({
       dataMap: computed(() => {
         if (props.items instanceof Array || props.items instanceof CollectionView) {
-          return new DataMap(props.items, 'value', 'name');
+          return ref(new DataMap(props.items, 'value', 'name'));
         }
         return props.items;
       }),
@@ -73,16 +76,6 @@ export default {
       () => emit('update:modelValue', state.control.selectedValue)
     );
 
-    onMounted(() => {
-      if (props.label) {
-        const label = document.createElement('label');
-        label.setAttribute('for', props.unique);
-        label.classList.add('t');
-        label.textContent = props.label;
-        root.value.parentNode.insertBefore(label, root.value);
-      }
-    });
-
     return {
       root,
       ...toRefs(state),
@@ -92,11 +85,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-label.t {
-  position: relative;
-  width: 118px;
-  font-weight: bold;
-  white-space: nowrap;
+.t {
+  display: inline-flex;
+  flex: 0 0 auto;
 
   &::before {
     content: '';
