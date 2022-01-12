@@ -1,5 +1,6 @@
+import _ from 'lodash';
+import { OwMap } from '@/api/owMap.js';
 import restApi from '@/api/restApi.js';
-import { DataMap } from '@grapecity/wijmo.grid';
 import CodeData from '@/store/modules/comData';
 
 const url = '/com/CommonCode';
@@ -19,32 +20,52 @@ export class ComCode {
         ComCode.loadList(reqList);
     }
 
-    static get(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
-        if (ComCode._store[code] == null) {
-            // loadList([code]);
-        }
-
-        return new DataMap(ComCode._store[code], selectedValuePath, displayMemberPath);
+    static get(code, filterKey = null, displayFormat = "{value} - {name}", selectedValuePath = "value", displayMemberPath = "name") {
+        return new OwMap(ComCode.getValue(code, displayFormat), filterKey, selectedValuePath, displayMemberPath);
     }
 
-    static getValue(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
-        if (ComCode._store[code] == null) {
-            // loadList([code]);
+    static getValue(code, displayFormat = null) {
+        let itemSource = ComCode._store[code];
+
+        if (itemSource == null) {
+            loadList([code]);
+            itemSource = ComCode._store[code];
         }
 
-        return ComCode._store[code];
+        if (code == "USE_YN") {
+            displayFormat = null;
+        }
+
+        if (displayFormat) {
+            itemSource = ComCode.reformat(itemSource, displayFormat);
+        }
+
+        return itemSource;
     }
 
-    static loadList(reqList) {
-        if (reqList.length > 0) {
-            // let resData = await restApi.getList(url, reqList);
-            let resData = null;
+    static async loadList(reqList) {
+        if (reqList.length == 0) {
+            return;
+        }
 
-            if (resData.data.totalSize > 0) {
-                for (var codeMap of resData.data.data) {
-                    ComCode._store.push(codeMap);
-                }
+        let resData = await restApi.getList(url, reqList);
+
+        if (resData.data.totalSize > 0) {
+            for (var codeMap of resData.data.data) {
+                ComCode._store.push(codeMap);
             }
         }
+    }
+
+    static reformat(itemSource, displayFormat) {
+        let reformatSource = _.cloneDeep(itemSource);
+
+        for (var idx in reformatSource) {
+            reformatSource[idx].name = displayFormat
+               .replace("{value}", reformatSource[idx].value)
+               .replace("{name}", reformatSource[idx].name);
+        }
+
+        return reformatSource;
     }
 }
