@@ -1,14 +1,16 @@
 <template>
-  <template v-if="label">
-    <label class="t" :for="unique">{{ label }}</label>
-  </template>
-  <div class="ow-combobox" v-bind="$attrs" ref="root">
-    <wj-combo-box
-      :id="unique"
-      :text-changed="textChanged"
-      :placeholder="placeholder"
-      :initialized="initialized"
-    ></wj-combo-box>
+  <div class="item">
+    <template v-if="label">
+      <label class="t" :for="unique">{{ label }}</label>
+    </template>
+    <div class="ow-combobox" v-bind="$attrs" ref="root">
+      <wj-combo-box
+        :id="unique"
+        :text-changed="textChanged"
+        :placeholder="placeholder"
+        :initialized="initialized"
+      ></wj-combo-box>
+    </div>
   </div>
 </template>
 <script>

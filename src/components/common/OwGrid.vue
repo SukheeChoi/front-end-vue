@@ -10,10 +10,12 @@
           <!-- right top -->
           <ow-flex-item class="align-x-end">
             <button v-if="state.buttons.excel" class="ow-btn type-state excel" @click="state.store.excel()">Excel 다운로드</button>
-            <button v-if="state.buttons.undo" class="ow-btn type-state refresh" @click="state.store.undo()">초기화</button>
-            <button v-if="state.buttons.add" class="ow-btn type-state" @click="state.store.add()"><span>추가</span></button>
-            <button v-if="state.buttons.del" class="ow-btn type-state" @click="state.store.del()"><span>삭제</span></button>
-            <button v-if="state.buttons.save" class="ow-btn type-state" @click="state.store.save()"><span>저장</span></button>
+            <template v-if="mode=='edit'">
+              <button v-if="state.buttons.undo" class="ow-btn type-state refresh" @click="state.store.undo()">초기화</button>
+              <button v-if="state.buttons.add" class="ow-btn type-state" @click="state.store.add()"><span>추가</span></button>
+              <button v-if="state.buttons.del" class="ow-btn type-state" @click="state.store.del()"><span>삭제</span></button>
+              <button v-if="state.buttons.save" class="ow-btn type-state" @click="state.store.save()"><span>저장</span></button>
+            </template>
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>

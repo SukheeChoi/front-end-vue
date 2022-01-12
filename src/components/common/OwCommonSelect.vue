@@ -1,6 +1,11 @@
 <template>
-  <div class="ow-combobox" style="width: var(--input-w-150)">
-    <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all" :reqSelect="reqSelect"> </wj-combo-box>
+  <div class="item">
+    <template v-if="label">
+      <label class="t">{{ label }}</label>
+    </template>
+    <div class="ow-combobox" style="width: var(--input-w-150)">
+      <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all" :reqSelect="reqSelect"> </wj-combo-box>
+    </div>
   </div>
 </template>
 <script>
@@ -11,6 +16,10 @@ import { ComCode } from '@/api/comCode.js'
 export default {
   name: 'OwCommonSelect',
   props: {
+    label: {
+      type: String,
+      default: ""
+    },
     codeGroup: {
       type: String,
       default: '',
