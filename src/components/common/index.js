@@ -17,6 +17,7 @@ import OwFlexItem from '@/components/common/OwFlexItem';
 import OwGrid from '@/components/common/OwGrid';
 import OwInput from '@/components/common/OwInput';
 import OwInputDate from '@/components/common/OwInputDate';
+import OwInputNumber from '@/components/common/OwInputNumber';
 import OwModal from '@/components/common/OwModal';
 import OwPanel from '@/components/common/OwPanel';
 import OwRadio from '@/components/common/OwRadio';
@@ -52,6 +53,7 @@ const COMMON_COMPONENTS = {
   OwGrid,
   OwInput,
   OwInputDate,
+  OwInputNumber,
   OwModal,
   OwPanel,
   OwRadio,
