@@ -24,76 +24,78 @@ import OwRadioButton from '@/components/common/OwRadioButton';
 import OwSelect from '@/components/common/OwSelect';
 import OwCommonSelect from '@/components/common/OwCommonSelect';
 import OwSpinner from '@/components/common/OwSpinner';
+import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
 import OwSearch from '@/components/common/OwSearch';
 
 import _ from 'lodash';
 
 export function registerWijmo(app) {
-    registerCore(app);
-    registerInput(app);
-    registerGrid(app);
-    registerGridDetail(app);
-    registerGridFilter(app);
-    registerGridGrouppanel(app);
-    registerNav(app);
+  registerCore(app);
+  registerInput(app);
+  registerGrid(app);
+  registerGridDetail(app);
+  registerGridFilter(app);
+  registerGridGrouppanel(app);
+  registerNav(app);
 }
 
 const COMMON_COMPONENTS = {
-    OwCheckbox,
-    OwContainer,
-    OwContent,
-    OwDialog,
-    OwFilterCheckbox,
-    OwFilterRadio,
-    OwFlexWrap,
-    OwFlexItem,
-    OwGrid,
-    OwInput,
-    OwInputDate,
-    OwModal,
-    OwPanel,
-    OwRadio,
-    OwRadioButton,
-    OwSelect,
-    OwCommonSelect,
-    OwSpinner,
-    OwTab,
-    OwSearch,
+  OwCheckbox,
+  OwContainer,
+  OwContent,
+  OwDialog,
+  OwFilterCheckbox,
+  OwFilterRadio,
+  OwFlexWrap,
+  OwFlexItem,
+  OwGrid,
+  OwInput,
+  OwInputDate,
+  OwModal,
+  OwPanel,
+  OwRadio,
+  OwRadioButton,
+  OwSelect,
+  OwCommonSelect,
+  OwSpinner,
+  OwSwitch,
+  OwTab,
+  OwSearch,
 };
 
 export function registerOwComponents(app) {
-    for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
-        app.component(name, component);
-    }
-    app.provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
+  for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
+    app.component(name, component);
+  }
+  app.provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
 }
 
 const $dialog = {
-    alert: () => {},
-    success: () => {},
-    error: () => {},
-    confirm: () => {},
+  alert: () => {},
+  success: () => {},
+  error: () => {},
+  confirm: () => {},
 };
 
 const dialogDefaultOptions = {
-    acceptButtonText: '확인',
-    cancelButtonText: '취소',
+  acceptButtonText: '확인',
+  cancelButtonText: '취소',
 };
 
 export function implementOwDialog(ref) {
-    $dialog.alert = (message, options = {}) => {
-        return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options));
-    };
-    $dialog.success = (message, options = {}) => {
-        return ref.value.open(
-            _.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'success' })
-        );
-    };
-    $dialog.error = (message, options = {}) => {
-        return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'error' }));
-    };
-    $dialog.confirm = (message, options = {}) => {
-        return ref.value.open(_.assignIn({ type: 'confirm', message }, dialogDefaultOptions, options));
-    };
+  $dialog.alert = (message, options = {}) => {
+    return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options));
+  };
+  $dialog.success = (message, options = {}) => {
+    return ref.value.open(
+      _.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'success' })
+    );
+  };
+  $dialog.error = (message, options = {}) => {
+    return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'error' }));
+  };
+  $dialog.confirm = (message, options = {}) => {
+    return ref.value.open(_.assignIn({ type: 'confirm', message }, dialogDefaultOptions, options));
+  };
 }

@@ -1,6 +1,5 @@
 <template>
-  <wj-popup :style="`--max-width: ${size.width}px; --max-height: ${size.height}px;`" ref="root">
-    <!-- 타이틀 -->
+  <wj-popup :style="`--max-width: ${size.width}px; --max-height: ${size.outer_height}px;`" ref="root">
     <div class="modal-header">
       <h5 class="modal-title">{{ title }}</h5>
       <button type="button" class="close" @click="onCancel">&#120;</button>
@@ -20,15 +19,12 @@
             </button>
           </slot>
         </div>
-        <!-- once -->
-        <template v-if="once">
-          <div class="once">
-            <div class="ow-checkbox">
-              <input type="checkbox" :id="unique" />
-              <label :for="unique">팝업창 다시보지 않음</label>
-            </div>
+        <div class="once" v-show="once" ref="one">
+          <div class="ow-checkbox">
+            <input type="checkbox" :id="unique" v-model="checkedOnce" />
+            <label :for="unique">팝업창 다시보지 않음</label>
           </div>
-        </template>
+        </div>
       </div>
     </div>
   </wj-popup>
@@ -36,7 +32,7 @@
 <script>
 import { PopupTrigger } from '@grapecity/wijmo.input';
 
-import { ref, computed, onMounted, reactive, toRefs } from 'vue';
+import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
 
 import { expando } from '@/utils';
 
@@ -68,17 +64,30 @@ export default {
     },
   },
   setup(props) {
+    const root = ref(null);
+    const one = ref(null);
+
     const state = reactive({
       control: null,
       unique: expando('ow-modal-once'),
       acceptButtonText: '',
       cancelButtonText: '',
-      size: computed(() => P[props.type.toUpperCase()] || P.XS),
+      size: computed(() => {
+        const { width, height } = P[props.type.toUpperCase()] || P.XS;
+        let outer_height = height;
+        if (props.once) {
+          outer_height += 40;
+        }
+        return {
+          width,
+          height,
+          outer_height,
+        };
+      }),
       resolvePromise: null,
       beforeAccept: () => true,
+      checkedOnce: false,
     });
-
-    const root = ref(null);
 
     const open = (
       accept,
@@ -88,6 +97,7 @@ export default {
       }
     ) => {
       return new Promise((resolve) => {
+        state.checkedOnce = false;
         state.control.hideTrigger = PopupTrigger.None;
         state.control.show(true);
         state.acceptButtonText = options.acceptButtonText || '확인';
@@ -101,7 +111,7 @@ export default {
 
     const onAccept = () => {
       if (state.beforeAccept()) {
-        state.resolvePromise({ ok: true, control: state.control });
+        state.resolvePromise({ ok: true, control: state.control, once: state.checkedOnce });
       }
     };
     const onCancel = () => {
@@ -109,12 +119,20 @@ export default {
       state.control.hide();
     };
 
+    watch(
+      () => props.once,
+      (once) => {
+        console.log('modal once', once);
+      }
+    );
+
     onMounted(() => {
       state.control = root.value.control;
     });
 
     return {
       root,
+      one,
       ...toRefs(state),
       open,
       onAccept,
@@ -132,7 +150,7 @@ export default {
     .layer-body {
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100px;
       max-height: calc(var(--max-height, 320px) - 36px - 62px) !important;
       overflow-y: auto;
