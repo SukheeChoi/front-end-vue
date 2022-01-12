@@ -2,7 +2,7 @@
   <template v-if="label">
     <label class="t" :for="unique">{{ label }}</label>
   </template>
-  <div class="ow-combobox" ref="root">
+  <div class="ow-combobox" v-bind="$attrs" ref="root">
     <wj-combo-box
       :id="unique"
       :text-changed="textChanged"
@@ -15,6 +15,7 @@
 import { reactive, ref, watch } from 'vue';
 import { expando } from '@/utils';
 export default {
+  inheritAttrs: false,
   name: 'OwInput',
   props: {
     label: String,
