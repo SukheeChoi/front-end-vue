@@ -1,55 +1,50 @@
 import restApi from '@/api/restApi.js';
 import { DataMap } from '@grapecity/wijmo.grid';
-import { useStore } from 'vuex';
+import CodeData from '@/store/modules/comData';
 
-let _store = {};
-// const _store = useStore().state.comData;
 const url = '/com/CommonCode';
 
 export class ComCode {
+    static _store = CodeData;
 
-    async populateList(codeList) {
+    static async populateList(codeList) {
         let reqList = [];
 
         for (var code of codeList) {
-            if (_store[code] != null) {
+            if (ComCode._store[code] != null) {
                 reqList.push(code);
             }
         }
 
-        this.loadList(reqList);
+        ComCode.loadList(reqList);
     }
 
-    get(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
-        if (_store[code] == null) {
+    static get(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
+        if (ComCode._store[code] == null) {
             // loadList([code]);
         }
 
-        return new DataMap(_store[code], selectedValuePath, displayMemberPath);
+        return new DataMap(ComCode._store[code], selectedValuePath, displayMemberPath);
     }
 
-    getValue(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
-        if (_store[code] == null) {
+    static getValue(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
+        if (ComCode._store[code] == null) {
             // loadList([code]);
         }
 
-        return _store[code];
+        return ComCode._store[code];
     }
 
-    loadList(reqList) {
+    static loadList(reqList) {
         if (reqList.length > 0) {
             // let resData = await restApi.getList(url, reqList);
             let resData = null;
 
             if (resData.data.totalSize > 0) {
                 for (var codeMap of resData.data.data) {
-                    this._store.push(codeMap);
+                    ComCode._store.push(codeMap);
                 }
             }
         }
-    }
-
-    constructor(store) {
-        _store = store;
     }
 }
