@@ -1,11 +1,12 @@
 <template>
+<div class="ow-combobox" style="width: var(--input-w-150)">
   <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all"> </wj-combo-box>
+  </div>
 </template>
 <script>
 import { reactive, ref } from 'vue';
 import { CollectionView } from '@grapecity/wijmo';
-import restApi from '@/api/restApi.js';
-import { useStore } from 'vuex';
+import { ComCode } from '@/api/comCode.js'
 
 export default {
   name: 'OwCommonSelect',
@@ -30,9 +31,6 @@ export default {
     let reqData = null;
     let all = ref(props.all);
 
-    const uri = '/com/';
-    const id = '';
-
     const initialized = (option) => {
       if (!option.displayMemberPath) {
         option.displayMemberPath = 'name';
@@ -43,10 +41,9 @@ export default {
       }
     };
 
-    //getlist test
     function getList(codeGroup) {
 
-      reqData = useStore().state.comData[codeGroup];
+      reqData = ComCode.get(codeGroup);
       if(reqData) {
         return reqData;
       }
@@ -84,15 +81,6 @@ export default {
         ];
       }
     }
-
-    // const getList = (codeGroup) => {
-    //   let reqData = restApi.getList(uri, Object.assign(codeGroup), id);
-
-    //   if (reqData && reqData.data.data.length > 0) {
-    //     items.clear();
-    //     items = reqData.data.data;
-    //   }
-    // };
 
     if (codeGroup) {
       getList(codeGroup);

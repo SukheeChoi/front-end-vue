@@ -18,14 +18,10 @@ export default {
             return this.$dialog.confirm(message, options);
         },
         getCode: function(code, displayFormat, selectedValuePath, displayMemberPath) {
-            const store = this.$store.state.comData;
-            const comCode = new ComCode(store);
-            return comCode.get(code, displayFormat, selectedValuePath, displayMemberPath);
+            return ComCode.get(code, displayFormat, selectedValuePath, displayMemberPath);
         },
-        getValue: function(code, displayFormat, selectedValuePath, displayMemberPath) {
-            const store = this.$store.state.comData;
-            const comCode = new ComCode(store);
-            return comCode.getValue(code, displayFormat, selectedValuePath, displayMemberPath);
+        getCodeValue: function(code, displayFormat, selectedValuePath, displayMemberPath) {
+            return ComCode.getValue(code, displayFormat, selectedValuePath, displayMemberPath);
         }
     },
 };

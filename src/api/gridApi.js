@@ -2,8 +2,7 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView, closest } from '@grapecity/wijmo';
-import { Control } from '@grapecity/wijmo.grid';
+import { CollectionView } from '@grapecity/wijmo';
 
 export class GridApi extends CollectionView {
     _id = '';

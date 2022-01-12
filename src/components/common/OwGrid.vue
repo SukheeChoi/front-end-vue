@@ -55,10 +55,6 @@ export default {
   components: {},
   props: {
     pageSize: {
-        type: Number,
-        default: 10,
-      },
-    pageSize: {
       type: Number,
       default: 10,
     },
@@ -92,9 +88,9 @@ export default {
         totalCount: computed(() => props.opt.totalCount),
         hasPagination: computed(() => props.opt.totalCount > props.opt.pageSize),
         pageSizeList: computed(() => props.pageSizeList.map((value) => {
-          return { name: `${value}건`, value };
-        })
-      )
+            return { name: `${value}건`, value };
+          })
+        )
       });
     } else {
       tmpState = reactive({
@@ -124,7 +120,7 @@ export default {
     watch(
       () => state.pageSize,
       () => {
-        
+          console.log('state.pageSize', state.pageSize);
         //현재 데이터 있는 페이지로 이동
         if (state.totalCount > 0) {
             let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
