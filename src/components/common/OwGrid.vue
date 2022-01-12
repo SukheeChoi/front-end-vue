@@ -5,11 +5,15 @@
         <ow-flex-wrap>
           <!-- left top -->
           <ow-flex-item class="align-x-start">
-            <slot name="left"></slot>
+            <h1 class="h1">{{ state.title }}</h1>
           </ow-flex-item>
           <!-- right top -->
           <ow-flex-item class="align-x-end">
-            <slot name="right"></slot>
+            <button v-if="state.buttons.excel" class="ow-btn type-state excel" @click="state.store.excel()">Excel 다운로드</button>
+            <button v-if="state.buttons.undo" class="ow-btn type-state refresh" @click="state.store.undo()">초기화</button>
+            <button v-if="state.buttons.add" class="ow-btn type-state" @click="state.store.add()"><span>추가</span></button>
+            <button v-if="state.buttons.del" class="ow-btn type-state" @click="state.store.del()"><span>삭제</span></button>
+            <button v-if="state.buttons.save" class="ow-btn type-state" @click="state.store.save()"><span>저장</span></button>
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>
@@ -69,6 +73,22 @@ export default {
     opt: {
       type: Object
     },
+    title: {
+      type: String,
+      default: ""
+    },
+    mode: {
+      default: "edit"
+    },
+    buttons: {
+      default: {
+        excel : false,
+        undo : true,
+        add : true,
+        del : true,
+        save : true
+      }
+    },
     store: {
       default: null
     },
@@ -82,6 +102,9 @@ export default {
 
     if (props.opt && props.opt.pageNo) {
       tmpState = reactive({
+        title: ref(props.title),
+        mode: ref(props.mode),
+        buttons: ref(props.buttons),
         store: ref(props.store),
         pageSize: ref(props.opt.pageSize),
         pageNo: ref(props.opt.pageNo),
@@ -94,6 +117,9 @@ export default {
       });
     } else {
       tmpState = reactive({
+        title: ref(props.title),
+        mode: ref(props.mode),
+        buttons: ref(props.buttons),
         pageSize: ref(props.pageSize),
         pageNo: ref(props.pageNo),
         totalCount: computed(() => props.totalCount),
