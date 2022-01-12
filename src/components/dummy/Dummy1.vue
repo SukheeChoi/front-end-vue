@@ -83,8 +83,6 @@ import OwFilterRadio from '@/components/common/OwFilterRadio';
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 
-import { test } from '@/utils/test';
-
 export default {
   name: 'Dummy1',
   components: {
@@ -209,7 +207,6 @@ export default {
     console.log('this', this);
     this.before = this.$refs.before;
     this.after = this.$refs.after;
-    test();
   },
   setup() {},
   methods: {
