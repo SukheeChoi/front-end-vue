@@ -1,23 +1,24 @@
 <template>
-  <div class="item">
-    <template v-if="label">
-      <label class="t" :for="unique">{{ label }}</label>
+  <template v-if="label">
+    <label class="t" :for="unique">{{ label }}</label>
+  </template>
+  <div class="ow-combobox" ref="root" v-bind="$attrs">
+    <wj-combo-box
+      :id="unique"
+      :text-changed="textChanged"
+      :placeholder="placeholder"
+      :initialized="initialized"
+      @keyup.enter="lookup"
+    ></wj-combo-box>
+    <template v-if="search">
+      <button type="button" class="btn-search" @click="lookup">조회</button>
     </template>
-    <div class="ow-combobox" v-bind="$attrs" ref="root">
-      <wj-combo-box
-        :id="unique"
-        :text-changed="textChanged"
-        :placeholder="placeholder"
-        :initialized="initialized"
-      ></wj-combo-box>
-    </div>
   </div>
 </template>
 <script>
 import { reactive, ref, watch } from 'vue';
 import { expando } from '@/utils';
 export default {
-  inheritAttrs: false,
   name: 'OwInput',
   props: {
     label: String,
@@ -30,6 +31,10 @@ export default {
     placeholder: {
       type: String,
       default: '',
+    },
+    search: {
+      type: Boolean,
+      default: false,
     },
     modelValue: String,
   },
@@ -51,6 +56,12 @@ export default {
       state.control.text = combo.text;
     };
 
+    const lookup = () => {
+      if (props.search) {
+        emit('lookup');
+      }
+    };
+
     watch(
       () => props.modelValue,
       () => (state.control.text = props.modelValue)
@@ -65,6 +76,7 @@ export default {
       root,
       initialized,
       textChanged,
+      lookup,
     };
   },
 };
@@ -74,7 +86,26 @@ export default {
   display: inline-flex;
   flex: 0 0 auto;
 }
-.ow-combobox:after {
-  display: none;
+.ow-combobox {
+  .btn-search {
+    display: inline-flex;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 17px;
+    height: 17px;
+    background-image: url('~@/assets/images/icon/icon_search.svg');
+    text-indent: -9999em;
+    font-size: 0;
+    background-color: transparent;
+    border: 0;
+    &:hover {
+      filter: invert(31%) sepia(96%) saturate(4852%) hue-rotate(210deg) brightness(105%) contrast(103%);
+    }
+  }
+  &:after {
+    display: none;
+  }
 }
 </style>
