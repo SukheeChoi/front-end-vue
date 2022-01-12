@@ -1,6 +1,6 @@
 <template>
   <template v-if="label">
-    <label class="t" :for="unique">{{ label }}</label>
+    <label class="select-label" :for="unique">{{ label }}</label>
   </template>
   <div class="ow-combobox" ref="root" v-bind="$attrs">
     <wj-combo-box
@@ -85,20 +85,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.t {
-  display: inline-flex;
-  flex: 0 0 auto;
-
-  &::before {
-    content: '';
-    display: inline-block;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: #333;
-    vertical-align: text-top;
-    margin-top: 6px;
-    margin-right: 4px;
-  }
+.select-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -1.08px;
+  color: #333;
+  margin-right: 6px;
 }
 </style>
