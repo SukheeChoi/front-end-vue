@@ -9,7 +9,7 @@ const Utils = {
     return data;
   },
 
-  makeMsg(message, defaultMessage = "", args = [], ) {
+  makeMsg(message, defaultMessage = "", args = []) {
     let resultMsg = message ? message : defaultMessage;
 
     if (args.length == 0) {
