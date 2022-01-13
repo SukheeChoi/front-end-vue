@@ -47,9 +47,12 @@ export default {
       },
     },
     modelValue: [String, Number, Object],
+    selectedIndexChanged : {},
+    initBizCdCombo : {}
   },
   setup(props, { emit }) {
     const root = ref(null);
+    let ComboBox = null;
 
     const state = reactive({
       dataMap: computed(() => {
@@ -66,6 +69,7 @@ export default {
     const initialized = (combo) => {
       combo.selectedValue = state.control.selectedValue;
       state.control = combo;
+      ComboBox = combo;
     };
 
     watch(
@@ -78,10 +82,21 @@ export default {
       () => emit('update:modelValue', state.control.selectedValue)
     );
 
+    watch(
+      () => props.selectedIndexChanged,
+      () => emit('selectedIndexChanged', ComboBox)
+    );
+
+    watch(
+      () => props.initBizCdCombo,
+      () => emit('initBizCdCombo', ComboBox)
+    );
+
     return {
       root,
       ...toRefs(state),
       initialized,
+      ComboBox,
     };
   },
 };

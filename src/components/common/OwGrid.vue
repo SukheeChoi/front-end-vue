@@ -148,7 +148,6 @@ export default {
     watch(
       () => state.pageSize,
       () => {
-          console.log('state.pageSize', state.pageSize);
         //현재 데이터 있는 페이지로 이동
         if (state.totalCount > 0) {
             let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
