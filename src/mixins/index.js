@@ -9,8 +9,8 @@ export default {
     alert: function (...args) {
       return this.$dialog.alert(...args);
     },
-    success: function (...args) {
-      return this.$dialog.alert(...args);
+    confirm: function (...args) {
+      return this.$dialog.confirm(...args);
     },
     getCode: function (code, displayFormat, selectedValuePath, displayMemberPath) {
       return ComCode.get(code, displayFormat, selectedValuePath, displayMemberPath);
