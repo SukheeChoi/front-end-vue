@@ -30,6 +30,6 @@ registerOwComponents(app);
 
 app.mixin(mixin);
 
-app.mount('#app');
+const instance = app.mount('#app');
 
-export { app };
+export { app, instance };

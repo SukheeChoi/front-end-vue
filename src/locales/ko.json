@@ -1,4 +1,10 @@
 {
+  "dialog": {
+    "button": {
+      "accept": "확인",
+      "cancel": "취소"
+    }
+  },
   "valid": {
     "number": "{0} 숫자만 입력할 수 있습니다.",
     "presence": "{0} 값을 입력해야 합니다.",
