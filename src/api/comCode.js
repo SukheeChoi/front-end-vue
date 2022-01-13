@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { OwMap } from '@/api/owMap.js';
 import restApi from '@/api/restApi.js';
 import CodeData from '@/store/modules/comData';
+import { CollectionView } from '@grapecity/wijmo';
 
 const url = '/com/CommonCode';
 
@@ -20,7 +21,11 @@ export class ComCode {
         ComCode.loadList(reqList);
     }
 
-    static get(code, filterKey = null, displayFormat = "{value} - {name}", selectedValuePath = "value", displayMemberPath = "name") {
+    static get(code, displayFormat = "{value} - {name}") {
+        return new CollectionView(ComCode.getValue(code, displayFormat));
+    }
+
+    static getMap(code, filterKey = null, displayFormat = "{value} - {name}", selectedValuePath = "value", displayMemberPath = "name") {
         return new OwMap(ComCode.getValue(code, displayFormat), filterKey, selectedValuePath, displayMemberPath);
     }
 
@@ -62,8 +67,8 @@ export class ComCode {
 
         for (var idx in reformatSource) {
             reformatSource[idx].name = displayFormat
-               .replace("{value}", reformatSource[idx].value)
-               .replace("{name}", reformatSource[idx].name);
+                .replace("{value}", reformatSource[idx].value)
+                .replace("{name}", reformatSource[idx].name);
         }
 
         return reformatSource;
