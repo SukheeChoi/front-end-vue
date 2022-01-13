@@ -29,8 +29,6 @@ import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
 import OwSearch from '@/components/common/OwSearch';
 
-import _ from 'lodash';
-
 export function registerWijmo(app) {
   registerCore(app);
   registerInput(app);
