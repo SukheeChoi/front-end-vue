@@ -1,6 +1,11 @@
 <template>
-  <div class="ow-combobox" style="width: var(--input-w-150)">
-    <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all"> </wj-combo-box>
+  <div class="item">
+    <template v-if="label">
+      <label class="t">{{ label }}</label>
+    </template>
+    <div class="ow-combobox" style="width: var(--input-w-150)">
+      <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all" :reqSelect="reqSelect"> </wj-combo-box>
+    </div>
   </div>
 </template>
 <script>
@@ -11,6 +16,10 @@ import { ComCode } from '@/api/comCode.js';
 export default {
   name: 'OwCommonSelect',
   props: {
+    label: {
+      type: String,
+      default: '',
+    },
     codeGroup: {
       type: String,
       default: '',
@@ -23,6 +32,10 @@ export default {
     linkCombo: {
       type: String,
     },
+    reqSelect: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const { codeGroup } = reactive(props);
@@ -30,6 +43,7 @@ export default {
     let items = reactive(new CollectionView([]));
     let reqData = null;
     let all = ref(props.all);
+    let reqSelect = ref(props.reqSelect);
 
     const initialized = (option) => {
       if (!option.displayMemberPath) {
@@ -52,8 +66,8 @@ export default {
       getList(codeGroup);
     }
 
-    if (reqData && reqData.length > 0) {
-      items.sourceCollection = reqData;
+    if (reqData && !reqData.isEmpty) {
+      items.sourceCollection = reqData.collectionView.sourceCollection;
     }
 
     if (all.value) {
@@ -61,6 +75,15 @@ export default {
         if (items.sourceCollection[0].value != 'all') {
           const allData = { value: 'all', name: '전체' };
           items.sourceCollection.splice(0, 0, allData);
+        }
+      }
+    }
+
+    if (reqSelect.value) {
+      if (items.sourceCollection.length > 0) {
+        if (items.sourceCollection[0].value != 'reqSelect') {
+          const selectData = { value: null, name: '선택하세요.' };
+          items.sourceCollection.splice(0, 0, selectData);
         }
       }
     }

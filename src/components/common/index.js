@@ -17,13 +17,17 @@ import OwFlexItem from '@/components/common/OwFlexItem';
 import OwGrid from '@/components/common/OwGrid';
 import OwInput from '@/components/common/OwInput';
 import OwInputDate from '@/components/common/OwInputDate';
+import OwInputNumber from '@/components/common/OwInputNumber';
 import OwModal from '@/components/common/OwModal';
 import OwPanel from '@/components/common/OwPanel';
 import OwRadio from '@/components/common/OwRadio';
 import OwRadioButton from '@/components/common/OwRadioButton';
 import OwSelect from '@/components/common/OwSelect';
+import OwCommonSelect from '@/components/common/OwCommonSelect';
 import OwSpinner from '@/components/common/OwSpinner';
+import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
+import OwSearch from '@/components/common/OwSearch';
 
 import _ from 'lodash';
 
@@ -49,13 +53,17 @@ const COMMON_COMPONENTS = {
   OwGrid,
   OwInput,
   OwInputDate,
+  OwInputNumber,
   OwModal,
   OwPanel,
   OwRadio,
   OwRadioButton,
   OwSelect,
+  OwCommonSelect,
   OwSpinner,
+  OwSwitch,
   OwTab,
+  OwSearch,
 };
 
 export function registerOwComponents(app) {

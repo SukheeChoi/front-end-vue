@@ -1,8 +1,8 @@
 <template>
   <template v-if="label">
-    <div class="title-field">{{ label }}</div>
+    <div class="filter-radio-label">{{ label }}</div>
   </template>
-  <div class="ow-filter" ref="root">
+  <div class="ow-filter" ref="root" v-bind="$attrs">
     <template v-if="overflow">
       <button type="button" class="ow-filter-btn-move prev" @click="move('prev')">&#60;</button>
     </template>
@@ -29,8 +29,11 @@
   </div>
 </template>
 <script>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref, toRefs, watch } from 'vue';
 import { expando } from '@/utils';
+
+import _ from 'lodash';
+
 export default {
   name: 'OwFilterRadio',
   props: {
@@ -53,12 +56,31 @@ export default {
     const root = ref(null);
     const filter = ref(null);
 
-    const checkedValue = computed({
-      get: () => props.modelValue,
-      set: (value) => emit('update:modelValue', value),
+    const state = reactive({
+      checkedValue: computed({
+        get: () => props.modelValue,
+        set: (value) => emit('update:modelValue', value),
+      }),
+      overflow: false,
     });
 
-    const overflow = ref(false);
+    watch(
+      () => state.checkedValue,
+      (newCheckedValue, oldCheckedValue) => {
+        if (_.isEmpty(newCheckedValue)) {
+          if (_.isEmpty(oldCheckedValue)) {
+            const first = props.items.filter((item) => !item.disabled).at(0);
+            if (first) {
+              oldCheckedValue = first.value;
+            }
+          }
+          if (oldCheckedValue) {
+            state.checkedValue = oldCheckedValue;
+          }
+        }
+      },
+      { immediate: true }
+    );
 
     const getContentRect = (dom) => {
       let boundingClientRect;
@@ -69,48 +91,49 @@ export default {
     };
 
     let index = 0;
-    const move = (direction) => {
+    const move = _.throttle((direction) => {
       const { value: outer } = root;
       const { value: inner } = filter;
 
       const { left: outerLeft, right: outerRight } = getContentRect(outer);
-      const { left: innerLeft, right: innerRight } = getContentRect(inner);
+      const { left: innerLeft, right: innerRight, width: innerWidth } = getContentRect(inner);
 
+      let tx;
       switch (direction) {
         case 'prev':
           if (outerLeft > innerLeft) {
-            if ((index -= 1) < 0) {
-              index = 0;
-            }
+            tx = innerWidth * (index += 1) * (1 / 3);
           }
           break;
         case 'next':
           if (outerRight < innerRight) {
-            index += 1;
+            tx = innerWidth * (index -= 1) * (1 / 3);
           }
           break;
       }
-
-      const child = inner.children[index];
-      if (child) {
-        const { x: x1 } = getContentRect(inner),
-          { x: x2 } = getContentRect(child);
-        inner.style.transform = `translateX(-${x2 - x1}px)`;
+      if (typeof tx === 'number') {
+        inner.style.transform = `translateX(${tx}px)`;
       }
-    };
+    }, 300);
 
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width: outerWidth } = entry.contentRect;
         const { width: innerWidth } = getContentRect(filter.value);
         if (entry.target === root.value) {
-          overflow.value = outerWidth < innerWidth;
+          state.overflow = outerWidth < innerWidth;
         }
       }
     });
 
     onMounted(() => {
       observer.observe(root.value);
+      if (props.items.length > 0 && _.isEmpty(state.checkedValue)) {
+        const first = props.items.filter((item) => !item.disabled).at(0);
+        if (first) {
+          state.checkedValue = first.value;
+        }
+      }
     });
 
     onUnmounted(() => {
@@ -120,19 +143,24 @@ export default {
     return {
       root,
       filter,
-      overflow,
-      checkedValue,
+      ...toRefs(state),
       move,
     };
   },
 };
 </script>
 <style lang="scss" scoped>
+.filter-radio-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -1.08px;
+  color: #333;
+  margin-right: 6px;
+}
 .ow-filter {
-  width: 100%;
-  overflow: hide;
+  width: var(--width, auto);
   .ow-filter-list {
-    transition: all 0.15s linear;
+    transition: all 0.2s ease-in-out;
   }
 }
 </style>
