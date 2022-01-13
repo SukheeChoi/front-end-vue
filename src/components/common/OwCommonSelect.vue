@@ -1,12 +1,12 @@
 <template>
-<div class="ow-combobox" style="width: var(--input-w-150)">
-  <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all"> </wj-combo-box>
+  <div class="ow-combobox" style="width: var(--input-w-150)">
+    <wj-combo-box :itemsSource="items" :initialized="initialized" :all="all"> </wj-combo-box>
   </div>
 </template>
 <script>
 import { reactive, ref } from 'vue';
 import { CollectionView } from '@grapecity/wijmo';
-import { ComCode } from '@/api/comCode.js'
+import { ComCode } from '@/api/comCode.js';
 
 export default {
   name: 'OwCommonSelect',
@@ -21,8 +21,8 @@ export default {
       default: true,
     },
     linkCombo: {
-      type: String
-    }
+      type: String,
+    },
   },
   setup(props) {
     const { codeGroup } = reactive(props);
@@ -42,43 +42,9 @@ export default {
     };
 
     function getList(codeGroup) {
-
       reqData = ComCode.get(codeGroup);
-      if(reqData) {
+      if (reqData) {
         return reqData;
-      }
-
-      if (codeGroup == 'totalSearch') {
-        reqData = [
-          {
-            name: '단어명',
-            value: '1',
-          },
-          {
-            name: '영문명',
-            value: '2',
-          },
-          {
-            name: '약어',
-            value: '3',
-          },
-          {
-            name: '정의',
-            value: '4',
-          },
-          {
-            name: '요청일자',
-            value: '5',
-          },
-          {
-            name: '요청업무코드',
-            value: '6',
-          },
-          {
-            name: '요청자명',
-            value: '7',
-          },
-        ];
       }
     }
 
@@ -92,11 +58,10 @@ export default {
 
     if (all.value) {
       if (items.sourceCollection.length > 0) {
-        if (items.sourceCollection[0].value != "all") {
+        if (items.sourceCollection[0].value != 'all') {
           const allData = { value: 'all', name: '전체' };
           items.sourceCollection.splice(0, 0, allData);
         }
-
       }
     }
 
