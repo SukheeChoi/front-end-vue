@@ -29,8 +29,6 @@ import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
 import OwSearch from '@/components/common/OwSearch';
 
-import _ from 'lodash';
-
 export function registerWijmo(app) {
   registerCore(app);
   registerInput(app);
@@ -70,34 +68,4 @@ export function registerOwComponents(app) {
   for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
     app.component(name, component);
   }
-  app.provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
-}
-
-const $dialog = {
-  alert: () => {},
-  success: () => {},
-  error: () => {},
-  confirm: () => {},
-};
-
-const dialogDefaultOptions = {
-  acceptButtonText: '확인',
-  cancelButtonText: '취소',
-};
-
-export function implementOwDialog(ref) {
-  $dialog.alert = (message, options = {}) => {
-    return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options));
-  };
-  $dialog.success = (message, options = {}) => {
-    return ref.value.open(
-      _.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'success' })
-    );
-  };
-  $dialog.error = (message, options = {}) => {
-    return ref.value.open(_.assignIn({ type: 'alert', message }, dialogDefaultOptions, options, { variant: 'error' }));
-  };
-  $dialog.confirm = (message, options = {}) => {
-    return ref.value.open(_.assignIn({ type: 'confirm', message }, dialogDefaultOptions, options));
-  };
 }

@@ -82,6 +82,7 @@ import OwFilterRadio from '@/components/common/OwFilterRadio';
 
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
+import { inject } from '@vue/runtime-core';
 
 export default {
   name: 'Dummy1',
@@ -93,6 +94,7 @@ export default {
     OwFilterCheckbox,
     OwFilterRadio,
   },
+  // inject: ['$dialog'],
   data() {
     return {
       items: [
@@ -208,7 +210,10 @@ export default {
     this.before = this.$refs.before;
     this.after = this.$refs.after;
   },
-  setup() {},
+  setup() {
+    const $dialog = inject('$dialog');
+    console.log('$dialog', $dialog);
+  },
   methods: {
     items2init: function (combo) {
       console.log('items2init', combo);
@@ -229,7 +234,7 @@ export default {
       // console.log('open alert', this.$refs);
       console.dir('this.$dialog');
       // const ok = await this.$dialog.alert('hi');
-      const ok = await this.error(this.$t('hello.world'));
+      const ok = await this.alert('asdf', { variant: 'error' });
       console.log('dummy ok', ok);
       // this.$dialog.alert();
       // this.$refs.alert.open();
