@@ -4,8 +4,9 @@
 </template>
 
 <script>
-import { useI18n } from 'vue-i18n';
 import { provide, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { app } from '@/main';
 export default {
   name: 'App',
   setup() {
@@ -28,6 +29,8 @@ export default {
     };
 
     provide('$dialog', $dialog);
+
+    app.config.globalProperties.$dialog = $dialog;
 
     return {
       dialog,
