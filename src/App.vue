@@ -28,9 +28,7 @@ export default {
       },
     };
 
-    provide('$dialog', $dialog);
-
-    app.config.globalProperties.$dialog = $dialog;
+    provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
 
     return {
       dialog,
