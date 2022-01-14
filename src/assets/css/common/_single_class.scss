@@ -51,7 +51,7 @@ mt-1 : { margin-top : 1px; }
   @each $preKey, $preValue in $nameMap {
       @each $px in $size {
           .#{$preKey}-#{$px} {
-              #{$preValue} : getPx($px);
+              #{$preValue} : getPx($px) !important;
           }
           @each $sufKey, $sufValue in $position {
               .#{$preKey}#{$sufKey}-#{$px} {
