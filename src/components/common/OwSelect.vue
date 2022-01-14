@@ -1,19 +1,17 @@
 <template>
-  <div class="item">
-    <template v-if="label">
-      <label class="t" :for="unique">{{ label }}</label>
-    </template>
-    <div class="ow-combobox" ref="root" v-bind="$attrs">
-      <wj-combo-box
-        :id="unique"
-        :itemsSource="dataMap.collectionView"
-        :display-member-path="dataMap.displayMemberPath"
-        :selected-value-path="dataMap.selectedValuePath"
-        :placeholder="placeholder"
-        :initialized="initialized"
-      >
-      </wj-combo-box>
-    </div>
+  <template v-if="label">
+    <label class="select-label" :for="unique">{{ label }}</label>
+  </template>
+  <div class="ow-combobox" ref="root" v-bind="$attrs">
+    <wj-combo-box
+      :id="unique"
+      :itemsSource="dataMap.collectionView"
+      :display-member-path="dataMap.displayMemberPath"
+      :selected-value-path="dataMap.selectedValuePath"
+      :placeholder="placeholder"
+      :initialized="initialized"
+    >
+    </wj-combo-box>
   </div>
 </template>
 <script>
