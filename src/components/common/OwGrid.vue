@@ -4,7 +4,7 @@
       <ow-flex-wrap class="dir-col">
         <ow-flex-item class="headline-wrap">
           <ow-flex-wrap>
-            <template v-if="state.hasSlot">
+            <template v-if="hasSlot">
               <!-- left top -->
               <ow-flex-item class="align-x-start">
                 <slot name="left"></slot>
