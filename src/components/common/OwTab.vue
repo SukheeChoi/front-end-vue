@@ -67,4 +67,11 @@ a {
     justify-content: space-between;
   }
 }
+.ow-btn {
+  border: 1px solid #bababa !important;
+  border-radius: 2px;
+  & + & {
+    margin-left: 2px;
+  }
+}
 </style>
