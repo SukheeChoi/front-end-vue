@@ -25,7 +25,7 @@
             <!-- Right -->
             <div class="ow-content" :class="{ 'pl-2': openLeft }" style="--bs-gutter: 6px">
               <app-article class="ow-flex-wrap size-full">
-                <div class="item">
+                <div class="item" style="--align-item: flex-start">
                   <router-view></router-view>
                 </div>
               </app-article>

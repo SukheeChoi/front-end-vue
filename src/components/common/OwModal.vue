@@ -37,6 +37,7 @@
   </wj-popup>
 </template>
 <script>
+import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
 
 import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
@@ -114,6 +115,7 @@ export default {
           state.beforeAccept = accept;
         }
         state.resolvePromise = resolve;
+        Control.invalidateAll();
       });
     };
 
