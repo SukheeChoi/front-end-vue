@@ -60,5 +60,6 @@ export default {
   color: #333;
   margin-right: 6px;
   flex-shrink: 0;
+  align-self: center;
 }
 </style>
