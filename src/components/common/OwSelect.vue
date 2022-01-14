@@ -92,4 +92,9 @@ export default {
   color: #333;
   margin-right: 6px;
 }
+:deep(.wj-control) {
+  .wj-input-group-btn > .wj-btn {
+    background: 0;
+  }
+}
 </style>

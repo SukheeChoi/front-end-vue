@@ -7,6 +7,7 @@
       :id="unique"
       :placeholder="placeholder"
       :initialized="initialized"
+      :disabled="disabled"
       @input="textChanged"
       @keyup.enter="lookup"
     ></wj-combo-box>
@@ -33,6 +34,10 @@ export default {
       default: '',
     },
     search: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
