@@ -1,7 +1,7 @@
 <template>
   <wj-popup :style="`--max-width: ${size.width}px; --max-height: ${size.outer_height}px;`" ref="root">
     <div class="modal-header">
-      <h5 class="modal-title">{{ title }}</h5>
+      <h2 class="modal-title">{{ title }}</h2>
       <button type="button" class="close" @click="onCancel">&#120;</button>
     </div>
     <div class="modal-body">

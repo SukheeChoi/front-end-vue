@@ -34,7 +34,7 @@
           </wj-flex-grid>
         </ow-grid>
 
-        <ow-modal type="XS" :once="false" ref="modal"> aa </ow-modal>
+        <ow-modal type="XS" title="성과급 명세서" :once="true" ref="modal"> asdfasdfasdfasdf </ow-modal>
         <button type="button" class="ow-btn type-base" @click="openModal">Modal open</button>
         <button type="button" class="ow-btn type-base" @click="openAlert">Alert open</button>
         <button type="button" class="ow-btn type-base" @click="openConfirm">Confirm open</button>

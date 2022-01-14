@@ -11,7 +11,7 @@
   >
     <div class="ow-panel-header">
       <div class="ow-panel-title">
-        <slot name="title"></slot>
+        <h3><slot name="title"></slot></h3>
       </div>
       <div class="ow-panel-side">
         <slot name="side"></slot>
