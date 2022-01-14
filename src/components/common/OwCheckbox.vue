@@ -72,8 +72,13 @@ export default {
   letter-spacing: -1.08px;
   color: #333;
   margin-right: 6px;
+  line-height: 24px;
+  flex-shrink: 0;
 }
-.checkbox-group.tansparent {
-  background-color: transparent !important;
+.checkbox-group {
+  padding: 0;
+  &.tansparent {
+    background-color: transparent !important;
+  }
 }
 </style>
