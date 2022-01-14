@@ -12,7 +12,7 @@
             ref="container"
           >
             <!-- Left -->
-            <div class="ow-content" :class="{ 'pr-2': openLeft }">
+            <div class="ow-content" :class="{ 'pr-2': openLeft }" style="--bs-gutter: 6px">
               <app-article class="ow-flex-wrap dir-col size-full" v-show="left.show">
                 <div class="item size-fix" style="--size: 70%; --bg: transparent">
                   <the-action-plan></the-action-plan>
@@ -23,7 +23,7 @@
               </app-article>
             </div>
             <!-- Right -->
-            <div class="ow-content" :class="{ 'pl-2': openLeft }">
+            <div class="ow-content" :class="{ 'pl-2': openLeft }" style="--bs-gutter: 6px">
               <app-article class="ow-flex-wrap size-full">
                 <div class="item">
                   <router-view></router-view>
@@ -39,7 +39,6 @@
   <app-aside ref="aside"></app-aside>
 
   <ow-spinner></ow-spinner>
-  <ow-dialog ref="dialog"></ow-dialog>
 </template>
 <script>
 import AppHeader from '@/components/AppHeader';
@@ -52,10 +51,8 @@ import AppAside from '@/components/AppAside';
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
 
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
-
-import { implementOwDialog } from '@/components/common';
 
 export default {
   components: {
@@ -91,10 +88,6 @@ export default {
     },
   },
   setup(props) {
-    // Dialog Setting
-    const dialog = ref('dialog');
-    implementOwDialog(dialog);
-
     const store = useStore();
 
     const showLoading = computed(() => store.state.showLoadingImage);
@@ -104,7 +97,6 @@ export default {
     return {
       showLoading,
       openLeft,
-      dialog,
     };
   },
 };

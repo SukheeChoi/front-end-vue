@@ -1,55 +1,76 @@
+import _ from 'lodash';
+import { OwMap } from '@/api/owMap.js';
 import restApi from '@/api/restApi.js';
-import { DataMap } from '@grapecity/wijmo.grid';
-import { useStore } from 'vuex';
+import CodeData from '@/store/modules/comData';
+import { CollectionView } from '@grapecity/wijmo';
 
-let _store = {};
-// const _store = useStore().state.comData;
 const url = '/com/CommonCode';
 
 export class ComCode {
+    static _store = CodeData;
 
-    async populateList(codeList) {
+    static async populateList(codeList) {
         let reqList = [];
 
         for (var code of codeList) {
-            if (_store[code] != null) {
+            if (ComCode._store[code] != null) {
                 reqList.push(code);
             }
         }
 
-        this.loadList(reqList);
+        ComCode.loadList(reqList);
     }
 
-    get(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
-        if (_store[code] == null) {
-            // loadList([code]);
+    static get(code, displayFormat = "{value} - {name}") {
+        return new CollectionView(ComCode.getValue(code, displayFormat));
+    }
+
+    static getMap(code, filterKey = null, displayFormat = "{value} - {name}", selectedValuePath = "value", displayMemberPath = "name") {
+        return new OwMap(ComCode.getValue(code, displayFormat), filterKey, selectedValuePath, displayMemberPath);
+    }
+
+    static getValue(code, displayFormat = null) {
+        let itemSource = ComCode._store[code];
+
+        if (itemSource == null) {
+            loadList([code]);
+            itemSource = ComCode._store[code];
         }
 
-        return new DataMap(_store[code], selectedValuePath, displayMemberPath);
-    }
-
-    getValue(code, displayFormat = null, selectedValuePath = 'value', displayMemberPath = 'name') {
-        if (_store[code] == null) {
-            // loadList([code]);
+        if (code == "USE_YN") {
+            displayFormat = null;
         }
 
-        return _store[code];
+        if (displayFormat) {
+            itemSource = ComCode.reformat(itemSource, displayFormat);
+        }
+
+        return itemSource;
     }
 
-    loadList(reqList) {
-        if (reqList.length > 0) {
-            // let resData = await restApi.getList(url, reqList);
-            let resData = null;
+    static async loadList(reqList) {
+        if (reqList.length == 0) {
+            return;
+        }
 
-            if (resData.data.totalSize > 0) {
-                for (var codeMap of resData.data.data) {
-                    this._store.push(codeMap);
-                }
+        let resData = await restApi.getList(url, reqList);
+
+        if (resData.data.totalSize > 0) {
+            for (var codeMap of resData.data.data) {
+                ComCode._store.push(codeMap);
             }
         }
     }
 
-    constructor(store) {
-        _store = store;
+    static reformat(itemSource, displayFormat) {
+        let reformatSource = _.cloneDeep(itemSource);
+
+        for (var idx in reformatSource) {
+            reformatSource[idx].name = displayFormat
+                .replace("{value}", reformatSource[idx].value)
+                .replace("{name}", reformatSource[idx].name);
+        }
+
+        return reformatSource;
     }
 }

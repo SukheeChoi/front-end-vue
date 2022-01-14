@@ -34,7 +34,7 @@
           </wj-flex-grid>
         </ow-grid>
 
-        <ow-modal type="XS" :once="false" ref="modal"> aa </ow-modal>
+        <ow-modal type="XS" title="성과급 명세서" :once="true" ref="modal"> asdfasdfasdfasdf </ow-modal>
         <button type="button" class="ow-btn type-base" @click="openModal">Modal open</button>
         <button type="button" class="ow-btn type-base" @click="openAlert">Alert open</button>
         <button type="button" class="ow-btn type-base" @click="openConfirm">Confirm open</button>
@@ -48,7 +48,7 @@
         <ow-input placeholder="asdfsadfasdf" v-model="inputValue"></ow-input>
       </ow-content>
       <ow-content>
-        <ow-filter-checkbox :items="checkedItems" v-model="checkedValues"></ow-filter-checkbox>
+        <ow-filter-checkbox :items="checkedItems" v-model="checkedValues" style="--width: 100px"></ow-filter-checkbox>
       </ow-content>
       <ow-content>
         <ow-flex-wrap>
@@ -82,8 +82,7 @@ import OwFilterRadio from '@/components/common/OwFilterRadio';
 
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
-
-import { test } from '@/utils/test';
+import { inject } from '@vue/runtime-core';
 
 export default {
   name: 'Dummy1',
@@ -95,6 +94,7 @@ export default {
     OwFilterCheckbox,
     OwFilterRadio,
   },
+  // inject: ['$dialog'],
   data() {
     return {
       items: [
@@ -209,9 +209,11 @@ export default {
     console.log('this', this);
     this.before = this.$refs.before;
     this.after = this.$refs.after;
-    test();
   },
-  setup() {},
+  setup() {
+    const $dialog = inject('$dialog');
+    console.log('$dialog', $dialog);
+  },
   methods: {
     items2init: function (combo) {
       console.log('items2init', combo);
@@ -232,7 +234,7 @@ export default {
       // console.log('open alert', this.$refs);
       console.dir('this.$dialog');
       // const ok = await this.$dialog.alert('hi');
-      const ok = await this.error(this.$t('hello.world'));
+      const ok = await this.alert('asdf', { variant: 'error' });
       console.log('dummy ok', ok);
       // this.$dialog.alert();
       // this.$refs.alert.open();

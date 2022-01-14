@@ -2,8 +2,8 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView, closest } from '@grapecity/wijmo';
-import { Control } from '@grapecity/wijmo.grid';
+import { CollectionView } from '@grapecity/wijmo';
+import * as gridXlsx from '@grapecity/wijmo.grid.xlsx';
 
 export class GridApi extends CollectionView {
     _id = '';
@@ -172,6 +172,17 @@ export class GridApi extends CollectionView {
         }
 
         view.setCellData(e.row, 'rowStatus', 'U');
+    }
+
+    async excel() {
+        const today = new Date();
+        let filename = today.toString();
+
+        if (this._opt.filename) {
+            filename = this._opt.filename
+        }
+
+        gridXlsx.FlexGridXlsxConverter.saveAsync(this._gridView, {}, filename + '.xlsx');
     }
 
     valid(view, e) {

@@ -19,7 +19,7 @@ $clr-radio-disabled-line: #bfc6ce;
 #{$ow-radio} {
   display: inline-flex;
   user-select: none;
-  @at-root .dir-col {
+  @at-root .ow-flex-wrap.dir-col > {
     #{$ow-radio} + #{$ow-radio} {
       margin-top: calc( 10px - var(--gap, 4px));
       margin-left: 0;

@@ -1,4 +1,4 @@
-import { createI18n } from 'vue-i18n';
+import { createI18n } from 'vue-i18n/index';
 
 import ko from '@/locales/ko';
 import en from '@/locales/en';
@@ -27,8 +27,15 @@ function loadMessage() {
 
 loadMessage();
 
-export default createI18n({
+const i18n = createI18n({
   locale: process.env.VUE_APP_I18N_LOCALE,
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE,
   messages,
 });
+
+const { global } = i18n;
+const { t } = global;
+
+export { t };
+
+export default i18n;
