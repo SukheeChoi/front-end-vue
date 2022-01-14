@@ -5,9 +5,9 @@
   <div class="ow-combobox" ref="root" v-bind="$attrs">
     <wj-combo-box
       :id="unique"
-      :text-changed="textChanged"
       :placeholder="placeholder"
       :initialized="initialized"
+      @input="textChanged"
       @keyup.enter="lookup"
     ></wj-combo-box>
     <template v-if="search">
@@ -52,8 +52,8 @@ export default {
       state.control = combo;
     };
 
-    const textChanged = (combo) => {
-      state.control.text = combo.text;
+    const textChanged = ({ data }) => {
+      state.control.text = data;
     };
 
     const lookup = () => {
