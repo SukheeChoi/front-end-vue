@@ -74,7 +74,8 @@
 </template>
 
 <script>
-import router from '@/routes';
+import router from '@/routes/index.js';
+import menuMaker from '@/routes/menuMaker.js';
 import axios from 'axios';
 import login from '@/api/login.js';
 import restApi from '@/api/restApi.js';
@@ -107,11 +108,46 @@ export default {
       }
     },
     async getMenus() {
-      const menuData = await restApi.get('/com/menu', this.loginId);
+      const menuData = await restApi.get('/com/MenuMgr', this.loginId);
       if (menuData.data !== null) {
+        console.log(this.$router.options.routes);
         const menuList = menuData.data.data;
-        this.$store.commit('setMenus', JSON.parse(menuList));
+        console.log(JSON.parse(menuList))
+        //this.$store.commit('setMenus', JSON.parse(menuList));
+        //this.$router.push('/');
+        const jsonArr = JSON.parse(menuList);
+        console.log(jsonArr);
+        this.$store.commit('setMenus', jsonArr);
         this.$router.push('/');
+        /*
+        let newRoutes = [];
+        let test = [];
+        for(var i=0;i<jsonArr.length;i++){
+          //newRoutes.append(menuMaker.tree(jsonArr[i]));
+          test.push(menuMaker.tree(jsonArr[i], true));
+        }
+        console.log(test);
+        for(var i=0;i<test.length;i++){
+          console.log(test[i]);
+          //router.addRoute(test[i]);
+          this.$router.addRoute(test[i]);
+          //this.$router.options.routes.push(test[i]);
+        }
+        //router.addRoute(...test);
+        router.options.routes.push(...test);
+        //this.$store.commit('setMenus', test);
+        //console.log(test);
+        //this.$router.options.routes.push(test);
+        //router.push(test);
+        //this.$router.addRoute(test[1]);
+        //this.$router.addRoute({path:'/com', component: 'com'})
+        //router.addRoute({path:'/com', component: 'com'})
+        console.log(this.$router.options.routes);
+        console.log(router.options.routes);
+        console.log(router.getRoutes());
+        router.replace(router.currentRoute.value.fullPath);
+        console.log(newRoutes);
+        */
       }
     },
   },
