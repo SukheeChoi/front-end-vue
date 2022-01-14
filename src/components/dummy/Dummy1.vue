@@ -48,7 +48,7 @@
         <ow-input placeholder="asdfsadfasdf" v-model="inputValue"></ow-input>
       </ow-content>
       <ow-content>
-        <ow-filter-checkbox :items="checkedItems" v-model="checkedValues"></ow-filter-checkbox>
+        <ow-filter-checkbox :items="checkedItems" v-model="checkedValues" style="--width: 100px"></ow-filter-checkbox>
       </ow-content>
       <ow-content>
         <ow-flex-wrap>

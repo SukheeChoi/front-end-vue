@@ -155,7 +155,6 @@ export default {
   margin-right: 6px;
 }
 .ow-filter {
-  width: var(--width, auto);
   .ow-filter-list {
     transition: all 0.2s ease-in-out;
   }

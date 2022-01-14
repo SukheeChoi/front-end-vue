@@ -1,50 +1,52 @@
-$filter-name-old: ".ow-filter-old";
-$filter-name : ".ow-filter" ; 
+$filter-name-old: '.ow-filter-old';
+$filter-name: '.ow-filter';
 
-#{$filter-name-old}{
+#{$filter-name-old} {
   position: relative;
   transition: transform 0.2s ease-in;
 
   &-btn-perv,
-  &-btn-next{
+  &-btn-next {
     position: absolute;
-    top: 0; z-index: 1;
+    top: 0;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0,0,0,.3);
+    background-color: rgba(0, 0, 0, 0.3);
     // background: url(~@/assets/images/btn-tab-arrow.png) no-repeat 0 0/10px;
-    width: 10px; height: 100%;
+    width: 10px;
+    height: 100%;
     color: #fff;
     font-size: 11px;
   }
 
-  &-btn-perv{
+  &-btn-perv {
     left: 0;
     border-radius: 2px 0 0 2px;
   }
-  &-btn-next{
+  &-btn-next {
     right: 0;
     // transform: rotate(180deg);
     border-radius: 0 2px 2px 0;
   }
-  
+
   &-btn-perv:hover,
-  &-btn-next:hover{
-    background-color: rgba(0,0,0,.5);
+  &-btn-next:hover {
+    background-color: rgba(0, 0, 0, 0.5);
   }
 
-  &.type-base{
+  &.type-base {
     // display: inline-flex;
     padding: 2px 2px;
     background-color: #e1e6ea;
     border-radius: 2px;
     overflow: hidden;
 
-    #{$filter-name-old}-list{
+    #{$filter-name-old}-list {
       display: flex;
       gap: 2px;
-      li{
+      li {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -54,16 +56,16 @@ $filter-name : ".ow-filter" ;
         color: #333;
         cursor: pointer;
         border: 1px solid transparent;
-        font:{
+        font: {
           weight: bold;
           size: 12px;
         }
-        &:hover{
+        &:hover {
           background-color: #fff;
           border: 1px solid #fff;
           color: #333;
         }
-        &.selected{
+        &.selected {
           background-color: #4e95f5;
           border: 1px solid #176de2;
           color: #fff;
@@ -74,17 +76,17 @@ $filter-name : ".ow-filter" ;
 }
 
 #{$filter-name} {
-  width:var(--w, auto) ; 
+  width: var(--width, auto);
   overflow: hidden;
-  position:relative; 
+  position: relative;
   display: inline-flex;
   height: 24px;
   align-items: center;
   background-color: #e1e6ea;
   border-radius: 2px;
   padding: 0 2px;
-  input[type=radio]{
-    @include sr-only() ; 
+  input[type='radio'] {
+    @include sr-only();
     &:checked + #{$filter-name}-button {
       border: solid 1px nth($clrs-base, 2);
       background-color: nth($clrs-base, 7);
@@ -94,10 +96,10 @@ $filter-name : ".ow-filter" ;
   &-list {
     display: flex;
     li {
-      white-space: nowrap ; 
+      white-space: nowrap;
     }
   }
-  &-button{
+  &-button {
     display: inline-flex;
     align-items: center;
     border-radius: 2px;
@@ -107,36 +109,38 @@ $filter-name : ".ow-filter" ;
     font-weight: 700;
     letter-spacing: -1px;
     color: nth($clrs-achromatic, 2);
-    border:1px solid #e1e6ea ; 
+    border: 1px solid #e1e6ea;
     cursor: pointer;
     strong {
       display: inline-flex;
-      margin-left: 4px ;
-      color : nth($clrs-accent, 1) ;
+      margin-left: 4px;
+      color: nth($clrs-accent, 1);
     }
     span {
       display: inline-flex;
-      margin-left:4px ; 
+      margin-left: 4px;
     }
 
     &:hover {
-      background-color: #fff ; 
-      border-color:transparent ;
+      background-color: #fff;
+      border-color: transparent;
     }
   }
   &-btn-move {
     position: absolute;
-    top: 0; z-index: 1;
+    top: 0;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0,0,0,.3);
+    background-color: rgba(0, 0, 0, 0.3);
     // background: url(~@/assets/images/btn-tab-arrow.png) no-repeat 0 0/10px;
-    width: 10px; height: 100%;
+    width: 10px;
+    height: 100%;
     color: #fff;
     font-size: 11px;
     &:hover {
-      background-color: rgba(0,0,0,.5);
+      background-color: rgba(0, 0, 0, 0.5);
     }
     &.prev {
       left: 0;
