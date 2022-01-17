@@ -77,7 +77,7 @@ export default {
   align-self: center;
 }
 .checkbox-group {
-  padding: 0;
+  padding-left: 0;
   &.tansparent {
     background-color: transparent !important;
   }
