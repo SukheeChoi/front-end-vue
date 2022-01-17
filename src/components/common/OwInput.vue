@@ -17,7 +17,6 @@
   </div>
 </template>
 <script>
-import { ComboBox } from '@grapecity/wijmo.input';
 import { reactive, ref, watch } from 'vue';
 import { expando } from '@/utils';
 export default {
@@ -46,7 +45,6 @@ export default {
   },
   setup(props, { emit }) {
     const root = ref(null);
-    console.log('ComboBox', ComboBox);
     const state = reactive({
       control: {
         text: props.modelValue,
