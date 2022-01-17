@@ -1,5 +1,5 @@
 <template>
-  <div class="item" :class="computedClass" :style="computedStyle">
+  <div class="item" :class="classes" :style="style">
     <slot></slot>
   </div>
 </template>
@@ -16,9 +16,12 @@ export default {
       type: Number,
       default: 0,
     },
-    toRight: {
-      type: Boolean,
-      default: false,
+    to: {
+      type: String,
+      default: '',
+      validator: (to) => {
+        return ['', 'left', 'right', 'center'].includes(to);
+      },
     },
     justify: {
       type: String,
@@ -36,13 +39,15 @@ export default {
     },
   },
   setup(props) {
-    const computedClass = computed(() => {
+    const classes = computed(() => {
       return {
         'size-fix': props.fix,
-        'align-to-right': props.toRight,
+        'align-to-left': props.to === 'left',
+        'align-to-right': props.to === 'right',
+        'align-to-center': props.to === 'center',
       };
     });
-    const computedStyle = computed(() => {
+    const style = computed(() => {
       return {
         'justify-content': props.justify,
         'align-items': props.align,
@@ -50,9 +55,25 @@ export default {
       };
     });
     return {
-      computedClass,
-      computedStyle,
+      classes,
+      style,
     };
   },
 };
 </script>
+<style lang="scss" scoped>
+.item {
+  &.align-to-right {
+    margin-left: auto;
+    flex: 0 0 var(--width, auto);
+  }
+  &.align-to-left {
+    margin-right: auto;
+    flex: 0 0 var(--width, auto);
+  }
+  &.align-to-center {
+    margin: 0 auto;
+    flex: 0 0 var(--width, auto);
+  }
+}
+</style>
