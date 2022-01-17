@@ -1,4 +1,4 @@
-$ow-btn: ".ow-btn";
+$ow-btn: '.ow-btn';
 
 #{$ow-btn} {
   @mixin add-shadow($color: rgba(0, 0, 0, 0.12)) {
@@ -34,7 +34,7 @@ $ow-btn: ".ow-btn";
   letter-spacing: -1px;
   font-size: 13px;
   font-weight: 700;
-  white-space: nowrap ;
+  white-space: nowrap;
 
   @at-root .example-item-body {
     #{$ow-btn} {
@@ -104,24 +104,12 @@ $ow-btn: ".ow-btn";
       opacity: 0.8;
     }
 
-    @include set-gradient(
-      linear-gradient(to bottom, #34add4 1%, #2c8faf),
-      #267995,
-      #fff
-    );
+    @include set-gradient(linear-gradient(to bottom, #34add4 1%, #2c8faf), #267995, #fff);
     &:hover {
-      @include set-gradient(
-        linear-gradient(to bottom, #2dbceb 1%, #1da1cc),
-        #1b86a9,
-        #fff
-      );
+      @include set-gradient(linear-gradient(to bottom, #2dbceb 1%, #1da1cc), #1b86a9, #fff);
     }
     &:active {
-      @include set-gradient(
-        linear-gradient(to bottom, #2988a8, #24748d),
-        #1e6077,
-        #fff
-      );
+      @include set-gradient(linear-gradient(to bottom, #2988a8, #24748d), #1e6077, #fff);
     }
     &.size-full {
       @include size-full;
@@ -133,7 +121,7 @@ $ow-btn: ".ow-btn";
   }
 
   /* type-reference */
-  &.type-reference{
+  &.type-reference {
     height: 24px;
     padding: 0 14px;
     font-size: 12px;
@@ -170,11 +158,12 @@ $ow-btn: ".ow-btn";
       @include size-full;
     }
 
-    &.refresh{
-      &:before{
-        content:"";
+    &.refresh {
+      &:before {
+        content: '';
         display: inline-flex;
-        width: 10px; height: 12px;
+        width: 10px;
+        height: 12px;
         margin-right: 4px;
         background: url(~@/assets/images/icon/icon-refresh-none-line.png) no-repeat 0 0/10px;
       }
@@ -225,7 +214,7 @@ $ow-btn: ".ow-btn";
   }
 
   /* type-flat-border */
-  &.flat-border{
+  &.flat-border {
     height: 24px;
     padding: 0 8px;
     font-size: 12px;
@@ -250,7 +239,7 @@ $ow-btn: ".ow-btn";
     }
 
     &:after {
-      content: "";
+      content: '';
       width: 10px;
       height: 10px;
       display: inline-flex;
@@ -270,18 +259,16 @@ $ow-btn: ".ow-btn";
     @include set-color(#fff, #cbd5de, #666);
 
     &:after {
-      content: "";
+      content: '';
       width: 10px;
       height: 10px;
       display: inline-flex;
       margin-left: 8px;
-      background: url(~@/assets/images/icon/icon-add-base.svg) no-repeat 0 0 /
-        10px;
+      background: url(~@/assets/images/icon/icon-add-base.svg) no-repeat 0 0 / 10px;
     }
     &:hover {
       &:after {
-        filter: invert(33%) sepia(69%) saturate(5723%) hue-rotate(208deg)
-          brightness(102%) contrast(108%);
+        filter: invert(33%) sepia(69%) saturate(5723%) hue-rotate(208deg) brightness(102%) contrast(108%);
       }
     }
 
@@ -303,7 +290,7 @@ $ow-btn: ".ow-btn";
     @include set-color(#fff, #cbd5de, #666);
 
     &:after {
-      content: "";
+      content: '';
       width: 9px;
       height: 2px;
       display: inline-flex;
@@ -333,11 +320,7 @@ $ow-btn: ".ow-btn";
     border-right: 0;
     border-radius: 0;
     margin: 0;
-    @include set-gradient(
-      linear-gradient(to bottom, #fff 1%, #d1d5dc),
-      #bababa,
-      #333
-    );
+    @include set-gradient(linear-gradient(to bottom, #fff 1%, #d1d5dc), #bababa, #333);
     @at-root .ow-btn-group {
       display: flex;
     }
@@ -355,11 +338,7 @@ $ow-btn: ".ow-btn";
       border-radius: 0 2px 2px 0;
     }
     &.active {
-      @include set-gradient(
-        linear-gradient(to bottom, #4e95f5 2%, #2468c3 128%),
-        #2461b3,
-        #fff
-      );
+      @include set-gradient(linear-gradient(to bottom, #4e95f5 2%, #2468c3 128%), #2461b3, #fff);
     }
   }
 
@@ -382,7 +361,7 @@ $ow-btn: ".ow-btn";
       font-weight: 700;
     }
 
-    input[type="radio"] {
+    input[type='radio'] {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -396,7 +375,7 @@ $ow-btn: ".ow-btn";
     }
 
     &.color-blue {
-      input[type="radio"] {
+      input[type='radio'] {
         &:checked {
           & ~ label {
             @include set-color(#4e95f5, #176de2, #fff);
@@ -420,8 +399,7 @@ $ow-btn: ".ow-btn";
     &.modify {
       background: url(~@/assets/images/icon/icon-modify.png) no-repeat 0 0;
       &:hover {
-        background: url(~@/assets/images/icon/icon-modify-over.png) no-repeat 0
-          0;
+        background: url(~@/assets/images/icon/icon-modify-over.png) no-repeat 0 0;
       }
       &:disabled {
         background: url(~@/assets/images/icon/icon-modify-dis.png) no-repeat 0 0;
@@ -450,8 +428,7 @@ $ow-btn: ".ow-btn";
     &.delete {
       background: url(~@/assets/images/icon/icon-delete.png) no-repeat 0 0;
       &:hover {
-        background: url(~@/assets/images/icon/icon-delete-over.png) no-repeat 0
-          0;
+        background: url(~@/assets/images/icon/icon-delete-over.png) no-repeat 0 0;
       }
       &:disabled {
         background: url(~@/assets/images/icon/icon-delete-dis.png) no-repeat 0 0;
@@ -501,23 +478,19 @@ $ow-btn: ".ow-btn";
       margin: 0;
       background: url(~@/assets/images/icon/icon-check-state.png) no-repeat 0 0/34px;
       &:hover {
-        background: url(~@/assets/images/icon/icon-check-state-over.png)
-          no-repeat 0 0/34px;
+        background: url(~@/assets/images/icon/icon-check-state-over.png) no-repeat 0 0/34px;
       }
       &.active {
-        background: url(~@/assets/images/icon/icon-check-state-active.png)
-          no-repeat 0 0/32px;
+        background: url(~@/assets/images/icon/icon-check-state-active.png) no-repeat 0 0/32px;
       }
       &:disabled {
-        background: url(~@/assets/images/icon/icon-check-disabled.png) no-repeat
-          0 0/34px;
+        background: url(~@/assets/images/icon/icon-check-disabled.png) no-repeat 0 0/34px;
       }
     }
     &.refresh {
       background: url(~@/assets/images/icon/icon-refresh.png) no-repeat 0 0;
       &:hover {
-        background: url(~@/assets/images/icon/icon-refresh-over.png) no-repeat 0
-          0;
+        background: url(~@/assets/images/icon/icon-refresh-over.png) no-repeat 0 0;
       }
     }
     &.arrow-down {
@@ -549,11 +522,38 @@ $ow-btn: ".ow-btn";
       background-color: #5bb4d1;
       border-radius: 50%;
       &:before {
-        content: "";
+        content: '';
         width: 10px;
         height: 2px;
         display: inline-flex;
         background-color: #fff;
+      }
+      &:hover,
+      &.active {
+        background-color: #4591aa;
+      }
+    }
+    &.round-plus {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      justify-content: center;
+      background-color: #5bb4d1;
+      border-radius: 50%;
+      &:before,
+      &:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 2px;
+        display: block;
+        background-color: #fff;
+      }
+      &:after {
+        transform: translate(-50%, -50%) rotate(90deg);
       }
       &:hover,
       &.active {
@@ -567,7 +567,7 @@ $ow-btn: ".ow-btn";
       border: 1px solid #a2aebe;
       &::before,
       &::after {
-        content: "";
+        content: '';
         position: absolute;
         left: 50%;
         top: 50%;
@@ -600,7 +600,7 @@ $ow-btn: ".ow-btn";
       font-weight: normal;
       @include set-color(#fff, #999, #999);
       &::before {
-        content: "";
+        content: '';
         width: 12px;
         height: 10px;
         display: inline-flex;
@@ -616,22 +616,19 @@ $ow-btn: ".ow-btn";
           width: 7px;
           height: 7px;
           margin-right: 2px;
-          background: url(~@/assets/images/icon/icon-select-chk.png) no-repeat 0
-            0/7px;
+          background: url(~@/assets/images/icon/icon-select-chk.png) no-repeat 0 0/7px;
         }
       }
     }
     &.calendar-check {
       width: 14px;
       height: 15px;
-      background: url(~@/assets/images/icon/icon-calendar-check.png) no-repeat
-        0 0/13px;
+      background: url(~@/assets/images/icon/icon-calendar-check.png) no-repeat 0 0/13px;
     }
     &.calendar-uncheck {
       width: 14px;
       height: 15px;
-      background: url(~@/assets/images/icon/icon-calendar-uncheck.png)
-        no-repeat 0 0/13px;
+      background: url(~@/assets/images/icon/icon-calendar-uncheck.png) no-repeat 0 0/13px;
     }
     &.plus-fill {
       width: 20px;
@@ -643,8 +640,9 @@ $ow-btn: ".ow-btn";
       height: 20px;
       background: url(~@/assets/images/icon/icon-border-plus.png) no-repeat 0 0/19px;
     }
-    &.setting{
-      width: 24px; height: 24px;
+    &.setting {
+      width: 24px;
+      height: 24px;
       justify-content: center;
       border: 1px solid #bac1c9;
       background-color: #fff;
@@ -659,12 +657,12 @@ $ow-btn: ".ow-btn";
       @include xs(16, 16, 0);
       background-repeat: no-repeat;
       background-position: 0 0;
-      
+
       @each $num in 01, 02, 03 {
         &:nth-child(#{$num}) {
-          background-image: url("~@/assets/images/icon/icon-layout-0#{$num}-d.png");
+          background-image: url('~@/assets/images/icon/icon-layout-0#{$num}-d.png');
           &.checkedOn {
-            background-image: url("~@/assets/images/icon/icon-layout-0#{$num}-hs.png");
+            background-image: url('~@/assets/images/icon/icon-layout-0#{$num}-hs.png');
           }
         }
       }
@@ -697,7 +695,7 @@ $ow-btn: ".ow-btn";
       }
       &.circle {
         @include xs(16, 16, 0);
-        @include box-shadow(0,2px,4px,0.12);
+        @include box-shadow(0, 2px, 4px, 0.12);
         border-radius: 50%;
         background-color: nth($clrs-achromatic, 6);
       }
@@ -716,13 +714,13 @@ $ow-btn: ".ow-btn";
         &::before,
         &::after {
           position: absolute;
-          content: "";
+          content: '';
           width: 1px;
           height: 12px;
           background-color: white;
           transform: rotate(45deg);
         }
-        &::after{
+        &::after {
           transform: rotate(-45deg);
         }
       }
@@ -735,28 +733,29 @@ $ow-btn: ".ow-btn";
         background: url(~@/assets/images/icon/icon_search.svg) no-repeat 50%;
       }
     }
-    &.editor{
+    &.editor {
       width: 24px;
       height: 24px;
       background: url(~@/assets/images//icon/icon-editor.png) no-repeat 0 0;
-      border : 0 ; 
+      border: 0;
     }
   }
-  &.type-nomal{
+  &.type-nomal {
     display: inline-flex;
     justify-content: center;
     width: var(--width, auto);
-    height: 24px; padding: 0 10px;
+    height: 24px;
+    padding: 0 10px;
     border-radius: 2px;
     border: solid 1px #bababa;
     background-image: linear-gradient(to bottom, #fff 1%, #d1d5dc);
-    &.active{
+    &.active {
       color: #fff;
       border: solid 1px #2461b3;
       background-image: linear-gradient(to bottom, #4e95f5 2%, #2468c3 128%);
     }
   }
-  &.type-checkbox{
+  &.type-checkbox {
     position: relative;
     display: inline-flex;
     justify-content: center;
@@ -764,27 +763,34 @@ $ow-btn: ".ow-btn";
     width: var(--width, auto);
     height: 24px;
     border: 0;
-    label{
+    label {
       display: inline-flex;
       justify-content: center;
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       padding: 0 10px;
-      align-items: center ;
+      align-items: center;
       border-radius: 2px;
       border: solid 1px #bababa;
       background-image: linear-gradient(to bottom, #fff 1%, #d1d5dc);
     }
-    input[type=checkbox]{
-      position: absolute; left: 0; top: 0; z-index: 1;
-      width: 100%; height: 100%; opacity: 0; cursor: pointer;
-      &:checked ~ label{
+    input[type='checkbox'] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      &:checked ~ label {
         color: #fff;
         border: solid 1px #2461b3;
         background-image: linear-gradient(to bottom, #4e95f5 2%, #2468c3 128%);
       }
     }
   }
-  &.type-checkbox-icon{
+  &.type-checkbox-icon {
     position: relative;
     display: inline-flex;
     justify-content: center;
@@ -793,111 +799,121 @@ $ow-btn: ".ow-btn";
     height: 24px;
     border: 0;
 
-    label{
+    label {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       border: solid 1px #999999;
       background-color: #fff;
       color: #979797;
       &::before {
-        content: "";
+        content: '';
         display: inline-flex;
         margin-right: 4px;
       }
     }
 
-    input[type=checkbox]{
-      position: absolute; left: 0; top: 0; z-index: 1;
-      width: 100%; height: 100%; opacity: 0; cursor: pointer;
-      &:checked ~ label{
+    input[type='checkbox'] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      &:checked ~ label {
         background-color: #405869;
         border-color: #151d23;
         color: #fff;
       }
     }
 
-    &.size-small{
-      label{
+    &.size-small {
+      label {
         padding: 0 6px;
         height: 16px;
         font-size: 10px;
-        &::before{
-          width: 7px; height: 6px;
+        &::before {
+          width: 7px;
+          height: 6px;
           background: url(~@/assets/images/icon/icon-select-chk.png) no-repeat 0 0/7px;
         }
       }
-      input[type=checkbox]{
-        &:checked ~ label{
-          &::before{
+      input[type='checkbox'] {
+        &:checked ~ label {
+          &::before {
             background: url(~@/assets/images/icon/icon-select-checked.png) no-repeat 0 0/7px;
           }
         }
       }
     }
 
-    &.size-md{
-      label{
+    &.size-md {
+      label {
         padding: 0 10px;
         height: 24px;
         font-size: 13px;
-        &::before{
-          width: 12px; height: 10px;
+        &::before {
+          width: 12px;
+          height: 10px;
           background: url(~@/assets/images/icon/icon-select-chk.png) no-repeat 0 0/12px;
         }
       }
-      input[type=checkbox]{
-        &:checked ~ label{
-          &::before{
+      input[type='checkbox'] {
+        &:checked ~ label {
+          &::before {
             background: url(~@/assets/images/icon/icon-select-checked.png) no-repeat 0 0/12px;
           }
         }
       }
     }
-
   }
 } // end of ow-btn
 
 .btn-customer {
-  $size-h : 24px ; 
+  $size-h: 24px;
 
   display: inline-flex;
-  align-items: center ;
-  height: $size-h; 
-  line-height:$size-h; 
-  padding: 0 6px ; 
-  border-radius: 2px ;
-  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.18) ;
+  align-items: center;
+  height: $size-h;
+  line-height: $size-h;
+  padding: 0 6px;
+  border-radius: 2px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.18);
   background-color: #f0f2f7;
-  border : 1px solid #b5b7c3 ; 
-  font-size:12px ; 
+  border: 1px solid #b5b7c3;
+  font-size: 12px;
   color: nth($clrs-achromatic, 2);
-  font-weight: 700 ;
-  letter-spacing: -1px ;
-  flex : 0 0 150px ; 
+  font-weight: 700;
+  letter-spacing: -1px;
+  flex: 0 0 150px;
   .number {
     position: relative;
     display: inline-flex;
-    align-items: center ;
-    width: 40px; 
+    align-items: center;
+    width: 40px;
     margin-right: 6px;
     color: nth($clrs-achromatic, 6);
     &:after {
-      content : '' ; 
-      display: inline-flex; 
-      width: 1px; height:12px; 
+      content: '';
+      display: inline-flex;
+      width: 1px;
+      height: 12px;
       background-color: #c9c9c9;
       position: absolute;
-      right : 0 ;top: 50% ; 
-      transform :translateY( -50% ) ;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
 
-.btn-customer-wrap{
+.btn-customer-wrap {
   display: grid;
-  width: 100% ;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) ;
-  gap:6px; 
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 6px;
 }
