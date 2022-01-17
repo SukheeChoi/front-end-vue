@@ -7,7 +7,7 @@
       :id="unique"
       :placeholder="placeholder"
       :initialized="initialized"
-      :disabled="disabled"
+      :readonly="readonly"
       @input="textChanged"
       @keyup.enter="lookup"
     ></wj-combo-box>
@@ -17,6 +17,7 @@
   </div>
 </template>
 <script>
+import { ComboBox } from '@grapecity/wijmo.input';
 import { reactive, ref, watch } from 'vue';
 import { expando } from '@/utils';
 export default {
@@ -29,6 +30,10 @@ export default {
         return expando('ow-input');
       },
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
     placeholder: {
       type: String,
       default: '',
@@ -37,15 +42,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
     modelValue: String,
   },
   setup(props, { emit }) {
     const root = ref(null);
-
+    console.log('ComboBox', ComboBox);
     const state = reactive({
       control: {
         text: props.modelValue,
@@ -57,8 +58,8 @@ export default {
       state.control = combo;
     };
 
-    const textChanged = ({ data }) => {
-      state.control.text = data;
+    const textChanged = ({ target }) => {
+      state.control.text = target.value;
     };
 
     const lookup = () => {

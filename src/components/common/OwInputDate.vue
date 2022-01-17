@@ -2,10 +2,11 @@
   <template v-if="label">
     <label class="input-date-label" :for="unique">{{ label }}</label>
   </template>
-  <div class="ow-input" ref="root">
+  <div class="ow-input" ref="root" v-bind="$attrs">
     <wj-input-date
       class="ow-calendar"
       :id="unique"
+      :readonly="readonly"
       :format="format"
       :initialized="initialized"
       :text-changed="textChanged"
@@ -23,8 +24,12 @@ export default {
     unique: {
       type: String,
       default: () => {
-        return expando('ow-input');
+        return expando('ow-input-date');
       },
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
     },
     format: {
       type: String,

@@ -86,6 +86,7 @@ export class GridApi extends CollectionView {
             this.sourceCollection.push(addData);
         }
 
+        this._opt.totalCount++;
         this.itemsAdded.push(addData);
         this.refresh();
     }
