@@ -1,71 +1,69 @@
 <template>
-  <ow-content>
-    <div class="ow-grid-wrap">
-      <ow-flex-wrap class="dir-col">
-        <ow-flex-item class="headline-wrap">
-          <ow-flex-wrap>
-            <template v-if="hasSlot">
-              <!-- left top -->
-              <ow-flex-item class="align-x-start">
-                <slot name="left"></slot>
-              </ow-flex-item>
-              <!-- right top -->
-              <ow-flex-item class="align-x-end">
-                <slot name="right"></slot>
-              </ow-flex-item>
+  <ow-flex-wrap class="dir-col">
+    <ow-flex-item class="headline-wrap">
+      <ow-flex-wrap>
+        <template v-if="hasSlot">
+          <!-- left top -->
+          <ow-flex-item class="align-x-start">
+            <slot name="left"></slot>
+          </ow-flex-item>
+          <!-- right top -->
+          <ow-flex-item class="align-x-end">
+            <slot name="right"></slot>
+          </ow-flex-item>
+        </template>
+        <template v-else>
+          <!-- left top -->
+          <ow-flex-item class="align-x-start">
+            <h1 class="h1">{{ state.title }}</h1>
+          </ow-flex-item>
+          <!-- right top -->
+          <ow-flex-item class="align-x-end">
+            <button v-if="state.buttons.excel" class="ow-btn type-state excel" @click="state.store.excel()">Excel 다운로드</button>
+            <template v-if="mode=='edit'">
+              <button v-if="state.buttons.undo" class="ow-btn type-state refresh" @click="state.store.undo()">초기화</button>
+              <button v-if="state.buttons.add" class="ow-btn type-state" @click="state.store.add()"><span>추가</span></button>
+              <button v-if="state.buttons.del" class="ow-btn type-state" @click="state.store.del()"><span>삭제</span></button>
+              <button v-if="state.buttons.save" class="ow-btn type-state" @click="state.store.save()"><span>저장</span></button>
             </template>
-            <template v-else>
-              <!-- left top -->
-              <ow-flex-item class="align-x-start">
-                <h1 class="h1">{{ state.title }}</h1>
-              </ow-flex-item>
-              <!-- right top -->
-              <ow-flex-item class="align-x-end">
-                <button v-if="state.buttons.excel" class="ow-btn type-state excel" @click="state.store.excel()">Excel 다운로드</button>
-                <template v-if="mode=='edit'">
-                  <button v-if="state.buttons.undo" class="ow-btn type-state refresh" @click="state.store.undo()">초기화</button>
-                  <button v-if="state.buttons.add" class="ow-btn type-state" @click="state.store.add()"><span>추가</span></button>
-                  <button v-if="state.buttons.del" class="ow-btn type-state" @click="state.store.del()"><span>삭제</span></button>
-                  <button v-if="state.buttons.save" class="ow-btn type-state" @click="state.store.save()"><span>저장</span></button>
-                </template>
-              </ow-flex-item>
-            </template>
-          </ow-flex-wrap>
+          </ow-flex-item>
+        </template>
+      </ow-flex-wrap>
+    </ow-flex-item>
+    <!-- grid -->
+    <ow-flex-item>
+      <div class="ow-grid-wrap">
+        <slot></slot>
+      </div>
+    </ow-flex-item>
+    <!-- pagination -->
+    <ow-flex-item class="mt-5 mb-5">
+      <ow-flex-wrap>
+        <ow-flex-item class="align-x-start" style="--gap-item: 2px">
+          <button type="button" class="ow-button type-icon">
+            <i class="fas fa-cog fa-fw" />
+          </button>
+          <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
         </ow-flex-item>
-        <!-- grid -->
-        <ow-flex-item>
-          <slot></slot>
-        </ow-flex-item>
-        <!-- pagination -->
-        <ow-flex-item class="mt-5 mb-5">
-          <ow-flex-wrap>
-            <ow-flex-item class="align-x-start" style="--gap-item: 2px">
-              <button type="button" class="ow-button type-icon">
-                <i class="fas fa-cog fa-fw" />
-              </button>
-              <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
-            </ow-flex-item>
-              <ow-flex-item class="align-x-center">
-                <b-pagination
-                  class="ow-pagination"
-                  first-class="go-first"
-                  prev-class="go-prev"
-                  next-class="go-next"
-                  last-class="go-last"
-                  :total-rows="state.totalCount"
-                  :per-page="state.pageSize"
-                  :limit="10"
-                  v-model="state.pageNo"
-                />
-              </ow-flex-item>
-            <ow-flex-item class="align-x-end">
-              <div class="counter-board">전체<span>{{ state.totalCount }}</span>건</div>
-            </ow-flex-item>
-          </ow-flex-wrap>
+          <ow-flex-item class="align-x-center">
+            <b-pagination
+              class="ow-pagination"
+              first-class="go-first"
+              prev-class="go-prev"
+              next-class="go-next"
+              last-class="go-last"
+              :total-rows="state.totalCount"
+              :per-page="state.pageSize"
+              :limit="10"
+              v-model="state.pageNo"
+            />
+          </ow-flex-item>
+        <ow-flex-item class="align-x-end">
+          <div class="counter-board">전체<span>{{ state.totalCount }}</span>건</div>
         </ow-flex-item>
       </ow-flex-wrap>
-    </div>
-  </ow-content>
+    </ow-flex-item>
+  </ow-flex-wrap>
 </template>
 <script>
 import { computed, reactive, ref, watch } from 'vue';
@@ -196,15 +194,12 @@ export default {
     --bg: transparent;
   }
 }
-.ow-grid-wrap {
-  width: 100%;
-  .headline-wrap {
-    border-bottom: none;
-  }
-  .counter-board {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.headline-wrap {
+  border-bottom: none;
+}
+.counter-board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
