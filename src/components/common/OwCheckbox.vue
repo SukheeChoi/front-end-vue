@@ -2,7 +2,7 @@
   <template v-if="label">
     <label class="checkbox-label">{{ label }}</label>
   </template>
-  <div class="checkbox-group" :class="{ 'has-btn': hasSlots }">
+  <div class="checkbox-group" :class="{ 'has-btn': hasSlots, tansparent: transparent }">
     <slot></slot>
     <template v-for="({ name, value, disabled = false }, index) in items" :key="value">
       <div class="ow-checkbox">
@@ -32,6 +32,10 @@ export default {
       default: () => {
         return expando('ow-checkbox');
       },
+    },
+    transparent: {
+      type: Boolean,
+      default: false,
     },
     items: {
       type: Array,
@@ -68,5 +72,14 @@ export default {
   letter-spacing: -1.08px;
   color: #333;
   margin-right: 6px;
+  line-height: 24px;
+  flex-shrink: 0;
+  align-self: center;
+}
+.checkbox-group {
+  padding: 0;
+  &.tansparent {
+    background-color: transparent !important;
+  }
 }
 </style>

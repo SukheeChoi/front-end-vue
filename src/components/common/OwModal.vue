@@ -1,12 +1,19 @@
 <template>
-  <wj-popup :style="`--max-width: ${size.width}px; --max-height: ${size.outer_height}px;`" ref="root">
+  <wj-popup
+    :style="`--max-width: ${size.width}px; --max-height: ${size.outer_height}px;`"
+    :fade-in="false"
+    :fade-out="false"
+    ref="root"
+  >
     <div class="modal-header">
       <h2 class="modal-title">{{ title }}</h2>
       <button type="button" class="close" @click="onCancel">&#120;</button>
     </div>
     <div class="modal-body">
       <div class="layer-body" :style="`--max-height: ${size.height}px`">
-        <slot></slot>
+        <template v-if="show">
+          <slot></slot>
+        </template>
       </div>
       <div class="layer-foot">
         <div class="actions">
@@ -30,6 +37,7 @@
   </wj-popup>
 </template>
 <script>
+import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
 
 import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
@@ -68,6 +76,7 @@ export default {
     const one = ref(null);
 
     const state = reactive({
+      show: false,
       control: null,
       unique: expando('ow-modal-once'),
       acceptButtonText: '',
@@ -99,13 +108,14 @@ export default {
       return new Promise((resolve) => {
         state.checkedOnce = false;
         state.control.hideTrigger = PopupTrigger.None;
-        state.control.show(true);
+        state.control.show((state.show = true));
         state.acceptButtonText = options.acceptButtonText || '확인';
         state.cancelButtonText = options.cancelButtonText || '취소';
         if (accept && typeof accept === 'function') {
           state.beforeAccept = accept;
         }
         state.resolvePromise = resolve;
+        Control.invalidateAll();
       });
     };
 
@@ -117,6 +127,10 @@ export default {
     const onCancel = () => {
       state.resolvePromise({ ok: false, control: state.control });
       state.control.hide();
+    };
+
+    const hidden = () => {
+      state.show = false;
     };
 
     watch(
@@ -137,6 +151,7 @@ export default {
       open,
       onAccept,
       onCancel,
+      hidden,
     };
   },
 };
