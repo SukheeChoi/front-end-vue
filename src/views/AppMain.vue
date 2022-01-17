@@ -13,7 +13,7 @@
           >
             <!-- Left -->
             <div class="ow-content" :class="{ 'pr-3': openLeft }" style="--bs-gutter: 6px">
-              <app-article class="ow-flex-wrap dir-col size-full" v-show="left.show">
+              <app-article class="ow-flex-wrap dir-col size-full" style="--gap: 6px" v-show="left.show">
                 <div class="item size-fix" style="--size: 617px; --bg: transparent">
                   <the-action-plan></the-action-plan>
                 </div>
@@ -24,7 +24,7 @@
             </div>
             <!-- Right -->
             <div class="ow-content" :class="{ 'pl-3': openLeft }" style="--bs-gutter: 6px">
-              <app-article class="size-full">
+              <app-article class="size-full" style="--gap: 6px">
                 <router-view></router-view>
               </app-article>
             </div>

@@ -37,12 +37,7 @@ export default {
     },
     before: Object,
     after: Object,
-    modelValue: {
-      type: String,
-      default: () => {
-        return Globalize.format(new Date(), 'hh:mm tt');
-      },
-    },
+    modelValue: String,
   },
   setup(props, { emit }) {
     const root = ref(null);

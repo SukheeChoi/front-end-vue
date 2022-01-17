@@ -1,6 +1,6 @@
 <template>
   <!-- TODO 화면 구성에 대한 작업이 필요함. 3x2, 2x2 등등 -->
-  <div class="ow-flex-wrap dir-col" style="--gap: 6px" ref="root">
+  <div class="ow-flex-wrap dir-col" ref="root">
     <div class="item">
       <div class="ow-flex-wrap">
         <div class="item" style="height: 433px" v-for="{ default: panel } in panels" :key="panel.__hmrId">

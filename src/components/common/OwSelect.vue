@@ -91,6 +91,8 @@ export default {
   letter-spacing: -1.08px;
   color: #333;
   margin-right: 6px;
+  flex-shrink: 0;
+  align-self: center;
 }
 :deep(.wj-control) {
   .wj-input-group-btn > .wj-btn {
