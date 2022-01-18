@@ -2,7 +2,7 @@
   <template v-if="label">
     <label class="input-time-label" :for="unique">{{ label }}</label>
   </template>
-  <div class="ow-combobox" ref="root" v-bind="$attrs">
+  <div class="ow-input" ref="root" v-bind="$attrs">
     <wj-input-time
       class="ow-time"
       :id="unique"
@@ -120,5 +120,9 @@ export default {
   margin-right: 6px;
   flex-shrink: 0;
   align-self: center;
+}
+.ow-input {
+  min-width: 80px;
+  height: 24px;
 }
 </style>
