@@ -74,7 +74,6 @@ export default {
   margin-right: 6px;
   line-height: 24px;
   flex-shrink: 0;
-  align-self: center;
 }
 .checkbox-group {
   padding-left: 0;

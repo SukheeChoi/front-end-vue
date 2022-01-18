@@ -118,8 +118,8 @@ export default {
   letter-spacing: -1.08px;
   color: #333;
   margin-right: 6px;
+  line-height: 24px;
   flex-shrink: 0;
-  align-self: center;
 }
 .ow-input {
   position: relative;
