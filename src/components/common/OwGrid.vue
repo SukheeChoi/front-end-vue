@@ -37,7 +37,7 @@
       </div>
     </ow-flex-item>
     <!-- pagination -->
-    <ow-flex-item class="mt-5 mb-5">
+    <ow-flex-item class="mt-10 mb-10">
       <ow-flex-wrap>
         <ow-flex-item class="align-x-start" style="--gap-item: 2px">
           <button type="button" class="ow-button type-icon">
