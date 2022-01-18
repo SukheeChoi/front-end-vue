@@ -122,7 +122,18 @@ export default {
   align-self: center;
 }
 .ow-input {
+  position: relative;
   min-width: 80px;
   height: 24px;
+  & + & {
+    margin-left: 16px;
+    &::before {
+      content: '~';
+      position: absolute;
+      top: 50%;
+      left: -12px;
+      transform: translateY(-50%);
+    }
+  }
 }
 </style>

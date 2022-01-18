@@ -63,6 +63,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .item {
+  --align-item: 'flex-start';
   &.size-fix {
     --bg: transparent;
   }
