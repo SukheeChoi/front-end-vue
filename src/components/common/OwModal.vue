@@ -12,7 +12,9 @@
     <div class="modal-body">
       <div class="layer-body" :style="`--max-height: ${size.height}px`">
         <template v-if="show">
-          <slot></slot>
+          <ow-flex-wrap col>
+            <slot></slot>
+          </ow-flex-wrap>
         </template>
       </div>
       <div class="layer-foot">
