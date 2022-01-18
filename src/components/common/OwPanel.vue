@@ -56,6 +56,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .ow-panel {
+  flex: 0 0 auto;
   &[draggable='true'] {
     &.drag-over {
       border: 1px dashed rgba(0, 0, 0, 1);

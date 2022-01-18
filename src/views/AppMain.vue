@@ -12,19 +12,15 @@
             ref="container"
           >
             <!-- Left -->
-            <div class="ow-content" :class="{ 'pr-3': openLeft }" style="--bs-gutter: 6px">
-              <app-article class="ow-flex-wrap dir-col size-full" style="--gap: 6px" v-show="left.show">
-                <div class="item size-fix" style="--size: 617px; --bg: transparent">
-                  <the-action-plan></the-action-plan>
-                </div>
-                <div class="item size-fix" style="--size: 250px">
-                  <the-approval></the-approval>
-                </div>
+            <div class="ow-content" :class="{ 'pr-3': openLeft }">
+              <app-article v-show="left.show">
+                <the-action-plan style="--height: 617px"></the-action-plan>
+                <the-approval style="--height: 257px"></the-approval>
               </app-article>
             </div>
             <!-- Right -->
-            <div class="ow-content" :class="{ 'pl-3': openLeft }" style="--bs-gutter: 6px">
-              <app-article class="size-full" style="--gap: 6px">
+            <div class="ow-content" :class="{ 'pl-3': openLeft }">
+              <app-article>
                 <router-view></router-view>
               </app-article>
             </div>
@@ -103,6 +99,11 @@ export default {
 .main__article--open-left {
   &.ow-container {
     --size-1: 446px !important;
+  }
+}
+.ow-container {
+  .ow-content {
+    --bs-gutter: 6px;
   }
 }
 .content_body {

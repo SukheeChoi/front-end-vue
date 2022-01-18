@@ -1,6 +1,8 @@
 <template>
   <article class="ow-article">
-    <slot></slot>
+    <ow-flex-wrap class="size-full" col>
+      <slot></slot>
+    </ow-flex-wrap>
   </article>
 </template>
 <script>

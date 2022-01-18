@@ -3,7 +3,7 @@
   <div class="ow-flex-wrap dir-col" ref="root">
     <div class="item">
       <div class="ow-flex-wrap">
-        <div class="item" style="height: 433px" v-for="{ default: panel } in panels" :key="panel.__hmrId">
+        <div class="item" style="height: 437px" v-for="{ default: panel } in panels" :key="panel.__hmrId">
           <component
             :is="panel"
             draggable
@@ -17,7 +17,7 @@
     </div>
     <div class="item">
       <div class="ow-flex-wrap">
-        <div class="item" style="height: 434px" v-for="component in components" :key="component">
+        <div class="item" style="height: 437px" v-for="component in components" :key="component">
           <component :is="component.default"></component>
         </div>
       </div>

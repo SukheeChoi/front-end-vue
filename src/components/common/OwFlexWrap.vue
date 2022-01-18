@@ -28,7 +28,7 @@ export default {
     },
     gap: {
       type: Number,
-      default: 10,
+      default: 6,
     },
   },
   setup(props) {
