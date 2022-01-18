@@ -2,7 +2,7 @@
   <nav>
     <template v-for="(myMenu, level) in myMenuList" :key="myMenu">
       <b-tabs class="ow-tabs" v-if="!myMenu.hide" v-model="myMenu.index">
-        <b-tab v-for="{ title, name } in myMenu.list" :key="name" :title="title" @click="$router.push({ name })">
+        <b-tab v-for="{ title, name, path } in myMenu.list" :key="name" :title="title" @click="$router.push({name})">
           <template v-if="hasCollapse(level)">
             <div class="ow-tabs-toggle" :class="{ fold: isCollapse }">
               <button class="ow-btn type-icon arrow circle" @click="collapse">
@@ -20,7 +20,8 @@
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-
+import router from '@/routes';
+import menuMaker from '@/routes/menuMaker.js';
 let MenuList = [
   { title: '메인', name: 'main' },
   {
@@ -113,14 +114,20 @@ export default {
   components: {},
   setup() {
     const store = useStore();
-
+    //let route = useRoute();
     if(store.state.login.menus.length > 0){
-      console.log("menu length > 0")
-      MenuList = store.state.login.menus;
+      //MenuList = store.state.login.menus;
+      console.log(router.options.routes);  
+      //route = router.options.routes;
+      console.log(router.getRoutes())
     }
-
+    
     const route = useRoute();
+    console.log(route);
+    //console.log(route2)
     const currentRouteName = computed(() => route.name);
+    console.log(currentRouteName);
+    console.log(currentRouteName.name);
 
     const myMenuList = ref([]);
 
@@ -132,13 +139,19 @@ export default {
       }
       let index = 0;
       for (const menu of list) {
+        console.log(list);
+        console.log(route);
+        console.log(menu.name)
+        console.log(route.name);
         const matched = menu.name === name;
         if (matched || (menu.children && compose(menu.children, name, false))) {
+          console.log(myMenuList.value.length);
           const hide = isCollapse.value && myMenuList.value.length > 1;
           return myMenuList.value.unshift({ list, index: index, hide }) > 0;
         }
         index += 1;
       }
+      console.log(myMenuList);
       return false;
     };
 
@@ -147,7 +160,9 @@ export default {
     };
 
     const collapse = () => {
+      console.log(myMenuList);
       const { value } = myMenuList;
+      console.log(value);
       for (let i = 0, length = value.length - 2; i < length; i += 1) {
         value[i].hide = isCollapse.value = !isCollapse.value;
       }

@@ -26,7 +26,7 @@
             <div class="ow-content" :class="{ 'pl-2': openLeft }" style="--bs-gutter: 6px">
               <app-article class="ow-flex-wrap size-full">
                 <div class="item">
-                  <router-view></router-view>
+                  <router-view :key="this.$route.path"></router-view>
                 </div>
               </app-article>
             </div>

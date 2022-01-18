@@ -108,17 +108,21 @@ export default {
       }
     },
     async getMenus() {
-      const menuData = await restApi.get('/com/MenuMgr', this.loginId);
+      const menuData = await restApi.getList('/com/MenuMgr', {"userId" : "25052408", "orgCd" : "O000001055"});
       if (menuData.data !== null) {
         console.log(this.$router.options.routes);
         const menuList = menuData.data.data;
-        console.log(JSON.parse(menuList))
+        this.$store.commit('setMenus', menuList);
+        this.$router.push('/')
+        //console.log(JSON.parse(menuList))
         //this.$store.commit('setMenus', JSON.parse(menuList));
         //this.$router.push('/');
-        const jsonArr = JSON.parse(menuList);
-        console.log(jsonArr);
-        this.$store.commit('setMenus', jsonArr);
-        this.$router.push('/');
+        //const jsonArr = JSON.parse(menuList);
+        //console.log(jsonArr);
+        //this.$store.commit('setMenus', jsonArr);
+        //this.$router.addRoute("com", {path: menuList[1].children[0].children[0].url, 
+        //name : menuList[1].children[0].children[0].name, component: () => import('@@/com/views/TheBatchMgmt')})
+        //this.$router.push(menuList[1].children[0].children[0].url);
         /*
         let newRoutes = [];
         let test = [];
