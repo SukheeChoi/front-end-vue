@@ -63,17 +63,23 @@ export default {
 </script>
 <style lang="scss" scoped>
 .item {
-  &.align-to-right {
-    margin-left: auto;
-    flex: 0 0 var(--width, auto);
+  &.size-fix {
+    --bg: transparent;
   }
-  &.align-to-left {
-    margin-right: auto;
-    flex: 0 0 var(--width, auto);
-  }
-  &.align-to-center {
-    margin: 0 auto;
-    flex: 0 0 var(--width, auto);
+  &.align-to {
+    $flex: 0 0 var(--width, auto);
+    &-right {
+      margin-left: auto;
+      flex: $flex;
+    }
+    &-left {
+      margin-right: auto;
+      flex: $flex;
+    }
+    &-center {
+      margin: 0 auto;
+      flex: $flex;
+    }
   }
 }
 </style>

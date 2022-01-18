@@ -46,7 +46,7 @@ export default {
       control: {
         text: props.modelValue,
       },
-      format: 'hh:mm tt',
+      format: 'HH:mm',
       min: '09:00',
       max: '18:00',
       step: 30,
