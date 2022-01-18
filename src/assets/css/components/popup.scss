@@ -1,5 +1,5 @@
-$clrs-achromatic: getColors("achromatic");
-$clrs-base: getColors("base");
+$clrs-achromatic: getColors('achromatic');
+$clrs-base: getColors('base');
 
 // Bootstrap reset
 .modal-backdrop {
@@ -69,8 +69,7 @@ $clrs-base: getColors("base");
       width: 15px;
       height: 15px;
       background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
-      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
-        brightness(105%) contrast(103%);
+      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg) brightness(105%) contrast(103%);
       text-indent: -9999em;
       font-size: 0;
     }
@@ -108,11 +107,8 @@ $clrs-base: getColors("base");
       .tab-content {
         padding: calc(var(--bs-gutter) * 2) 0 0 0;
       }
-      .ow-pagination {
-        margin-top: 20px;
-      }
-      .ow-select{
-        padding:0;
+      .ow-select {
+        padding: 0;
       }
     }
     .layer-foot {
@@ -251,8 +247,7 @@ $clrs-base: getColors("base");
     }
     .ow-btn.close {
       margin-left: auto;
-      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
-        brightness(105%) contrast(103%);
+      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg) brightness(105%) contrast(103%);
     }
   }
   .layer-body {
@@ -406,12 +401,12 @@ $clrs-base: getColors("base");
       margin: 0 5px;
       &:before {
         position: absolute;
-        content: "";
+        content: '';
         border-color: transparent;
         border-style: solid;
       }
     }
-    &[x-placement^="top"] {
+    &[x-placement^='top'] {
       .arrow {
         bottom: 0;
         &:before {
@@ -421,7 +416,7 @@ $clrs-base: getColors("base");
         }
       }
     }
-    &[x-placement^="bottom"] {
+    &[x-placement^='bottom'] {
       .arrow {
         top: 0;
         &:before {
@@ -431,7 +426,7 @@ $clrs-base: getColors("base");
         }
       }
     }
-    &[x-placement^="left"] {
+    &[x-placement^='left'] {
       padding: 0 5px;
     }
   }
@@ -556,8 +551,7 @@ $clrs-base: getColors("base");
           width: 15px;
           height: 15px;
           background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
-          filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
-            brightness(105%) contrast(103%);
+          filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg) brightness(105%) contrast(103%);
           text-indent: -9999em;
           font-size: 0;
         }
@@ -642,8 +636,7 @@ $clrs-base: getColors("base");
         width: 15px;
         height: 15px;
         background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
-        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
-          brightness(105%) contrast(103%);
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg) brightness(105%) contrast(103%);
         text-indent: -9999em;
         font-size: 0;
         margin-bottom: 0 !important;
@@ -668,17 +661,18 @@ $clrs-base: getColors("base");
 
 // 위즈모 레이어 팝업
 .ow-popup {
-  $height-header : 36px ; 
-  $padding-content : 16px ; 
-  width: 400px ;
+  $height-header: 36px;
+  $padding-content: 16px;
+  width: 400px;
   @include box-shadow(0, 16px, 36px, 0.2);
   background-color: #fff;
   &.wj-content {
     border-radius: 0;
     border: 0;
   }
-  .ow-popup-header, &.wj-popup .wj-dialog-header {
-    padding: 0 $padding-content ;
+  .ow-popup-header,
+  &.wj-popup .wj-dialog-header {
+    padding: 0 $padding-content;
     display: flex;
     flex: inherit;
     flex-shrink: 0;
@@ -692,8 +686,7 @@ $clrs-base: getColors("base");
       width: 15px;
       height: 15px;
       background: url(~@/assets/images/icon/icon-close-lg.png) no-repeat 0 0;
-      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg)
-        brightness(105%) contrast(103%);
+      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(344deg) brightness(105%) contrast(103%);
       text-indent: -9999em;
       font-size: 0;
     }
@@ -705,7 +698,7 @@ $clrs-base: getColors("base");
     }
   }
   .ow-popup-body {
-    padding: $padding-content ;
+    padding: $padding-content;
 
     .ct:not(:last-child) {
       margin-bottom: 20px;
@@ -733,12 +726,12 @@ $clrs-base: getColors("base");
     .ow-pagination {
       margin-top: 20px;
     }
-    .ow-select{
-      padding:0;
+    .ow-select {
+      padding: 0;
     }
   }
   .ow-popup-foot {
-    padding: 0 $padding-content ;
+    padding: 0 $padding-content;
     .actions {
       display: flex;
       padding-bottom: 30px;
@@ -758,20 +751,36 @@ $clrs-base: getColors("base");
       }
     }
   }
-  &.modal-xxs { width: 240px ; }
-  &.modal-xs { width: 400px ; }
-  &.modal-sm { width: 620px ; }
-  &.modal-md { width: 740px ; }
-  &.modal-lg { width: 940px ; }
-  &.modal-xl { width: 1050px ; }
-  &.modal-xxl { width: 1200px ; }
-  &.modal-xxxl { width: 1900px ; }
+  &.modal-xxs {
+    width: 240px;
+  }
+  &.modal-xs {
+    width: 400px;
+  }
+  &.modal-sm {
+    width: 620px;
+  }
+  &.modal-md {
+    width: 740px;
+  }
+  &.modal-lg {
+    width: 940px;
+  }
+  &.modal-xl {
+    width: 1050px;
+  }
+  &.modal-xxl {
+    width: 1200px;
+  }
+  &.modal-xxxl {
+    width: 1900px;
+  }
 }
 
 // 위즈모 dialog 팝업
 .ow-dialog {
   &.wj-content {
-    width: var(--dialog-size,240px);
+    width: var(--dialog-size, 240px);
     padding: 0 16px 20px;
     border: 1px solid nth($clrs-achromatic, 2);
     box-shadow: 0 8px 10px 0 rgba(0, 0, 0, 0.34);
@@ -808,7 +817,9 @@ $clrs-base: getColors("base");
       font-size: 13px;
       line-height: 1.3;
       letter-spacing: -1.08px;
-      & ~ p { margin-top: 8px; }
+      & ~ p {
+        margin-top: 8px;
+      }
       &.txt-highlight {
         color: nth($clrs-base, 8);
         font-weight: 700;

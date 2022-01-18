@@ -33,7 +33,7 @@ export class ComCode {
         let itemSource = ComCode._store[code];
 
         if (itemSource == null) {
-            loadList([code]);
+            ComCode.loadList([code]);
             itemSource = ComCode._store[code];
         }
 

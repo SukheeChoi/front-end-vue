@@ -7,6 +7,7 @@
       :id="unique"
       :placeholder="placeholder"
       :initialized="initialized"
+      :readonly="readonly"
       @input="textChanged"
       @keyup.enter="lookup"
     ></wj-combo-box>
@@ -28,6 +29,10 @@ export default {
         return expando('ow-input');
       },
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
     placeholder: {
       type: String,
       default: '',
@@ -40,7 +45,6 @@ export default {
   },
   setup(props, { emit }) {
     const root = ref(null);
-
     const state = reactive({
       control: {
         text: props.modelValue,
@@ -52,8 +56,8 @@ export default {
       state.control = combo;
     };
 
-    const textChanged = ({ data }) => {
-      state.control.text = data;
+    const textChanged = ({ target }) => {
+      state.control.text = target.value;
     };
 
     const lookup = () => {
@@ -88,6 +92,7 @@ export default {
   letter-spacing: -1.08px;
   color: #333;
   margin-right: 6px;
+  line-height: 24px;
   flex-shrink: 0;
 }
 .ow-combobox {

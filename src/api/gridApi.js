@@ -86,6 +86,7 @@ export class GridApi extends CollectionView {
             this.sourceCollection.push(addData);
         }
 
+        this._opt.totalCount++;
         this.itemsAdded.push(addData);
         this.refresh();
     }
@@ -160,7 +161,7 @@ export class GridApi extends CollectionView {
     }
 
     static markRecordStatus(view, e) {
-        const oldVal = view.getCellData(e.row, e.col),
+        const oldVal = view.getCellData(e.row, e.col, true),
             newVal = view.activeEditor.value;
 
         if (view.getCellData(e.row, 'rowStatus') == 'C') {

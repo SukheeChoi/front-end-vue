@@ -1,24 +1,28 @@
 <template>
   <template v-if="label">
-    <label class="input-date-label" :for="unique">{{ label }}</label>
+    <label class="input-time-label" :for="unique">{{ label }}</label>
   </template>
   <div class="ow-input" ref="root" v-bind="$attrs">
-    <wj-input-date
-      class="ow-calendar"
+    <wj-input-time
+      class="ow-time"
       :id="unique"
       :readonly="readonly"
       :format="format"
+      :min="min"
+      :max="max"
+      :step="step"
       :initialized="initialized"
       :text-changed="textChanged"
-    ></wj-input-date>
+    ></wj-input-time>
   </div>
 </template>
 <script>
 import { Globalize } from '@grapecity/wijmo';
-import { ref, watch, reactive } from 'vue';
 import { expando } from '@/utils';
+import { reactive, ref, toRefs, watch } from 'vue';
+
 export default {
-  name: 'OwInputDate',
+  name: 'OwInputTime',
   props: {
     label: String,
     unique: {
@@ -31,18 +35,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    format: {
-      type: String,
-      default: 'yyyy-MM-dd',
-    },
     before: Object,
     after: Object,
-    modelValue: {
-      type: String,
-      default: ({ format }) => {
-        return Globalize.format(new Date(), format);
-      },
-    },
+    modelValue: String,
   },
   setup(props, { emit }) {
     const root = ref(null);
@@ -51,19 +46,23 @@ export default {
       control: {
         text: props.modelValue,
       },
+      format: 'HH:mm',
+      min: '09:00',
+      max: '18:00',
+      step: 30,
     });
 
-    const initialized = (calendar) => {
-      if (Globalize.parseDate(state.control.text, props.format)) {
-        calendar.value = state.control.text;
+    const initialized = (timer) => {
+      if (Globalize.parseDate(state.control.text, state.format)) {
+        timer.value = state.control.text;
       } else {
-        calendar.value = Globalize.format(new Date(), props.format);
+        timer.value = '09:00';
       }
-      state.control = calendar;
+      state.control = timer;
     };
 
-    const textChanged = (calendar) => {
-      state.control.text = calendar.text;
+    const textChanged = (timer) => {
+      state.control.text = timer.text;
     };
 
     const setText = (text) => {
@@ -83,10 +82,10 @@ export default {
     watch(
       () => props.before && props.before.modelValue,
       () => {
-        const before = Globalize.parseDate(props.before.modelValue, props.before.format);
-        const after = Globalize.parseDate(props.modelValue, props.format);
+        const before = Globalize.parseDate(props.before.modelValue, state.format);
+        const after = Globalize.parseDate(props.modelValue, state.format);
         if (after < before) {
-          setText(Globalize.format(before, props.format));
+          setText(Globalize.format(before, state.format));
         }
       }
     );
@@ -94,16 +93,17 @@ export default {
     watch(
       () => props.after && props.after.modelValue,
       () => {
-        const before = Globalize.parseDate(props.modelValue, props.format);
-        const after = Globalize.parseDate(props.after.modelValue, props.after.format);
+        const before = Globalize.parseDate(props.modelValue, state.format);
+        const after = Globalize.parseDate(props.after.modelValue, state.format);
         if (after < before) {
-          setText(Globalize.format(after, props.format));
+          setText(Globalize.format(after, state.format));
         }
       }
     );
 
     return {
       root,
+      ...toRefs(state),
       initialized,
       textChanged,
       setText,
@@ -112,7 +112,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.input-date-label {
+.input-time-label {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: -1.08px;
@@ -121,6 +121,11 @@ export default {
   line-height: 24px;
   flex-shrink: 0;
 }
+.ow-input {
+  min-width: 80px;
+  height: 24px;
+}
+
 .ow-input {
   position: relative;
   min-width: 80px;

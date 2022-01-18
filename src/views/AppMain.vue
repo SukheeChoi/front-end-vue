@@ -12,22 +12,20 @@
             ref="container"
           >
             <!-- Left -->
-            <div class="ow-content" :class="{ 'pr-2': openLeft }" style="--bs-gutter: 6px">
-              <app-article class="ow-flex-wrap dir-col size-full" v-show="left.show">
-                <div class="item size-fix" style="--size: 70%; --bg: transparent">
+            <div class="ow-content" :class="{ 'pr-3': openLeft }" style="--bs-gutter: 6px">
+              <app-article class="ow-flex-wrap dir-col size-full" style="--gap: 6px" v-show="left.show">
+                <div class="item size-fix" style="--size: 617px; --bg: transparent">
                   <the-action-plan></the-action-plan>
                 </div>
-                <div class="item">
+                <div class="item size-fix" style="--size: 250px">
                   <the-approval></the-approval>
                 </div>
               </app-article>
             </div>
             <!-- Right -->
-            <div class="ow-content" :class="{ 'pl-2': openLeft }" style="--bs-gutter: 6px">
-              <app-article class="ow-flex-wrap size-full">
-                <div class="item">
-                  <router-view :key="this.$route.path"></router-view>
-                </div>
+            <div class="ow-content" :class="{ 'pl-3': openLeft }" style="--bs-gutter: 6px">
+              <app-article class="size-full" style="--gap: 6px">
+                <router-view></router-view>
               </app-article>
             </div>
           </app-section>

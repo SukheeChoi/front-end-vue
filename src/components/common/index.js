@@ -17,6 +17,7 @@ import OwFlexItem from '@/components/common/OwFlexItem';
 import OwGrid from '@/components/common/OwGrid';
 import OwInput from '@/components/common/OwInput';
 import OwInputDate from '@/components/common/OwInputDate';
+import OwInputTime from '@/components/common/OwInputTime';
 import OwInputNumber from '@/components/common/OwInputNumber';
 import OwModal from '@/components/common/OwModal';
 import OwPanel from '@/components/common/OwPanel';
@@ -29,41 +30,42 @@ import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
 
 export function registerWijmo(app) {
-    registerCore(app);
-    registerInput(app);
-    registerGrid(app);
-    registerGridDetail(app);
-    registerGridFilter(app);
-    registerGridGrouppanel(app);
-    registerNav(app);
+  registerCore(app);
+  registerInput(app);
+  registerGrid(app);
+  registerGridDetail(app);
+  registerGridFilter(app);
+  registerGridGrouppanel(app);
+  registerNav(app);
 }
 
 const COMMON_COMPONENTS = {
-    OwCheckbox,
-    OwContainer,
-    OwContent,
-    OwDialog,
-    OwFilterCheckbox,
-    OwFilterRadio,
-    OwFlexWrap,
-    OwFlexItem,
-    OwGrid,
-    OwInput,
-    OwInputDate,
-    OwInputNumber,
-    OwModal,
-    OwPanel,
-    OwRadio,
-    OwRadioButton,
-    OwSelect,
-    OwCommonSelect,
-    OwSpinner,
-    OwSwitch,
-    OwTab,
+  OwCheckbox,
+  OwContainer,
+  OwContent,
+  OwDialog,
+  OwFilterCheckbox,
+  OwFilterRadio,
+  OwFlexWrap,
+  OwFlexItem,
+  OwGrid,
+  OwInput,
+  OwInputDate,
+  OwInputTime,
+  OwInputNumber,
+  OwModal,
+  OwPanel,
+  OwRadio,
+  OwRadioButton,
+  OwSelect,
+  OwCommonSelect,
+  OwSpinner,
+  OwSwitch,
+  OwTab,
 };
 
 export function registerOwComponents(app) {
-    for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
-        app.component(name, component);
-    }
+  for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
+    app.component(name, component);
+  }
 }

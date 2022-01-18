@@ -100,7 +100,6 @@ $clrs-border: getColors("border");
 
     // 헤더 셀 스타일
     &.wj-header {
-      justify-content: center;
       color: nth($clrs-achromatic, 2);
       background-color: #fff;
       &:not(:last-child) { 
@@ -145,24 +144,6 @@ $clrs-border: getColors("border");
       color: blue;
     }
 
-    // text align
-    // &.wj-header.wj-align-left,
-    // &.wj-header.wj-align-right {
-    //   justify-content: center !important;
-    // }
-
-    &.wj-align-left {
-      justify-content: flex-start;
-    }
-
-    &.wj-align-center {
-      justify-content: center;
-    }
-
-    &.wj-align-right {
-      justify-content: flex-end;
-    }
-    
     // custom style
     &.no-border-right {
       border-right: 0;

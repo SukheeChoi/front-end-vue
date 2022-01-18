@@ -70,7 +70,7 @@ export default {
             }
           }
           if (oldCheckedValues) {
-            state.checkedValues.push(...oldCheckedValues);
+            state.checkedValues = oldCheckedValues;
           }
         }
       },
@@ -79,8 +79,7 @@ export default {
 
     const onAllCheck = () => {
       if (!state.isAllChecked) {
-        state.checkedValues.splice(0);
-        state.checkedValues.push(...state.enabledValues.map((item) => item.value));
+        state.checkedValues = state.enabledValues.map((item) => item.value);
       }
     };
 
@@ -153,8 +152,11 @@ export default {
   letter-spacing: -1.08px;
   color: #333;
   margin-right: 6px;
+  line-height: 24px;
+  flex-shrink: 0;
 }
 .ow-filter {
+  width: var(--width, auto);
   .ow-filter-list {
     transition: all 0.2s ease-in-out;
   }
