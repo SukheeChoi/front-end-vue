@@ -22,3 +22,5 @@ pnpm-debug.log*
 *.sw?
 
 /src/app/
+.project
+yarn.lock
