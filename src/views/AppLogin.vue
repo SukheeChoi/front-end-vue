@@ -80,7 +80,7 @@ import axios from 'axios';
 import login from '@/api/login.js';
 import restApi from '@/api/restApi.js';
 export default {
-  name: 'OssLogin',
+  name: 'AppLogin',
   data() {
     return {
       companyType: 'osstem',
