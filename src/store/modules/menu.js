@@ -5,7 +5,7 @@ const state = () => ({
 });
 
 const mutations = {
-  addMenuList(state, payload) {
+  addMenuList(state, payload = []) {
     state.menuList.splice(0);
     state.menuList.push(...payload);
   },
