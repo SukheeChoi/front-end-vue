@@ -17,10 +17,9 @@
   </nav>
 </template>
 <script>
-import { computed, reactive, ref, toRefs, watch } from 'vue';
+import { reactive, toRefs, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import router from '@/routes';
 
 import { Menu } from '@/model';
 
