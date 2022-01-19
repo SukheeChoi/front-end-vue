@@ -53,7 +53,7 @@ function handleError(responseData){
 
 async function handleAuthError(responseData) {
     if (responseData.message === "STATUS_EXPIRED") {
-        const newData = await login.requestReissueToken('/com/Auth/ModifyToken', store.state.login.userInfo.userId);
+        const newData = await login.requestReissueToken('/com/Auth', store.state.login.userInfo.userId);
         login.setAuth(newData);
         onTokenRefreshed(store.state.login.accessToken);
     }
