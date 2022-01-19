@@ -7,9 +7,12 @@
 
       <!-- TODO Breadcrumb, 위치기반, e.g. 본부명 > 메뉴 1 > 메뉴 2 -->
       <ul class="location">
-        <li><span>국내영업총괄본부(본부장)</span></li>
-        <li><span>고객요청</span></li>
-        <li class="active"><span>메인</span></li>
+        <li><span>본부명</span></li>
+        <template v-for="{ list, index } of menuList" :key="list">
+          <li>
+            <span>{{ list[index].title }}</span>
+          </li>
+        </template>
       </ul>
 
       <div class="util-wrap">
@@ -24,9 +27,7 @@
             <a href="javascript:void(0);">{{ userInfo.orgNm }}</a>
           </li>
           <li>
-            <a href="javascript:void(0);"
-              >{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a
-            >
+            <a href="javascript:void(0);">{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a>
           </li>
         </ul>
 
@@ -43,10 +44,10 @@
 </template>
 <script>
 import store from '@/store';
-import login from '@/api/login.js';
-import router from '@/routes'; 
-import { computed, onMounted } from 'vue';
+
+import { computed, onMounted, reactive, toRefs } from 'vue';
 import { useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   name: 'AppHeader',
@@ -60,6 +61,15 @@ export default {
   setup() {
     const store = useStore();
 
+    const state = reactive({
+      menuList: store.getters.getMenuList,
+    });
+
+    const route = useRoute();
+    const router = useRouter();
+
+    console.log('header route:', route, ', router:', router);
+
     // Computed
     const badgeCount = computed(() => store.getters.getBadgeCount);
 
@@ -72,6 +82,7 @@ export default {
     onMounted(() => {});
 
     return {
+      ...toRefs(state),
       openSidebar,
       badgeCount,
     };
@@ -102,3 +113,10 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.location {
+  li:last-of-type {
+    color: #53fffd;
+  }
+}
+</style>
