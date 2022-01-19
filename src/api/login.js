@@ -17,28 +17,8 @@ class Login {
     const params = { userId: id };
     return restApi.get(url, params, 'UserInfo');
   }
-
-  getMenuList2(url) {
-    console.log(store.state.login);
-    console.log(store.state.login.userInfo);
-    const params = {
-      userId: store.state.login.userInfo.userId,
-      orgCd: store.state.login.userInfo.orgCd,
-    };
-    console.log(params);
-    return restApi.getListPost(url, JSON.stringify(params));
-  }
   getMenuList(url) {
-    console.log(store.state.login);
-    console.log(store.state.login.userInfo);
-    /*
-      const params = {
-      userId: store.state.login.userInfo.userId,
-      orgCd: store.state.login.userInfo.orgCd,
-      };
-      */
-      const params = store.state.login.userInfo;
-    console.log(params);
+    const params = store.state.login.userInfo;
     return restApi.getListPost(url, JSON.stringify(params));
   }
 
