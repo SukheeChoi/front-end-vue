@@ -18,6 +18,15 @@ class Login {
         return restApi.get(url, params);
     }
 
+    getMenuList(url) {
+        const params = {
+            userId: store.state.login.userId,
+            orgCd: store.state.login.orgCd
+        };
+
+        return restApi.getListPost(url, JSON.stringify(params));
+    }
+
     getUserAuth(url) {
         return restApi.get(url);
     }

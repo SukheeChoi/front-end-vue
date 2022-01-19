@@ -8,7 +8,9 @@ const RestApi = {
   getList(url, params = {}, id = '') {
     return http.get(url + '/get' + id + 'List', { params });
   },
-
+  getListPost(url, data, id = '', params = {}) {
+    return http.post(url + '/get' + id + 'List', data, { params });
+  },
   add(url, data, id = '', params = {}) {
     return http.post(url + '/add' + id, data, { params });
   },

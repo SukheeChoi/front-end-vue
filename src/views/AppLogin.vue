@@ -108,7 +108,7 @@ export default {
       }
     },
     async getMenus() {
-      const menuData = await restApi.getList('/com/MenuMgr', {"userId" : "25052408", "orgCd" : "O000001055"});
+      const menuData = await login.getMenuList('/com/MenuMgr');
       if (menuData.data !== null) {
         console.log(this.$router.options.routes);
         const menuList = menuData.data.data;
