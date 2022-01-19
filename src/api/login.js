@@ -6,16 +6,16 @@ class Login {
     requestLogin(url, id, pw, type) {
         const params = { loginId: id, password: pw, userType: type };
         //return restApi.approve(url, null, '', params);
-        return restApi.approve(url, JSON.stringify(params));
+        return restApi.approve(url, JSON.stringify(params), "Login");
     }
     requestReissueToken(url, id) {
         const params = { userId: id };
-        return restApi.get(url, params);
+        return restApi.get(url, params, "ReissueToken");
     }
 
     getUserInfo(url, id) {
         const params = { "userId": id };
-        return restApi.get(url, params);
+        return restApi.get(url, params, "UserInfo");
     }
 
     getMenuList(url) {

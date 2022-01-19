@@ -91,14 +91,14 @@ export default {
   },
   methods: {
     async getToken() {
-      const tokenData = await login.requestLogin('/com/Auth/Login', this.loginId, this.password, 'osstem');
+      const tokenData = await login.requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
       if (tokenData.data.data !== null) {
         login.setAuth(tokenData);
         return await this.getUserInfo();
       }
     },
     async getUserInfo() {
-      const userData = await login.getUserInfo('/com/Auth/UserInfo', this.loginId);
+      const userData = await login.getUserInfo('/com/Auth', this.loginId);
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         //localStorage.setItem("userInfo", JSON.stringify(userInfo));
