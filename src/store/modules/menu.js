@@ -6,8 +6,8 @@ const state = () => ({
 
 const mutations = {
   addMenuList(state, payload) {
-    const at = state.menuList.findIndex((menu) => menu.name === payload.name);
-    state.menuList.splice(at, 1, payload);
+    state.menuList.splice(0);
+    state.menuList.push(...payload);
   },
 };
 
@@ -15,7 +15,7 @@ const actions = {};
 
 const getters = {
   getMenuList(state) {
-    return state.menuList;
+    return state.menuList || [];
   },
 };
 

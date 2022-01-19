@@ -1,8 +1,8 @@
 <template>
   <nav>
-    <template v-for="(myMenu, level) in myMenuList" :key="myMenu">
-      <b-tabs class="ow-tabs" v-if="!myMenu.hide" v-model="myMenu.index">
-        <b-tab v-for="{ title, name, path } in myMenu.list" :key="name" :title="title" @click="$router.push({name})">
+    <template v-for="(menu, level) in menuList" :key="menu">
+      <b-tabs class="ow-tabs" v-if="!menu.hide" v-model="menu.index">
+        <b-tab v-for="{ title, name } in menu.list" :key="name" :title="title" @click="$router.push({ name })">
           <template v-if="hasCollapse(level)">
             <div class="ow-tabs-toggle" :class="{ fold: isCollapse }">
               <button class="ow-btn type-icon arrow circle" @click="collapse">
@@ -17,164 +17,118 @@
   </nav>
 </template>
 <script>
-import { computed, ref, watch } from 'vue';
+import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import router from '@/routes';
-import menuMaker from '@/routes/menuMaker.js';
-let MenuList = [
-  { title: '메인', name: 'main' },
-  {
-    title: '공통관리',
-    name: 'com',
-    children: [
-      {
-        title: '배치관리',
-        name: 'COMBT',
-        children: [
-          { title: '배치작업', name: 'COMBT001' },
-          { title: '배치결과', name: 'COMBT002' },
-          { title: '배치변경이력', name: 'COMBT003' },
-        ],
-      },
-      {
-        title: '권한관리',
-        name: 'COMAU',
-        children: [
-          { title: '사용자관리', name: 'COMAU001' },
-          { title: '협력/도급직원 관리', name: 'COMAU002' },
-          { title: '업무그룹관리', name: 'COMAU003' },
-          { title: '부서별 업무그룹관리', name: 'COMAU004' },
-          { title: '화면관리', name: 'COMAU005' },
-          { title: '메뉴관리', name: 'COMAU006' },
-          { title: '업무그룹별 메뉴관리', name: 'COMAU007' },
-          { title: '개인별 업무그룹 관리', name: 'COMAU008' },
-          { title: '부서별 메인화면 관리', name: 'COMAU009' },
-          { title: '부서별 Dashboard 관리', name: 'COMAU010' },
-        ],
-      },
-      {
-        title: '데이터표준',
-        name: 'COMST',
-        children: [
-          { title: '표준단어', name: 'COMST001' },
-          { title: '금칙어', name: 'COMST002' },
-          { title: '표준용어', name: 'COMST003' },
-          { title: '표준도메인', name: 'COMST004' },
-        ],
-      },
-      {
-        title: '보고서',
-        name: 'COMRP',
-        children: [
-          { title: '사용자로그인이력', name: 'COMRP001' },
-          { title: '화면접속이력', name: 'COMRP002' },
-          { title: '엑셀다운로드이력', name: 'COMRP003' },
-        ],
-      },
-      {
-        title: '설정',
-        name: 'COMCF',
-        children: [
-          { title: '언어코드', name: 'COMCF001' },
-          { title: '타임존', name: 'COMCF002' },
-          { title: '통화코드', name: 'COMCF003' },
-          { title: '메세지소스', name: 'COMCF004' },
-          { title: '공통코드', name: 'COMCF005' },
-          { title: '템플릿관리', name: 'COMCF006' },
-          { title: '시스템설정', name: 'COMCF007' },
-          { title: '비밀번호변경', name: 'COMCF008' },
-        ],
-      },
-      {
-        title: '인터페이스',
-        name: 'COMIF',
-        children: [
-          { title: '인터페이스 등록', name: 'COMIF001' },
-          { title: '인터페이스 현황', name: 'COMIF002' },
-        ],
-      },
-      {
-        title: '개인화 설정',
-        name: 'COMPE',
-        children: [
-          { title: '개인정보설정', name: 'COMPE001' },
-          { title: '로그인 비밀번호 설정', name: 'COMPE002' },
-          { title: '결재 비밀번호 설정', name: 'COMPE003' },
-          { title: '부재 설정', name: 'COMPE004' },
-          { title: '알림 설정', name: 'COMPE005' },
-        ],
-      },
-    ],
-  },
+
+import { Menu } from '@/model';
+
+const MenuList = [
+  Menu.create('메인', 'main'),
+  Menu.create('공통관리', 'com', [
+    Menu.create('배치관리', 'COMBT', [
+      Menu.create('배치작업', 'COMBT001'),
+      Menu.create('배치결과', 'COMBT002'),
+      Menu.create('배치변경이력', 'COMBT003'),
+    ]),
+    Menu.create('권한관리', 'COMAU', [
+      Menu.create('사용자관리', 'COMAU001'),
+      Menu.create('협력/도급직원 관리', 'COMAU002'),
+      Menu.create('업무그룹관리', 'COMAU003'),
+      Menu.create('부서별 업무그룹관리', 'COMAU004'),
+      Menu.create('화면관리', 'COMAU005'),
+      Menu.create('메뉴관리', 'COMAU006'),
+      Menu.create('업무그룹별 메뉴관리', 'COMAU007'),
+      Menu.create('개인별 업무그룹 관리', 'COMAU008'),
+      Menu.create('부서별 메인화면 관리', 'COMAU009'),
+      Menu.create('부서별 대시보드 관리', 'COMAU010'),
+    ]),
+    Menu.create('데이터표준', 'COMST', [
+      Menu.create('표준단어', 'COMST001'),
+      Menu.create('금칙어', 'COMST002'),
+      Menu.create('표준용어', 'COMST003'),
+      Menu.create('표준도메인', 'COMST004'),
+    ]),
+    Menu.create('보고서', 'COMRP', [
+      Menu.create('사용자로그인이력', 'COMRP001'),
+      Menu.create('화면접속이력', 'COMRP002'),
+      Menu.create('엑셀다운로드이력', 'COMRP003'),
+    ]),
+    Menu.create('설정', 'COMCF', [
+      Menu.create('언어코드', 'COMCF001'),
+      Menu.create('타임존', 'COMCF002'),
+      Menu.create('통화코드', 'COMCF003'),
+      Menu.create('메세지소스', 'COMCF004'),
+      Menu.create('공통코드', 'COMCF005'),
+      Menu.create('템플릿관리', 'COMCF006'),
+      Menu.create('시스템설정', 'COMCF007'),
+      Menu.create('비밀번호변경', 'COMCF008'),
+    ]),
+    Menu.create('인터페이스', 'COMIF', [
+      Menu.create('인터페이스 등록', 'COMIF001'),
+      Menu.create('인터페이스 현황', 'COMIF002'),
+    ]),
+    Menu.create('개인화설정', 'COMPE', [
+      Menu.create('개인정보설정', 'COMPE001'),
+      Menu.create('로그인 비밀번호 설정', 'COMPE002'),
+      Menu.create('결재 비밀번호 설정', 'COMPE003'),
+      Menu.create('부재 설정', 'COMPE004'),
+      Menu.create('알림 설정', 'COMPE005'),
+    ]),
+  ]),
 ];
 
 export default {
   name: 'AppNav',
   components: {},
   setup() {
+    const state = reactive({
+      menuList: [],
+      isCollapse: true,
+    });
+
     const store = useStore();
-    //let route = useRoute();
-    if(store.state.login.menus.length > 0){
-      //MenuList = store.state.login.menus;
-      console.log(router.options.routes);  
-      //route = router.options.routes;
-      console.log(router.getRoutes())
-    }
-    
+
     const route = useRoute();
-    console.log(route);
-    //console.log(route2)
-    const currentRouteName = computed(() => route.name);
-    console.log(currentRouteName);
-    console.log(currentRouteName.name);
-
-    const myMenuList = ref([]);
-
-    const isCollapse = ref(true);
 
     const compose = (list, name, init = true) => {
       if (init) {
-        myMenuList.value.splice(0);
+        state.menuList.splice(0);
       }
       let index = 0;
       for (const menu of list) {
-        console.log(list);
-        console.log(route);
-        console.log(menu.name)
-        console.log(route.name);
         const matched = menu.name === name;
         if (matched || (menu.children && compose(menu.children, name, false))) {
-          console.log(myMenuList.value.length);
-          const hide = isCollapse.value && myMenuList.value.length > 1;
-          return myMenuList.value.unshift({ list, index: index, hide }) > 0;
+          const hide = state.isCollapse && state.menuList.length > 1;
+          return state.menuList.unshift({ list, index: index, hide }) > 0;
         }
         index += 1;
       }
-      console.log(myMenuList);
       return false;
     };
 
     const hasCollapse = (level) => {
-      return myMenuList.value.length > 2 && level === myMenuList.value.length - 1;
+      return state.menuList.length > 2 && level === state.menuList.length - 1;
     };
 
     const collapse = () => {
-      console.log(myMenuList);
-      const { value } = myMenuList;
-      console.log(value);
-      for (let i = 0, length = value.length - 2; i < length; i += 1) {
-        value[i].hide = isCollapse.value = !isCollapse.value;
+      for (let i = 0, length = state.menuList.length - 2; i < length; i += 1) {
+        state.menuList[i].hide = state.isCollapse = !state.isCollapse;
       }
     };
 
-    watch(currentRouteName, (name) => compose(MenuList, name), {
-      immediate: true,
-    });
+    watch(
+      () => route.name,
+      (name) => {
+        compose(MenuList, name);
+        store.commit('addMenuList', state.menuList);
+      },
+      { immediate: true }
+    );
 
     return {
-      myMenuList,
-      isCollapse,
+      ...toRefs(state),
       hasCollapse,
       collapse,
     };
