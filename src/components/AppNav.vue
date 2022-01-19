@@ -3,7 +3,7 @@
     <template v-for="(menu, level) in menuList" :key="menu">
       <b-tabs class="ow-tabs" v-if="!menu.hide" v-model="menu.index">
         <b-tab v-for="{ title, name } in menu.list" :key="name" :title="title" @click="$router.push({ name })">
-          <template v-if="hasCollapse(level)">
+          <template v-if="showCollapse(level)">
             <div class="ow-tabs-toggle" :class="{ fold: isCollapse }">
               <button class="ow-btn type-icon arrow circle" @click="collapse">
                 <i class="triangle top"></i>
@@ -100,14 +100,14 @@ export default {
         const matched = menu.name === name;
         if (matched || (menu.children && compose(menu.children, name, false))) {
           const hide = state.isCollapse && state.menuList.length > 1;
-          return state.menuList.unshift({ list, index: index, hide }) > 0;
+          return state.menuList.unshift({ list, index, hide }) > 0;
         }
         index += 1;
       }
       return false;
     };
 
-    const hasCollapse = (level) => {
+    const showCollapse = (level) => {
       return state.menuList.length > 2 && level === state.menuList.length - 1;
     };
 
@@ -117,10 +117,16 @@ export default {
       }
     };
 
+    const titleChanger = () => {
+      const { list, index } = state.menuList.at(-1);
+      document.title = `OW OSSTEM | ${list[index].title}`;
+    };
+
     watch(
       () => route.name,
       (name) => {
         compose(MenuList, name);
+        titleChanger();
         store.commit('addMenuList', state.menuList);
       },
       { immediate: true }
@@ -128,7 +134,7 @@ export default {
 
     return {
       ...toRefs(state),
-      hasCollapse,
+      showCollapse,
       collapse,
     };
   },
