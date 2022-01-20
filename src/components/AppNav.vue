@@ -1,8 +1,8 @@
 <template>
   <nav>
-    <template v-for="(menu, level) in menuList" :key="menu">
-      <b-tabs class="ow-tabs" v-if="!menu.hide" v-model="menu.index">
-        <b-tab v-for="{ title, name } in menu.list" :key="name" :title="title" @click="$router.push({ name })">
+    <template v-for="(myMenu, level) in myMenuList" :key="myMenu">
+      <b-tabs class="ow-tabs" v-if="!myMenu.hide" v-model="myMenu.index">
+        <b-tab v-for="{ title, name } in myMenu.list" :key="name" :title="title" @click="$router.push({ name })">
           <template v-if="showCollapse(level)">
             <div class="ow-tabs-toggle" :class="{ fold: isCollapse }">
               <button class="ow-btn type-icon arrow circle" @click="collapse">
@@ -23,9 +23,9 @@ import { useStore } from 'vuex';
 
 import { Menu } from '@/model';
 
-const MenuList = [
+const MenuList2 = [
   Menu.create('메인', 'main'),
-  Menu.create('공통관리', 'com', [
+  Menu.create('공통관리', 'COMROOT', [
     Menu.create('배치관리', 'COMBT', [
       Menu.create('배치작업', 'COMBT001'),
       Menu.create('배치결과', 'COMBT002'),
@@ -82,25 +82,27 @@ export default {
   name: 'AppNav',
   components: {},
   setup() {
+    const store = useStore();
+
+    const MenuList = store.getters.getMenus;
+
     const state = reactive({
-      menuList: [],
+      myMenuList: [],
       isCollapse: true,
     });
-
-    const store = useStore();
 
     const route = useRoute();
 
     const compose = (list, name, init = true) => {
       if (init) {
-        state.menuList.splice(0);
+        state.myMenuList.splice(0);
       }
       let index = 0;
       for (const menu of list) {
         const matched = menu.name === name;
         if (matched || (menu.children && compose(menu.children, name, false))) {
-          const hide = state.isCollapse && state.menuList.length > 1;
-          return state.menuList.unshift({ list, index, hide }) > 0;
+          const hide = state.isCollapse && state.myMenuList.length > 1;
+          return state.myMenuList.unshift({ list, index, hide }) > 0;
         }
         index += 1;
       }
@@ -108,26 +110,33 @@ export default {
     };
 
     const showCollapse = (level) => {
-      return state.menuList.length > 2 && level === state.menuList.length - 1;
+      return state.myMenuList.length > 2 && level === state.myMenuList.length - 1;
     };
 
     const collapse = () => {
-      for (let i = 0, length = state.menuList.length - 2; i < length; i += 1) {
-        state.menuList[i].hide = state.isCollapse = !state.isCollapse;
+      for (let i = 0, length = state.myMenuList.length - 2; i < length; i += 1) {
+        state.myMenuList.at(i).hide = state.isCollapse = !state.isCollapse;
       }
     };
 
     const titleChanger = () => {
-      const { list, index } = state.menuList.at(-1);
-      document.title = `OW OSSTEM | ${list[index].title}`;
+      const last = state.myMenuList.at(-1);
+      if (last) {
+        const { list, index } = last;
+        document.title = `OW OSSTEM | ${list[index].title}`;
+      }
     };
 
     watch(
       () => route.name,
       (name) => {
-        compose(MenuList, name);
+        let list = MenuList;
+        if (typeof MenuList === 'undefined' || MenuList.length === 0) {
+          list = MenuList2;
+        }
+        compose(list, name);
         titleChanger();
-        store.commit('addMenuList', state.menuList);
+        store.commit('setMyMenuList', state.myMenuList);
       },
       { immediate: true }
     );

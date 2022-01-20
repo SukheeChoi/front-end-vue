@@ -2,20 +2,21 @@ const namespace = true;
 
 const state = () => ({
   menuList: [],
+  myMenuList: [],
 });
 
 const mutations = {
-  addMenuList(state, payload = []) {
-    state.menuList.splice(0);
-    state.menuList.push(...payload);
+  setMyMenuList(state, myMenuList = []) {
+    state.myMenuList.splice(0);
+    state.myMenuList.push(...myMenuList);
   },
 };
 
 const actions = {};
 
 const getters = {
-  getMenuList(state) {
-    return state.menuList || [];
+  getMyMenuList(state) {
+    return state.myMenuList || [];
   },
 };
 
