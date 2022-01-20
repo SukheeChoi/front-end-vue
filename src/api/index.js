@@ -46,7 +46,8 @@ function handleError(responseData){
       handleAuthError(responseData);
   }else {//일반적인 오류
     app.config.globalProperties.$dialog.alert('응답에 실패하였습니다.');
-    store.commit('setShowLoadingImage', false);
+      store.commit('setShowLoadingImage', false);
+      isTokenRefreshing = false;
   }
 
 };
