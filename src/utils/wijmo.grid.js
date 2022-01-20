@@ -121,3 +121,28 @@ class GroupMergeManager extends SimpleMergeManager {
 }
 
 export { SimpleMergeManager, GroupMergeManager };
+
+class ValidatorManager {
+  constructor(flex, validator = {}) {
+    this.flex = flex;
+    this.validator = validator;
+    this.#init();
+  }
+
+  #init() {
+    for (const column of this.flex.columns) {
+      column.validator = this.validator[column.binding] || (() => true);
+    }
+
+    this.flex.cellEditEnding.addHandler(async (s, e) => {
+      const { row: r, col: c } = e;
+      const column = e.getColumn();
+      const ok = await column.validator(s.activeEditor.value);
+      if ((e.cancel = e.stayInEditMode = !ok)) {
+        s.startEditing(false, r, c);
+      }
+    });
+  }
+}
+
+export { ValidatorManager };
