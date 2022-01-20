@@ -25,10 +25,10 @@ export class GridApi extends CollectionView {
         this._newValues = utils.copyDefaultValues(model);
     }
 
-    init(vm, view, qry = null, opt = null, autoLoading = true) {
+    init(vm, grid, qry = null, opt = null, autoLoading = true) {
         this._vm = vm;
-        this._gridView = view;
-        view.cellEditEnding.addHandler(this.valid);
+        this._gridView = grid;
+        grid.cellEditEnding.addHandler(this.valid);
 
         if (qry == null) {
             qry = this._vm.qry;
@@ -160,11 +160,11 @@ export class GridApi extends CollectionView {
         }
     }
 
-    static markRecordStatus(view, e) {
-        const oldVal = view.getCellData(e.row, e.col, true),
-            newVal = view.activeEditor.value;
+    static markRecordStatus(grid, e) {
+        const oldVal = grid.getCellData(e.row, e.col, true),
+            newVal = grid.activeEditor.value;
 
-        if (view.getCellData(e.row, 'rowStatus') == 'C') {
+        if (grid.getCellData(e.row, 'rowStatus') == 'C') {
             return;
         }
 
@@ -172,7 +172,7 @@ export class GridApi extends CollectionView {
             return;
         }
 
-        view.setCellData(e.row, 'rowStatus', 'U');
+        grid.setCellData(e.row, 'rowStatus', 'U');
     }
 
     async excel() {
@@ -186,22 +186,22 @@ export class GridApi extends CollectionView {
         gridXlsx.FlexGridXlsxConverter.saveAsync(this._gridView, {}, filename + '.xlsx');
     }
 
-    valid(view, e) {
-        let col = view.columns[e.col];
-        let fields = view.itemsSource._model.fields;
+    valid(grid, e) {
+        let col = grid.columns[e.col];
+        let fields = grid.itemsSource._model.fields;
         let index = fields.findIndex((field) => field.id === col.binding);
         let field = fields[index];
 
         if (field.vType) {
-            let result = ValidatorTypes[field.vType + 'Validator'](view.activeEditor.value, field);
+            let result = ValidatorTypes[field.vType + 'Validator'](grid.activeEditor.value, field);
 
             if (!result.isValid) {
                 e.cancel = true;
                 e.stayInEditMode = true;
 
-                let edtHandler = view._edtHdl;
+                let edtHandler = grid._edtHdl;
                 let rng = edtHandler._rng;
-                let cell = view.cells.getCellElement(rng.row, rng.col);
+                let cell = grid.cells.getCellElement(rng.row, rng.col);
 
                 if (cell) {
                     edtHandler._setCellError(cell, result.message);
@@ -211,6 +211,6 @@ export class GridApi extends CollectionView {
             }
         }
 
-        GridApi.markRecordStatus(view, e);
+        GridApi.markRecordStatus(grid, e);
     }
 }
