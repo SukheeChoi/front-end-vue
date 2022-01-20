@@ -8,12 +8,10 @@ function isCell({ cellType }) {
   return CellType.Cell === cellType;
 }
 
-class BasicMergeManager extends MergeManager {
-  constructor(rows = [], cols = [], isEmpty = true) {
+class SimpleMergeManager extends MergeManager {
+  constructor(...indexes) {
     super();
-    this.rows = rows;
-    this.cols = cols;
-    this.isEmpty = isEmpty;
+    this.indexes = indexes;
   }
 
   #cellMergedRange(panel, range) {
@@ -31,7 +29,7 @@ class BasicMergeManager extends MergeManager {
     }
   }
 
-  #mergedRange(panel, range) {
+  mergedRange(panel, range) {
     for (let index = range.col, length = panel.columns.length - 1; index < length; index += 1) {
       if (!equals(panel.getCellData(range.row, index, true), panel.getCellData(range.row, index + 1, true))) {
         break;
@@ -48,26 +46,21 @@ class BasicMergeManager extends MergeManager {
 
   getMergedRange(panel, row, col) {
     const range = new CellRange(row, col);
-    if (
-      (isCell(panel) && (this.rows.length === 0 || this.rows.includes(row))) ||
-      this.cols.length === 0 ||
-      this.cols.includes(col)
-    ) {
+    if (isCell(panel) && (this.indexes.length === 0 || this.indexes.includes(col))) {
       this.#cellMergedRange(panel, range);
     } else {
-      this.#mergedRange(panel, range);
+      this.mergedRange(panel, range);
     }
     return range;
   }
 }
 
-class ColGroupMergeManager extends MergeManager {
+class GroupMergeManager extends SimpleMergeManager {
   #group;
 
-  constructor(index, indexes = []) {
-    super();
+  constructor(index, ...indexes) {
+    super(...indexes);
     this.index = index;
-    this.indexes = indexes;
   }
 
   #createGroup(panel) {
@@ -113,21 +106,6 @@ class ColGroupMergeManager extends MergeManager {
     }
   }
 
-  #mergedRange(panel, range) {
-    for (let index = range.col, length = panel.columns.length - 1; index < length; index += 1) {
-      if (!equals(panel.getCellData(range.row, index, true), panel.getCellData(range.row, index + 1, true))) {
-        break;
-      }
-      range.col2 = index + 1;
-    }
-    for (let index = range.col; index > 0; index -= 1) {
-      if (!equals(panel.getCellData(range.row, index - 1, true), panel.getCellData(range.row, index, true))) {
-        break;
-      }
-      range.col = index - 1;
-    }
-  }
-
   getMergedRange(panel, row, col) {
     if (typeof this.#group === 'undefined') {
       this.#createGroup(panel);
@@ -136,10 +114,10 @@ class ColGroupMergeManager extends MergeManager {
     if (isCell(panel) && (this.indexes.length === 0 || this.indexes.includes(col))) {
       this.#cellMergedRange(panel, range);
     } else {
-      this.#mergedRange(panel, range);
+      this.mergedRange(panel, range);
     }
     return range;
   }
 }
 
-export { BasicMergeManager, ColGroupMergeManager };
+export { SimpleMergeManager, GroupMergeManager };

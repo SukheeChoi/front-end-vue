@@ -2,7 +2,7 @@
   <template v-if="label">
     <label class="radio-label">{{ label }}</label>
   </template>
-  <div class="radio-group">
+  <div class="radio-group" :class="{ transparent }">
     <template v-for="({ name, value, disabled = false }, index) in items" :key="value">
       <slot></slot>
       <div class="ow-radio">
@@ -31,6 +31,10 @@ export default {
       default: () => {
         return expando('ow-radio');
       },
+    },
+    transparent: {
+      type: Boolean,
+      default: false,
     },
     items: {
       type: Array,
@@ -61,5 +65,10 @@ export default {
   margin-right: 6px;
   line-height: 24px;
   flex-shrink: 0;
+}
+.radio-group {
+  &.transparent {
+    background-color: transparent !important;
+  }
 }
 </style>

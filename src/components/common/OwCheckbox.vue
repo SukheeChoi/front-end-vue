@@ -2,7 +2,7 @@
   <template v-if="label">
     <label class="checkbox-label">{{ label }}</label>
   </template>
-  <div class="checkbox-group" :class="{ 'has-btn': hasSlots, tansparent: transparent }">
+  <div class="checkbox-group" :class="{ 'has-btn': hasSlots, transparent }">
     <slot></slot>
     <template v-for="({ name, value, disabled = false }, index) in items" :key="value">
       <div class="ow-checkbox">
@@ -77,7 +77,7 @@ export default {
 }
 .checkbox-group {
   padding-left: 0;
-  &.tansparent {
+  &.transparent {
     background-color: transparent !important;
   }
 }
