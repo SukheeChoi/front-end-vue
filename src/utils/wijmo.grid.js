@@ -144,8 +144,7 @@ class ValidatorManager {
       const { ok, message = '' } = await column.validator(s.activeEditor.value, s, e);
       if ((e.cancel = e.stayInEditMode = !ok)) {
         s.startEditing(false, r, c);
-        const element = s.cells.getCellElement(r, c);
-        s._edtHdl._setCellError(element, message);
+        s._edtHdl._setCellError(s.cells.getCellElement(r, c), message);
       }
     });
   }
