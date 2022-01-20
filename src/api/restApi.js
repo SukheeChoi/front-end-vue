@@ -1,4 +1,4 @@
-import http from "./index";
+import http from './index';
 
 const RestApi = {
   get(url, params = {}, id = '') {
@@ -10,6 +10,9 @@ const RestApi = {
   },
   getListPost(url, data, id = '', params = {}) {
     return http.post(url + '/get' + id + 'List', data, { params });
+  },
+  getListFile(url, data, id = '') {
+    return http.post(url + '/get' + id + 'List', data);
   },
   add(url, data, id = '', params = {}) {
     return http.post(url + '/add' + id, data, { params });
@@ -52,4 +55,4 @@ const RestApi = {
   },
 };
 
-export default RestApi
+export default RestApi;

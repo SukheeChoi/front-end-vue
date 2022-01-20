@@ -137,7 +137,7 @@ class ValidatorManager {
     this.flex.cellEditEnding.addHandler(async (s, e) => {
       const { row: r, col: c } = e;
       const column = e.getColumn();
-      const ok = await column.validator(s.activeEditor.value);
+      const ok = await column.validator(s.activeEditor.value, s, e);
       if ((e.cancel = e.stayInEditMode = !ok)) {
         s.startEditing(false, r, c);
       }
