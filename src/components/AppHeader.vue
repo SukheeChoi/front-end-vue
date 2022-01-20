@@ -62,7 +62,7 @@ export default {
     const store = useStore();
 
     const state = reactive({
-      menuList: store.getters.getMenuList,
+      menuList: store.getters.getMyMenuList,
     });
 
     const route = useRoute();
@@ -90,6 +90,7 @@ export default {
 
   methods: {
 
+
     test1:function(){
      const test1 = login.getUserInfo('/com/Auth', "25052408");
      console.log(test1);
@@ -103,13 +104,13 @@ export default {
       console.log("ttl");
       const now = new Date();
 
-      alert(store.state.login.ttl+"\n" + now.getTime());
+      alert(store.state.login.ttl + '\n' + now.getTime());
       return await this.getUserInfo();
-      
-      
     },
     async getUserInfo() {
+
       const userData = await login.getUserInfo('/com/Auth', "25052408");
+
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         console.log(userInfo);
@@ -119,7 +120,6 @@ export default {
         //this.$router.push("/");
       }
     },
-
   },
 };
 </script>

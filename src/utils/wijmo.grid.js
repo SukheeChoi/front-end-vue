@@ -1,0 +1,145 @@
+import { MergeManager, CellRange, CellType } from '@grapecity/wijmo.grid';
+
+function equals(a, b) {
+  return b === '' || a === b;
+}
+
+function isCell({ cellType }) {
+  return CellType.Cell === cellType;
+}
+
+class BasicMergeManager extends MergeManager {
+  constructor(rows = [], cols = [], isEmpty = true) {
+    super();
+    this.rows = rows;
+    this.cols = cols;
+    this.isEmpty = isEmpty;
+  }
+
+  #cellMergedRange(panel, range) {
+    for (let index = range.row, length = panel.rows.length - 1; index < length; index += 1) {
+      if (!equals(panel.getCellData(index, range.col, true), panel.getCellData(index + 1, range.col, true))) {
+        break;
+      }
+      range.row2 = index + 1;
+    }
+    for (let index = range.row; index > 0; index -= 1) {
+      if (!equals(panel.getCellData(index - 1, range.col, true), panel.getCellData(index, range.col, true))) {
+        break;
+      }
+      range.row = index - 1;
+    }
+  }
+
+  #mergedRange(panel, range) {
+    for (let index = range.col, length = panel.columns.length - 1; index < length; index += 1) {
+      if (!equals(panel.getCellData(range.row, index, true), panel.getCellData(range.row, index + 1, true))) {
+        break;
+      }
+      range.col2 = index + 1;
+    }
+    for (let index = range.col; index > 0; index -= 1) {
+      if (!equals(panel.getCellData(range.row, index - 1, true), panel.getCellData(range.row, index, true))) {
+        break;
+      }
+      range.col = index - 1;
+    }
+  }
+
+  getMergedRange(panel, row, col) {
+    const range = new CellRange(row, col);
+    if (
+      (isCell(panel) && (this.rows.length === 0 || this.rows.includes(row))) ||
+      this.cols.length === 0 ||
+      this.cols.includes(col)
+    ) {
+      this.#cellMergedRange(panel, range);
+    } else {
+      this.#mergedRange(panel, range);
+    }
+    return range;
+  }
+}
+
+class ColGroupMergeManager extends MergeManager {
+  #group;
+
+  constructor(index, indexes = []) {
+    super();
+    this.index = index;
+    this.indexes = indexes;
+  }
+
+  #createGroup(panel) {
+    this.#group = [];
+    for (let index = 0, length = panel.rows.length - 1; index < length; index += 1) {
+      if (this.#group.length === 0) {
+        this.#group.push(index + 1);
+      } else if (equals(panel.getCellData(index, this.index, true), panel.getCellData(index + 1, this.index, true))) {
+        this.#group.splice(this.#group.length - 1, 1, index + 1);
+      } else {
+        this.#group.push(index + 1);
+      }
+    }
+  }
+
+  #findGroup(row) {
+    for (let index = 0, length = this.#group.length; index < length; index += 1) {
+      const group = this.#group[index];
+      if (row <= group) {
+        return index;
+      }
+    }
+  }
+
+  #cellMergedRange(panel, range) {
+    for (let index = range.row, length = panel.rows.length - 1; index < length; index += 1) {
+      if (this.#findGroup(index) !== this.#findGroup(index + 1)) {
+        break;
+      }
+      if (!equals(panel.getCellData(index, range.col, true), panel.getCellData(index + 1, range.col, true))) {
+        break;
+      }
+      range.row2 = index + 1;
+    }
+    for (let index = range.row; index > 0; index -= 1) {
+      if (this.#findGroup(index - 1) !== this.#findGroup(index)) {
+        break;
+      }
+      if (!equals(panel.getCellData(index - 1, range.col, true), panel.getCellData(index, range.col, true))) {
+        break;
+      }
+      range.row = index - 1;
+    }
+  }
+
+  #mergedRange(panel, range) {
+    for (let index = range.col, length = panel.columns.length - 1; index < length; index += 1) {
+      if (!equals(panel.getCellData(range.row, index, true), panel.getCellData(range.row, index + 1, true))) {
+        break;
+      }
+      range.col2 = index + 1;
+    }
+    for (let index = range.col; index > 0; index -= 1) {
+      if (!equals(panel.getCellData(range.row, index - 1, true), panel.getCellData(range.row, index, true))) {
+        break;
+      }
+      range.col = index - 1;
+    }
+  }
+
+  getMergedRange(panel, row, col) {
+    if (typeof this.#group === 'undefined') {
+      this.#createGroup(panel);
+    }
+    const range = new CellRange(row, col);
+    if (isCell(panel) && (this.indexes.length === 0 || this.indexes.includes(col))) {
+      this.#cellMergedRange(panel, range);
+    } else {
+      this.#mergedRange(panel, range);
+    }
+    return range;
+  }
+}
+
+export { BasicMergeManager, ColGroupMergeManager };
