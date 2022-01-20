@@ -36,7 +36,7 @@
             알림<span class="count">{{ badgeCount }}</span>
           </button>
           <button type="button" class="setting">설정</button>
-          <button type="button" class="logout" @click="getTtl">로그아웃</button>
+          <button type="button" class="logout" @click="getTtl(); test1(); test2();">로그아웃</button>
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@ import store from '@/store';
 import { computed, onMounted, reactive, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
-
+import login from '@/api/login.js';
 export default {
   name: 'AppHeader',
   data() {
@@ -90,7 +90,17 @@ export default {
 
   methods: {
 
+    test1:function(){
+     const test1 = login.getUserInfo('/com/Auth', "25052408");
+     console.log(test1);
+    },
+    test2:function(){
+      const test2 = login.getUserInfo('/com/Auth', "25052408");
+      console.log(test2);
+    },
+
     async getTtl() {
+      console.log("ttl");
       const now = new Date();
 
       alert(store.state.login.ttl+"\n" + now.getTime());
@@ -99,7 +109,7 @@ export default {
       
     },
     async getUserInfo() {
-      const userData = await login.getUserInfo('/com/Auth/UserInfo', "25052408");
+      const userData = await login.getUserInfo('/com/Auth', "25052408");
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         console.log(userInfo);
