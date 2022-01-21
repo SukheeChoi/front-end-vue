@@ -36,8 +36,12 @@ export default {
 
     const onInitialized = (flex) => {
       state.flex = flex;
-      // flex.mergeManager = new SimpleMergeManager();
-      flex.mergeManager = new GroupMergeManager(0);
+      console.log(flex.onCellEditEnded);
+      flex.onCellEditEnded = (...args) => {
+        console.log('args', args);
+      };
+      flex.mergeManager = new SimpleMergeManager();
+      // flex.mergeManager = new GroupMergeManager(0);
     };
 
     return {

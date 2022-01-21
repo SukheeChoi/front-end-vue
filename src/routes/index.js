@@ -33,9 +33,12 @@ const routes = [
         component: () => import('@/views/AppDashboard'),
         props: {
           components: [
-            require(`@/components/dummy/Dummy1`),
-            require(`@/components/dummy/Dummy2`),
-            require(`@/components/dummy/Dummy3`),
+            require('@/views/dashboard/ThePanel1'),
+            require('@/views/dashboard/ThePanel2'),
+            require('@/views/dashboard/ThePanel3'),
+            require('@/views/dashboard/ThePanel4'),
+            require('@/views/dashboard/ThePanel5'),
+            require('@/views/dashboard/ThePanel6'),
           ],
         },
       },
@@ -50,7 +53,7 @@ const routes = [
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/AppNotFound'),
   },
-/*
+  /*
   {
     path: '/com',
     name: 'com',
@@ -125,7 +128,7 @@ const routes = [
     ],
   },
   */
-];/*
+]; /*
 function setComponent(name) {
   return () => import('/src/app/com/views/The' + name);
 }
@@ -210,16 +213,16 @@ function findName(menus, path) {
 
 }*/
 function findName(menus, path) {
-  var name ="";
+  var name = '';
   if (menus.path === path) {
     console.log(menus.path);
-    console.log(menus.name)
+    console.log(menus.name);
     name = menus.name;
     return name;
   }
 
   if (menus.children) {
-    for (var i = 0; i < menus.children.length; i++){
+    for (var i = 0; i < menus.children.length; i++) {
       name = findName(menus.children[i], path);
       if (name.length > 0) {
         return name;
@@ -230,7 +233,6 @@ function findName(menus, path) {
 }
 
 router.beforeEach((to, from, next) => {
-  
   console.log('routing wait....................');
   console.log(to);
   console.log(from);
@@ -258,7 +260,7 @@ router.beforeEach((to, from, next) => {
     console.log('auth error');
     router.push('/login');
   }
-  
+
   next();
 });
 
