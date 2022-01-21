@@ -131,11 +131,7 @@ class ValidatorManager {
 
   #init() {
     for (const column of this.flex.columns) {
-      column.validator =
-        this.validator[column.binding] ||
-        (() => {
-          return { ok: true, message: '' };
-        });
+      column.validator = this.validator[column.binding] || (() => true);
     }
 
     this.flex.cellEditEnding.addHandler(async (s, e) => {
@@ -151,3 +147,42 @@ class ValidatorManager {
 }
 
 export { ValidatorManager };
+
+import { Tooltip, PopupPosition } from '@grapecity/wijmo';
+
+class TooltipManager {
+  #tooltip = new Tooltip({
+    position: PopupPosition.RightBottom,
+    gap: 10,
+    showAtMouse: true,
+    showDelay: 500,
+  });
+
+  constructor(flex) {
+    this.flex = flex;
+    this.#init();
+  }
+
+  #init() {
+    this.flex.formatItem.addHandler((s, e) => {
+      const { cell } = e;
+      this.#tooltip.setTooltip(cell, cell.textContent);
+    });
+  }
+
+  /**
+   * @param {PopupPosition} position
+   */
+  set position(position) {
+    this.#tooltip.position = position;
+  }
+
+  /**
+   * @param {number} delay
+   */
+  set delay(delay) {
+    this.#tooltip.showDelay = delay;
+  }
+}
+
+export { TooltipManager };
