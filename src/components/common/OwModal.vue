@@ -142,9 +142,11 @@ export default {
       }
     );
 
-    const observer = new ResizeObserver(() => {
-      Control.invalidateAll();
-    });
+    const observer = new ResizeObserver(
+      _.throttle(() => {
+        Control.invalidateAll();
+      }, 500)
+    );
 
     onMounted(() => {
       state.control = root.value.control;
