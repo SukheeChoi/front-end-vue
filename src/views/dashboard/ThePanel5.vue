@@ -2,7 +2,13 @@
   <ow-panel>
     <template #title> 통화코드 </template>
     <ow-grid :page-no="paging.pageNo" :page-size="paging.pageSize" :total-count="paging.totalCount">
-      <wj-flex-grid class="ow-grid" headersVisibility="Column" selectionMode="Row" :itemsSource="items">
+      <wj-flex-grid
+        class="ow-grid"
+        headersVisibility="Column"
+        selectionMode="Row"
+        :is-read-only="true"
+        :itemsSource="items"
+      >
         <ow-number-column header="번호" :width="50" :opt="paging"></ow-number-column>
         <wj-flex-grid-column header="통화코드" binding="a" :width="80"></wj-flex-grid-column>
         <wj-flex-grid-column header="통화기호" binding="b" width="*"></wj-flex-grid-column>

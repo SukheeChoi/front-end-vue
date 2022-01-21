@@ -2,7 +2,13 @@
   <ow-panel>
     <template #title> 배치결과 </template>
     <ow-grid :page-no="paging.pageNo" :page-size="paging.pageSize" :total-count="paging.totalCount">
-      <wj-flex-grid class="ow-grid" headersVisibility="Column" selectionMode="Row" :itemsSource="items">
+      <wj-flex-grid
+        class="ow-grid"
+        headersVisibility="Column"
+        selectionMode="Row"
+        :is-read-only="true"
+        :itemsSource="items"
+      >
         <ow-number-column header="번호" :width="50" :opt="paging"></ow-number-column>
         <wj-flex-grid-column header="배치작업명" binding="a" width="*"></wj-flex-grid-column>
         <wj-flex-grid-column header="대상시스템" binding="b" align="center" :width="100"></wj-flex-grid-column>
