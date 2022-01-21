@@ -207,9 +207,14 @@ export default {
   align-items: center;
   justify-content: center;
 }
-:deep(.ow-grid.wj-content) {
+:deep(.wj-content) {
   border-right: none;
   border-bottom: none;
+  .wj-cell {
+    &.wj-align-center {
+      justify-content: center;
+    }
+  }
 }
 .ow-pagination {
   :deep(.page-link) {
