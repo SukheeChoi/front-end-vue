@@ -211,4 +211,12 @@ export default {
   border-right: none;
   border-bottom: none;
 }
+.ow-pagination {
+  :deep(.page-link) {
+    &[role='menuitemradio'] {
+      width: 100%;
+      padding: 4px 8px;
+    }
+  }
+}
 </style>
