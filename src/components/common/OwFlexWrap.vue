@@ -12,6 +12,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    gap: {
+      type: Number,
+      default: 6,
+    },
     justify: {
       type: String,
       default: '',
@@ -25,10 +29,6 @@ export default {
       validator: (align) => {
         return ['', 'flex-start', 'flex-end', 'center', 'baseline', 'stretch'].includes(align);
       },
-    },
-    gap: {
-      type: Number,
-      default: 6,
     },
   },
   setup(props) {

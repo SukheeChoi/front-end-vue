@@ -15,11 +15,15 @@
     </div>
   </template>
   <template v-else>
-    <template v-for="(item, index) in items" :key="item">
-      <button type="button" class="ow-btn type-group" :class="{ active: isActive(index) }" @click="click(index)">
-        {{ item }}
-      </button>
-    </template>
+    <div class="tabs">
+      <div class="ow-tabs">
+        <template v-for="(item, index) in items" :key="item">
+          <button type="button" class="ow-btn type-group" :class="{ active: isActive(index) }" @click="click(index)">
+            {{ item }}
+          </button>
+        </template>
+      </div>
+    </div>
   </template>
 </template>
 <script>
@@ -58,20 +62,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-a {
-  cursor: pointer;
-}
 .tabs {
   width: 100%;
-  .ow-tabs {
-    justify-content: space-between;
-  }
 }
-// .ow-btn {
-//   border: 1px solid #bababa !important;
-//   border-radius: 2px;
-//   & + & {
-//     margin-left: 2px;
-//   }
-// }
+.nav-item {
+  cursor: pointer;
+}
 </style>
