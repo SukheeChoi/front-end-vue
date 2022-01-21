@@ -39,35 +39,37 @@
       </div>
     </ow-flex-item>
     <!-- pagination -->
-    <ow-flex-item class="mt-10 mb-10">
-      <ow-flex-wrap>
-        <ow-flex-item class="align-x-start" style="--gap-item: 2px">
-          <button type="button" class="ow-button type-icon">
-            <i class="fas fa-cog fa-fw" />
-          </button>
-          <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
-        </ow-flex-item>
-        <ow-flex-item class="align-x-center">
-          <b-pagination
-            class="ow-pagination"
-            first-class="go-first"
-            prev-class="go-prev"
-            next-class="go-next"
-            last-class="go-last"
-            :total-rows="state.totalCount"
-            :per-page="state.pageSize"
-            :limit="10"
-            v-model="state.pageNo"
-          />
-        </ow-flex-item>
-        <ow-flex-item class="align-x-end">
-          <div class="counter-board">
-            전체<span>{{ state.totalCount }}</span
-            >건
-          </div>
-        </ow-flex-item>
-      </ow-flex-wrap>
-    </ow-flex-item>
+    <tempalte v-if="pagination == true">
+      <ow-flex-item class="mt-10 mb-10">
+        <ow-flex-wrap>
+          <ow-flex-item class="align-x-start" style="--gap-item: 2px">
+            <button type="button" class="ow-button type-icon">
+              <i class="fas fa-cog fa-fw" />
+            </button>
+            <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
+          </ow-flex-item>
+          <ow-flex-item class="align-x-center">
+            <b-pagination
+              class="ow-pagination"
+              first-class="go-first"
+              prev-class="go-prev"
+              next-class="go-next"
+              last-class="go-last"
+              :total-rows="state.totalCount"
+              :per-page="state.pageSize"
+              :limit="10"
+              v-model="state.pageNo"
+            />
+          </ow-flex-item>
+          <ow-flex-item class="align-x-end">
+            <div class="counter-board">
+              전체<span>{{ state.totalCount }}</span
+              >건
+            </div>
+          </ow-flex-item>
+        </ow-flex-wrap>
+      </ow-flex-item>
+    </tempalte >
   </ow-flex-wrap>
 </template>
 <script>
@@ -100,6 +102,10 @@ export default {
       default: 'edit',
     },
     hasSlot: {
+      type: Boolean,
+      default: true,
+    },
+    pagination: {
       type: Boolean,
       default: true,
     },
