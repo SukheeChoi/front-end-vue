@@ -105,5 +105,6 @@ export default {
 .item {
   --align-item: flex-start;
   flex: 0 0 33%;
+  max-width: 33%;
 }
 </style>
