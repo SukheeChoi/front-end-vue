@@ -1,27 +1,49 @@
 const Utils = {
-  copyDefaultValues(model) {
-    let data = {};
+    copyDefaultValues(model) {
+        let data = {};
 
-    for (var field of model.fields) {
-        data = Object.assign(data, { [field.id] : field.value })
-    }
+        for (var field of model.fields) {
+            data = Object.assign(data, {
+                [field.id]: field.value,
+            });
+        }
 
-    return data;
-  },
+        return data;
+    },
 
-  makeMsg(message, defaultMessage = "", args = []) {
-    let resultMsg = message ? message : defaultMessage;
+    makeMsg(message, defaultMessage = "", args = []) {
+        let resultMsg = message ? message : defaultMessage;
 
-    if (args.length == 0) {
+        if (args.length == 0) {
+            return resultMsg;
+        }
+
+        for (var arg in args) {
+            resultMsg = resultMsg.replace("{" + arg + "}", args[arg]);
+        }
+
         return resultMsg;
-    }
+    },
 
-    for (var arg in args) {
-        resultMsg = resultMsg.replace("{" + arg + "}", args[arg]);
-    }
+    removeBizGrpItem(dataItem, item) {
+        if (dataItem.children) {
 
-    return resultMsg;
-  }
+            let child;
+            for (let i = 0; i < dataItem.children.length; i++) { //(let child of dataItem.chilren) {
+                child = dataItem.children[i];
+
+                if (child.children) {
+                    Utils.removeBizGrpItem(child, item);
+                }
+
+                if (child.bizGrpId && item.bizGrpId == child.bizGrpId && item.orgCd == child.orgCd) {
+                    dataItem.children.splice(i, 1); //remove
+                    return;
+                }
+
+            }
+        }
+    }
 };
 
 export default Utils;
