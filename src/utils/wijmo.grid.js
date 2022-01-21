@@ -131,7 +131,11 @@ class ValidatorManager {
 
   #init() {
     for (const column of this.flex.columns) {
-      column.validator = this.validator[column.binding] || (() => true);
+      column.validator =
+        this.validator[column.binding] ||
+        (() => {
+          return { ok: true };
+        });
     }
 
     this.flex.cellEditEnding.addHandler(async (s, e) => {
