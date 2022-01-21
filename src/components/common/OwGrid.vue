@@ -213,7 +213,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
-:deep(.wj-content) {
+:deep(.wj-flexgrid) {
   border-right: none;
   border-bottom: none;
 }
