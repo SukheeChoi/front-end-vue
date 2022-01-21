@@ -10,7 +10,7 @@
       <button type="button" class="close" @click="onCancel">&#120;</button>
     </div>
     <div class="modal-body">
-      <div class="layer-body" :style="`--max-height: ${size.height}px`">
+      <div class="layer-body" :style="`--max-height: ${size.height}px`" ref="body">
         <template v-if="show">
           <ow-flex-wrap col>
             <slot></slot>
@@ -42,7 +42,7 @@
 import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
 
-import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
+import { ref, computed, onMounted, reactive, toRefs, watch, onUnmounted } from 'vue';
 
 import { expando } from '@/utils';
 
@@ -75,6 +75,7 @@ export default {
   },
   setup(props) {
     const root = ref(null);
+    const body = ref(null);
     const one = ref(null);
 
     const state = reactive({
@@ -117,7 +118,6 @@ export default {
           state.beforeAccept = accept;
         }
         state.resolvePromise = resolve;
-        Control.invalidateAll();
       });
     };
 
@@ -142,12 +142,22 @@ export default {
       }
     );
 
+    const observer = new ResizeObserver(() => {
+      Control.invalidateAll();
+    });
+
     onMounted(() => {
       state.control = root.value.control;
+      observer.observe(body.value);
+    });
+
+    onUnmounted(() => {
+      observer.disconnect();
     });
 
     return {
       root,
+      body,
       one,
       ...toRefs(state),
       open,
