@@ -69,7 +69,7 @@
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>
-    </tempalte >
+    </tempalte>
   </ow-flex-wrap>
 </template>
 <script>
@@ -216,11 +216,6 @@ export default {
 :deep(.wj-content) {
   border-right: none;
   border-bottom: none;
-  .wj-cell {
-    &.wj-align-center {
-      justify-content: center;
-    }
-  }
 }
 .ow-pagination {
   :deep(.page-link) {
