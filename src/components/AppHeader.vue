@@ -4,19 +4,31 @@
       <router-link :to="{ name: 'main' }">
         <h1 class="logo">OW OSSTEM</h1>
       </router-link>
-
       <!-- TODO Breadcrumb, 위치기반, e.g. 본부명 > 메뉴 1 > 메뉴 2 -->
       <ul class="location">
-        <li><span>본부명</span></li>
+        <li><span>{{rootOrg.orgNm}}</span></li>
         <template v-for="{ list, index } of menuList" :key="list">
           <li>
             <span>{{ list[index].title }}</span>
           </li>
         </template>
       </ul>
-
       <div class="util-wrap">
         <ul class="meuns">
+            <li>
+              <a href="javascript:void(0);">
+                <i class="person"><span class="sr-only">유저 아이콘</span></i>
+                <span>{{rootOrg.orgNm}}</span>
+              </a>
+            </li>
+          <template v-for="(org) in orgList" :key="org">
+            <li>
+              <a href="javascript:void(0);">
+                <span>{{org.orgNm}}</span>
+              </a>
+            </li>
+          </template>
+<!-- 
           <li>
             <a href="javascript:void(0);">
               <i class="person"><span class="sr-only">유저 아이콘</span></i>
@@ -26,6 +38,7 @@
           <li>
             <a href="javascript:void(0);">{{ userInfo.orgNm }}</a>
           </li>
+           -->
           <li>
             <a href="javascript:void(0);">{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a>
           </li>
@@ -63,10 +76,15 @@ export default {
 
     const state = reactive({
       menuList: store.getters.getMyMenuList,
+      rootOrg: store.getters.getRootOrg,
+      orgList: store.getters.getOrgList,
+      
     });
 
     const route = useRoute();
     const router = useRouter();
+
+    const orgList = store.state.login.userInfo.orgList;
 
     console.log('header route:', route, ', router:', router);
 
