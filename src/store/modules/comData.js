@@ -3,6 +3,26 @@ export default {
         { name: 'Y', value: 'Y' },
         { name: 'N', value: 'N' },
     ],
+    DISP_YN: [
+        { name: 'Y', value: 'Y' },
+        { name: 'N', value: 'N' },
+    ],
+    CRUD_CTRL_YN: [
+        { name: 'Y', value: 'Y' },
+        { name: 'N', value: 'N' },
+    ],
+    SCREEN_TP: [
+        { name: 'MAIN',      value: '메인화면' },
+        { name: 'DASHBAORD', value: 'DashBoard' },
+    ],
+    DATA_AUTH: [
+        { name: 'NONE',           value: '처리안함' },
+        { name: 'OWNER',          value: '본인자료' },
+        { name: 'DEPT_ONLY',      value: '본인부서자료' },
+        { name: 'DEPT_HIERARCHY', value: '상위부서자료' },
+        { name: 'UP_GROUP',       value: '사용자정의 부서그룹' },
+        { name: 'ALL',            value: '전체' },
+    ],
     SYS_DV: [
         { value: 'CMG', name: '공통' },
         { value: 'PAL', name: '생산물류' },
