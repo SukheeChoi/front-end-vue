@@ -39,7 +39,7 @@
       </div>
     </ow-flex-item>
     <!-- pagination -->
-    <tempalte v-if="pagination == true">
+    <template v-if="pagination == true">
       <ow-flex-item class="mt-10 mb-10">
         <ow-flex-wrap>
           <ow-flex-item class="align-x-start" style="--gap-item: 2px">
@@ -69,7 +69,7 @@
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>
-    </tempalte>
+    </template>
   </ow-flex-wrap>
 </template>
 <script>

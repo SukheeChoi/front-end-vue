@@ -214,6 +214,6 @@ export class treeGridApi extends CollectionView {
             }
         }
 
-        GridApi.markRecordStatus(grid, e);
+        treeGridApi.markRecordStatus(grid, e);
     }
 }
