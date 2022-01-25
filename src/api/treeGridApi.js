@@ -5,7 +5,7 @@ import ValidatorTypes from '@/utils/commVTypes.js';
 import { CollectionView } from '@grapecity/wijmo';
 import * as gridXlsx from '@grapecity/wijmo.grid.xlsx';
 
-export class treeGridApi extends CollectionView {
+export class TreeGridApi extends CollectionView {
     _id = '';
     _uri = '';
     _qry = {};
@@ -214,6 +214,6 @@ export class treeGridApi extends CollectionView {
             }
         }
 
-        treeGridApi.markRecordStatus(grid, e);
+        TreeGridApi.markRecordStatus(grid, e);
     }
 }
