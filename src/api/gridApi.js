@@ -16,6 +16,7 @@ export class GridApi extends CollectionView {
     _newValues = [];
     _vm = null;
     _gridView = null;
+    _storeChain = []
 
     constructor(uri, model, id = '') {
         super([], { trackChanges: true });
@@ -23,6 +24,10 @@ export class GridApi extends CollectionView {
         this._uri = uri;
         this._model = model;
         this._newValues = utils.copyDefaultValues(model);
+    }
+
+    addQueryChain(stores) {
+        this._linkStore = stores;
     }
 
     init(vm, grid, qry = null, opt = null, autoLoading = true) {
@@ -51,11 +56,14 @@ export class GridApi extends CollectionView {
         this.sourceCollection = _.cloneDeep(this._orgValues);
     }
 
-    async getList(pageNo = -1, pageSize = -1) {
+    mergePagingParams(pageNo = -1, pageSize = -1) {
         let opt = {};
 
         if (pageNo > 0) {
             this._opt.pageNo = pageNo;
+        }
+
+        if (pageSize > 0) {
             this._opt.pageSize = pageSize;
         }
 
@@ -66,14 +74,46 @@ export class GridApi extends CollectionView {
             };
         }
 
+        return opt;
+    }
+
+    async getList(pageNo = -1, qry = null, pageSize = -1) {
+        let opt = mergePagingParams(pageNo, pageSize);
+
+        if (qry != null) {
+            this._qry = Object.assign(this._qry, qry);
+        }
+
         let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
 
         if (resData.data.code == "OK") {
             this._orgValues = _.cloneDeep(resData.data.data);
             this.sourceCollection = resData.data.data;
             this._opt.totalCount = resData.data.totalCount;
+
+            if (this._linkStore.length > 0) {
+                var dataItem = null;
+
+                if (this.sourceCollection.length > 0) {
+                    dataItem = this.sourceCollection[0];
+                }
+
+                chainQuery(dataItem);
+            }
         } else {
             await this._vm.alert(resData.data.message);
+        }
+    }
+
+    chainQuery(dataItem) {
+        let qryData = utils.copyKeyValues(dataItem, this._model);
+
+        for (var store of this._storeChain) {
+            if (qryData == null) {
+                store.sourceCollection = [];
+            } else {
+                store.getList(1, qryData);
+            }
         }
     }
 

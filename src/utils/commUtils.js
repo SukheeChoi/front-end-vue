@@ -11,6 +11,20 @@ const Utils = {
         return data;
     },
 
+    copyKeyValues(dataItem, model) {
+        let data = null;
+
+        for (var field of model.fields) {
+            if (field.key && field.key == 'true') {
+                data = Object.assign(data, {
+                    [field.id]: dataItem[field.id]
+                });
+            }
+        }
+
+        return data;
+    },
+
     makeMsg(message, defaultMessage = "", args = []) {
         let resultMsg = message ? message : defaultMessage;
 
