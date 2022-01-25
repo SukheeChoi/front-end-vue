@@ -39,7 +39,7 @@
       </div>
     </ow-flex-item>
     <!-- pagination -->
-    <template v-if="pagination == true">
+    <tempalte v-if="pagination == true">
       <ow-flex-item class="mt-10 mb-10">
         <ow-flex-wrap>
           <ow-flex-item class="align-x-start" style="--gap-item: 2px">
@@ -69,7 +69,7 @@
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>
-    </template>
+    </tempalte>
   </ow-flex-wrap>
 </template>
 <script>
@@ -191,6 +191,20 @@ export default {
           state.store.getList(state.pageNo, state.pageSize);
         } else {
           emit('pageChange', (state.pageNo = 1), state.pageSize);
+        }
+      }
+    );
+
+    watch(
+      () => state.totalCount,
+      () => {
+        if (state.totalCount > 0) {
+          let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
+          if (state.pageNo > tempPageNo) {
+            emit('pageChange', (state.pageNo = 1), state.pageSize);
+          } else {
+            state.store.getList(state.pageNo, state.pageSize);
+          }
         }
       }
     );
