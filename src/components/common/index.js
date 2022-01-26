@@ -25,6 +25,7 @@ import OwRadio from '@/components/common/OwRadio';
 import OwRadioButton from '@/components/common/OwRadioButton';
 import OwSelect from '@/components/common/OwSelect';
 import OwCommonSelect from '@/components/common/OwCommonSelect';
+import OwSignature from '@/components/common/OwSignature';
 import OwSpinner from '@/components/common/OwSpinner';
 import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
@@ -59,6 +60,7 @@ const COMMON_COMPONENTS = {
   OwRadioButton,
   OwSelect,
   OwCommonSelect,
+  OwSignature,
   OwSpinner,
   OwSwitch,
   OwTab,
