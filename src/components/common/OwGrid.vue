@@ -201,7 +201,7 @@ export default {
         if (state.totalCount > 0) {
           let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
           if (state.pageNo > tempPageNo) {
-            emit('pageChange', (state.pageNo = 1), state.pageSize);
+            state.pageNo = 1;
           }
         }
       }
