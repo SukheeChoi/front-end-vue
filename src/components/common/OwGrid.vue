@@ -228,6 +228,17 @@ export default {
 :deep(.wj-flexgrid) {
   border-right: none;
   border-bottom: none;
+  .wj-flexgrid-required {
+    &::before {
+      position: absolute;
+      content: '';
+      width: 0;
+      right: 0;
+      top: -6px;
+      border: 6px solid transparent;
+      border-right-color: rgba(0, 0, 255, 1);
+    }
+  }
 }
 .ow-pagination {
   :deep(.page-link) {

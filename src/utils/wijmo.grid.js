@@ -1,3 +1,4 @@
+import { NotifyCollectionChangedAction, Tooltip, PopupPosition, CellRangeEventArgs } from '@grapecity/wijmo';
 import { MergeManager, CellRange, CellType } from '@grapecity/wijmo.grid';
 
 class SimpleMergeManager extends MergeManager {
@@ -130,30 +131,57 @@ class ValidatorManager {
     this.#init();
   }
 
-  #init() {
-    for (const column of this.flex.columns) {
-      column.validator =
-        this.validator[column.binding] ||
-        (() => {
-          return { ok: true };
-        });
-    }
+  #formatItem() {
+    this.flex.formatItem.addHandler((s, e) => {
+      const { cell, panel, row: r, col: c } = e;
+      if (panel.cellType === CellType.Cell) {
+        if (s.rows && s.rows.length > 0) {
+          const row = s.rows.at(r);
+          if (row && row.dataItem && row.dataItem.rowStatus === 'C') {
+            const col = s.columns.at(c);
+            const data = panel.getCellData(r, c);
+            if (col && col.validator && !data) {
+              cell.classList.add('wj-flexgrid-required');
+            }
+          }
+        }
+      }
+    });
+  }
 
+  #cellEditEnding() {
     this.flex.cellEditEnding.addHandler(async (s, e) => {
       const { row: r, col: c } = e;
       const column = e.getColumn();
-      const { ok, message = '' } = await column.validator(s.activeEditor.value, s, e);
+      const { ok, message = '' } =
+        (await column.validator(s.activeEditor.value, s, e)) ||
+        (() => {
+          return { ok: true };
+        });
+      const cell = s.cells.getCellElement(r, c);
       if ((e.cancel = e.stayInEditMode = !ok)) {
         s.startEditing(false, r, c);
-        s._edtHdl._setCellError(s.cells.getCellElement(r, c), message);
+        s._edtHdl._setCellError(cell, message);
+      }
+      if (cell.textContent) {
+        cell.classList.remove('wj-flexgrid-required');
+      } else {
+        cell.classList.add('wj-flexgrid-required');
       }
     });
+  }
+
+  #init() {
+    for (const column of this.flex.columns) {
+      column.validator = this.validator[column.binding];
+    }
+
+    this.#cellEditEnding();
+    this.#formatItem();
   }
 }
 
 export { ValidatorManager };
-
-import { Tooltip, PopupPosition } from '@grapecity/wijmo';
 
 class TooltipManager {
   #tooltip = new Tooltip({
