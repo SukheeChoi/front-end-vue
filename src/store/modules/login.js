@@ -10,28 +10,37 @@ export default {
   },
   getters: {
     getMenus(state) {
-      return state.menus.map(({ title, name, children }) => Menu.create(title, name, children));
+      if (typeof state.menus === 'undefined') {
+        return [];        
+      }
+        
+        return state.menus.map(({ title, name, children }) => Menu.create(title, name, children));
     },
     getRootOrg(state) {
       let orgData = [];
-      
-      if (state.userInfo.orgList) {
-        if (state.userInfo.orgList[0].children) {
-          orgData = {
-            orgCd: state.userInfo.orgList[0].children[0].orgCd,
-            orgNm: state.userInfo.orgList[0].children[0].orgNm,
-          };
-        } else {
-          orgData = {
-            orgCd: state.userInfo.orgList[0].orgCd,
-            orgNm: state.userInfo.orgList[0].orgNm,
-          };
-        }
+      if (typeof state.userInfo === 'undefined') {
+        return orgData;
       }
+        if (typeof state.userInfo.orgList !== 'undefined') {
+          if (state.userInfo.orgList[0].children) {
+            orgData = {
+              orgCd: state.userInfo.orgList[0].children[0].orgCd,
+              orgNm: state.userInfo.orgList[0].children[0].orgNm,
+            };
+          } else {
+            orgData = {
+              orgCd: state.userInfo.orgList[0].orgCd,
+              orgNm: state.userInfo.orgList[0].orgNm,
+            };
+          }
+        }
       return orgData;
     },
     getOrgList(state) {
       let orgList = [];
+      if (typeof state.userInfo === 'undefined') {
+        return orgList;
+      }
       if (state.userInfo.orgList) {
         
       

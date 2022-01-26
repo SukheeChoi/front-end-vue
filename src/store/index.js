@@ -5,7 +5,11 @@ import menu from './modules/menu';
 import notification from './modules/notification';
 import loading from './modules/loading';
 import comData from './modules/comData';
-
+const resetState = () => {
+    return {
+        login: [],
+    }
+}
 export default createStore({
     plugins: [
         /*
@@ -24,7 +28,11 @@ export default createStore({
     ],
     state: {},
     getters: {},
-    mutations: {},
+    mutations: {
+        reset(state) {
+           Object.assign(state, resetState())
+        }
+    },
     modules: {
         login,
         menu,

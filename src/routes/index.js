@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '@/store';
-
+import login from '@/api/login.js';
 const routes = [
   {
     path: '/',
@@ -89,9 +89,21 @@ router.beforeEach((to, from, next) => {
   console.log(to);
   console.log(from);
 
-  const devMode = true;
-  if (devMode === false && to.fullPath !== '/login' && store.state.login.accessToken.length <= 0) {
+  const devMode = false;
+  const now = new Date();
+
+  if (devMode === false && to.fullPath !== '/login' && store.state.login.ttl < now.getTime()) {
+    localStorage.clear();
+    //login.reset();
+    store.commit('reset');
+    router.push('/login');
+  }
+
+  if (devMode === false && to.fullPath !== '/login' && !store.state.login.accessToken) {
     console.log('auth error');
+    localStorage.clear();
+    //login.reset();
+    store.commit('reset');
     router.push('/login');
   }
 

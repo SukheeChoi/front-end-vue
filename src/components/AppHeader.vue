@@ -49,7 +49,7 @@
             알림<span class="count">{{ badgeCount }}</span>
           </button>
           <button type="button" class="setting">설정</button>
-          <button type="button" class="logout" @click="getTtl(); test1(); test2();">로그아웃</button>
+          <button type="button" class="logout" @click="logout();">로그아웃</button>
         </div>
       </div>
     </div>
@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       //userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
-      userInfo: store.state.login.userInfo,
+      userInfo: store.state.login.userInfo? store.state.login.userInfo : {userNm: '홍길동', jbgrNm: '의적'},
       user: {},
     };
   },
@@ -84,7 +84,7 @@ export default {
     const route = useRoute();
     const router = useRouter();
 
-    const orgList = store.state.login.userInfo.orgList;
+    const orgList = store.state.login.userInfo ? store.state.login.userInfo.orgList : [];
 
     console.log('header route:', route, ', router:', router);
 
@@ -118,6 +118,12 @@ export default {
       console.log(test2);
     },
 
+    async logout(){
+      this.$store.commit('resetState');
+      this.$store.commit('reset');
+      //window.localStorage.clear();
+      this.$router.push("/login");
+    },
     async getTtl() {
       console.log("ttl");
       const now = new Date();
