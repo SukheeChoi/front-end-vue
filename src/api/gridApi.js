@@ -77,7 +77,7 @@ export class GridApi extends CollectionView {
     return opt;
   }
 
-  async getList(pageNo = -1, qry = null, pageSize = -1) {
+  async getList(pageNo = -1, pageSize = -1, qry = null) {
     let opt = this.mergePagingParams(pageNo, pageSize);
 
     if (qry != null) {

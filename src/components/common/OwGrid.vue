@@ -177,9 +177,10 @@ export default {
       }
     );
     watch(
-      () => [state.pageSize, state.totalCount],
+      () => state.pageSize,
       () => {
         //현재 데이터 있는 페이지로 이동
+        console.log('state.pageSize', state.pageSize);
         if (state.totalCount > 0) {
           let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
           if (state.pageNo > tempPageNo) {
@@ -195,19 +196,19 @@ export default {
       }
     );
 
-    // watch(
-    //   () => state.totalCount,
-    //   () => {
-    //     if (state.totalCount > 0) {
-    //       let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
-    //       if (state.pageNo > tempPageNo) {
-    //         emit('pageChange', (state.pageNo = 1), state.pageSize);
-    //       } else {
-    //         state.store.getList(state.pageNo, state.pageSize);
-    //       }
-    //     }
-    //   }
-    // );
+    watch(
+      () => state.totalCount,
+      () => {
+        if (state.totalCount > 0) {
+          let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
+          if (state.pageNo > tempPageNo) {
+            emit('pageChange', (state.pageNo = 1), state.pageSize);
+          } else {
+            state.store.getList(state.pageNo, state.pageSize);
+          }
+        }
+      }
+    );
 
     return {
       state,
