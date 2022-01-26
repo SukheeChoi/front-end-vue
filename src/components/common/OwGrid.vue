@@ -170,9 +170,9 @@ export default {
       () => state.pageNo,
       () => {
         if (state.store != null) {
-          state.store.getList(state.pageNo, state.pageSize);
+          state.store.getList(state.pageNo, null, state.pageSize);
         } else {
-          emit('pageChange', state.pageNo, state.pageSize);
+          emit('pageChange', state.pageNo, null, state.pageSize);
         }
       }
     );
@@ -188,9 +188,9 @@ export default {
         }
 
         if (state.store != null) {
-          state.store.getList(state.pageNo, state.pageSize);
+          state.store.getList(state.pageNo, null, state.pageSize);
         } else {
-          emit('pageChange', (state.pageNo = 1), state.pageSize);
+          emit('pageChange', (state.pageNo = 1), null, state.pageSize);
         }
       }
     );
