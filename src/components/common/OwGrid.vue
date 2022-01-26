@@ -39,7 +39,7 @@
       </div>
     </ow-flex-item>
     <!-- pagination -->
-    <tempalte v-if="pagination == true">
+    <template v-if="pagination == true">
       <ow-flex-item class="mt-10 mb-10">
         <ow-flex-wrap>
           <ow-flex-item class="align-x-start" style="--gap-item: 2px">
@@ -69,7 +69,7 @@
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>
-    </tempalte>
+    </template>
   </ow-flex-wrap>
 </template>
 <script>
@@ -170,7 +170,7 @@ export default {
       () => state.pageNo,
       () => {
         if (state.store != null) {
-          state.store.getList(state.pageNo, state.pageSize);
+          state.store.getList(state.pageNo, null, state.pageSize);
         } else {
           emit('pageChange', state.pageNo, state.pageSize);
         }
@@ -180,7 +180,6 @@ export default {
       () => state.pageSize,
       () => {
         //현재 데이터 있는 페이지로 이동
-        console.log('state.pageSize', state.pageSize);
         if (state.totalCount > 0) {
           let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
           if (state.pageNo > tempPageNo) {
@@ -189,7 +188,7 @@ export default {
         }
 
         if (state.store != null) {
-          state.store.getList(state.pageNo, state.pageSize);
+          state.store.getList(state.pageNo, null, state.pageSize);
         } else {
           emit('pageChange', (state.pageNo = 1), state.pageSize);
         }
@@ -203,8 +202,6 @@ export default {
           let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
           if (state.pageNo > tempPageNo) {
             emit('pageChange', (state.pageNo = 1), state.pageSize);
-          } else {
-            state.store.getList(state.pageNo, state.pageSize);
           }
         }
       }

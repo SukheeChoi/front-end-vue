@@ -73,7 +73,7 @@ export default {
     if (all.value) {
       if (items.sourceCollection.length > 0) {
         if (items.sourceCollection[0].value != 'all') {
-          const allData = { value: 'all', name: '전체' };
+          const allData = { value: null, name: '전체' };
           items.sourceCollection.splice(0, 0, allData);
         }
       }
