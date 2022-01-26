@@ -93,8 +93,8 @@ router.beforeEach((to, from, next) => {
   const now = new Date();
 
   if (devMode === false && to.fullPath !== '/login' && store.state.login.ttl < now.getTime()) {
-    store.commit('reset');
-    router.push('/login');
+    //store.commit('reset');
+    //router.push('/login');
   }
 
   if (devMode === false && to.fullPath !== '/login' && !store.state.login.accessToken) {
