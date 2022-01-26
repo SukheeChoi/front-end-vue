@@ -1,4 +1,4 @@
-import { NotifyCollectionChangedAction, Tooltip, PopupPosition, CellRangeEventArgs } from '@grapecity/wijmo';
+import { Tooltip, PopupPosition } from '@grapecity/wijmo';
 import { MergeManager, CellRange, CellType } from '@grapecity/wijmo.grid';
 
 class SimpleMergeManager extends MergeManager {
