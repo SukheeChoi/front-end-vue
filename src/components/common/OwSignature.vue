@@ -101,10 +101,17 @@ export default {
       return canvas.toDataURL(getMimeType(mime));
     };
 
+    const clear = () => {
+      const { value: canvas } = root;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return toBase64();
+    };
+
     return {
       root,
       draw,
       toBase64,
+      clear,
     };
   },
 };
