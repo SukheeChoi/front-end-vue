@@ -1,4 +1,4 @@
-import { NotifyCollectionChangedAction, Tooltip, PopupPosition, CellRangeEventArgs } from '@grapecity/wijmo';
+import { Tooltip, PopupPosition } from '@grapecity/wijmo';
 import { MergeManager, CellRange, CellType } from '@grapecity/wijmo.grid';
 
 class SimpleMergeManager extends MergeManager {
@@ -131,6 +131,12 @@ class ValidatorManager {
     this.#init();
   }
 
+  static noop() {
+    return {
+      ok: true,
+    };
+  }
+
   #formatItem() {
     this.flex.formatItem.addHandler((s, e) => {
       const { cell, panel, row: r, col: c } = e;
@@ -152,22 +158,22 @@ class ValidatorManager {
   #cellEditEnding() {
     this.flex.cellEditEnding.addHandler(async (s, e) => {
       const { row: r, col: c } = e;
+      const row = e.getRow();
       const column = e.getColumn();
-      const validator =
-        column.validator ||
-        (() => {
-          return { ok: true };
-        });
-      const cell = s.cells.getCellElement(r, c);
-      if (s.activeEditor.value) {
-        cell.classList.remove('wj-flexgrid-required');
-      } else {
-        cell.classList.add('wj-flexgrid-required');
-      }
-      const { ok, message = '' } = await validator(s.activeEditor.value, s, e);
-      if ((e.cancel = e.stayInEditMode = !ok)) {
-        s.startEditing(false, r, c);
-        s._edtHdl._setCellError(cell, message);
+      const validator = column.validator || ValidatorManager.noop;
+      const oldVal = row.dataItem[column.binding];
+      const newVal = s.activeEditor.value;
+      if (oldVal !== newVal) {
+        const element = s.cells.getCellElement(r, c);
+        if (element) {
+          element.classList.toggle('wj-flexgrid-required', !!newVal);
+        }
+        const { ok, message = '' } = await validator(newVal, s, e);
+        if ((e.cancel = e.stayInEditMode = !ok)) {
+          s.startEditing(true, r, c);
+          s._edtHdl._setCellError(element, message);
+          row.dataItem[column.binding] = oldVal;
+        }
       }
     });
   }

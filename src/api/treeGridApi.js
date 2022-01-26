@@ -16,6 +16,7 @@ export class TreeGridApi extends CollectionView {
     _newValues = [];
     _vm = null;
     _gridView = null;
+    _storeChain = [];
 
     constructor(uri, model, id = '') {
         super([], { trackChanges: true });
@@ -23,6 +24,10 @@ export class TreeGridApi extends CollectionView {
         this._uri = uri;
         this._model = model;
         this._newValues = utils.copyDefaultValues(model);
+    }
+
+    addQueryChain(stores) {
+        this._storeChain = stores;
     }
 
     init(vm, grid, qry = null, opt = null, autoLoading = true) {
@@ -51,11 +56,14 @@ export class TreeGridApi extends CollectionView {
         this.sourceCollection = _.cloneDeep(this._orgValues);
     }
 
-    async getList(pageNo = -1, pageSize = -1) {
+    mergePagingParams(pageNo = -1, pageSize = -1) {
         let opt = {};
 
         if (pageNo > 0) {
             this._opt.pageNo = pageNo;
+        }
+
+        if (pageSize > 0) {
             this._opt.pageSize = pageSize;
         }
 
@@ -66,14 +74,47 @@ export class TreeGridApi extends CollectionView {
             };
         }
 
+        return opt;
+    }
+
+    async getList(pageNo = -1, pageSize = -1, qry = null) {
+        let opt = this.mergePagingParams(pageNo, pageSize);
+
+        if (qry != null) {
+            this._qry = Object.assign(this._qry, qry);
+        }
+
         let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
 
         if (resData.data.code == 'OK') {
             this._orgValues = _.cloneDeep(resData.data.data);
             this.sourceCollection = resData.data.data;
             this._opt.totalCount = resData.data.totalCount;
+            this._gridView.select(-1, -1);
+
+            if (this._storeChain.length > 0) {
+                var dataItem = null;
+
+                if (this.sourceCollection.length > 0) {
+                    dataItem = this.sourceCollection[0];
+                }
+
+                chainQuery(dataItem);
+            }
         } else {
             await this._vm.alert(resData.data.message);
+        }
+    }
+
+    chainQuery(dataItem) {
+        let qryData = utils.copyKeyValues(dataItem, this._model);
+
+        for (var store of this._storeChain) {
+            if (qryData == null) {
+                store.sourceCollection = [];
+            } else {
+                store.getList(1, qryData);
+            }
         }
     }
 
@@ -86,43 +127,40 @@ export class TreeGridApi extends CollectionView {
             this.sourceCollection.push(addData);
         }
 
-        this._opt.totalCount++;
         this.itemsAdded.push(addData);
         this.refresh();
     }
 
     async del() {
-        if (this._gridView.selectedItems.length == 0) {
+        this._values = this._gridView.selectedItems;
+        if (this._values.length == 0) {
             this._vm.alert('삭제할 자료를 선택하세요.');
             return;
         }
 
-        // if (this._values.length == 0) {
-        // }
+        const ok = await this._vm.confirm('선택하신 자료를 삭제하시겠습니까?');
 
-        // const ok = await this._vm.confirm('선택하신 자료를 삭제하시겠습니까?');
+        if (!ok) {
+            return;
+        }
 
-        // if (!ok) {
-        //     return;
-        // }
+        let delList = [];
 
-        // let delList = [];
+        for (let value of this._values) {
+            if (value.rowStatus != 'C') {
+                delList.push(value);
+            }
+        }
 
-        // for (let value of this._values) {
-        //     if (value.rowStatus != 'C') {
-        //         delList.push(value);
-        //     }
-        // }
-
-        // if (delList.length > 0) {
-        //     this.refreshQuery(await restApi.removeList(this._uri, delList, this._id));
-        // } else {
-        //     for (let value of this._values) {
-        //         if (value.rowStatus == 'C') {
-        //             this.remove(value);
-        //         }
-        //     }
-        // }
+        if (delList.length > 0) {
+            this.refreshQuery(await restApi.removeList(this._uri, delList, this._id));
+        } else {
+            for (let value of this._values) {
+                if (value.rowStatus == 'C') {
+                    this.remove(value);
+                }
+            }
+        }
     }
 
     async save() {
@@ -151,6 +189,11 @@ export class TreeGridApi extends CollectionView {
         }
 
         this.refreshQuery(await restApi.save(this._uri, saveList, this._id));
+    }
+
+    clear() {
+        const newItem = new this.constructor(this._uri, this._model, this._id);
+        newItem.init(this._vm, this._gridView);
     }
 
     async refreshQuery(resData) {
