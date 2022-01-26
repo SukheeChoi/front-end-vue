@@ -177,7 +177,7 @@ export default {
       }
     );
     watch(
-      () => state.pageSize,
+      () => [state.pageSize, state.totalCount],
       () => {
         //현재 데이터 있는 페이지로 이동
         if (state.totalCount > 0) {
@@ -195,19 +195,19 @@ export default {
       }
     );
 
-    watch(
-      () => state.totalCount,
-      () => {
-        if (state.totalCount > 0) {
-          let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
-          if (state.pageNo > tempPageNo) {
-            emit('pageChange', (state.pageNo = 1), state.pageSize);
-          } else {
-            state.store.getList(state.pageNo, state.pageSize);
-          }
-        }
-      }
-    );
+    // watch(
+    //   () => state.totalCount,
+    //   () => {
+    //     if (state.totalCount > 0) {
+    //       let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
+    //       if (state.pageNo > tempPageNo) {
+    //         emit('pageChange', (state.pageNo = 1), state.pageSize);
+    //       } else {
+    //         state.store.getList(state.pageNo, state.pageSize);
+    //       }
+    //     }
+    //   }
+    // );
 
     return {
       state,

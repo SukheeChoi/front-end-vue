@@ -27,7 +27,7 @@ export class GridApi extends CollectionView {
   }
 
   addQueryChain(stores) {
-    this._linkStore = stores;
+    this._storeChain = stores;
   }
 
   init(vm, grid, qry = null, opt = null, autoLoading = true) {
@@ -91,7 +91,7 @@ export class GridApi extends CollectionView {
       this.sourceCollection = resData.data.data;
       this._opt.totalCount = resData.data.totalCount;
 
-      if (this._linkStore.length > 0) {
+      if (this._storeChain.length > 0) {
         var dataItem = null;
 
         if (this.sourceCollection.length > 0) {
