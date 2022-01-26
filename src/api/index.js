@@ -95,11 +95,8 @@ instance.interceptors.response.use(
         return response;
     },
     async(error) => {
-        
-        const {
-            config,
-            response: { status },
-        } = error;
+        console.log(error);
+        const { config } = error;
 
         app.config.globalProperties.$dialog.alert('오류가 발생했습니다. 관리자에 문의해주세요');
         //const $dialog = app.inject('$dialog');

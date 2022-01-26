@@ -1,15 +1,24 @@
-import { createStore } from 'vuex';
+import { createStore, storeKey } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import login from './modules/login';
 import menu from './modules/menu';
 import notification from './modules/notification';
 import loading from './modules/loading';
 import comData from './modules/comData';
+
 const resetState = () => {
     return {
-        login: [],
-    }
+      login: {
+        state: {
+          accessToken: '',
+          userInfo: '',
+          ttl: '',
+          menus: [],
+        },
+      },
+    };
 }
+
 export default createStore({
     plugins: [
         /*
@@ -29,9 +38,11 @@ export default createStore({
     state: {},
     getters: {},
     mutations: {
+        
         reset(state) {
            Object.assign(state, resetState())
         }
+        
     },
     modules: {
         login,
