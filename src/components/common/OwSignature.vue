@@ -16,12 +16,12 @@ export default {
   name: 'OwSignature',
   props: {
     width: {
-      type: [String, Number],
-      default: 300,
+      type: String,
+      default: '300',
     },
     height: {
-      type: [String, Number],
-      default: 300,
+      type: String,
+      default: '300',
     },
     thin: {
       type: Boolean,
@@ -47,16 +47,14 @@ export default {
   setup(props) {
     const root = ref(null);
 
-    let ctx,
-      rect,
-      drawable = false;
+    let ctx;
 
     onMounted(() => {
       const { value: canvas } = root;
       ctx = canvas.getContext('2d');
+      ctx.font = 'Spoqa Han Sans Neo';
       ctx.lineWidth = line();
       ctx.lineCap = 'round';
-      rect = canvas.getBoundingClientRect();
     });
 
     const line = () => {
@@ -75,34 +73,33 @@ export default {
       }
     };
 
-    const draw = ({ type, pageX: X, pageY: Y }) => {
-      const { x, y } = rect;
+    const draw = (e) => {
+      const { type, buttons, pageX: x1, pageY: y1 } = e;
+      const { x: x2, y: y2 } = ctx.canvas.getBoundingClientRect();
       switch (type) {
         case 'mousedown':
-          drawable = true;
           ctx.beginPath();
-          ctx.moveTo(X - x, Y - y);
+          ctx.moveTo(x1 - x2, y1 - y2);
           break;
         case 'mousemove':
-          if (drawable) {
-            ctx.lineTo(X - x, Y - y);
+          if (buttons === 1) {
+            ctx.lineTo(x1 - x2, y1 - y2);
             ctx.stroke();
           }
           break;
         case 'mouseup':
         case 'mouseleave':
-          drawable = false;
           ctx.closePath();
       }
     };
 
     const toBase64 = (mime = 'png') => {
-      const { value: canvas } = root;
+      const { canvas } = ctx;
       return canvas.toDataURL(getMimeType(mime));
     };
 
     const clear = () => {
-      const { value: canvas } = root;
+      const { canvas } = ctx;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       return toBase64();
     };
@@ -116,4 +113,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
