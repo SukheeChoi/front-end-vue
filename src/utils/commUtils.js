@@ -12,7 +12,7 @@ const Utils = {
   },
 
   copyKeyValues(dataItem, model) {
-    let data = null;
+    let data = {};
 
     for (var field of model.fields) {
       if (field.key && field.key == 'true') {
