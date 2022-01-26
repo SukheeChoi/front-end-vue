@@ -153,20 +153,21 @@ class ValidatorManager {
     this.flex.cellEditEnding.addHandler(async (s, e) => {
       const { row: r, col: c } = e;
       const column = e.getColumn();
-      const { ok, message = '' } =
-        (await column.validator(s.activeEditor.value, s, e)) ||
+      const validator =
+        column.validator ||
         (() => {
           return { ok: true };
         });
       const cell = s.cells.getCellElement(r, c);
-      if ((e.cancel = e.stayInEditMode = !ok)) {
-        s.startEditing(false, r, c);
-        s._edtHdl._setCellError(cell, message);
-      }
-      if (cell.textContent) {
+      if (s.activeEditor.value) {
         cell.classList.remove('wj-flexgrid-required');
       } else {
         cell.classList.add('wj-flexgrid-required');
+      }
+      const { ok, message = '' } = await validator(s.activeEditor.value, s, e);
+      if ((e.cancel = e.stayInEditMode = !ok)) {
+        s.startEditing(false, r, c);
+        s._edtHdl._setCellError(cell, message);
       }
     });
   }
@@ -175,7 +176,6 @@ class ValidatorManager {
     for (const column of this.flex.columns) {
       column.validator = this.validator[column.binding];
     }
-
     this.#cellEditEnding();
     this.#formatItem();
   }
