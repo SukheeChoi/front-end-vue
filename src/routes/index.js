@@ -94,16 +94,15 @@ router.beforeEach((to, from, next) => {
 
   if (devMode === false && to.fullPath !== '/login' && store.state.login.ttl < now.getTime()) {
     localStorage.clear();
-    //login.reset();
-    store.commit('reset');
+  
+    store.getters.init;
     router.push('/login');
   }
 
   if (devMode === false && to.fullPath !== '/login' && !store.state.login.accessToken) {
     console.log('auth error');
     localStorage.clear();
-    //login.reset();
-    store.commit('reset');
+    store.getters.init;
     router.push('/login');
   }
 

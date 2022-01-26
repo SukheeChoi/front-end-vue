@@ -119,9 +119,10 @@ export default {
     },
 
     async logout(){
-      this.$store.commit('resetState');
-      this.$store.commit('reset');
-      //window.localStorage.clear();
+      //store.commit('reset');
+      //this.$store.commit('reset');
+      store.getters.init;
+      window.localStorage.clear();
       this.$router.push("/login");
     },
     async getTtl() {

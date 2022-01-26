@@ -9,6 +9,12 @@ export default {
     menus: [],
   },
   getters: {
+    init(state) {
+      state.accessToken = '';
+      state.userInfo = '';
+      state.ttl = '';
+      state.menus = [];
+    },
     getMenus(state) {
       if (typeof state.menus === 'undefined') {
         return [];        
