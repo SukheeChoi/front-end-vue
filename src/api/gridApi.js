@@ -17,6 +17,8 @@ export class GridApi extends CollectionView {
   _vm = null;
   _gridView = null;
   _storeChain = [];
+  _keyValues = null;
+  _isDetail = false;
 
   constructor(uri, model, id = '') {
     super([], { trackChanges: true });
@@ -51,6 +53,24 @@ export class GridApi extends CollectionView {
     }
   }
 
+  clearData() {
+    this.clearChanges();
+
+    this._values = [];
+    this._orgValues = [];
+    this._newValues = [];
+    this.sourceCollection = [];
+  }
+
+  setKeyValues(keyValues) {
+    this._isDetail = true;
+    this._keyValues = keyValues;
+  }
+
+  copyKeyValues(dataItem) {
+    return utils.copyKeyValues(dataItem, this._model);
+  }
+
   undo() {
     this.clearChanges();
     this.sourceCollection = _.cloneDeep(this._orgValues);
@@ -77,7 +97,9 @@ export class GridApi extends CollectionView {
     return opt;
   }
 
-  async getList(pageNo = -1, pageSize = -1, qry = null) {
+  async getList(pageNo = -1, qry = null, pageSize = -1) {
+     console.log(this._uri + this._id + " getList ");
+
     let opt = this.mergePagingParams(pageNo, pageSize);
 
     if (qry != null) {
@@ -98,7 +120,7 @@ export class GridApi extends CollectionView {
           dataItem = this.sourceCollection[0];
         }
 
-        chainQuery(dataItem);
+        this.chainQuery(dataItem);
       }
     } else {
       await this._vm.alert(resData.data.message);
@@ -106,19 +128,34 @@ export class GridApi extends CollectionView {
   }
 
   chainQuery(dataItem) {
+      if (dataItem == null || dataItem.rowStatus == 'C') {
+        for (var store of this._storeChain) {
+          store.clearData();
+          store.setKeyValues(null);
+        }
+
+        return;
+      }
+
     let qryData = utils.copyKeyValues(dataItem, this._model);
 
     for (var store of this._storeChain) {
-      if (qryData == null) {
-        store.sourceCollection = [];
-      } else {
-        store.getList(1, qryData);
-      }
+      store.setKeyValues(qryData);
+      store.getList(1, qryData);
     }
   }
 
   add() {
+    if (this._isDetail && this._keyValues == null) {
+      this._vm.alert(this._model.title + ' 자료 입력중입니다.');
+      return;
+    }
+
     let addData = _.cloneDeep(this._newValues);
+
+    if (this._keyValues != null) {
+        addData = Object.assign(addData, this._keyValues);
+    }
 
     if (this._gridView.newRowAtTop) {
       this.sourceCollection.splice(0, 0, addData);
@@ -131,6 +168,11 @@ export class GridApi extends CollectionView {
   }
 
   async del() {
+    if (this._isDetail && this._keyValues == null) {
+      this._vm.alert(this._model.title + ' 자료 입력중입니다.');
+      return;
+    }
+
     if (this._values.length == 0) {
       this._vm.alert('삭제할 자료를 선택하세요.');
       return;
@@ -162,6 +204,11 @@ export class GridApi extends CollectionView {
   }
 
   async save() {
+    if (this._isDetail && this._keyValues == null) {
+      this._vm.alert(this._model.title + ' 자료 입력중입니다.');
+      return;
+    }
+
     if (this.itemsAdded.length + this.itemsEdited.length == 0) {
       this._vm.alert('신규로 추가된 자료나 수정된 자료가 없습니다.');
       return;
