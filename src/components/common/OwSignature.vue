@@ -54,9 +54,9 @@ export default {
     onMounted(() => {
       const { value: canvas } = root;
       ctx = canvas.getContext('2d');
-      rect = DOMRectReadOnly.fromRect(canvas);
       ctx.lineWidth = line();
       ctx.lineCap = 'round';
+      rect = canvas.getBoundingClientRect();
     });
 
     const line = () => {
