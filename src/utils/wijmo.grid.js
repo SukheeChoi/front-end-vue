@@ -1,4 +1,3 @@
-import { Tooltip, PopupPosition } from '@grapecity/wijmo';
 import { MergeManager, CellRange, CellType } from '@grapecity/wijmo.grid';
 
 class SimpleMergeManager extends MergeManager {
@@ -6,10 +5,6 @@ class SimpleMergeManager extends MergeManager {
     super();
     this.groupingColumns = config.groupingColumns || [];
     this.mergedColumns = config.mergedColumns || [];
-    if (typeof config.isMergedEmpty === 'undefined') {
-      config.isMergedEmpty = true;
-    }
-    this.isMergedEmpty = !!config.isMergedEmpty;
   }
 
   isMerged(p, c) {
@@ -52,10 +47,9 @@ class SimpleMergeManager extends MergeManager {
         col_next += 1;
         break;
     }
-    const data1 = panel.getCellData(row_prev, col_prev, false);
-    const data2 = panel.getCellData(row_next, col_next, false);
-
-    return (this.isMergedEmpty && (data1 === '' || data2 === '')) || data1 === data2;
+    const data1 = panel.getCellData(row_prev, col_prev, false) || '';
+    const data2 = panel.getCellData(row_next, col_next, false) || '';
+    return data1 !== '' && data2 !== '' && data1 === data2;
   }
 
   colMergedRange(p, r) {
@@ -131,63 +125,30 @@ class ValidatorManager {
     this.#init();
   }
 
-  static noop() {
-    return {
-      ok: true,
-    };
-  }
-
-  #formatItem() {
-    this.flex.formatItem.addHandler((s, e) => {
-      const { cell, panel, row: r, col: c } = e;
-      if (panel.cellType === CellType.Cell) {
-        if (s.rows && s.rows.length > 0) {
-          const row = s.rows.at(r);
-          if (row && row.dataItem && row.dataItem.rowStatus === 'C') {
-            const col = s.columns.at(c);
-            const data = panel.getCellData(r, c);
-            if (col && col.validator && !data) {
-              cell.classList.add('wj-flexgrid-required');
-            }
-          }
-        }
-      }
-    });
-  }
-
-  #cellEditEnding() {
-    this.flex.cellEditEnding.addHandler(async (s, e) => {
-      const { row: r, col: c } = e;
-      const row = e.getRow();
-      const column = e.getColumn();
-      const validator = column.validator || ValidatorManager.noop;
-      const oldVal = row.dataItem[column.binding];
-      const newVal = s.activeEditor.value;
-      if (oldVal !== newVal) {
-        const element = s.cells.getCellElement(r, c);
-        if (element) {
-          element.classList.toggle('wj-flexgrid-required', !!newVal);
-        }
-        const { ok, message = '' } = await validator(newVal, s, e);
-        if ((e.cancel = e.stayInEditMode = !ok)) {
-          s.startEditing(true, r, c);
-          s._edtHdl._setCellError(element, message);
-          row.dataItem[column.binding] = oldVal;
-        }
-      }
-    });
-  }
-
   #init() {
     for (const column of this.flex.columns) {
-      column.validator = this.validator[column.binding];
+      column.validator =
+        this.validator[column.binding] ||
+        (() => {
+          return { ok: true };
+        });
     }
-    this.#cellEditEnding();
-    this.#formatItem();
+
+    this.flex.cellEditEnding.addHandler(async (s, e) => {
+      const { row: r, col: c } = e;
+      const column = e.getColumn();
+      const { ok, message = '' } = await column.validator(s.activeEditor.value, s, e);
+      if ((e.cancel = e.stayInEditMode = !ok)) {
+        s.startEditing(false, r, c);
+        s._edtHdl._setCellError(s.cells.getCellElement(r, c), message);
+      }
+    });
   }
 }
 
 export { ValidatorManager };
+
+import { Tooltip, PopupPosition } from '@grapecity/wijmo';
 
 class TooltipManager {
   #tooltip = new Tooltip({
@@ -226,18 +187,27 @@ class TooltipManager {
 
 export { TooltipManager };
 
-function contour(flex, cssClassAll, begin = '__begin', end = '__end') {
-  let before_cell;
-  flex.formatItem.addHandler((s, { panel: { cellType }, cell }) => {
-    if (cell.classList.contains(cssClassAll)) {
-      if (CellType.ColumnHeader === cellType) {
-        cell.classList.replace(cssClassAll, `${cssClassAll}${begin}`);
-      } else if (CellType.Cell === cellType) {
-        if (before_cell) {
-          before_cell.classList.replace(`${cssClassAll}${end}`, cssClassAll);
+function contour(flex, cssClass) {
+  flex.formatItem.addHandler((s, e) => {
+    const { cell } = e;
+    if (cell.classList.contains(cssClass)) {
+      const { panel, row } = e;
+
+      if (panel.cellType === CellType.ColumnHeader) {
+        cell.classList.add(cssClass + '-t');
+      } else if (panel.cellType === CellType.Cell) {
+        if (row === panel.rows.length - 1) {
+          cell.classList.add(cssClass + '-b');
         }
-        cell.classList.replace(cssClassAll, `${cssClassAll}${end}`);
-        before_cell = cell;
+      }
+
+      cell.classList.add(cssClass + '-l', cssClass + '-r');
+
+      // prev
+      const prev = cell.previousElementSibling;
+      if (prev && prev.classList.contains(cssClass)) {
+        cell.classList.remove(cssClass + '-l');
+        prev.classList.remove(cssClass + '-r');
       }
     }
   });
