@@ -152,7 +152,6 @@ class ValidatorManager {
   #cellEditEnding() {
     this.flex.cellEditEnding.addHandler(async (s, e) => {
       const { row: r, col: c } = e;
-      console.log('s,e', s, e);
       const row = e.getRow();
       const column = e.getColumn();
       const binding = column.binding;
