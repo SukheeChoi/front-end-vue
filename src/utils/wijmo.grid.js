@@ -155,7 +155,6 @@ class ValidatorManager {
       const row = e.getRow();
       const column = e.getColumn();
       const binding = column.binding;
-      const validator = column.validator || ValidatorManager.noop;
       const collectionView = s.collectionView;
       const oldVal = collectionView._orgValues ? collectionView._orgValues[r][binding] : row.dataItem[binding];
       const newVal = s.activeEditor.value;
@@ -164,6 +163,7 @@ class ValidatorManager {
         if (element) {
           element.classList.toggle('wj-flexgrid-required', !!newVal);
         }
+        const validator = column.validator || ValidatorManager.noop;
         const { ok, message = '' } = await validator(newVal, s, e);
         if ((e.cancel = e.stayInEditMode = !ok)) {
           s.startEditing(true, r, c);
