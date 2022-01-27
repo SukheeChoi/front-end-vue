@@ -4,6 +4,8 @@ import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
 import { CollectionView } from '@grapecity/wijmo';
 import * as gridXlsx from '@grapecity/wijmo.grid.xlsx';
+import * as wjcGrid from '@grapecity/wijmo.grid';
+import * as wjGrid from '@grapecity/wijmo.grid';
 
 export class TreeGridApi extends CollectionView {
     _id = '';
@@ -34,6 +36,7 @@ export class TreeGridApi extends CollectionView {
         this._vm = vm;
         this._gridView = grid;
         grid.cellEditEnding.addHandler(this.valid);
+        this.formatItem(grid);
 
         if (qry == null) {
             qry = this._vm.qry;
@@ -258,5 +261,38 @@ export class TreeGridApi extends CollectionView {
         }
 
         TreeGridApi.markRecordStatus(grid, e);
+    }
+
+    formatItem(grid) {
+        grid.rowHeaders.columns[0].binding = 'drag';
+        grid.rowHeaders.columns[0].header = ' ';
+        grid.rowHeaders.columns.push(new wjcGrid.Column({ binding: 'rowStatus', header: ' ' }));
+
+        grid.formatItem.addHandler(function(s, e) {
+            let col = e.panel.columns[e.col],
+                row = e.panel.rows[e.row],
+                binding = grid.columns[e.col].binding,
+                colHeader = grid.rowHeaders.columns[e.col];
+
+            if (e.panel.cellType == wjGrid.CellType.RowHeader) {
+                if (colHeader.binding == 'rowStatus') {
+                    e.cell.innerHTML = '';
+                    let html =
+                        '' +
+                        '<button class="ow-btn type-icon">' +
+                        '<span class="' +
+                        (row.dataItem.rowStatus == 'U' ?
+                            'wj-glyph-pencil' :
+                            row.dataItem.rowStatus == 'C' ?
+                            'wj-glyph-asterisk' :
+                            '') +
+                        '">' +
+                        '</span>' +
+                        '</button>' +
+                        '';
+                    e.cell.innerHTML = html;
+                }
+            }
+        });
     }
 }
