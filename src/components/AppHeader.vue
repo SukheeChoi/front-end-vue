@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       //userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
-      userInfo: store.state.login.userInfo? store.state.login.userInfo : {userNm: '홍길동', jbgrNm: '의적'},
+      userInfo: store.state.login.userInfo? store.state.login.userInfo : {userNm: '홍길동', jbgrNm: '사원'},
       user: {},
     };
   },
