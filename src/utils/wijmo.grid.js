@@ -152,10 +152,13 @@ class ValidatorManager {
   #cellEditEnding() {
     this.flex.cellEditEnding.addHandler(async (s, e) => {
       const { row: r, col: c } = e;
+      console.log('s,e', s, e);
       const row = e.getRow();
       const column = e.getColumn();
+      const binding = column.binding;
       const validator = column.validator || ValidatorManager.noop;
-      const oldVal = row.dataItem[column.binding];
+      const collectionView = s.collectionView;
+      const oldVal = collectionView._orgValues ? collectionView._orgValues[r][binding] : row.dataItem[binding];
       const newVal = s.activeEditor.value;
       if (oldVal !== newVal) {
         const element = s.cells.getCellElement(r, c);
