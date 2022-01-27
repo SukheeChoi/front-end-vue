@@ -156,7 +156,13 @@ class ValidatorManager {
       const column = e.getColumn();
       const binding = column.binding;
       const collectionView = s.collectionView;
-      const oldVal = collectionView._orgValues ? collectionView._orgValues[r][binding] : row.dataItem[binding];
+      const orginCollection = collectionView._orgValues;
+      let oldVal;
+      if (orginCollection && orginCollection[r] && orginCollection[r][binding]) {
+        oldVal = collectionView._orgValues[r][binding];
+      } else {
+        oldVal = row.dataItem[binding];
+      }
       const newVal = s.activeEditor.value;
       if (oldVal !== newVal) {
         const element = s.cells.getCellElement(r, c);
