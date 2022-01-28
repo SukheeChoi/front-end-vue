@@ -10,7 +10,7 @@ import { FlexGrid } from '@grapecity/wijmo.grid';
 import { FlexGridXlsxConverter } from '@grapecity/wijmo.grid.xlsx';
 import { WjLinearGauge } from '@grapecity/wijmo.vue2.gauge';
 
-import { reactive, ref, toRefs } from 'vue';
+import { inject, reactive, ref, toRefs } from 'vue';
 
 export default {
   inheritAttrs: false,
@@ -25,6 +25,8 @@ export default {
       progress: 0,
     });
 
+    const $dialog = inject('$dialog');
+
     const createHost = () => {
       const host = document.createElement('div');
       root.value.appendChild(host);
@@ -32,18 +34,20 @@ export default {
     };
 
     const onComplete = (host, flex) => {
-      console.log('on complete', host, flex);
       host.remove();
       flex.dispose();
       state.progress = 0;
     };
 
     const onProgress = (progress) => {
-      console.log('on progress', (state.progress = progress));
+      state.progress = progress;
     };
 
     const onError = (reason) => {
-      console.log('on error', reason);
+      FlexGridXlsxConverter.cancelAsync(() => {
+        $dialog.alert(reason);
+        state.progress = 0;
+      });
     };
 
     const exec = (cols = [], itemsSource = [], filename = new Date().toString(), options = {}) => {
@@ -76,7 +80,6 @@ export default {
         true
       );
     };
-    console.log(state);
     return {
       root,
       ...toRefs(state),
