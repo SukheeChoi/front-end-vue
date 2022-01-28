@@ -56,38 +56,6 @@ export class GridApi extends CollectionView {
         }
     }
 
-    formatItem(grid) {
-        grid.rowHeaders.columns[0].binding = 'rowStatus';
-        grid.rowHeaders.columns[0].header = ' ';
-
-        grid.formatItem.addHandler(function(s, e) {
-            let col = e.panel.columns[e.col],
-                row = e.panel.rows[e.row],
-                binding = grid.columns[e.col].binding,
-                colHeader = grid.rowHeaders.columns[e.col];
-
-            if (e.panel.cellType == wjGrid.CellType.RowHeader) {
-                if (colHeader.binding == 'rowStatus') {
-                    e.cell.innerHTML = '';
-                    let html =
-                        '' +
-                        '<button class="ow-btn type-icon">' +
-                        '<span class="' +
-                        (row.dataItem.rowStatus == 'U' ?
-                            'wj-glyph-pencil' :
-                            row.dataItem.rowStatus == 'C' ?
-                            'wj-glyph-asterisk' :
-                            '') +
-                        '">' +
-                        '</span>' +
-                        '</button>' +
-                        '';
-                    e.cell.innerHTML = html;
-                }
-            }
-        });
-    }
-
     clearData() {
         this.clearChanges();
 
@@ -336,6 +304,14 @@ export class GridApi extends CollectionView {
     }
 
     formatItem(grid) {
+        if (grid.allowDragging) {
+            grid.rowHeaders.columns[0].binding = 'drag';
+            grid.rowHeaders.columns[0].header = ' ';
+        } else {
+            grid.rowHeaders.columns[0].binding = 'rowStatus';
+            grid.rowHeaders.columns[0].header = ' ';
+        }
+
         grid.formatItem.addHandler(function(s, e) {
             let col = e.panel.columns[e.col],
                 row = e.panel.rows[e.row],
@@ -343,6 +319,41 @@ export class GridApi extends CollectionView {
                 colHeader = grid.rowHeaders.columns[e.col];
 
             GridApi.alignHeader(e);
+
+            if (e.panel.cellType == wjGrid.CellType.RowHeader) {
+                if (colHeader.binding == 'rowStatus') {
+                    e.cell.innerHTML = '';
+                    let html =
+                        '' +
+                        '<button class="ow-btn type-icon">' +
+                        '<span class="' +
+                        (row.dataItem.rowStatus == 'U' ?
+                            'wj-glyph-pencil' :
+                            row.dataItem.rowStatus == 'C' ?
+                            'wj-glyph-asterisk' :
+                            '') +
+                        '">' +
+                        '</span>' +
+                        '</button>' +
+                        '';
+                    e.cell.innerHTML = html;
+                }
+                if (colHeader.binding == 'drag') {
+                    e.cell.innerHTML = '';
+                    // add buttons
+                    let html =
+                        '' +
+                        '<button class="wj-btn wj-btn-glyph">' +
+                        '<span class="' +
+                        'wj-glyph-drag' +
+                        '">' +
+                        '</span>' +
+                        '</button>' +
+                        '';
+                    e.cell.innerHTML = html;
+                }
+            }
         });
     }
+
 }
