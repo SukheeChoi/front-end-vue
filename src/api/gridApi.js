@@ -2,7 +2,7 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView } from '@grapecity/wijmo';
+import { CollectionView, hasClass, addClass, removeClass } from "@grapecity/wijmo";
 import * as gridXlsx from '@grapecity/wijmo.grid.xlsx';
 import * as wjcGrid from '@grapecity/wijmo.grid';
 import * as wjGrid from "@grapecity/wijmo.grid";
@@ -67,17 +67,21 @@ export class GridApi extends CollectionView {
                 colHeader = grid.rowHeaders.columns[e.col];
 
             if (e.panel.cellType == wjGrid.CellType.RowHeader) {
-                if (colHeader.binding == "rowStatus") {
-                    e.cell.innerHTML = "";
+                if (colHeader.binding == 'rowStatus') {
+                    e.cell.innerHTML = '';
                     let html =
-                        "" +
+                        '' +
                         '<button class="ow-btn type-icon">' +
                         '<span class="' +
-                        (row.dataItem.rowStatus == "U" ? "wj-glyph-pencil" : row.dataItem.rowStatus == "C" ? "wj-glyph-asterisk" : "") +
+                        (row.dataItem.rowStatus == 'U' ?
+                            'wj-glyph-pencil' :
+                            row.dataItem.rowStatus == 'C' ?
+                            'wj-glyph-asterisk' :
+                            '') +
                         '">' +
-                        "</span>" +
-                        "</button>" +
-                        "";
+                        '</span>' +
+                        '</button>' +
+                        '';
                     e.cell.innerHTML = html;
                 }
             }
@@ -297,17 +301,6 @@ export class GridApi extends CollectionView {
         grid.setCellData(e.row, 'rowStatus', 'U');
     }
 
-    async excel() {
-        const today = new Date();
-        let filename = today.toString();
-
-        if (this._opt.filename) {
-            filename = this._opt.filename;
-        }
-
-        gridXlsx.FlexGridXlsxConverter.saveAsync(this._gridView, {}, filename + '.xlsx');
-    }
-
     valid(grid, e) {
         let col = grid.columns[e.col];
         let fields = grid.itemsSource._model.fields;
@@ -334,5 +327,22 @@ export class GridApi extends CollectionView {
         }
 
         GridApi.markRecordStatus(grid, e);
+    }
+
+    static alignHeader(e) {
+        if (hasClass(e.cell, 'wj-header')) {
+            addClass(e.cell, 'wj-align-center');
+        }
+    }
+
+    formatItem(grid) {
+        grid.formatItem.addHandler(function(s, e) {
+            let col = e.panel.columns[e.col],
+                row = e.panel.rows[e.row],
+                binding = grid.columns[e.col].binding,
+                colHeader = grid.rowHeaders.columns[e.col];
+
+            GridApi.alignHeader(e);
+        });
     }
 }
