@@ -285,7 +285,7 @@ export class TreeGridApi extends CollectionView {
     }
 
     formatItem(grid) {
-        if (grid.allowDragging) {
+        if (grid.allowDragging != 0) { //None
             grid.rowHeaders.columns[0].binding = 'drag';
             grid.rowHeaders.columns[0].header = ' ';
             grid.rowHeaders.columns.push(new wjcGrid.Column({ binding: 'rowStatus', header: ' ', align: 'center' }));
@@ -302,7 +302,7 @@ export class TreeGridApi extends CollectionView {
             TreeGridApi.alignHeader(e);
 
             if (row.dataItem) {
-                if (col.name == "chk" && row.dataItem.type == dragItemKey) {
+                if (col.name == 'chk' && row.dataItem.type == dragItemKey) {
                     // remove buttons from first column
                     e.cell.innerHTML = e.cell.textContent.trim();
                 }
@@ -331,53 +331,60 @@ export class TreeGridApi extends CollectionView {
                     e.cell.innerHTML = '';
                     // add buttons
                     let html =
-                        '' + '<button class="wj-btn wj-btn-glyph">' + '<span class="' + 'wj-glyph-drag' + '">' + '</span>' + '</button>' + '';
+                        '' +
+                        '<button class="wj-btn wj-btn-glyph">' +
+                        '<span class="' +
+                        'wj-glyph-drag' +
+                        '">' +
+                        '</span>' +
+                        '</button>' +
+                        '';
                     e.cell.innerHTML = html;
                 }
             }
 
             // 조직도 icon 추가
-            if (binding == "orgNm") {
+            if (binding == 'orgNm') {
                 let padding = row.level * 13;
                 if (!row.hasChildren) {
                     padding += 20;
                 } else {
                     // has child node, add collapse/expand buttons
                     // clear content
-                    e.cell.innerHTML = "";
+                    e.cell.innerHTML = '';
                     // add buttons
                     let html =
-                        "" +
+                        '' +
                         '<button class="wj-btn wj-btn-glyph wj-elem-collapse" tabindex="-1" aria-label="Toggle Group">' +
                         '<span class="' +
-                        (row.isCollapsed ? "wj-glyph-right" : "wj-glyph-down-right") +
+                        (row.isCollapsed ? 'wj-glyph-right' : 'wj-glyph-down-right') +
                         '">' +
-                        "</span>" +
-                        "</button>" +
-                        "" +
+                        '</span>' +
+                        '</button>' +
+                        '' +
                         row.dataItem.orgNm +
-                        "" +
+                        '' +
                         '<button class="ow-btn type-icon">' +
                         '<i class="' +
-                        (row.dataItem.type == dragItemKey ? "ow-icon organization" : "") +
+                        (row.dataItem.type == dragItemKey ? 'ow-icon organization' : '') +
                         '">' +
-                        "</i>" +
-                        "</button>" +
-                        "";
+                        '</i>' +
+                        '</button>' +
+                        '';
                     e.cell.innerHTML = html;
                 }
-                e.cell.style.paddingLeft = padding + "px";
+                e.cell.style.paddingLeft = padding + 'px';
             }
 
-            if (e.panel.cellType == wjGrid.CellType.Cell) {
-                if (s.itemsSource._dragOpt.readOnly && binding) {
-                    s.itemsSource._dragOpt.readOnly.forEach((col) => {
-                        if (binding == col) {
-                            e.cell.innerHTML = e.cell.textContent;
-                        }
-                    });
-                }
-            }
+            // if (e.panel.cellType == wjGrid.CellType.Cell) {
+            //     if (s.itemsSource._dragOpt.readOnly && binding) {
+            //         s.itemsSource._dragOpt.readOnly.forEach((col) => {
+            //             if (binding == col) {
+            //                 e.cell.innerHTML = e.cell.textContent;
+            //             }
+            //         });
+            //     }
+            // }
         });
 
         grid.selectionMode = "Row";
@@ -435,7 +442,8 @@ export class TreeGridApi extends CollectionView {
         // make rows draggable
         s.itemFormatter = (panel, r, c, cell) => {
             let row = panel.rows[r];
-            if (panel.cellType == wjGrid.CellType.RowHeader && row.dataItem.type != s.hostElement.dragItemKey) {
+
+            if (panel.cellType == wjGrid.CellType.RowHeader) {
                 cell.draggable = true;
             }
         };
@@ -501,7 +509,7 @@ export class TreeGridApi extends CollectionView {
         s.hostElement.addEventListener("drop", (e) => {
             let item = this._orgGrid.rows[parseInt(e.dataTransfer.getData("text"))].dataItem; //drag data
 
-            if (s.hostElement.id == this._orgGrid.hostElement.id && s.rows[s.hitTest(e).row].dataItem.type != s.hostElement.dragItemKey) {
+            if (s.hostElement.id == this._orgGrid.hostElement.id && s.rows[s.hitTest(e).row].dataItem.type != s.hostElement.id) {
                 this._removeImage();
                 return;
             }
@@ -511,7 +519,7 @@ export class TreeGridApi extends CollectionView {
             } else {
                 if (this._addItem(s, e)) {
                     let keys = ['bizGrpId', 'orgCd'];
-                    Utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, keys); //delete item
+                    utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, keys); //delete item
                     s.itemsSource.itemsRemoved.push(item);
                 }
             }
