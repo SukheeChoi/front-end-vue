@@ -125,11 +125,7 @@ class ValidatorManager {
     this.#init();
   }
 
-  static noop() {
-    return {
-      ok: true,
-    };
-  }
+  static noop = () => ({ ok: true });
 
   #formatItem() {
     this.flex.formatItem.addHandler((s, e) => {
@@ -140,7 +136,7 @@ class ValidatorManager {
           if (row && row.dataItem && row.dataItem.rowStatus === 'C') {
             const col = s.columns.at(c);
             const data = panel.getCellData(r, c);
-            if (col && col.validator && !data) {
+            if (col && col.isRequired && !data) {
               cell.classList.add('wj-flexgrid-required');
             }
           }
