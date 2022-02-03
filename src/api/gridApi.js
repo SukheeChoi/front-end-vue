@@ -304,7 +304,9 @@ export class GridApi extends CollectionView {
     }
 
     formatItem(grid) {
-        if (grid.allowDragging) {
+        console.log('grid.allowDragging', grid);
+        if (grid.allowDragging != 0) {
+            //None
             grid.rowHeaders.columns[0].binding = 'drag';
             grid.rowHeaders.columns[0].header = ' ';
         } else {
