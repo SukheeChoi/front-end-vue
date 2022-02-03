@@ -1,21 +1,20 @@
 import { ComCode } from '@/api/comCode.js';
 
 export default {
-  inject: ['$dialog'],
   beforeCreate() {
     this.$store.commit('setShowLoadingImage', false);
   },
   methods: {
-    alert: function (...args) {
+    alert(...args) {
       return this.$dialog.alert(...args);
     },
-    confirm: function (...args) {
+    confirm(...args) {
       return this.$dialog.confirm(...args);
     },
-    getCode: function (code, displayFormat, selectedValuePath, displayMemberPath) {
+    getCode(code, displayFormat, selectedValuePath, displayMemberPath) {
       return ComCode.get(code, displayFormat, selectedValuePath, displayMemberPath);
     },
-    getCodeValue: function (code, displayFormat, selectedValuePath, displayMemberPath) {
+    getCodeValue(code, displayFormat, selectedValuePath, displayMemberPath) {
       return ComCode.getValue(code, displayFormat, selectedValuePath, displayMemberPath);
     },
   },
