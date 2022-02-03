@@ -297,12 +297,12 @@ export class TreeGridApi extends CollectionView {
                 row = e.panel.rows[e.row],
                 binding = grid.columns[e.col].binding,
                 colHeader = grid.rowHeaders.columns[e.col],
-                dragItemKey = s.itemsSource._dragOpt.dragItemKey;
+                dragId = s.itemsSource._dragOpt.id;
 
             TreeGridApi.alignHeader(e);
 
             if (row.dataItem) {
-                if (col.name == 'chk' && row.dataItem.type == dragItemKey) {
+                if (col.name == 'chk' && row.dataItem.type == dragId) {
                     // remove buttons from first column
                     e.cell.innerHTML = e.cell.textContent.trim();
                 }
@@ -366,7 +366,7 @@ export class TreeGridApi extends CollectionView {
                         '' +
                         '<button class="ow-btn type-icon">' +
                         '<i class="' +
-                        (row.dataItem.type == dragItemKey ? 'ow-icon organization' : '') +
+                        (row.dataItem.type == dragId ? 'ow-icon organization' : '') +
                         '">' +
                         '</i>' +
                         '</button>' +
@@ -375,16 +375,6 @@ export class TreeGridApi extends CollectionView {
                 }
                 e.cell.style.paddingLeft = padding + 'px';
             }
-
-            // if (e.panel.cellType == wjGrid.CellType.Cell) {
-            //     if (s.itemsSource._dragOpt.readOnly && binding) {
-            //         s.itemsSource._dragOpt.readOnly.forEach((col) => {
-            //             if (binding == col) {
-            //                 e.cell.innerHTML = e.cell.textContent;
-            //             }
-            //         });
-            //     }
-            // }
         });
 
         grid.selectionMode = "Row";
@@ -518,9 +508,8 @@ export class TreeGridApi extends CollectionView {
                 this._addItem(s, e);
             } else {
                 if (this._addItem(s, e)) {
-                    let keys = ['bizGrpId', 'orgCd'];
-                    utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, keys); //delete item
-                    s.itemsSource.itemsRemoved.push(item);
+                    utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, this._dragOpt.itemKey); //delete item
+                    this.itemsRemoved.push(item);
                 }
             }
 
