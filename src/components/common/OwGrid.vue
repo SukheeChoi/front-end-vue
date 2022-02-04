@@ -42,13 +42,13 @@
     <template v-if="pagination == true">
       <ow-flex-item class="mt-10 mb-10">
         <ow-flex-wrap>
-          <ow-flex-item class="align-x-start" style="--gap-item: 2px">
+          <ow-flex-item v-if="state.pages.pageSize" class="align-x-start" style="--gap-item: 2px">
             <button type="button" class="ow-button type-icon">
               <i class="fas fa-cog fa-fw" />
             </button>
             <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
           </ow-flex-item>
-          <ow-flex-item class="align-x-center">
+          <ow-flex-item v-if="state.pages.pageNo" class="align-x-center">
             <b-pagination
               class="ow-pagination"
               first-class="go-first"
@@ -61,7 +61,7 @@
               v-model="state.pageNo"
             />
           </ow-flex-item>
-          <ow-flex-item class="align-x-end">
+          <ow-flex-item v-if="state.pages.totalCount" class="align-x-end">
             <div class="counter-board">
               전체<span>{{ state.totalCount }}</span
               >건
@@ -74,6 +74,7 @@
 </template>
 <script>
 import { computed, reactive, ref, watch } from 'vue';
+import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 
 export default {
   name: 'OwGrid',
@@ -109,6 +110,13 @@ export default {
       type: Boolean,
       default: true,
     },
+    pages: {
+      default: {
+        pageSize: true,
+        pageNo: true,
+        totalCount: true,
+      },
+    },
     buttons: {
       default: {
         excel: false,
@@ -136,6 +144,7 @@ export default {
         title: ref(props.title),
         mode: ref(props.mode),
         buttons: ref(props.buttons),
+        pages: ref(props.pages),
         store: ref(props.store),
         pageSize: ref(props.opt.pageSize),
         pageNo: ref(props.opt.pageNo),
@@ -152,6 +161,7 @@ export default {
         title: ref(props.title),
         mode: ref(props.mode),
         buttons: ref(props.buttons),
+        pages: ref(props.pages),
         pageSize: ref(props.pageSize),
         pageNo: ref(props.pageNo),
         totalCount: computed(() => props.totalCount),

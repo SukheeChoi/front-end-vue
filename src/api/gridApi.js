@@ -101,7 +101,6 @@ export class GridApi extends CollectionView {
     }
 
     async getList(pageNo = -1, qry = null, pageSize = -1) {
-        console.log(this._uri + this._id + ' getList ');
 
         let opt = this.mergePagingParams(pageNo, pageSize);
 
@@ -304,7 +303,6 @@ export class GridApi extends CollectionView {
     }
 
     formatItem(grid) {
-        console.log('grid.allowDragging', grid);
         if (grid.allowDragging != 0) {
             //None
             grid.rowHeaders.columns[0].binding = 'drag';
@@ -357,5 +355,4 @@ export class GridApi extends CollectionView {
             }
         });
     }
-
 }

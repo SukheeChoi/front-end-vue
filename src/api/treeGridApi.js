@@ -297,12 +297,12 @@ export class TreeGridApi extends CollectionView {
                 row = e.panel.rows[e.row],
                 binding = grid.columns[e.col].binding,
                 colHeader = grid.rowHeaders.columns[e.col],
-                dragItemKey = s.itemsSource._dragOpt.dragItemKey;
+                dragId = s.itemsSource._dragOpt.id;
 
             TreeGridApi.alignHeader(e);
 
             if (row.dataItem) {
-                if (col.name == 'chk' && row.dataItem.type == dragItemKey) {
+                if (col.name == 'chk' && row.dataItem.type == dragId) {
                     // remove buttons from first column
                     e.cell.innerHTML = e.cell.textContent.trim();
                 }
@@ -311,35 +311,16 @@ export class TreeGridApi extends CollectionView {
 
             if (e.panel.cellType == wjGrid.CellType.RowHeader) {
                 if (colHeader.binding == 'rowStatus') {
-                    e.cell.innerHTML = '';
-                    let html =
-                        '' +
-                        '<button class="ow-btn type-icon">' +
-                        '<span class="' +
-                        (row.dataItem.rowStatus == 'U' ?
-                            'wj-glyph-pencil' :
-                            row.dataItem.rowStatus == 'C' ?
-                            'wj-glyph-asterisk' :
-                            '') +
-                        '">' +
-                        '</span>' +
-                        '</button>' +
-                        '';
-                    e.cell.innerHTML = html;
+                    if (row.dataItem.rowStatus == 'U') {
+                        e.cell.innerHTML = utils.getWjGlyph('pencil');
+                    } else if (row.dataItem.rowStatus == 'C') {
+                        e.cell.innerHTML = utils.getWjGlyph('asterisk');
+                    } else {
+                        e.cell.innerHTML = '';
+                    }
                 }
                 if (colHeader.binding == 'drag') {
-                    e.cell.innerHTML = '';
-                    // add buttons
-                    let html =
-                        '' +
-                        '<button class="wj-btn wj-btn-glyph">' +
-                        '<span class="' +
-                        'wj-glyph-drag' +
-                        '">' +
-                        '</span>' +
-                        '</button>' +
-                        '';
-                    e.cell.innerHTML = html;
+                    e.cell.innerHTML = utils.getWjGlyph('drag', 'button');
                 }
             }
 
@@ -352,39 +333,25 @@ export class TreeGridApi extends CollectionView {
                     // has child node, add collapse/expand buttons
                     // clear content
                     e.cell.innerHTML = '';
-                    // add buttons
-                    let html =
-                        '' +
-                        '<button class="wj-btn wj-btn-glyph wj-elem-collapse" tabindex="-1" aria-label="Toggle Group">' +
-                        '<span class="' +
-                        (row.isCollapsed ? 'wj-glyph-right' : 'wj-glyph-down-right') +
-                        '">' +
-                        '</span>' +
-                        '</button>' +
-                        '' +
-                        row.dataItem.orgNm +
-                        '' +
-                        '<button class="ow-btn type-icon">' +
-                        '<i class="' +
-                        (row.dataItem.type == dragItemKey ? 'ow-icon organization' : '') +
-                        '">' +
-                        '</i>' +
-                        '</button>' +
-                        '';
-                    e.cell.innerHTML = html;
+                    let collapse = '',
+                        icon = '';
+
+                    if (row.isCollapsed) {
+                        collapse = utils.getWjGlyph('right', 'collapse');
+                    } else {
+                        collapse = utils.getWjGlyph('down-right', 'collapse');
+                    }
+
+                    if (row.dataItem.type == dragId) {
+                        icon = utils.getWjGlyph('organization', 'icon');
+                    } else {
+                        icon = '';
+                    }
+
+                    e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
                 }
                 e.cell.style.paddingLeft = padding + 'px';
             }
-
-            // if (e.panel.cellType == wjGrid.CellType.Cell) {
-            //     if (s.itemsSource._dragOpt.readOnly && binding) {
-            //         s.itemsSource._dragOpt.readOnly.forEach((col) => {
-            //             if (binding == col) {
-            //                 e.cell.innerHTML = e.cell.textContent;
-            //             }
-            //         });
-            //     }
-            // }
         });
 
         grid.selectionMode = "Row";
@@ -518,9 +485,9 @@ export class TreeGridApi extends CollectionView {
                 this._addItem(s, e);
             } else {
                 if (this._addItem(s, e)) {
-                    let keys = ['bizGrpId', 'orgCd'];
-                    utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, keys); //delete item
-                    s.itemsSource.itemsRemoved.push(item);
+                    item.rowStatus = 'D';
+                    utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, this._dragOpt.itemKey); //delete item
+                    this.itemsRemoved.push(item);
                 }
             }
 
