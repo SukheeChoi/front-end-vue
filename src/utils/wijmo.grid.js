@@ -1,4 +1,7 @@
-import { MergeManager, CellRange, CellType } from '@grapecity/wijmo.grid';
+import _ from 'lodash';
+import { Tooltip, PopupPosition, Key, hasClass } from '@grapecity/wijmo';
+import { MergeManager, CellRange, CellType, SelMove } from '@grapecity/wijmo.grid';
+import { WjFlexGrid } from '@grapecity/wijmo.vue2.grid';
 
 class SimpleMergeManager extends MergeManager {
   constructor(config) {
@@ -185,25 +188,21 @@ class ValidatorManager {
 
 export { ValidatorManager };
 
-import { Tooltip, PopupPosition } from '@grapecity/wijmo';
-
 class TooltipManager {
-  #tooltip = new Tooltip({
-    position: PopupPosition.RightBottom,
-    gap: 10,
-    showAtMouse: true,
-    showDelay: 500,
-  });
-
-  constructor(flex) {
-    this.flex = flex;
-    this.#init();
-  }
-
-  #init() {
-    this.flex.formatItem.addHandler((s, e) => {
-      const { cell } = e;
-      this.#tooltip.setTooltip(cell, cell.textContent);
+  constructor(flex, options) {
+    this.tooltip = new Tooltip(
+      _.assign(
+        {
+          position: PopupPosition.RightBottom,
+          gap: 10,
+          showAtMouse: true,
+          showDelay: 500,
+        },
+        options
+      )
+    );
+    flex.formatItem.addHandler((s, e) => {
+      this.tooltip.setTooltip(e.cell, e.cell.textContent);
     });
   }
 
@@ -211,18 +210,22 @@ class TooltipManager {
    * @param {PopupPosition} position
    */
   set position(position) {
-    this.#tooltip.position = position;
+    this.tooltip.position = position;
   }
 
   /**
    * @param {number} delay
    */
   set delay(delay) {
-    this.#tooltip.showDelay = delay;
+    this.tooltip.showDelay = delay;
   }
 }
 
-export { TooltipManager };
+function tooltip(...args) {
+  return new TooltipManager(...args);
+}
+
+export { TooltipManager, tooltip };
 
 function contour(flex, cssClass) {
   flex.formatItem.addHandler((s, e) => {
@@ -251,3 +254,44 @@ function contour(flex, cssClass) {
 }
 
 export { contour };
+
+function findByEvent(flex, e) {
+  if (!(e instanceof MouseEvent || e instanceof KeyboardEvent)) {
+    throw 'Mouse Event 또는 Keyboard Event가 필요합니다.';
+  }
+  for (let i = 0; i < flex.rows.length; i += 1) {
+    for (let j = 0; j < flex.columns.length; j += 1) {
+      if (e.target === flex.cells.getCellElement(i, j)) {
+        return {
+          row: i,
+          col: j,
+        };
+      }
+    }
+  }
+  return {
+    row: -1,
+    col: -1,
+  };
+}
+
+function tabindex(flex) {
+  flex.addEventListener(flex.hostElement, 'keyup', (e) => {
+    if (Key.Tab === e.keyCode && hasClass(e.target, 'wj-cell')) {
+      const { rows, columns } = flex;
+      const { row, col } = findByEvent(flex, e);
+
+      let r = row,
+        c = columns.getNextCell(col, SelMove.NextEditableCell);
+
+      if (col === c) {
+        r = rows.getNextCell(row, SelMove.NextEditableCell);
+        c = columns.getNextCell(-1, SelMove.NextEditableCell);
+      }
+
+      flex.startEditing(true, r, c);
+    }
+  });
+}
+
+export { tabindex };
