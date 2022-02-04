@@ -17,7 +17,7 @@ export default {
     unique: {
       type: String,
       default: () => {
-        return expando('ow-radio');
+        return expando('ow-radio-button');
       },
     },
     items: {
@@ -47,5 +47,9 @@ export default {
 <style lang="scss" scoped>
 .radio-button-group {
   display: inline-flex;
+  .radio-button {
+    width: auto;
+    padding: 3px 10px;
+  }
 }
 </style>
