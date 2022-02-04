@@ -384,9 +384,8 @@ export class TreeGridApi extends CollectionView {
             this.div.setAttribute('droppable', true);
 
             this.div.style.position = 'absolute';
-            this.div.style.height = '1px';
-            this.div.style.backgroundColor = 'rgba(0,0,0,1)';
             this.div.style.zIndex = 999;
+            this.div.style.outline = '2px solid rgba(90, 160, 215, .5)';
 
             document.body.appendChild(this.div);
         }
