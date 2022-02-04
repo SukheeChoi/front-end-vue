@@ -237,6 +237,8 @@ export class TreeGridApi extends CollectionView {
         }
 
         grid.setCellData(e.row, 'rowStatus', 'U');
+        let item = grid.rows[e.row].dataItem; //drag data
+        grid.itemsSource.itemsEdited.push(item);
     }
 
     async excel() {
@@ -342,15 +344,21 @@ export class TreeGridApi extends CollectionView {
                         collapse = utils.getWjGlyph('down-right', 'collapse');
                     }
 
-                    if (row.dataItem.type == dragId) {
-                        icon = utils.getWjGlyph('organization', 'icon');
-                    } else {
-                        icon = '';
+                    if (row.dataItem.type == "org") {
+                        if (row.dataItem.orgCd == "0000") {
+                            icon = utils.getOwIcon('osstem');
+                        } else {
+                            icon = utils.getOwIcon('organization');
+                        }
                     }
 
                     e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
                 }
                 e.cell.style.paddingLeft = padding + 'px';
+            } else if (binding == 'bizGrpNm') {
+                if (row.dataItem && row.dataItem.type == "biz") {
+                    e.cell.innerHTML = row.dataItem.bizGrpNm + utils.getOwIcon('people');
+                }
             }
         });
 
@@ -411,7 +419,13 @@ export class TreeGridApi extends CollectionView {
             let row = panel.rows[r];
 
             if (panel.cellType == wjGrid.CellType.RowHeader) {
-                cell.draggable = true;
+                this._dragOpt.readOnlyType.forEach((type) => {
+                    if (type == row.dataItem.type) {
+                        cell.draggable = false;
+                    } else {
+                        cell.draggable = true;
+                    }
+                });
             }
         };
         // disable built-in row drag/drop

@@ -89,6 +89,10 @@ const Utils = {
         }
         return html;
     },
+
+    getOwIcon(e) {
+        return '' + '<span class="ow-btn type-icon">' + '<i class="' + 'ow-icon ' + e + '">' + '</i>' + '</span>' + '';
+    },
 };
 
 export default Utils;
