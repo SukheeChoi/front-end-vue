@@ -111,23 +111,26 @@ export default {
       default: true,
     },
     pages: {
-      default: {
+      type: Object,
+      default: () => ({
         pageSize: true,
         pageNo: true,
         totalCount: true,
-      },
+      }),
     },
     buttons: {
-      default: {
+      type: Object,
+      default: () => ({
         excel: false,
         undo: true,
         add: true,
         del: true,
         save: true,
-      },
+      }),
     },
     store: {
-      default: null,
+      type: Object,
+      default: () => null
     },
     pageSizeList: {
       type: Array,

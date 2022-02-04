@@ -88,7 +88,7 @@ $clrs-accent: getColors("accent");
 }
 
 $ow-icon: '.ow-icon';
-$items: ( osstem: 'osstem', people-fill: 'people-fill', person-workspace: 'person-workspace', user: 'user', menu: 'menu', organization: 'organization', );
+$items: ( osstem: 'osstem', people-fill: 'people-fill', person-workspace: 'person-workspace', user: 'user', menu: 'menu', organization: 'organization', people: 'people');
 #{$ow-icon} {
     margin-right: calc(#{var(--bs-gutter)} * .5);
     width: calc(#{var(--bs-gutter)} * 2);
@@ -105,6 +105,7 @@ $value in $items {
         #{$ow-icon}.#{$key} {
             width: calc(#{var(--bs-gutter)} * 4.5);
             height: calc(#{var(--bs-gutter)} * 2.25);
+            margin-left: calc(#{var(--bs-gutter)} * 2.5);
             background-image: url(~@/assets/images/icon/ico_#{$value}.png);
         }
     }
