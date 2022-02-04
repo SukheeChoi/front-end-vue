@@ -67,6 +67,28 @@ const Utils = {
             }
         }
     },
+
+    getWjGlyph(e, type) {
+        let html;
+        if (type == 'button') {
+            html =
+                '' + '<button class="wj-btn wj-btn-glyph">' + '<span class="wj-glyph-' + e + '"></span>' + '</button>' + '';
+        } else if (type == 'collapse') {
+            html =
+                '' +
+                '<button class="wj-btn wj-btn-glyph wj-elem-collapse" tabindex="-1" aria-label="Toggle Group">' +
+                '<span class="wj-glyph-' +
+                e +
+                '"></span>' +
+                '</button>' +
+                '';
+        } else if (type == 'icon') {
+            html = '' + '<span class="ow-btn type-icon">' + '<i class="' + 'ow-icon ' + e + '">' + '</i>' + '</span>' + '';
+        } else {
+            html = '<span class="wj-glyph-' + e + '"></span>';
+        }
+        return html;
+    },
 };
 
 export default Utils;

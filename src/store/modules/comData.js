@@ -12,16 +12,16 @@ export default {
         { name: 'N', value: 'N' },
     ],
     SCREEN_TP: [
-        { value: 'MAIN',      name: '메인화면' },
+        { value: 'MAIN', name: '메인화면' },
         { value: 'DASHBAORD', name: 'DashBoard' },
     ],
     DATA_AUTH: [
-        { value: '-1',  name: '처리안함' },
+        { value: '-1', name: '처리안함' },
         { value: '100', name: '본인자료' },
         { value: '200', name: '본인부서자료' },
         { value: '300', name: '상위부서자료' },
         { value: '400', name: '사용자정의 부서그룹' },
-        { value: '0',   name: '전체' },
+        { value: '0', name: '전체' },
     ],
     SYS_DV: [
         { value: 'CMG', name: '공통' },
@@ -99,5 +99,12 @@ export default {
         { value: '600', name: '계약직' },
         { value: '700', name: '실습생' },
         { value: '800', name: '임시코드(병특)' },
+    ],
+    TO_ROLE: [
+        { value: '0', name: '없음' },
+        { value: '1', name: '만' },
+        { value: '2', name: '이상' },
+        { value: '3', name: '까지' },
+        { value: '4', name: '사이' },
     ],
 };

@@ -311,35 +311,16 @@ export class TreeGridApi extends CollectionView {
 
             if (e.panel.cellType == wjGrid.CellType.RowHeader) {
                 if (colHeader.binding == 'rowStatus') {
-                    e.cell.innerHTML = '';
-                    let html =
-                        '' +
-                        '<button class="ow-btn type-icon">' +
-                        '<span class="' +
-                        (row.dataItem.rowStatus == 'U' ?
-                            'wj-glyph-pencil' :
-                            row.dataItem.rowStatus == 'C' ?
-                            'wj-glyph-asterisk' :
-                            '') +
-                        '">' +
-                        '</span>' +
-                        '</button>' +
-                        '';
-                    e.cell.innerHTML = html;
+                    if (row.dataItem.rowStatus == 'U') {
+                        e.cell.innerHTML = utils.getWjGlyph('pencil');
+                    } else if (row.dataItem.rowStatus == 'C') {
+                        e.cell.innerHTML = utils.getWjGlyph('asterisk');
+                    } else {
+                        e.cell.innerHTML = '';
+                    }
                 }
                 if (colHeader.binding == 'drag') {
-                    e.cell.innerHTML = '';
-                    // add buttons
-                    let html =
-                        '' +
-                        '<button class="wj-btn wj-btn-glyph">' +
-                        '<span class="' +
-                        'wj-glyph-drag' +
-                        '">' +
-                        '</span>' +
-                        '</button>' +
-                        '';
-                    e.cell.innerHTML = html;
+                    e.cell.innerHTML = utils.getWjGlyph('drag', 'button');
                 }
             }
 
@@ -352,26 +333,22 @@ export class TreeGridApi extends CollectionView {
                     // has child node, add collapse/expand buttons
                     // clear content
                     e.cell.innerHTML = '';
-                    // add buttons
-                    let html =
-                        '' +
-                        '<button class="wj-btn wj-btn-glyph wj-elem-collapse" tabindex="-1" aria-label="Toggle Group">' +
-                        '<span class="' +
-                        (row.isCollapsed ? 'wj-glyph-right' : 'wj-glyph-down-right') +
-                        '">' +
-                        '</span>' +
-                        '</button>' +
-                        '' +
-                        row.dataItem.orgNm +
-                        '' +
-                        '<button class="ow-btn type-icon">' +
-                        '<i class="' +
-                        (row.dataItem.type == dragId ? 'ow-icon organization' : '') +
-                        '">' +
-                        '</i>' +
-                        '</button>' +
-                        '';
-                    e.cell.innerHTML = html;
+                    let collapse = '',
+                        icon = '';
+
+                    if (row.isCollapsed) {
+                        collapse = utils.getWjGlyph('right', 'collapse');
+                    } else {
+                        collapse = utils.getWjGlyph('down-right', 'collapse');
+                    }
+
+                    if (row.dataItem.type == dragId) {
+                        icon = utils.getWjGlyph('organization', 'icon');
+                    } else {
+                        icon = '';
+                    }
+
+                    e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
                 }
                 e.cell.style.paddingLeft = padding + 'px';
             }
@@ -508,6 +485,7 @@ export class TreeGridApi extends CollectionView {
                 this._addItem(s, e);
             } else {
                 if (this._addItem(s, e)) {
+                    item.rowStatus = 'D';
                     utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, this._dragOpt.itemKey); //delete item
                     this.itemsRemoved.push(item);
                 }
