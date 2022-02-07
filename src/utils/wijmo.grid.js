@@ -283,8 +283,8 @@ function tabindex(flex) {
 
       const dir = e.shiftKey ? SelMove.PrevEditableCell : SelMove.NextEditableCell;
 
-      let r = row,
-        c = columns.getNextCell(col, dir);
+      let r = row;
+      let c = columns.getNextCell(col, dir);
 
       if (c === col) {
         switch (dir) {
@@ -304,7 +304,7 @@ function tabindex(flex) {
       }
 
       flex.finishEditing();
-      flex.startEditing(true, r, c);
+      flex.startEditing(false, r, c);
     }
   });
 }
