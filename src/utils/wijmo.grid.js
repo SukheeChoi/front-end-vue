@@ -281,14 +281,29 @@ function tabindex(flex) {
       const { rows, columns } = flex;
       const { row, col } = findByEvent(flex, e);
 
-      let r = row,
-        c = columns.getNextCell(col, SelMove.NextEditableCell);
+      const dir = e.shiftKey ? SelMove.PrevEditableCell : SelMove.NextEditableCell;
 
-      if (col === c) {
-        r = rows.getNextCell(row, SelMove.NextEditableCell);
-        c = columns.getNextCell(-1, SelMove.NextEditableCell);
+      let r = row,
+        c = columns.getNextCell(col, dir);
+
+      if (c === col) {
+        switch (dir) {
+          case SelMove.PrevEditableCell:
+            r -= 1;
+            c = columns.getNextCell(columns.length, dir);
+            break;
+          case SelMove.NextEditableCell:
+            r += 1;
+            c = columns.getNextCell(-1, dir);
+        }
       }
 
+      if (r < 0 || r === rows.length) {
+        r = row;
+        c = col;
+      }
+
+      flex.finishEditing();
       flex.startEditing(true, r, c);
     }
   });
