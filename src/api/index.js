@@ -12,7 +12,11 @@ const instance = axios.create({
     Authorization: '',
   },
   paramsSerializer: (params) => {
-    return new URLSearchParams(params).toString();
+    const searchParams = new URLSearchParams();
+    for (const name in params) {
+      searchParams.append(name, params[name]);
+    }
+    return searchParams.toString();
   },
 });
 
