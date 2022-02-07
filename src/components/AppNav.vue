@@ -84,7 +84,7 @@ export default {
   setup() {
     const store = useStore();
 
-    const MenuList = store.getters.getMenus;
+    const screenList = store.getters.getScreenList;
 
     const state = reactive({
       myMenuList: [],
@@ -130,8 +130,8 @@ export default {
     watch(
       () => route.name,
       (name) => {
-        let list = MenuList;
-        if (typeof MenuList === 'undefined' || MenuList.length === 0) {
+        let list = screenList;
+        if (typeof screenList === 'undefined' || screenList.length === 0) {
           list = MenuList2;
         }
         compose(list, name);

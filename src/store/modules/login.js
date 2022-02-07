@@ -1,27 +1,17 @@
-import { Menu } from '@/model';
-
 export default {
   namespace: true,
   state: {
     accessToken: '',
     userInfo: '',
     ttl: '',
-    menus: [],
   },
   getters: {
     init(state) {
       state.accessToken = '';
       state.userInfo = '';
       state.ttl = '';
-      state.menus = [];
     },
-    getMenus(state) {
-      if (typeof state.menus === 'undefined') {
-        return [];        
-      }
-        
-        return state.menus.map(({ title, name, children }) => Menu.create(title, name, children));
-    },
+
     getRootOrg(state) {
       let orgData = [];
       if (typeof state.userInfo === 'undefined') {
@@ -77,9 +67,6 @@ export default {
     },
     setUserInfo(state, payload) {
       state.userInfo = payload;
-    },
-    setMenus(state, payload) {
-      state.menus = payload;
-    },
+    }
   },
 };

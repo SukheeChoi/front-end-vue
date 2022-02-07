@@ -13,7 +13,6 @@ const resetState = () => {
         accessToken: '',
         userInfo: '',
         ttl: '',
-        menus: [],
       },
     },
   };

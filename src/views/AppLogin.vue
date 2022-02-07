@@ -79,6 +79,7 @@ import menuMaker from '@/routes/menuMaker.js';
 import axios from 'axios';
 import login from '@/api/login.js';
 import restApi from '@/api/restApi.js';
+import { Menu } from '@/model';
 export default {
   name: 'AppLogin',
   data() {
@@ -101,57 +102,16 @@ export default {
       const userData = await login.getUserInfo('/com/Auth', this.loginId);
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
-        //localStorage.setItem("userInfo", JSON.stringify(userInfo));
         this.$store.commit('setUserInfo', userInfo);
         return await this.getMenus();
-        //this.$router.push("/");
       }
     },
     async getMenus() {
       const menuData = await login.getMenuList('/com/MenuMgr');
       if (menuData.data !== null) {
-        console.log(this.$router.options.routes);
-        const menuList = menuData.data.data;
-        this.$store.commit('setMenus', menuList);
+        const screenList = menuData.data.data;
+        this.$store.commit('setScreenList', screenList);
         this.$router.push('/')
-        //console.log(JSON.parse(menuList))
-        //this.$store.commit('setMenus', JSON.parse(menuList));
-        //this.$router.push('/');
-        //const jsonArr = JSON.parse(menuList);
-        //console.log(jsonArr);
-        //this.$store.commit('setMenus', jsonArr);
-        //this.$router.addRoute("com", {path: menuList[1].children[0].children[0].url, 
-        //name : menuList[1].children[0].children[0].name, component: () => import('@@/com/views/TheBatchMgmt')})
-        //this.$router.push(menuList[1].children[0].children[0].url);
-        /*
-        let newRoutes = [];
-        let test = [];
-        for(var i=0;i<jsonArr.length;i++){
-          //newRoutes.append(menuMaker.tree(jsonArr[i]));
-          test.push(menuMaker.tree(jsonArr[i], true));
-        }
-        console.log(test);
-        for(var i=0;i<test.length;i++){
-          console.log(test[i]);
-          //router.addRoute(test[i]);
-          this.$router.addRoute(test[i]);
-          //this.$router.options.routes.push(test[i]);
-        }
-        //router.addRoute(...test);
-        router.options.routes.push(...test);
-        //this.$store.commit('setMenus', test);
-        //console.log(test);
-        //this.$router.options.routes.push(test);
-        //router.push(test);
-        //this.$router.addRoute(test[1]);
-        //this.$router.addRoute({path:'/com', component: 'com'})
-        //router.addRoute({path:'/com', component: 'com'})
-        console.log(this.$router.options.routes);
-        console.log(router.options.routes);
-        console.log(router.getRoutes());
-        router.replace(router.currentRoute.value.fullPath);
-        console.log(newRoutes);
-        */
       }
     },
   },
