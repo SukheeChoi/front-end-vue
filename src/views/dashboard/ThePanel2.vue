@@ -9,7 +9,6 @@
         :is-read-only="true"
         :itemsSource="items"
       >
-        <ow-number-column header="번호" :width="50" :opt="paging"></ow-number-column>
         <wj-flex-grid-column header="표준단어명" binding="a" :width="100"></wj-flex-grid-column>
         <wj-flex-grid-column header="표준약어" binding="b" align="center" :width="100"></wj-flex-grid-column>
         <wj-flex-grid-column header="영문명" binding="c" :width="100"></wj-flex-grid-column>
@@ -19,15 +18,11 @@
   </ow-panel>
 </template>
 <script>
-import OwNumberColumn from '@@/com/components/wijmo/grid/OwNumberColumn';
-
 import { reactive, toRefs } from 'vue';
 
 export default {
   name: 'ThePanel2',
-  components: {
-    OwNumberColumn,
-  },
+  components: {},
   setup() {
     const state = reactive({
       paging: {
