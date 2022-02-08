@@ -4,31 +4,26 @@
     <div class="progress-wrap">
       <div class="progress-container">
         <label for="file">Downloading progress:</label>
-        <progress id="file" value="32" max="100" style="--width: 70%;"> 32% </progress>
+        <progress id="file" max="100" :value="progress">{{ progress }}%</progress>
       </div>
     </div>
-    <!-- <div class="wj-popup-backdrop"></div> -->
-    <!-- <wj-linear-gauge :is-read-only="true" :min="0" :max="100" :value="progress"></wj-linear-gauge> -->
   </template>
 </template>
 <script>
 import { FlexGrid } from '@grapecity/wijmo.grid';
 import { FlexGridXlsxConverter } from '@grapecity/wijmo.grid.xlsx';
-import { WjLinearGauge } from '@grapecity/wijmo.vue2.gauge';
 
 import { inject, reactive, ref, toRefs } from 'vue';
 
 export default {
   inheritAttrs: false,
   name: 'OwGridExcelDownloader',
-  components: {
-    WjLinearGauge,
-  },
+  components: {},
   setup() {
     const root = ref(null);
 
     const state = reactive({
-      progress: 1,
+      progress: 0,
     });
 
     const $dialog = inject('$dialog');
@@ -111,5 +106,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+#file {
+  --width: 70%;
 }
 </style>
