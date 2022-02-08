@@ -9,7 +9,7 @@ const messages = {
 };
 
 function loadMessage() {
-  const context = require.context('@/app', true, /(\/locales\/).*\.json$/);
+  const context = require.context('@@', true, /(\/locales\/).*\.json$/);
   for (const key of context.keys()) {
     const unit = key.match(/[a-z]+/).at(0);
     const locale = key

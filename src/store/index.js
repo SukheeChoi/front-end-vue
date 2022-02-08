@@ -39,12 +39,9 @@ const modules = {
 };
 
 function loadModules() {
-  const context = require.context('@/app', true, /(\/store\/).*\.js$/);
+  const context = require.context('@@', true, /(\/store\/)(index)\.js$/);
   for (const key of context.keys()) {
-    const namespace = key
-      .match(/([A-Za-z0-9-_]+)\./)
-      .filter((locale) => !locale.endsWith('.'))
-      .at(0);
+    const namespace = key.match(/[a-z]+/).at(0);
     const { default: module } = context(key);
     module.namespaced = true;
     modules[namespace] = module;

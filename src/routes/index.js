@@ -39,9 +39,9 @@ const routes = [
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/AppNotFound'),
   },
-]; 
+];
 function loadRoutes() {
-  const context = require.context('@/app', true, /(\/routes\/)index\.js$/);
+  const context = require.context('@@', true, /(\/routes\/)index\.js$/);
   for (const key of context.keys()) {
     const module = context(key);
     if (module.default) {
@@ -52,7 +52,6 @@ function loadRoutes() {
 
 loadRoutes();
 
-
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
@@ -61,7 +60,6 @@ const router = createRouter({
 router.afterEach((to, from, failure) => {
   console.log(to);
   console.log(from);
-
 });
 
 function findName(menus, path) {
@@ -89,7 +87,7 @@ router.beforeEach((to, from, next) => {
   console.log(to);
   console.log(from);
 
-  const devMode = false;
+  const devMode = true;
   const now = new Date();
 
   if (devMode === false && to.fullPath !== '/login' && store.state.login.ttl < now.getTime()) {
