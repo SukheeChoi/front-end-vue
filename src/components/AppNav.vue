@@ -76,9 +76,6 @@ const MenuList2 = [
       Menu.create('알림 설정', 'COMPE005'),
     ]),
   ]),
-  Menu.create('인테리어', 'ITRROOT', [
-     Menu.create('인테리어메인', 'ITRROOT001'),
-  ]),
 ];
 
 export default {
