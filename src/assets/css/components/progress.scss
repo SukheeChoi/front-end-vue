@@ -1,0 +1,51 @@
+$width: 420px; // container width
+$height: 220px; // container height
+$progress-height: 13px 18px 22px; // progress size list
+
+.progress-wrap {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1000;
+    .progress-container {
+        padding: calc(var(--bs-gutter) * 2);
+        width: $width;
+        height: $height;
+        border-radius: 2px;
+        background-color: white;
+        flex-direction: column;
+        @include d-flex(center, center);
+        @include box-shadow(0, 16px, 36px, 0.2);
+        @include pos-center;
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            + progress {
+                margin-top: calc(var(--bs-gutter) * 2);
+            }
+        }
+    }
+}
+progress {
+    width: var(--width, 100%);
+    height: nth($progress-height, 1);
+    border-radius: calc(nth($progress-height, 1) * .5);
+    overflow: hidden;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &::-webkit-progress-value {
+        background-image: repeating-linear-gradient(-45deg, nth($clrs-base, 4), nth($clrs-base, 4) 15px, nth($clrs-base, 2) 15px, nth($clrs-base, 2) 30px);
+        background-size: 100%;
+    }
+    &::-webkit-progress-bar {
+        background-color: nth($clrs-achromatic, 9);
+    }
+    &::-moz-progress-bar {
+        background-image: repeating-linear-gradient(-45deg, nth($clrs-base, 4), nth($clrs-base, 4) 15px, nth($clrs-base, 2) 15px, nth($clrs-base, 2) 30px);
+    }
+}
