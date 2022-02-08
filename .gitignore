@@ -24,3 +24,8 @@ pnpm-debug.log*
 /src/app/
 .project
 yarn.lock
+yarn.lock
+package-lock.json
+src/routes/index.js
+yarn.lock
+package-lock.json
