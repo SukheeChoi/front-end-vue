@@ -1,8 +1,14 @@
 <template>
   <div class="ow-grid-downloader" ref="root"></div>
   <template v-if="progress">
-    <div class="wj-popup-backdrop"></div>
-    <wj-linear-gauge :is-read-only="true" :min="0" :max="100" :value="progress"></wj-linear-gauge>
+    <div class="progress-wrap">
+      <div class="progress-container">
+        <label for="file">Downloading progress:</label>
+        <progress id="file" value="32" max="100" style="--width: 70%;"> 32% </progress>
+      </div>
+    </div>
+    <!-- <div class="wj-popup-backdrop"></div> -->
+    <!-- <wj-linear-gauge :is-read-only="true" :min="0" :max="100" :value="progress"></wj-linear-gauge> -->
   </template>
 </template>
 <script>
@@ -22,7 +28,7 @@ export default {
     const root = ref(null);
 
     const state = reactive({
-      progress: 0,
+      progress: 1,
     });
 
     const $dialog = inject('$dialog');
