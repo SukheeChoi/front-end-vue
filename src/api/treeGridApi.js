@@ -348,16 +348,18 @@ export class TreeGridApi extends CollectionView {
                         if (row.dataItem.orgCd == "0000") {
                             icon = utils.getOwIcon('osstem');
                         } else {
-                            icon = utils.getOwIcon('organization');
+                            icon = utils.getOwIcon(row.dataItem.type);
                         }
                     }
 
                     e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
                 }
                 e.cell.style.paddingLeft = padding + 'px';
-            } else if (binding == 'bizGrpNm') {
-                if (row.dataItem && row.dataItem.type == "biz") {
-                    e.cell.innerHTML = row.dataItem.bizGrpNm + utils.getOwIcon('people');
+            } else if (binding == s.itemsSource._dragOpt.icon) {
+                if (row.dataItem) {
+                    e.cell.innerHTML =
+                        row.dataItem.bizGrpNm +
+                        (utils.getOwIcon(row.dataItem.type) ? utils.getOwIcon(row.dataItem.type) : '');
                 }
             }
         });
