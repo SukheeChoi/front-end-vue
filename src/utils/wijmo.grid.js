@@ -188,44 +188,24 @@ class ValidatorManager {
 
 export { ValidatorManager };
 
-class TooltipManager {
-  constructor(flex, options) {
-    this.tooltip = new Tooltip(
-      _.assign(
-        {
-          position: PopupPosition.RightBottom,
-          gap: 10,
-          showAtMouse: true,
-          showDelay: 500,
-        },
-        options
-      )
-    );
-    flex.formatItem.addHandler((s, e) => {
-      this.tooltip.setTooltip(e.cell, e.cell.textContent);
-    });
-  }
-
-  /**
-   * @param {PopupPosition} position
-   */
-  set position(position) {
-    this.tooltip.position = position;
-  }
-
-  /**
-   * @param {number} delay
-   */
-  set delay(delay) {
-    this.tooltip.showDelay = delay;
-  }
+function tooltip(flex, options) {
+  const tip = new Tooltip(
+    _.assign(
+      {
+        position: PopupPosition.RightBottom,
+        gap: 10,
+        showAtMouse: true,
+        showDelay: 500,
+      },
+      options
+    )
+  );
+  flex.formatItem.addHandler((s, e) => {
+    tip.setTooltip(e.cell, e.cell.textContent);
+  });
 }
 
-function tooltip(...args) {
-  return new TooltipManager(...args);
-}
-
-export { TooltipManager, tooltip };
+export { tooltip };
 
 function contour(flex, cssClass) {
   flex.formatItem.addHandler((s, e) => {

@@ -34,7 +34,7 @@
     </ow-flex-item>
     <!-- grid -->
     <ow-flex-item>
-      <div class="ow-grid-wrap">
+      <div class="ow-grid-wrap" :class="{ nodata: state.totalCount === 0 }">
         <slot></slot>
       </div>
     </ow-flex-item>
@@ -130,7 +130,7 @@ export default {
     },
     store: {
       type: Object,
-      default: () => null
+      default: () => null,
     },
     pageSizeList: {
       type: Array,
@@ -258,6 +258,22 @@ export default {
     &[role='menuitemradio'] {
       width: 100%;
       padding: 4px 8px;
+    }
+  }
+}
+.ow-grid-wrap {
+  position: relative;
+  &.nodata {
+    margin-bottom: 50px;
+    overflow: visible;
+    &::after {
+      content: 'No Data Found';
+      position: absolute;
+      bottom: -50px;
+      width: 100%;
+      line-height: 50px;
+      text-align: center;
+      z-index: 999;
     }
   }
 }
