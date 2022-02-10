@@ -62,26 +62,6 @@ router.afterEach((to, from, failure) => {
   console.log(from);
 });
 
-function findName(menus, path) {
-  var name = '';
-  if (menus.path === path) {
-    console.log(menus.path);
-    console.log(menus.name);
-    name = menus.name;
-    return name;
-  }
-
-  if (menus.children) {
-    for (var i = 0; i < menus.children.length; i++) {
-      name = findName(menus.children[i], path);
-      if (name.length > 0) {
-        return name;
-      }
-    }
-  }
-  return name;
-}
-
 router.beforeEach((to, from, next) => {
   console.log('routing wait....................');
   console.log(to);
