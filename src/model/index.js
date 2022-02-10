@@ -6,12 +6,12 @@ class Menu {
     this.children = children;
   }
 */
-  constructor(title, name, children = [], type="", url="") {
+  constructor(title, name, children = [], type="", path="") {
     this.title = title;
     this.name = name;
     this.children = children;
     this.type = type;
-    this.url = url;
+    this.path = path;
   }
 
   static create(...args) {
