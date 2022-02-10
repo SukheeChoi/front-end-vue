@@ -73,7 +73,7 @@ export default {
     if (all.value) {
       if (items.sourceCollection.length > 0) {
         if (items.sourceCollection[0].name != '전체') {
-          const allData = { value: null, name: '전체' };
+          const allData = { value: '', name: '전체' };
           items.sourceCollection.splice(0, 0, allData);
         }
       }
@@ -82,7 +82,7 @@ export default {
     if (reqSelect.value) {
       if (items.sourceCollection.length > 0) {
         if (items.sourceCollection[0].value != 'reqSelect') {
-          const selectData = { value: null, name: '선택하세요.' };
+          const selectData = { value: '', name: '선택하세요.' };
           items.sourceCollection.splice(0, 0, selectData);
         }
       }
