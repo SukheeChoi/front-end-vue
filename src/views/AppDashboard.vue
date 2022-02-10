@@ -1,7 +1,7 @@
 <template>
   <!-- TODO 화면 구성에 대한 작업이 필요함. 3x2, 2x2 등등 -->
-  <ow-flex-wrap style="--wrap: wrap" ref="root">
-    <ow-flex-item style="height: 437px" v-for="{ default: panel } in panels" :key="panel">
+  <ow-flex-wrap class="size-full" style="--wrap: wrap" ref="root">
+    <ow-flex-item style="flex-grow: 1" v-for="{ default: panel } in panels" :key="panel">
       <component
         :is="panel"
         draggable
@@ -17,12 +17,17 @@
 import { reactive, ref, toRefs } from 'vue';
 
 import { Control } from '@grapecity/wijmo';
+import { useStore } from 'vuex';
 
 export default {
   name: 'AppDashboard',
   components: {},
   props: ['components'],
   setup(props) {
+    const store = useStore();
+
+    console.log(store);
+
     const root = ref(null);
 
     const state = reactive({

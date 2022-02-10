@@ -14,8 +14,8 @@
             <!-- Left -->
             <div class="ow-content" :class="{ 'pr-3': openLeft }">
               <app-article v-show="left.show">
-                <the-action-plan style="--height: 617px"></the-action-plan>
-                <the-approval style="--height: 257px"></the-approval>
+                <the-action-plan style="flex-grow: 7"></the-action-plan>
+                <the-approval style="flex-grow: 3"></the-approval>
               </app-article>
             </div>
             <!-- Right -->
