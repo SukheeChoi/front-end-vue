@@ -48,7 +48,7 @@
             </button>
             <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
           </ow-flex-item>
-          <ow-flex-item v-if="state.pages.pageNo" class="align-x-center">
+          <ow-flex-item v-if="state.pages.pageNo && state.totalCount > 0" class="align-x-center">
             <b-pagination
               class="ow-pagination"
               first-class="go-first"
@@ -274,6 +274,9 @@ export default {
       line-height: 50px;
       text-align: center;
       z-index: 999;
+      border-radius: 0;
+      border: 1px solid #d7dce3;
+      border-top: 0;
     }
   }
 }
