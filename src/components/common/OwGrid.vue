@@ -267,7 +267,7 @@ export default {
     margin-bottom: 50px;
     overflow: visible;
     &::after {
-      content: 'No Data Found';
+      content: '검색 결과가 없습니다.';
       position: absolute;
       bottom: -50px;
       width: 100%;
