@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       //userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
-      userInfo: store.state.login.userInfo? store.state.login.userInfo : {userNm: '홍길동', jbgrNm: '사원'},
+      userInfo: store.getters.getUserInfo? store.getters.getUserInfo : {userNm: '홍길동', jbgrNm: '사원'},
       user: {},
     };
   },
@@ -84,7 +84,7 @@ export default {
     const route = useRoute();
     const router = useRouter();
 
-    const orgList = store.state.login.userInfo ? store.state.login.userInfo.orgList : [];
+    const orgList = store.getters.getUserInfo ? store.getters.getUserInfo.orgList : [];
 
     console.log('header route:', route, ', router:', router);
 
@@ -129,7 +129,7 @@ export default {
       console.log("ttl");
       const now = new Date();
 
-      alert(store.state.login.ttl + '\n' + now.getTime());
+      alert(store.getters.getTtl + '\n' + now.getTime());
       return await this.getUserInfo();
     },
     async getUserInfo() {

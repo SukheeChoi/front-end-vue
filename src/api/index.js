@@ -26,7 +26,7 @@ instance.interceptors.request.use(
     console.log(config);
     // Loading Image
     store.commit('setShowLoadingImage', true);
-    config.headers.Authorization = `Bearer ${store.state.login.accessToken}`;
+    config.headers.Authorization = `Bearer ${store.getters.getToken}`;
 
     return config;
   },
@@ -61,9 +61,9 @@ function handleError(responseData) {
 
 async function handleAuthError(responseData) {
   if (responseData.message === 'STATUS_EXPIRED') {
-    const newData = await login.requestReissueToken('/com/Auth', store.state.login.userInfo.userId);
+    const newData = await login.requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
     login.setAuth(newData);
-    onTokenRefreshed(store.state.login.accessToken);
+    onTokenRefreshed(store.getters.getToken);
   }
   if (responseData.message === 'STATUS_MALFORMED') {
     const alert = await app.config.globalProperties.$dialog.alert(
@@ -87,9 +87,9 @@ instance.interceptors.response.use(
         handleError(response.data);
       }
       const retryRequest = new Promise((resolve) => {
-        const accessToken = store.state.login.accessToken;
+        const accessToken = store.getters.getToken;
         addRefreshSubscriber(() => {
-          config.headers.Authorization = `Bearer ${store.state.login.accessToken}`;
+          config.headers.Authorization = `Bearer ${store.getters.getToken}`;
           resolve(axios(config));
         });
       });

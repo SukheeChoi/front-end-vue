@@ -18,7 +18,7 @@ class Login {
     return restApi.get(url, params, 'UserInfo');
   }
   getMenuList(url) {
-    const params = store.state.login.userInfo;
+    const params = store.getters.getUserInfo;
     return restApi.getListPost(url, JSON.stringify(params));
   }
 

@@ -11,7 +11,15 @@ export default {
       state.userInfo = '';
       state.ttl = '';
     },
-
+    getToken(state) {
+      return state.accessToken;
+    },
+    getTtl(state) {
+      return state.ttl;
+    },
+    getUserInfo(state) {
+      return state.userInfo;
+    },
     getRootOrg(state) {
       let orgData = [];
       if (typeof state.userInfo === 'undefined') {
