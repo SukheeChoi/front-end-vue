@@ -304,7 +304,7 @@ export class TreeGridApi extends CollectionView {
             TreeGridApi.alignHeader(e);
 
             if (row.dataItem) {
-                if (col.name == 'chk' && row.dataItem.type == dragId) {
+                if (col.name == 'chk' && row.dataItem.nodeType == dragId) {
                     // remove buttons from first column
                     e.cell.innerHTML = e.cell.textContent.trim();
                 }
@@ -344,11 +344,11 @@ export class TreeGridApi extends CollectionView {
                         collapse = utils.getWjGlyph('down-right', 'collapse');
                     }
 
-                    if (row.dataItem.type == "org") {
-                        if (row.dataItem.orgCd == "0000") {
+                    if (row.dataItem.nodeType == 'org') {
+                        if (row.dataItem.orgCd == '0000') {
                             icon = utils.getOwIcon('osstem');
                         } else {
-                            icon = utils.getOwIcon(row.dataItem.type);
+                            icon = utils.getOwIcon(row.dataItem.nodeType);
                         }
                     }
 
@@ -359,7 +359,7 @@ export class TreeGridApi extends CollectionView {
                 if (row.dataItem) {
                     e.cell.innerHTML =
                         row.dataItem.bizGrpNm +
-                        (utils.getOwIcon(row.dataItem.type) ? utils.getOwIcon(row.dataItem.type) : '');
+                        (utils.getOwIcon(row.dataItem.nodeType) ? utils.getOwIcon(row.dataItem.nodeType) : '');
                 }
             }
         });
@@ -421,7 +421,7 @@ export class TreeGridApi extends CollectionView {
 
             if (panel.cellType == wjGrid.CellType.RowHeader) {
                 this._dragOpt.readOnlyType.forEach((type) => {
-                    if (type == row.dataItem.type) {
+                    if (type == row.dataItem.nodeType) {
                         cell.draggable = false;
                     } else {
                         cell.draggable = true;
@@ -491,7 +491,10 @@ export class TreeGridApi extends CollectionView {
         s.hostElement.addEventListener("drop", (e) => {
             let item = this._orgGrid.rows[parseInt(e.dataTransfer.getData("text"))].dataItem; //drag data
 
-            if (s.hostElement.id == this._orgGrid.hostElement.id && s.rows[s.hitTest(e).row].dataItem.type != s.hostElement.id) {
+            if (
+                s.hostElement.id == this._orgGrid.hostElement.id &&
+                s.rows[s.hitTest(e).row].dataItem.nodeType != s.hostElement.id
+            ) {
                 this._removeImage();
                 return;
             }
