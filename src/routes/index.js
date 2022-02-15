@@ -67,6 +67,23 @@ router.beforeEach((to, from, next) => {
   console.log(to);
   console.log(from);
 
+  const routeList = store.getters.getRouteList;
+
+  console.log(routeList.length);
+  console.log(router.getRoutes().length);
+/*
+  if (to.fullpath !== '/login' && router.getRoutes().length < routeList.length) {
+    store.commit('setRouteRootChildClear');
+    var routeRootList = store.getters.getRouteRootList;
+    var screenList = store.getters.getScreenList;
+    for (var i = 0; i < routeRootList.length; i++) {
+      store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
+      router.addRoute(routeRootList[i]);
+    }
+
+    next({ path: to.fullPath });
+  }
+*/
   const devMode = true;
   const now = new Date();
 
@@ -82,5 +99,25 @@ router.beforeEach((to, from, next) => {
 
   next();
 });
+
+
+function checkAuthScreen(to, screenList) {
+  for (var i = 0; i < screenList; i++){
+    console.log(screenList[i])
+    if (screenList[i].name === 'main') {
+      console.log(screenList[i].name);
+      continue;
+    }
+    if (screenList[i].url && screenList[i].url === to.fullPath) {
+      console.log(screenList[i].url);
+      return true;
+    }
+
+    if (screenList[i].children) {
+      return checkAuthScreen(to, screenList[i].children);
+    }
+  }
+  return false;
+}
 
 export default router;

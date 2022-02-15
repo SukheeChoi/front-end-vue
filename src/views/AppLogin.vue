@@ -110,62 +110,18 @@ export default {
       const menuData = await login.getMenuList('/com/MenuMgr');
       if (menuData.data !== null) {
         const screenList = menuData.data.data;
-        console.log(screenList);
         this.$store.commit('setScreenList', screenList);
-        //await this.setMenus(screenList);
+        this.$store.commit('setRouteRootList');
+        var routeRootList = this.$store.getters.getRouteRootList;
+        for(var i=0;i< routeRootList.length; i++){
+          this.$store.commit('setRouteChildList', {root : routeRootList[i], child : screenList[i+1].children});          
+        }
+        for(var i=0;i<routeRootList.length;i++){
+          this.$router.addRoute(routeRootList[i]);
+        }
+
         this.$router.push('/')
       }
-    },
-    async setMenus(screenList){
-      var routes = [];
-      for(var i=1;i<screenList.length;i++){
-        console.log(screenList[i]);
-        var rootRoutes = {
-          path: screenList[i].path,
-          name: screenList[i].name,
-          redirect: screenList[i].redirect,
-          component: () => import("@/views/AppMain"),
-          props:{
-            left:{
-              show: false,
-            }
-          },
-          children:[]
-        };
-        routes.push(rootRoutes);
-      }
-      for(var i=0;i<routes.length;i++){
-        routes[i] = await this.makeChild(routes[i], screenList[i+1].children);
-      }
-      console.log(routes);
-      this.$router.addRoute(routes);
-
-    },
-    async makeChild(root, child){
-      console.log(root);
-      console.log(child);
-      for(var i=0;i<child.length;i++){
-        console.log(child[i]);
-        if(child[i].children){
-          this.makeChild(root, child[i].children);
-        }
-        if(child[i].redirect){
-          root.children.push({
-            path: child[i].path,
-            name: child[i].name,
-            redirect: child[i].redirect,
-          })
-        }else{
-          let file = child[i].path.split("/")[2];
-          root.children.push({
-            path: child[i].path,
-            name: child[i].name,
-            component: () => import('@@/com/views/The'+file),
-          })
-        }
-
-      }
-      return root;
     }
   },
 };
