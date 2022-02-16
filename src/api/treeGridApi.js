@@ -2,13 +2,12 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView, hasClass, addClass, removeClass } from "@grapecity/wijmo";
+import { CollectionView, hasClass, addClass } from "@grapecity/wijmo";
 import * as gridXlsx from '@grapecity/wijmo.grid.xlsx';
 import * as wjcGrid from '@grapecity/wijmo.grid';
 import * as wjGrid from '@grapecity/wijmo.grid';
 import { Selector } from '@grapecity/wijmo.grid.selector';
 import "@grapecity/wijmo.styles/wijmo.css";
-import * as wijmo from "@grapecity/wijmo";
 
 export class TreeGridApi extends CollectionView {
     _id = '';
@@ -286,6 +285,27 @@ export class TreeGridApi extends CollectionView {
         }
     }
 
+    static addHeaderIcon(grid, e) {
+        if (e.panel.cellType != wjGrid.CellType.RowHeader) {
+            return;
+        }
+
+        let row = e.panel.rows[e.row],
+            colHeader = grid.rowHeaders.columns[e.col];
+
+        if (colHeader.binding == 'rowStatus') {
+            if (row.dataItem.rowStatus == 'U') {
+                e.cell.innerHTML = utils.getWjGlyph('pencil');
+            } else if (row.dataItem.rowStatus == 'C') {
+                e.cell.innerHTML = utils.getWjGlyph('asterisk');
+            } else {
+                e.cell.innerHTML = '';
+            }
+        } else if (colHeader.binding == 'drag') {
+            e.cell.innerHTML = utils.getWjGlyph('drag', 'button');
+        }
+    }
+
     formatItem(grid) {
         if (grid.allowDragging != 0) { //None
             grid.rowHeaders.columns[0].binding = 'drag';
@@ -295,76 +315,77 @@ export class TreeGridApi extends CollectionView {
         }
 
         grid.formatItem.addHandler(function(s, e) {
-            let col = e.panel.columns[e.col],
-                row = e.panel.rows[e.row],
-                binding = grid.columns[e.col].binding,
-                colHeader = grid.rowHeaders.columns[e.col],
-                dragId = s.itemsSource._dragOpt.id;
-
+            TreeGridApi.trimSelector(s, e);
             TreeGridApi.alignHeader(e);
+            TreeGridApi.addHeaderIcon(grid, e);
+            TreeGridApi.addCellIcon(s, e);
+        });
 
-            if (row.dataItem) {
-                if (col.name == 'chk' && row.dataItem.nodeType == dragId) {
-                    // remove buttons from first column
-                    e.cell.innerHTML = e.cell.textContent.trim();
-                }
-                e.cell.style.paddingLeft = null;
-            }
+        grid.selectionMode = "Row";
+    }
 
-            if (e.panel.cellType == wjGrid.CellType.RowHeader) {
-                if (colHeader.binding == 'rowStatus') {
-                    if (row.dataItem.rowStatus == 'U') {
-                        e.cell.innerHTML = utils.getWjGlyph('pencil');
-                    } else if (row.dataItem.rowStatus == 'C') {
-                        e.cell.innerHTML = utils.getWjGlyph('asterisk');
-                    } else {
-                        e.cell.innerHTML = '';
-                    }
-                }
-                if (colHeader.binding == 'drag') {
-                    e.cell.innerHTML = utils.getWjGlyph('drag', 'button');
-                }
-            }
+    static addCellIcon(s, e) {
+        if (!s.itemsSource._dragOpt.icon) {
+            return;
+        }
 
-            // 조직도 icon 추가
-            if (binding == 'orgNm') {
-                let padding = row.level * 13;
-                if (!row.hasChildren) {
-                    padding += 20;
-                } else {
-                    // has child node, add collapse/expand buttons
-                    // clear content
-                    e.cell.innerHTML = '';
-                    let collapse = '',
-                        icon = '';
+        let row = e.panel.rows[e.row],
+            binding = s.columns[e.col].binding;
 
-                    if (row.isCollapsed) {
-                        collapse = utils.getWjGlyph('right', 'collapse');
-                    } else {
-                        collapse = utils.getWjGlyph('down-right', 'collapse');
-                    }
-
-                    if (row.dataItem.nodeType == 'org') {
-                        if (row.dataItem.orgCd == '0000') {
-                            icon = utils.getOwIcon('osstem');
-                        } else {
-                            icon = utils.getOwIcon(row.dataItem.nodeType);
-                        }
-                    }
-
-                    e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
-                }
-                e.cell.style.paddingLeft = padding + 'px';
-            } else if (binding == s.itemsSource._dragOpt.icon) {
-                if (row.dataItem) {
+        s.itemsSource._dragOpt.icon.forEach((col) => {
+            if (binding == col) {
+                if (row.dataItem && row.dataItem[col]) {
                     e.cell.innerHTML =
-                        row.dataItem.bizGrpNm +
+                        row.dataItem[col] +
                         (utils.getOwIcon(row.dataItem.nodeType) ? utils.getOwIcon(row.dataItem.nodeType) : '');
                 }
             }
         });
 
-        grid.selectionMode = "Row";
+        // 조직도 icon 추가
+        if (binding == 'orgNm') {
+            let padding = row.level * 13;
+            if (!row.hasChildren) {
+                padding += 20;
+            } else {
+                // has child node, add collapse/expand buttons
+                // clear content
+                e.cell.innerHTML = '';
+                let collapse = '',
+                    icon = '';
+
+                if (row.isCollapsed) {
+                    collapse = utils.getWjGlyph('right', 'collapse');
+                } else {
+                    collapse = utils.getWjGlyph('down-right', 'collapse');
+                }
+
+                if (row.dataItem.nodeType == 'org') {
+                    if (row.dataItem.orgCd == '0000') {
+                        icon = utils.getOwIcon('osstem');
+                    } else {
+                        icon = utils.getOwIcon(row.dataItem.nodeType);
+                    }
+                }
+
+                e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
+            }
+            e.cell.style.paddingLeft = padding + 'px';
+        }
+    }
+
+    static trimSelector(s, e) {
+        let col = e.panel.columns[e.col],
+            row = e.panel.rows[e.row],
+            dragId = s.itemsSource._dragOpt.id;
+
+        if (col.name == 'chk') {
+            if (row.dataItem && row.dataItem.nodeType == dragId) {
+                // remove buttons from first column
+                e.cell.innerHTML = e.cell.textContent.trim();
+            }
+            e.cell.style.paddingLeft = null;
+        }
     }
 
     addSelector(grid) {
@@ -382,9 +403,7 @@ export class TreeGridApi extends CollectionView {
     _createImage() {
         if (typeof this.div === 'undefined') {
             this.div = document.createElement('div');
-            this.div.classList.add('wj-dragover');
             this.div.setAttribute('droppable', true);
-
             this.div.style.position = 'absolute';
             this.div.style.zIndex = 999;
             this.div.style.outline = '2px solid rgba(90, 160, 215, .5)';
@@ -469,10 +488,7 @@ export class TreeGridApi extends CollectionView {
                 return;
             }
             // prevent Dragging for Selected items Children and the Cell panel
-            if (
-                (ht.row >= this.row1 && ht.row < this.row2) ||
-                ht.panel.cellType != wjGrid.CellType.RowHeader
-            ) {
+            if (ht.row >= this.row1 && ht.row < this.row2) {
                 this._removeImage();
                 return;
             }
@@ -518,22 +534,46 @@ export class TreeGridApi extends CollectionView {
 
     _addItem(grid, target) {
             let ht = grid.hitTest(target),
-                dragRow = target.dataTransfer.getData("text"),
-                item = this._orgGrid.rows[parseInt(dragRow)].dataItem;
+                dragRow = target.dataTransfer.getData('text'),
+                item = this._orgGrid.rows[parseInt(dragRow)].dataItem,
+                parentRow = 0,
+                findIdx = false;
 
-            if (!dragRow || ht.row == dragRow) {
+            if (!dragRow || !ht.row) {
                 return false;
-            }
-
-            if (!grid.rows[ht.row].dataItem.children) {
-                grid.rows[ht.row].dataItem.children = [];
             }
 
             let _item = _.cloneDeep(item);
             _item.orgCd = grid.rows[ht.row].dataItem.orgCd;
             _item.rowStatus = 'C';
 
-            grid.rows[ht.row].dataItem.children.splice(0, 0, _item); //추가
+            //해당 children에 똑같은 item이 있을 경우 return
+            grid.rows.forEach((row) => {
+                if (row.hasChildren == true && row._data.orgCd == _item.orgCd) {
+                    parentRow = row.index;
+
+                    row.dataItem.children.forEach((findRow) => {
+                        if (findRow.bizGrpId == item.bizGrpId) {
+                            findIdx = true;
+                        }
+                    })
+                }
+            });
+
+            if (findIdx) {
+                return false;
+            }
+
+            if (!grid.rows[ht.row].dataItem.children) {
+                if (grid.rows[ht.row].dataItem.nodeType == 'org') {
+                    grid.rows[ht.row].dataItem.children = [];
+                } else {
+                    grid.rows[parentRow].dataItem.children.splice(0, 0, _item);
+                }
+            } else {
+                grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
+            }
+
             grid.itemsSource.itemsAdded.push(_item);
 
             return true;
