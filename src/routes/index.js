@@ -37,6 +37,11 @@ const routes = [
     component: () => import('@/views/AppLogin'),
   },
   {
+    path: '/tabletLogin',
+    name: 'tabletLogin',
+    component: () => import('@/views/TabletLogin')
+  },
+  {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/AppNotFound'),
   },
