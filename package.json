@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@grapecity/wijmo.vue2.all": "^5.20213.824",
+    "@popperjs/core": "^2.11.2",
     "axios": "^0.24.0",
     "bootstrap": "^5.1.3",
     "bootstrap-vue-3": "^0.1.5",
