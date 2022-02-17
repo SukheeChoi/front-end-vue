@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '@/store';
 import login from '@/api/login.js';
+import loading from '../store/modules/loading';
 const routes = [
   {
     path: '/',
@@ -62,16 +63,14 @@ router.afterEach((to, from, failure) => {
   console.log(from);
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   console.log('routing wait....................');
   console.log(to);
   console.log(from);
 
   const routeList = store.getters.getRouteList;
 
-  console.log(routeList.length);
-  console.log(router.getRoutes().length);
-/*
+  /*
   if (to.fullpath !== '/login' && router.getRoutes().length < routeList.length) {
     store.commit('setRouteRootChildClear');
     var routeRootList = store.getters.getRouteRootList;
@@ -87,6 +86,14 @@ router.beforeEach((to, from, next) => {
   const devMode = true;
   const now = new Date();
 
+  console.log('token time   : ' + store.getters.getTtl);
+  console.log('current time : ' + now.getTime());
+
+  if (to.fullPath !== '/login' && store.getters.getTtl < now.getTime()) {
+    const newData = await login.requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
+    login.setAuth(newData);
+  }
+
   if (devMode === false && to.fullPath !== '/login' && store.state.login.ttl < now.getTime()) {
     //store.commit('reset');
     //router.push('/login');
@@ -99,7 +106,6 @@ router.beforeEach((to, from, next) => {
 
   next();
 });
-
 
 function checkAuthScreen(to, screenList) {
   for (var i = 0; i < screenList; i++){
