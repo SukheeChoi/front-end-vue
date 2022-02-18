@@ -1,5 +1,5 @@
 <template>
-  <div class="loginWarp">
+  <div class="tablet-loginWarp">
     <div class="container">
       <div></div>
       <section>        
@@ -37,3 +37,6 @@ export default{
   },
 }
 </script>
+<style lang="scss">
+@import '@/assets/css/layout/globalMobile.scss';
+</style>

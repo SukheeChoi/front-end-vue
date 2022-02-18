@@ -37,6 +37,11 @@ const routes = [
     component: () => import('@/views/AppLogin'),
   },
   {
+    path: '/tabletMain',
+    name: 'tabletMain',
+    component: () => import('@/views/TabletMain'),
+  },
+  {
     path: '/tabletLogin',
     name: 'tabletLogin',
     component: () => import('@/views/TabletLogin')
@@ -94,7 +99,7 @@ router.beforeEach(async (to, from, next) => {
   console.log('token time   : ' + store.getters.getTtl);
   console.log('current time : ' + now.getTime());
 
-  if (to.fullPath !== '/login' && store.getters.getTtl < now.getTime()) {
+  if (devMode === false && to.fullPath !== '/login' && store.getters.getTtl < now.getTime()) {
     const newData = await login.requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
     login.setAuth(newData);
   }
