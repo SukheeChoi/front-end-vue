@@ -29,45 +29,49 @@ import OwSignature from '@/components/common/OwSignature';
 import OwSpinner from '@/components/common/OwSpinner';
 import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
+import NewOwGrid from '@/components/common/NewOwGrid';
+import OwTreeGrid from '@/components/common/OwTreeGrid';
 
 export function registerWijmo(app) {
-  registerCore(app);
-  registerInput(app);
-  registerGrid(app);
-  registerGridDetail(app);
-  registerGridFilter(app);
-  registerGridGrouppanel(app);
-  registerNav(app);
+    registerCore(app);
+    registerInput(app);
+    registerGrid(app);
+    registerGridDetail(app);
+    registerGridFilter(app);
+    registerGridGrouppanel(app);
+    registerNav(app);
 }
 
 const COMMON_COMPONENTS = {
-  OwCheckbox,
-  OwContainer,
-  OwContent,
-  OwDialog,
-  OwFilterCheckbox,
-  OwFilterRadio,
-  OwFlexWrap,
-  OwFlexItem,
-  OwGrid,
-  OwInput,
-  OwInputDate,
-  OwInputTime,
-  OwInputNumber,
-  OwModal,
-  OwPanel,
-  OwRadio,
-  OwRadioButton,
-  OwSelect,
-  OwCommonSelect,
-  OwSignature,
-  OwSpinner,
-  OwSwitch,
-  OwTab,
+    OwCheckbox,
+    OwContainer,
+    OwContent,
+    OwDialog,
+    OwFilterCheckbox,
+    OwFilterRadio,
+    OwFlexWrap,
+    OwFlexItem,
+    OwGrid,
+    OwInput,
+    OwInputDate,
+    OwInputTime,
+    OwInputNumber,
+    OwModal,
+    OwPanel,
+    OwRadio,
+    OwRadioButton,
+    OwSelect,
+    OwCommonSelect,
+    OwSignature,
+    OwSpinner,
+    OwSwitch,
+    OwTab,
+    NewOwGrid,
+    OwTreeGrid,
 };
 
 export function registerOwComponents(app) {
-  for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
-    app.component(name, component);
-  }
+    for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
+        app.component(name, component);
+    }
 }

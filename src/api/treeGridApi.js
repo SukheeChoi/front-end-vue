@@ -439,13 +439,15 @@ export class TreeGridApi extends CollectionView {
             let row = panel.rows[r];
 
             if (panel.cellType == wjGrid.CellType.RowHeader) {
-                this._dragOpt.readOnlyType.forEach((type) => {
-                    if (type == row.dataItem.nodeType) {
-                        cell.draggable = false;
-                    } else {
-                        cell.draggable = true;
-                    }
-                });
+                if (this._dragOpt.readOnlyType) {
+                    this._dragOpt.readOnlyType.forEach((type) => {
+                        if (type == row.dataItem.nodeType) {
+                            cell.draggable = false;
+                        } else {
+                            cell.draggable = true;
+                        }
+                    });
+                }
             }
         };
         // disable built-in row drag/drop
