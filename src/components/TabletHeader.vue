@@ -5,13 +5,22 @@
         <h1 class="logo">OW OSSTEM</h1>
       </router-link>
       <ul class="location">
-
+        <li>
+          <span>본부명</span>
+        </li>
+        <li>
+          <span>메뉴명</span>
+        </li>
       </ul>
       <div class="util-wrap">
         <ul class="menus">
-
+          <li>
+            <a href="javascript:void(0);">
+              <i class="person"><span class="sr-only">유저 아이콘</span>
+              </i>
+            </a>
+          </li>
         </ul>
-
         <div class="btns">
           <button type="button" class="setting">설정</button>
           <button type="button" class="logout" @click="logout();">로그아웃</button>
