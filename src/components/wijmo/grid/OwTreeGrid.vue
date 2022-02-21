@@ -1,7 +1,7 @@
 <template>
-  <new-ow-grid v-bind="$attrs" :initialized="init">
+  <ow-flex-grid v-bind="$attrs" :initialized="init">
     <slot></slot>
-  </new-ow-grid>
+  </ow-flex-grid>
 </template>
 <script>
 import _ from 'lodash';
@@ -43,8 +43,8 @@ export default {
     const init = (grid) => {
       if (props.selector) {
         addSelector(grid);
-        formatItem(grid);
       }
+      formatItem(grid);
       grid.selectionMode = props.selectionMode;
       grid.childItemsPath = props.childItemsPath;
 
@@ -75,17 +75,16 @@ export default {
 
     const trimSelector = (s, e) => {
       let col = e.panel.columns[e.col],
-        row = e.panel.rows[e.row],
-        id = state.drag.id;
+          row = e.panel.rows[e.row];
 
       if (col.name == 'chk') {
-        if (row.dataItem && row.dataItem.nodeType == id) {
+        if (row.dataItem && row.dataItem.nodeType == state.drag.nodeType) {
           // remove buttons from first column
           e.cell.innerHTML = e.cell.textContent.trim();
         }
         e.cell.style.paddingLeft = null;
       }
-    };
+    }
 
     const addHeaderIcon = (grid, e) => {
       if (e.panel.cellType != wjGrid.CellType.RowHeader) {
@@ -159,20 +158,27 @@ export default {
     };
 
     const formatItem = (grid) => {
-      if (grid.allowDragging != 0) {
-        //None
-        grid.rowHeaders.columns[0].binding = 'drag';
-        grid.rowHeaders.columns[0].header = ' ';
-        grid.rowHeaders.columns.push(new wjcGrid.Column({ binding: 'rowStatus', header: ' ', align: 'center' }));
+      if (grid.allowDragging > 1) { //None
+        // const rowHeaders = grid.rowHeaders.columns,
+        //       drag = (element) => element.binding == 'drag';
+        // if (rowHeaders.findIndex(drag) < 0) {
+        //   grid.rowHeaders.columns.push(new wjcGrid.Column({ binding: 'drag', header: ' ', align: 'center' }));
+        // }
+
+        // grid.rowHeaders.columns[0].binding = 'drag';
+        // grid.rowHeaders.columns[0].header = ' ';
+        // grid.rowHeaders.columns.push(new wjcGrid.Column({ binding: 'rowStatus', header: ' ', align: 'center' }));
         grid.hostElement.style.width = getComputedStyle(grid.hostElement).getPropertyValue('width');
+
+        // console.log('grid.rowHeaders', grid.rowHeaders);
       }
 
-      grid.formatItem.addHandler(function (s, e) {
+      grid.formatItem.addHandler(function(s, e) {
         trimSelector(s, e);
         addHeaderIcon(grid, e);
         addCellIcon(s, e);
       });
-    };
+    }
 
     const createImage = () => {
       if (!dragDiv) {
@@ -259,25 +265,25 @@ export default {
       // make rows draggable
       s.itemFormatter = (panel, r, c, cell) => {
         let row = panel.rows[r];
-
         if (panel.cellType == wjGrid.CellType.RowHeader) {
+          cell.draggable = true;
+
           if (state.drag.readonly) {
             state.drag.readonly.forEach((type) => {
               if (type == row.dataItem.nodeType) {
                 cell.draggable = false;
-              } else {
-                cell.draggable = true;
               }
             });
+          }
+
+          if (s.rowHeaders.columns[c].binding != 'drag') {
+            cell.draggable = false;
           }
         }
       };
 
       // disable built-in row drag/drop
-      s.addEventListener(
-        s.hostElement,
-        'mousedown',
-        (e) => {
+      s.addEventListener(s.hostElement, "mousedown", (e) => {
           if (s.hitTest(e).cellType == wjGrid.CellType.RowHeader) {
             e.stopPropagation();
           }
@@ -286,16 +292,13 @@ export default {
       );
 
       // handle drag start
-      s.addEventListener(
-        s.hostElement,
-        'dragstart',
-        (e) => {
+      s.addEventListener(s.hostElement, "dragstart", (e) => {
           createImage();
           let ht = s.hitTest(e);
           if (ht.cellType == wjGrid.CellType.RowHeader) {
             s.select(new wjGrid.CellRange(ht.row, 0, ht.row, s.columns.length - 1));
             originalGrid = s; // drag가 시작된 그리드
-            e.dataTransfer.effectAllowed = 'copy';
+            e.dataTransfer.effectAllowed = "copy";
             getDataHierarchy(s, ht.row.toString());
 
             e.dataTransfer.setData('text', dragRow2);
@@ -303,13 +306,13 @@ export default {
         },
         true
       );
-    };
+    }
 
     // enable drop operations on an element
     const makeDropTarget = (s) => {
-      s.hostElement.addEventListener('dragover', (e) => {
+      s.hostElement.addEventListener("dragover", (e) => {
         let ht = s.hitTest(e);
-        let dragRow = e.dataTransfer.getData('text');
+        let dragRow = e.dataTransfer.getData("text");
         if (!ht || ht.panel == null) {
           return;
         }
@@ -320,7 +323,7 @@ export default {
         }
         if (dragRow != null) {
           dragDiv.style.display = 'inline-block';
-          e.dataTransfer.dropEffect = 'copy';
+          e.dataTransfer.dropEffect = "copy";
           e.preventDefault();
 
           let _rect = s.rowHeaders.getCellBoundingRect(ht.row + 1, 0);
@@ -330,18 +333,15 @@ export default {
         }
       });
 
-      s.hostElement.addEventListener('drop', (e) => {
-        let item = originalGrid.rows[parseInt(e.dataTransfer.getData('text'))].dataItem; //drag data
+      s.hostElement.addEventListener("drop", (e) => {
+        let item = originalGrid.rows[parseInt(e.dataTransfer.getData("text"))].dataItem; //drag data
 
-        if (
-          s.hostElement.id == originalGrid.hostElement.id &&
-          s.rows[s.hitTest(e).row].dataItem.nodeType != s.hostElement.id
-        ) {
+        if (s == originalGrid && s.rows[s.hitTest(e).row].dataItem.nodeType != state.drag.nodeType) {
           removeImage();
           return;
         }
 
-        if (s.hostElement.id != originalGrid.hostElement.id) {
+        if (s != originalGrid) {
           addItem(s, e);
         } else {
           if (addItem(s, e)) {
@@ -356,11 +356,13 @@ export default {
         s.collectionView.refresh();
         e.preventDefault();
       });
-    };
+    }
 
     return {
       ...toRefs(state),
       init,
+      makeDragSource,
+      makeDropTarget,
     };
   },
 };
