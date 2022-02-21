@@ -29,6 +29,7 @@ import OwSignature from '@/components/common/OwSignature';
 import OwSpinner from '@/components/common/OwSpinner';
 import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
+import NewOwGrid from '@/components/wijmo/grid/OwGrid';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
 import OwTreeGrid from '@/components/wijmo/grid/OwTreeGrid';
 
@@ -68,6 +69,7 @@ const COMMON_COMPONENTS = {
     OwTab,
     OwFlexGrid,
     OwTreeGrid,
+    NewOwGrid,
 };
 
 export function registerOwComponents(app) {
