@@ -116,12 +116,12 @@ export default {
       grid: null,
       source: _.cloneDeep(props.itemsSource),
       empty: computed(() => !!state.grid?.collectionView.isEmpty),
-      query: props.query ?? {},
+      query: _.cloneDeep(props.query) ?? {},
       pageNo: +(props.paging.pageNo ?? 1),
       pageSize: +(props.paging.pageSize ?? 10),
       totalCount: +(props.paging.totalCount ?? 0),
-      sort: props.paging.sort,
-      direction: props.paging.direction,
+      sort: props.paging.sort ?? '',
+      direction: props.paging.direction ?? '',
       pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
     });
 
@@ -210,6 +210,15 @@ export default {
     // 초기화
     const reset = () => (state.grid.collectionView.sourceCollection = _.cloneDeep(state.source));
 
+    // 초기화
+    const clear = () => {
+      state.pageNo = 1;
+      state.pageSize = 10;
+      state.totalCount = 0;
+      state.source = [];
+      reset();
+    };
+
     // 검색(새로운 검색 조건 설정)
     const lookup = (query) => {
       state.query = query;
@@ -232,6 +241,13 @@ export default {
           pageSize: state.pageSize,
           sort: state.sort,
           direction: state.direction,
+        });
+        console.log('read', {
+          query,
+          pageNo,
+          pageSize,
+          totalCount,
+          items,
         });
         state.query = query;
         state.pageNo = pageNo;
@@ -258,32 +274,42 @@ export default {
     };
 
     const setCumstomColums = (cols, items) => {
-      const cloneCols = _.cloneDeep(Array.from(cols));
-      cloneCols.unshift(new Column({ binding: '__order__', header: '번호' }));
-      const cloneItems = _.cloneDeep(items);
-      for (let i = 0, length = cloneItems.length; i < length; i += 1) {
-        const cloneItem = cloneItems.at(i);
-        cloneItem.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
+      const columns = _.cloneDeep(
+        Array.from(cols).map((col) => ({
+          binding: col.binding,
+          header: col.header,
+          align: col.align,
+          width: col.width,
+          format: col.format,
+        }))
+      );
+      const itemsSource = _.cloneDeep(Array.from(items));
+      if (props.allowStatus) {
+        columns.unshift(new Column({ binding: '__order__', header: '번호' }));
+        for (let i = 0, length = itemsSource.length; i < length; i += 1) {
+          const itemSource = itemsSource.at(i);
+          itemSource.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
+        }
       }
       return {
-        cols: cloneCols,
-        items: cloneItems,
+        columns,
+        itemsSource,
       };
     };
 
     const allowRowsExcelDownload = async () => {
       if (props.read) {
-        const { items: _items } = await props.read(state.query, {});
-        const { cols, items } = setCumstomColums(state.grid.columns, _items);
-        downloader.value.exec(cols, items);
+        const { items } = await props.read(state.query, {});
+        const { columns, itemsSource } = setCumstomColums(state.grid.columns, items);
+        downloader.value.exec(columns, itemsSource);
       } else {
         currentRowsExcelDownload();
       }
     };
 
     const currentRowsExcelDownload = () => {
-      const { cols, items } = setCumstomColums(state.grid.columns, state.source);
-      downloader.value.exec(cols, items);
+      const { columns, itemsSource } = setCumstomColums(state.grid.columns, state.source);
+      downloader.value.exec(columns, itemsSource);
     };
 
     watch(
@@ -301,6 +327,7 @@ export default {
       save,
       remove,
       reset,
+      clear,
       allowRowsExcelDownload,
       currentRowsExcelDownload,
     };
@@ -335,6 +362,14 @@ export default {
     border-bottom: none;
     :deep(.wj-header) {
       text-align: center;
+    }
+  }
+}
+.ow-pagination {
+  :deep(.page-link) {
+    &[role='menuitemradio'] {
+      width: 100%;
+      padding: 4px 8px;
     }
   }
 }
