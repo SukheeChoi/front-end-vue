@@ -16,14 +16,7 @@
   </wj-flex-grid>
 </template>
 <script>
-import {
-  hasClass,
-  Tooltip,
-  PopupPosition,
-  Key,
-  ObservableArray,
-  NotifyCollectionChangedAction,
-} from '@grapecity/wijmo';
+import { hasClass, Tooltip, PopupPosition, Key, ObservableArray } from '@grapecity/wijmo';
 import {
   AllowDragging,
   AllowMerging,
@@ -47,6 +40,7 @@ export default {
     allowPinning: { type: [Number, String], default: AllowPinning.None },
     allowResizing: { type: [Number, String], default: AllowResizing.None },
     allowSorting: { type: [Number, String], default: AllowSorting.None },
+    allowSelector: Boolean,
     headersVisibility: { type: [Number, String], default: HeadersVisibility.All },
     selectionMode: { type: [Number, String], default: SelectionMode.Row },
     stickyHeaders: { type: Boolean, default: true },
@@ -169,7 +163,11 @@ export default {
         s.selectionMode = props.selectionMode > SelectionMode.Row ? SelectionMode.Row : props.selectionMode;
       };
 
-      setSelector();
+      if (props.allowSelector) {
+        setSelector();
+      } else {
+        s.rowHeaders.columns.shift();
+      }
 
       if (props.initialized) {
         props.initialized(s);
