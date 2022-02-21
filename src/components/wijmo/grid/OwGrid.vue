@@ -1,215 +1,341 @@
 <template>
   <ow-flex-wrap col>
-    <ow-flex-item class="headline-wrap">
-      <ow-flex-wrap>
-        <!-- left top -->
-        <ow-flex-item class="align-x-start">
-          <slot name="left">
-            <h1 class="h1" v-if="state.title">{{ state.title }}</h1>
-          </slot>
-        </ow-flex-item>
-        <!-- right top -->
-        <ow-flex-item class="align-x-end">
-          <slot name="right">
-            <button v-if="state.buttons.excel" class="ow-btn type-state excel" @click="state.store.excel()">
-              Excel 다운로드
-            </button>
-            <template v-if="mode == 'edit'">
-              <button v-if="state.buttons.undo" class="ow-btn type-state refresh" @click="state.store.undo()">
-                초기화
-              </button>
-              <button v-if="state.buttons.add" class="ow-btn type-state" @click="state.store.add()">
-                <span>추가</span>
-              </button>
-              <button v-if="state.buttons.del" class="ow-btn type-state" @click="state.store.del()">
-                <span>삭제</span>
-              </button>
-              <button v-if="state.buttons.save" class="ow-btn type-state" @click="state.store.save()">
-                <span>저장</span>
-              </button>
-            </template>
-          </slot>
-        </ow-flex-item>
-      </ow-flex-wrap>
+    <ow-flex-item v-if="headline">
+      <ow-flex-item class="headline-wrap" align="center" to="left">
+        <slot name="left">
+          <h1 class="h1" v-if="title">{{ title }}</h1>
+        </slot>
+      </ow-flex-item>
+      <ow-flex-item align="center" to="right">
+        <slot name="right">
+          <button type="button" class="ow-btn type-state" @click="allowRowsExcelDownload">엑셀1</button>
+          <button type="button" class="ow-btn type-state" @click="currentRowsExcelDownload">엑셀2</button>
+          <button type="button" class="ow-btn type-state" @click="reset">초기화</button>
+          <button type="button" class="ow-btn type-state" @click="add">추가</button>
+          <button type="button" class="ow-btn type-state" @click="remove">삭제</button>
+          <button type="button" class="ow-btn type-state" @click="save">저장</button>
+        </slot>
+      </ow-flex-item>
     </ow-flex-item>
-    <!-- grid -->
     <ow-flex-item>
-      <div class="ow-grid-wrap">
-        <slot></slot>
+      <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
+        <ow-flex-grid :initialized="init" v-bind="$attrs">
+          <slot></slot>
+        </ow-flex-grid>
       </div>
     </ow-flex-item>
-    <!-- pagination -->
     <ow-flex-item class="mt-10 mb-10">
-      <ow-flex-wrap>
-        <ow-flex-item to="left">
-          <button type="button" class="ow-button type-icon">
-            <i class="fas fa-cog fa-fw" />
-          </button>
-          <ow-select :items="state.pageSizeList" v-model="state.pageSize" style="--width: 80px" />
-        </ow-flex-item>
-        <ow-flex-item to="center">
+      <ow-flex-item to="left">
+        <button type="button" class="ow-button type-icon">
+          <i class="fas fa-cog fa-fw" />
+        </button>
+        <ow-select :items="pageSizeList" v-model="pageSize" style="--width: 80px" />
+      </ow-flex-item>
+      <ow-flex-item to="center">
+        <template v-if="totalCount > 0">
           <b-pagination
             class="ow-pagination"
             first-class="go-first"
             prev-class="go-prev"
             next-class="go-next"
             last-class="go-last"
-            :total-rows="state.totalCount"
-            :per-page="state.pageSize"
+            :total-rows="totalCount"
+            :per-page="pageSize"
             :limit="10"
-            v-model="state.pageNo"
-          />
-        </ow-flex-item>
-        <ow-flex-item to="right">
-          <div class="counter-board">
-            전체
-            <span>{{ state.totalCount }}</span>
-            건
-          </div>
-        </ow-flex-item>
-      </ow-flex-wrap>
+            v-model="pageNo"
+            @page-click="(yg, pageNo) => read(pageNo)"
+          ></b-pagination>
+        </template>
+      </ow-flex-item>
+      <ow-flex-item to="right">
+        <div class="counter-board">전체 {{ totalCount }} 건</div>
+      </ow-flex-item>
     </ow-flex-item>
   </ow-flex-wrap>
+  <teleport to="#teleport">
+    <ow-grid-excel-downloader ref="downloader"></ow-grid-excel-downloader>
+  </teleport>
 </template>
 <script>
-import { computed, reactive, ref, watch } from 'vue';
+import _ from 'lodash';
+
+import { reactive, ref, computed, watch, toRefs } from 'vue';
+
+import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
+import { Column } from '@grapecity/wijmo.grid';
+
+import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
+import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
+import { useRoute, useRouter } from 'vue-router';
+
+export const ROW_STATUS = {
+  ADD: 'C',
+  EDIT: 'U',
+};
 
 export default {
   name: 'OwGrid',
-  components: {},
+  inheritAttrs: false,
+  components: {
+    OwFlexGrid,
+    OwGridExcelDownloader,
+  },
   props: {
-    pageSize: {
-      type: Number,
-      default: 10,
+    initialized: Function,
+    itemsSource: {
+      type: [Array, CollectionView],
+      default: () => [],
     },
-    pageNo: {
-      type: Number,
-      default: 1,
-    },
-    totalCount: {
-      type: Number,
-      default: 0,
-    },
-    opt: {
-      type: Object,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    mode: {
-      default: 'edit',
-    },
-    hasSlot: {
+    title: String,
+    headline: {
       type: Boolean,
       default: true,
     },
-    buttons: {
-      default: {
-        excel: false,
-        undo: true,
-        add: true,
-        del: true,
-        save: true,
-      },
+    query: Object,
+    paging: {
+      type: Object,
+      default: () => ({
+        pageNo: 1,
+        pageSize: 10,
+        totalCount: 0,
+      }),
     },
-    store: {
-      default: null,
-    },
-    pageSizeList: {
-      type: Array,
-      default: () => {
-        return [5, 10, 20, 30, 50, 100, 150, 300, 500];
-      },
-    },
+    read: Function,
+    remove: Function,
+    save: Function,
+    allowStatus: Boolean,
+    allowPushState: Boolean,
   },
-  setup(props, { emit }) {
-    let tmpState = {};
+  setup(props) {
+    const router = useRouter();
+    const route = useRoute();
 
-    if (props.opt && props.opt.pageNo) {
-      tmpState = reactive({
-        title: ref(props.title),
-        mode: ref(props.mode),
-        buttons: ref(props.buttons),
-        store: ref(props.store),
-        pageSize: ref(props.opt.pageSize),
-        pageNo: ref(props.opt.pageNo),
-        totalCount: computed(() => props.opt.totalCount),
-        hasPagination: computed(() => props.opt.totalCount > props.opt.pageSize),
-        pageSizeList: computed(() =>
-          props.pageSizeList.map((value) => {
-            return { name: `${value}건`, value };
-          })
-        ),
+    const downloader = ref(null);
+
+    const state = reactive({
+      grid: null,
+      source: _.cloneDeep(props.itemsSource),
+      empty: computed(() => !!state.grid?.collectionView.isEmpty),
+      query: props.query ?? {},
+      pageNo: +(props.paging.pageNo ?? 1),
+      pageSize: +(props.paging.pageSize ?? 10),
+      totalCount: +(props.paging.totalCount ?? 0),
+      sort: props.paging.sort,
+      direction: props.paging.direction,
+      pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
+    });
+
+    const init = (s) => {
+      // state 설정
+      state.grid = s;
+
+      // Grid의 초기값 설정
+      s.itemsSource = props.itemsSource;
+
+      // AllowStatus | RowStatus
+      const statusHeader = new Column({
+        binding: 'rowStatus',
+        header: '번호',
+        cellTemplate: (ctx) => {
+          if (ctx.item) {
+            switch (ctx.item.rowStatus) {
+              case 'C':
+                return '<button class="ow-btn type-icon"><span class="wj-glyph-asterisk"></span></button>';
+              case 'U':
+                return '<button class="ow-btn type-icon"><span class="wj-glyph-pencil"></span></button>';
+              default:
+                return ctx.item.__order__;
+            }
+          }
+          return ctx.text;
+        },
+        align: 'center',
+        visible: props.allowStatus,
       });
-    } else {
-      tmpState = reactive({
-        title: ref(props.title),
-        mode: ref(props.mode),
-        buttons: ref(props.buttons),
-        pageSize: ref(props.pageSize),
-        pageNo: ref(props.pageNo),
-        totalCount: computed(() => props.totalCount),
-        hasPagination: computed(() => props.totalCount > props.pageSize),
-        pageSizeList: computed(() =>
-          props.pageSizeList.map((value) => {
-            return { name: `${value}건`, value };
-          })
-        ),
+      s.rowHeaders.columns.push(statusHeader);
+
+      // CollectionView 설정
+      s.collectionView.trackChanges = true;
+      s.collectionView.useStableSort = true;
+      s.collectionView.sortDescriptions.push(new SortDescription('__index__', false));
+      s.collectionView.itemsAdded.collectionChanged.addHandler((c, e) => (e.item.rowStatus = ROW_STATUS.ADD));
+      s.collectionView.itemsEdited.collectionChanged.addHandler((c, e) => (e.item.rowStatus = ROW_STATUS.EDIT));
+      s.collectionView.collectionChanged.addHandler((c, e) => {
+        state.grid.allowAddNew = false;
+        if (NotifyCollectionChangedAction.Add === e.action) {
+          e.item.__index__ = e.index;
+        }
       });
-    }
 
-    const state = tmpState;
+      // 사용자가 설정한 초기화 함수 호출
+      if (props.initialized) {
+        props.initialized(s);
+      }
 
-    watch(
-      () => state.pageNo,
-      () => {
-        if (state.store != null) {
-          state.store.getList(state.pageNo, state.pageSize);
-        } else {
-          emit('pageChange', state.pageNo, state.pageSize);
+      // 조회
+      if (props.read) {
+        read();
+      }
+    };
+
+    // 행 추가
+    const add = () => {
+      state.grid.allowAddNew = true;
+      state.grid.startEditing(false, 0, 0);
+    };
+
+    // 행 삭제
+    const remove = async () => {
+      if (props.remove) {
+        const items = Array.from(state.grid?.selector?.checkedItems ?? []).map((item) => item.dataItem);
+        // [TODO] 후처리 진행
+        if (await props.remove(items)) {
+          read(); // 검색 조건과 페이지 유지
         }
       }
-    );
+    };
+
+    // 저장
+    const save = async () => {
+      if (props.save) {
+        const addItems = Array.from(state.grid?.collectionView.itemsAdded ?? []);
+        const editItems = Array.from(state.grid?.collectionView.itemsEdited ?? []);
+        // [TODO] 후처리 진행
+        if (await props.save(addItems, editItems)) {
+          read(); // 검색 조건과 페이지 유지
+        }
+      }
+    };
+
+    // 초기화
+    const reset = () => (state.grid.collectionView.sourceCollection = _.cloneDeep(state.source));
+
+    // 검색(새로운 검색 조건 설정)
+    const lookup = (query) => {
+      state.query = query;
+      read(1);
+    };
+
+    // 검색(주어진 검색 조건으로 페이지 이동)
+    const read = async (pageNo) => {
+      if (typeof pageNo !== 'undefined') {
+        state.pageNo = +pageNo;
+      }
+      if (props.read) {
+        const {
+          query,
+          paging: { pageNo, pageSize },
+          totalCount,
+          items,
+        } = await props.read(state.query, {
+          pageNo: state.pageNo,
+          pageSize: state.pageSize,
+          sort: state.sort,
+          direction: state.direction,
+        });
+        state.query = query;
+        state.pageNo = pageNo;
+        state.pageSize = pageSize ?? 10;
+        state.totalCount = totalCount ?? 0;
+        state.source = _.cloneDeep(items);
+        for (let i = 0, length = items.length; i < length; i += 1) {
+          const item = items.at(i);
+          item.__order__ = totalCount - (pageNo - 1) * pageSize - i;
+          item.__index__ = length - i - 1;
+        }
+        state.grid.collectionView.sourceCollection = items;
+        if (props.allowPushState) {
+          router.push({
+            path: route.path,
+            query: {
+              ...state.query,
+              pageNo: state.pageNo,
+              pageSize: state.pageSize,
+            },
+          });
+        }
+      }
+    };
+
+    const setCumstomColums = (cols, items) => {
+      const cloneCols = _.cloneDeep(Array.from(cols));
+      cloneCols.unshift(new Column({ binding: '__order__', header: '번호' }));
+      const cloneItems = _.cloneDeep(items);
+      for (let i = 0, length = cloneItems.length; i < length; i += 1) {
+        const cloneItem = cloneItems.at(i);
+        cloneItem.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
+      }
+      return {
+        cols: cloneCols,
+        items: cloneItems,
+      };
+    };
+
+    const allowRowsExcelDownload = async () => {
+      if (props.read) {
+        const { items: _items } = await props.read(state.query, {});
+        const { cols, items } = setCumstomColums(state.grid.columns, _items);
+        downloader.value.exec(cols, items);
+      } else {
+        currentRowsExcelDownload();
+      }
+    };
+
+    const currentRowsExcelDownload = () => {
+      const { cols, items } = setCumstomColums(state.grid.columns, state.source);
+      downloader.value.exec(cols, items);
+    };
+
     watch(
       () => state.pageSize,
-      () => {
-        //현재 데이터 있는 페이지로 이동
-        if (state.totalCount > 0) {
-          let tempPageNo = Math.ceil(state.totalCount / state.pageSize);
-          if (state.pageNo > tempPageNo) {
-            state.pageNo = tempPageNo;
-          }
-        }
-
-        if (state.store != null) {
-          state.store.getList(state.pageNo, state.pageSize);
-        } else {
-          emit('pageChange', (state.pageNo = 1), state.pageSize);
-        }
-      }
+      () => read(1)
     );
 
     return {
-      state,
+      downloader,
+      ...toRefs(state),
+      init,
+      lookup,
+      read,
+      add,
+      save,
+      remove,
+      reset,
+      allowRowsExcelDownload,
+      currentRowsExcelDownload,
     };
   },
 };
 </script>
 <style lang="scss" scoped>
-.ow-flex-wrap {
-  --wrap-height: auto;
-}
 .headline-wrap {
   border-bottom: none;
 }
-.counter-board {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-:deep(.ow-grid.wj-content) {
-  border-right: none;
-  border-bottom: none;
+.ow-grid-wrap {
+  position: relative;
+  &.ow-grid-empty {
+    margin-bottom: 50px;
+    overflow: visible;
+    &::after {
+      content: '검색 결과가 없습니다.';
+      position: absolute;
+      bottom: -35px;
+      width: 100%;
+      line-height: 35px;
+      text-align: center;
+      z-index: 999;
+      border-radius: 0;
+      border: 1px solid #d7dce3;
+      border-top: none;
+      transition: linear 0.5s;
+    }
+  }
+  .ow-grid {
+    border-right: none;
+    border-bottom: none;
+    :deep(.wj-header) {
+      text-align: center;
+    }
+  }
 }
 </style>
