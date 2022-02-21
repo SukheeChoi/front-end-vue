@@ -14,6 +14,7 @@ import { setLicenseKey } from '@grapecity/wijmo';
 import '@grapecity/wijmo.styles/wijmo.css';
 
 import { registerWijmo, registerOwComponents } from '@/components/common';
+import { registerOwComComponents } from '@/app/com/components';
 
 setLicenseKey(process.env.VUE_APP_WIJMO_LICENSE_KEY);
 
@@ -27,6 +28,8 @@ app.use(BootStrapVue);
 
 registerWijmo(app);
 registerOwComponents(app);
+
+registerOwComComponents(app);
 
 app.mixin(mixin);
 
