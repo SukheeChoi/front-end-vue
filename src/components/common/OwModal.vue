@@ -1,16 +1,11 @@
 <template>
-  <wj-popup
-    :style="`--max-width: ${size.width}px; --max-height: ${size.outer_height}px;`"
-    :fade-in="false"
-    :fade-out="false"
-    ref="root"
-  >
+  <wj-popup :style="`--max-width: ${width}px;`" :fade-in="false" :fade-out="false" ref="root">
     <div class="modal-header">
       <h2 class="modal-title">{{ title }}</h2>
       <button type="button" class="close" @click="onCancel">&#120;</button>
     </div>
     <div class="modal-body">
-      <div class="layer-body" :style="`--max-height: ${size.height}px`" ref="body">
+      <div class="layer-body">
         <template v-if="show">
           <ow-flex-wrap col>
             <slot></slot>
@@ -42,23 +37,23 @@
 import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
 
-import { ref, computed, onMounted, reactive, toRefs, watch, onUnmounted } from 'vue';
+import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
 
 import { expando } from '@/utils';
 
-const P = {
-  XS: { width: 400, height: 320 },
-  S: { width: 620, height: 522 },
-  M: { width: 740, height: 522 },
-  L: { width: 940, height: 522 },
-  XL: { width: 1050, height: 522 },
-  XXL: { width: 1200, height: 522 },
-  XXXL: { width: 1541, height: 870 },
-  XXXXL: { width: 1904, height: 913 },
+const MODAL_WIDTH = {
+  XS: 400,
+  S: 620,
+  M: 740,
+  L: 940,
+  XL: 1050,
+  XXL: 1200,
+  XXXL: 1541,
+  XXXXL: 1904,
 };
 
 export default {
-  name: 'OwPopup',
+  name: 'OwModal',
   props: {
     type: {
       type: String,
@@ -75,7 +70,6 @@ export default {
   },
   setup(props) {
     const root = ref(null);
-    const body = ref(null);
     const one = ref(null);
 
     const state = reactive({
@@ -84,18 +78,7 @@ export default {
       unique: expando('ow-modal-once'),
       acceptButtonText: '',
       cancelButtonText: '',
-      size: computed(() => {
-        const { width, height } = P[props.type.toUpperCase()] || P.XS;
-        let outer_height = height;
-        if (props.once) {
-          outer_height += 40;
-        }
-        return {
-          width,
-          height,
-          outer_height,
-        };
-      }),
+      width: computed(() => MODAL_WIDTH[props.type.toUpperCase()] ?? MODAL_WIDTH.XS),
       resolvePromise: null,
       beforeAccept: () => true,
       checkedOnce: false,
@@ -112,12 +95,13 @@ export default {
         state.checkedOnce = false;
         state.control.hideTrigger = PopupTrigger.None;
         state.control.show((state.show = true));
-        state.acceptButtonText = options.acceptButtonText || '확인';
-        state.cancelButtonText = options.cancelButtonText || '취소';
+        state.acceptButtonText = options.acceptButtonText ?? '확인';
+        state.cancelButtonText = options.cancelButtonText ?? '취소';
         if (accept && typeof accept === 'function') {
           state.beforeAccept = accept;
         }
         state.resolvePromise = resolve;
+        Control.invalidateAll();
       });
     };
 
@@ -142,24 +126,12 @@ export default {
       }
     );
 
-    const observer = new ResizeObserver(
-      _.throttle(() => {
-        Control.invalidateAll();
-      }, 500)
-    );
-
     onMounted(() => {
       state.control = root.value.control;
-      observer.observe(body.value);
-    });
-
-    onUnmounted(() => {
-      observer.disconnect();
     });
 
     return {
       root,
-      body,
       one,
       ...toRefs(state),
       open,
@@ -174,14 +146,13 @@ export default {
 .wj-popup {
   width: 100%;
   max-width: var(--max-width, 400px) !important;
-  max-height: var(--max-height, 320px) !important;
   .modal-body {
     .layer-body {
       display: flex;
       justify-content: center;
       align-items: flex-start;
       min-height: 100px;
-      max-height: calc(var(--max-height, 320px) - 36px - 62px) !important;
+      max-height: calc(100vh - 36px - 62px) !important;
       overflow-y: auto;
       word-break: break-word;
     }

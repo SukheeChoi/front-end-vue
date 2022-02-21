@@ -135,5 +135,8 @@ export default {
       transform: translateY(-50%);
     }
   }
+  :deep(.wj-btn) {
+    min-height: 0;
+  }
 }
 </style>

@@ -56,10 +56,11 @@ export default {
       const columns = cols
         .filter((col) => col.binding && col.header.trim())
         .map((col) => {
-          const { binding, header, width, format } = col;
+          const { binding, header, align, width, format } = col;
           return {
             binding,
             header,
+            align,
             width,
             format,
           };
