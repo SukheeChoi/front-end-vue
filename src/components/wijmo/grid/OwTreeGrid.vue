@@ -1,7 +1,7 @@
 <template>
-  <ow-flex-grid v-bind="$attrs" :initialized="init">
+  <new-ow-grid v-bind="$attrs" :initialized="init" :allow-pagination="false">
     <slot></slot>
-  </ow-flex-grid>
+  </new-ow-grid>
 </template>
 <script>
 import _ from 'lodash';
@@ -41,9 +41,9 @@ export default {
     });
 
     const init = (grid) => {
-      if (props.selector) {
-        addSelector(grid);
-      }
+      // if (props.selector) {
+      //   addSelector(grid);
+      // }
       formatItem(grid);
       grid.selectionMode = props.selectionMode;
       grid.childItemsPath = props.childItemsPath;
@@ -73,19 +73,6 @@ export default {
       return new Selector(grid.columns[chkIdx], {});
     };
 
-    const trimSelector = (s, e) => {
-      let col = e.panel.columns[e.col],
-          row = e.panel.rows[e.row];
-
-      if (col.name == 'chk') {
-        if (row.dataItem && row.dataItem.nodeType == state.drag.nodeType) {
-          // remove buttons from first column
-          e.cell.innerHTML = e.cell.textContent.trim();
-        }
-        e.cell.style.paddingLeft = null;
-      }
-    }
-
     const addHeaderIcon = (grid, e) => {
       if (e.panel.cellType != wjGrid.CellType.RowHeader) {
         return;
@@ -112,8 +99,12 @@ export default {
         return;
       }
 
+      if (e.panel.cellType != wjGrid.CellType.Cell) {
+        return;
+      }
+
       let row = e.panel.rows[e.row],
-        binding = s.columns[e.col].binding;
+        binding = e.panel.columns[e.col].binding;
 
       state.drag.icon.forEach((col) => {
         if (binding == col) {
@@ -126,7 +117,7 @@ export default {
       });
 
       // 조직도 icon 추가
-      if (binding == 'orgNm') {
+      if (e.panel.columns[e.col].binding == 'orgNm') {
         let padding = row.level * 13;
         if (!row.hasChildren) {
           padding += 20;
@@ -135,7 +126,7 @@ export default {
           // clear content
           e.cell.innerHTML = '';
           let collapse = '',
-            icon = '';
+              icon = '';
 
           if (row.isCollapsed) {
             collapse = utils.getWjGlyph('right', 'collapse');
@@ -158,23 +149,7 @@ export default {
     };
 
     const formatItem = (grid) => {
-      if (grid.allowDragging > 1) { //None
-        // const rowHeaders = grid.rowHeaders.columns,
-        //       drag = (element) => element.binding == 'drag';
-        // if (rowHeaders.findIndex(drag) < 0) {
-        //   grid.rowHeaders.columns.push(new wjcGrid.Column({ binding: 'drag', header: ' ', align: 'center' }));
-        // }
-
-        // grid.rowHeaders.columns[0].binding = 'drag';
-        // grid.rowHeaders.columns[0].header = ' ';
-        // grid.rowHeaders.columns.push(new wjcGrid.Column({ binding: 'rowStatus', header: ' ', align: 'center' }));
-        grid.hostElement.style.width = getComputedStyle(grid.hostElement).getPropertyValue('width');
-
-        // console.log('grid.rowHeaders', grid.rowHeaders);
-      }
-
       grid.formatItem.addHandler(function(s, e) {
-        trimSelector(s, e);
         addHeaderIcon(grid, e);
         addCellIcon(s, e);
       });
@@ -216,7 +191,7 @@ export default {
       let ht = grid.hitTest(target),
         dragRow = target.dataTransfer.getData('text'),
         item = originalGrid.rows[parseInt(dragRow)].dataItem,
-        parentRow = 0,
+        parentRow = -1,
         findIdx = false;
 
       if (!dragRow || !ht.row) {
@@ -236,8 +211,6 @@ export default {
               findIdx = true;
             }
           });
-        } else if (row.hasChildren != true && row._data.orgCd == _item.orgCd) {
-          console.log('row.hasChildren', row);
         }
       });
 
@@ -250,7 +223,9 @@ export default {
           grid.rows[ht.row].dataItem.children = [];
           grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
         } else {
-          grid.rows[parentRow].dataItem.children.splice(0, 0, _item);
+          if (parentRow >= 0) {
+            grid.rows[parentRow].dataItem.children.splice(0, 0, _item);
+          }
         }
       } else {
         grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
@@ -265,6 +240,7 @@ export default {
       // make rows draggable
       s.itemFormatter = (panel, r, c, cell) => {
         let row = panel.rows[r];
+        
         if (panel.cellType == wjGrid.CellType.RowHeader) {
           cell.draggable = true;
 
@@ -335,11 +311,6 @@ export default {
 
       s.hostElement.addEventListener("drop", (e) => {
         let item = originalGrid.rows[parseInt(e.dataTransfer.getData("text"))].dataItem; //drag data
-
-        if (s == originalGrid && s.rows[s.hitTest(e).row].dataItem.nodeType != state.drag.nodeType) {
-          removeImage();
-          return;
-        }
 
         if (s != originalGrid) {
           addItem(s, e);
