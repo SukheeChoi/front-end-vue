@@ -21,6 +21,8 @@ import { reactive, toRefs, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
+import { isMobile } from '@grapecity/wijmo';
+
 import { Menu } from '@/model';
 
 const MenuList2 = [
@@ -101,7 +103,7 @@ export default {
       for (const menu of list) {
         const matched = menu.name === name;
         if (matched || (menu.children && compose(menu.children, name, false))) {
-          const hide = state.isCollapse && state.myMenuList.length > 1;
+          const hide = state.isCollapse && state.myMenuList.length > (isMobile() ? 0 : 1);
           return state.myMenuList.unshift({ list, index, hide }) > 0;
         }
         index += 1;
@@ -114,8 +116,9 @@ export default {
     };
 
     const collapse = () => {
-      for (let i = 0, length = state.myMenuList.length - 2; i < length; i += 1) {
-        state.myMenuList.at(i).hide = state.isCollapse = !state.isCollapse;
+      state.isCollapse = !state.isCollapse;
+      for (let i = 0, length = state.myMenuList.length - (isMobile() ? 1 : 2); i < length; i += 1) {
+        state.myMenuList.at(i).hide = state.isCollapse;
       }
     };
 

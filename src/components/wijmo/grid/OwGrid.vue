@@ -60,13 +60,16 @@
 import _ from 'lodash';
 
 import { reactive, ref, computed, watch, toRefs } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
-import { Column } from '@grapecity/wijmo.grid';
+import { Column, ColumnCollection } from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
-import { useRoute, useRouter } from 'vue-router';
+
+import { instance } from '@/main';
+import { t } from '@/plugins/i18n';
 
 export const ROW_STATUS = {
   ADD: 'C',
@@ -158,12 +161,22 @@ export default {
       s.collectionView.trackChanges = true;
       s.collectionView.useStableSort = true;
       s.collectionView.sortDescriptions.push(new SortDescription('__index__', false));
-      s.collectionView.itemsAdded.collectionChanged.addHandler((c, e) => (e.item.rowStatus = ROW_STATUS.ADD));
-      s.collectionView.itemsEdited.collectionChanged.addHandler((c, e) => (e.item.rowStatus = ROW_STATUS.EDIT));
+      s.collectionView.itemsAdded.collectionChanged.addHandler(
+        (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.ADD)
+      );
+      s.collectionView.itemsEdited.collectionChanged.addHandler(
+        (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
+      );
       s.collectionView.collectionChanged.addHandler((c, e) => {
         state.grid.allowAddNew = false;
-        if (NotifyCollectionChangedAction.Add === e.action) {
-          e.item.__index__ = e.index;
+        if (NotifyCollectionChangedAction.Reset === e.action) {
+          for (let i = 0, length = c.items.length; i < length; i += 1) {
+            const item = c.items.at(i);
+            item.__order__ = item.__order__ ?? state.totalCount - (state.pageNo - 1) * state.pageSize - i;
+            item.__index__ = item.__index__ ?? length - i - 1;
+          }
+        } else if (NotifyCollectionChangedAction.Add === e.action) {
+          e.item.__index__ = e.item.__index__ ?? e.index;
         }
       });
 
@@ -181,16 +194,20 @@ export default {
     // 행 추가
     const add = () => {
       state.grid.allowAddNew = true;
-      state.grid.startEditing(false, 0, 0);
     };
 
     // 행 삭제
     const remove = async () => {
       if (props.remove) {
         const items = Array.from(state.grid?.selector?.checkedItems ?? []).map((item) => item.dataItem);
-        // [TODO] 후처리 진행
-        if (await props.remove(items)) {
-          read(); // 검색 조건과 페이지 유지
+        if (_.isEmpty(items)) {
+          return instance.alert(t('wijmo.grid.remove.noData'));
+        }
+        if (await instance.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
+          // [TODO] 후처리 진행
+          if (await props.remove(items)) {
+            read(); // 검색 조건과 페이지 유지
+          }
         }
       }
     };
@@ -200,15 +217,24 @@ export default {
       if (props.save) {
         const addItems = Array.from(state.grid?.collectionView.itemsAdded ?? []);
         const editItems = Array.from(state.grid?.collectionView.itemsEdited ?? []);
-        // [TODO] 후처리 진행
-        if (await props.save(addItems, editItems)) {
-          read(); // 검색 조건과 페이지 유지
+        if (_.isEmpty(addItems) && _.isEmpty(editItems)) {
+          return instance.alert(t('wijmo.grid.save.noData'));
+        }
+        if (await instance.confirm(t('wijmo.grid.save.confirm', [addItems.length + editItems.length]))) {
+          // [TODO] 후처리 진행
+          if (await props.save(addItems, editItems)) {
+            read(); // 검색 조건과 페이지 유지
+          }
         }
       }
     };
 
     // 초기화
-    const reset = () => (state.grid.collectionView.sourceCollection = _.cloneDeep(state.source));
+    const reset = async () => {
+      if (await instance.confirm(t('wijmo.grid.reset.confirm'))) {
+        state.grid.collectionView.sourceCollection = _.cloneDeep(state.source);
+      }
+    };
 
     // 초기화
     const clear = () => {
@@ -254,11 +280,6 @@ export default {
         state.pageSize = pageSize ?? 10;
         state.totalCount = totalCount ?? 0;
         state.source = _.cloneDeep(items);
-        for (let i = 0, length = items.length; i < length; i += 1) {
-          const item = items.at(i);
-          item.__order__ = totalCount - (pageNo - 1) * pageSize - i;
-          item.__index__ = length - i - 1;
-        }
         state.grid.collectionView.sourceCollection = items;
         if (props.allowPushState) {
           router.push({
