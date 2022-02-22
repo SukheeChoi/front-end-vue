@@ -135,7 +135,10 @@ export default {
       state.grid = s;
 
       // Grid의 초기값 설정
-      s.itemsSource = props.itemsSource;
+      if (props.itemsSource) {
+        s.itemsSource = props.itemsSource;
+        state.totalCount = s.collectionView.items.length ?? 0;
+      }
 
       // AllowStatus | RowStatus
       const statusHeader = new Column({
