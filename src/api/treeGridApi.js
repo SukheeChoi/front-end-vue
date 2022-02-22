@@ -315,7 +315,6 @@ export class TreeGridApi extends CollectionView {
         }
 
         grid.formatItem.addHandler(function(s, e) {
-            TreeGridApi.trimSelector(s, e);
             TreeGridApi.alignHeader(e);
             TreeGridApi.addHeaderIcon(grid, e);
             TreeGridApi.addCellIcon(s, e);

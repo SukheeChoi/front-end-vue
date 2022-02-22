@@ -107,4 +107,8 @@ export default {
         { value: '3', name: '까지' },
         { value: '4', name: '사이' },
     ],
+    USER_STAT_CD: [
+        { value: '20', name: '재직' },
+        { value: '90', name: '퇴직' },
+    ],
 };
