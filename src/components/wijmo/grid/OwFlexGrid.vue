@@ -16,7 +16,7 @@
   </wj-flex-grid>
 </template>
 <script>
-import { hasClass, Tooltip, PopupPosition, Key, ObservableArray } from '@grapecity/wijmo';
+import { hasClass, Control, Tooltip, Key, ObservableArray } from '@grapecity/wijmo';
 import {
   AllowDragging,
   AllowMerging,
@@ -30,6 +30,7 @@ import {
   SelMove,
 } from '@grapecity/wijmo.grid';
 import { Selector } from '@grapecity/wijmo.grid.selector';
+import { nextTick, onMounted } from '@vue/runtime-core';
 
 export default {
   name: 'OwFlexGrid',
@@ -179,6 +180,10 @@ export default {
       if (props.initialized) {
         props.initialized(s);
       }
+
+      // [ISSUE | 2022.02.22] 데이터 바인딩 이후 폭이 변경됨, 바인딩 되기 전의 폭으로 강제 변경
+      const width = getComputedStyle(s.hostElement).getPropertyValue('width');
+      nextTick(() => (s.hostElement.style.width = width));
     };
     return {
       init,

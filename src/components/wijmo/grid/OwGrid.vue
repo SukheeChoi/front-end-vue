@@ -393,12 +393,10 @@ export default {
 .ow-grid-wrap {
   position: relative;
   &.ow-grid-empty {
-    margin-bottom: 50px;
-    overflow: visible;
     &::after {
       content: '검색 결과가 없습니다.';
       position: absolute;
-      bottom: -35px;
+      top: 35px;
       width: 100%;
       line-height: 35px;
       text-align: center;
@@ -406,7 +404,6 @@ export default {
       border-radius: 0;
       border: 1px solid #d7dce3;
       border-top: none;
-      transition: linear 0.5s;
     }
   }
   .ow-grid {
