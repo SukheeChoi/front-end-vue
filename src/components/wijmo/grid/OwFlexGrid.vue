@@ -41,14 +41,11 @@ export default {
     allowResizing: { type: [Number, String], default: AllowResizing.None },
     allowSorting: { type: [Number, String], default: AllowSorting.None },
     allowSelector: Boolean,
+    allowTooltip: { type: Boolean, default: true },
     headersVisibility: { type: [Number, String], default: HeadersVisibility.All },
     selectionMode: { type: [Number, String], default: SelectionMode.Row },
     stickyHeaders: { type: Boolean, default: true },
     newRowAtTop: { type: Boolean, default: true },
-    tooltip: {
-      type: Object,
-      default: () => ({ position: PopupPosition.RightBottom, gap: 10, showAtMouse: true, showDelay: 300 }),
-    },
   },
   setup(props) {
     const init = (s) => {
@@ -86,14 +83,22 @@ export default {
       s.addEventListener(s.hostElement, 'mouseup', setSelection);
 
       // Tooltip
-      if (props.tooltip) {
-        const tooltip = props.tooltip instanceof Tooltip ? props.tooltip : new Tooltip(_.cloneDeep(props.tooltip));
+      if (props.allowTooltip) {
+        // Cell에 대해서
         s.formatItem.addHandler((s, { cell }) => {
-          const text = cell.textContent.trim();
-          tooltip.setTooltip(cell, text);
-          if (_.isEmpty(text)) {
-            tooltip.hide();
-          }
+          const tt = new Tooltip();
+          const debounce = _.debounce(() => {
+            const content = _.trim(cell.textContent);
+            if (content && hasClass(cell, 'wj-cell') && !hasClass(cell, 'wj-state-invalid')) {
+              tt.show(cell, content);
+            }
+          }, 300);
+          const clear = () => {
+            tt.hide();
+            debounce.cancel();
+          };
+          cell.addEventListener('mouseenter', debounce);
+          cell.addEventListener('mouseleave', clear);
         });
       }
 
@@ -118,6 +123,7 @@ export default {
           col: -1,
         };
       };
+
       const setTabIndex = (e) => {
         const { keyCode, shiftKey, target } = e;
         if (keyCode === Key.Tab && hasClass(target, 'wj-cell')) {
@@ -149,6 +155,7 @@ export default {
       s.addEventListener(s.hostElement, 'keyup', setTabIndex);
 
       // [ISSUE | 2022.02.17] RowRange, ListBox, MultiRange인 경우 정상적으로 동작하지 않음
+      // Selector
       const setSelector = () => {
         const selector = new Selector(s, {
           itemChecked: () => {
