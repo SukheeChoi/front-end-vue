@@ -24,7 +24,7 @@
         </ow-flex-grid>
       </div>
     </ow-flex-item>
-    <ow-flex-item fix class="mt-10 mb-10">
+    <ow-flex-item fix class="mt-10 mb-10" v-if="allowPagination">
       <ow-flex-item to="left">
         <button type="button" class="ow-button type-icon">
           <i class="fas fa-cog fa-fw" />
@@ -63,7 +63,7 @@ import { reactive, ref, computed, watch, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
-import { Column, ColumnCollection } from '@grapecity/wijmo.grid';
+import { Column } from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
@@ -90,6 +90,9 @@ export default {
       default: () => [],
     },
     itemValidator: [Function, Object],
+    allowStatus: Boolean,
+    allowPushState: Boolean,
+    allowPagination: { type: Boolean, default: true },
     title: String,
     headline: {
       type: Boolean,
@@ -107,8 +110,6 @@ export default {
     read: Function,
     remove: Function,
     save: Function,
-    allowStatus: Boolean,
-    allowPushState: Boolean,
   },
   setup(props) {
     const router = useRouter();
