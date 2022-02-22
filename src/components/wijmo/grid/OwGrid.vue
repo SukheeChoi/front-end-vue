@@ -17,7 +17,7 @@
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item class="ow-scroll has-grid">
+    <ow-flex-item class="has-grid">
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
@@ -197,7 +197,7 @@ export default {
 
       // Item Validator
       s.itemValidator = (r, c, p) => {
-        console.log('itemValidator', r, c);
+        // console.log('itemValidator', r, c);
         if (props.itemValidator) {
           if (props.itemValidator instanceof Function) {
             return props.itemValidator(r, c, p);
@@ -290,7 +290,8 @@ export default {
       if (props.read) {
         const {
           query,
-          paging: { pageNo, pageSize },
+          // paging: { pageNo, pageSize },
+          paging,
           totalCount,
           items,
         } = await props.read(state.query, {
@@ -299,16 +300,9 @@ export default {
           sort: state.sort,
           direction: state.direction,
         });
-        console.log('read', {
-          query,
-          pageNo,
-          pageSize,
-          totalCount,
-          items,
-        });
         state.query = query;
-        state.pageNo = pageNo;
-        state.pageSize = pageSize ?? 10;
+        state.pageNo = paging?.pageNo ?? 1;
+        state.pageSize = paging?.pageSize ?? 10;
         state.totalCount = totalCount ?? 0;
         state.source = _.cloneDeep(items);
         state.grid.collectionView.sourceCollection = items;
@@ -393,10 +387,12 @@ export default {
 .ow-grid-wrap {
   position: relative;
   &.ow-grid-empty {
+    margin-bottom: 50px;
+    overflow: visible;
     &::after {
       content: '검색 결과가 없습니다.';
       position: absolute;
-      top: 35px;
+      bottom: -35px;
       width: 100%;
       line-height: 35px;
       text-align: center;
@@ -404,6 +400,7 @@ export default {
       border-radius: 0;
       border: 1px solid #d7dce3;
       border-top: none;
+      transition: linear 0.5s;
     }
   }
   .ow-grid {
