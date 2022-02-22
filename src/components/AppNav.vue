@@ -1,7 +1,7 @@
 <template>
   <nav>
     <template v-for="(myMenu, level) in myMenuList" :key="myMenu">
-      <b-tabs class="ow-tabs" v-show="!myMenu.hide" v-model="myMenu.index">
+      <b-tabs class="ow-tabs" v-if="!myMenu.hide" v-model="myMenu.index">
         <b-tab v-for="{ title, name } in myMenu.list" :key="name" :title="title" @click="$router.push({ name })">
           <template v-if="showCollapse(level)">
             <div class="ow-tabs-toggle" :class="{ fold: isCollapse }">
