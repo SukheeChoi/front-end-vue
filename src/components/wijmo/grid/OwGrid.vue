@@ -184,6 +184,7 @@ export default {
           e.item.__index__ = e.item.__index__ ?? e.index;
         }
       });
+      s.collectionView.onCollectionChanged();
       // s.collectionView.getError = (item, prop, parsing) => {
       //   console.log('get error', item, prop, parsing);
       //   let b = '';
@@ -365,6 +366,20 @@ export default {
     watch(
       () => state.pageSize,
       () => read(1)
+    );
+
+    watch(
+      () => props.itemsSource,
+      () => {
+        if (props.itemsSource) {
+          state.grid.sourceCollection = props.itemsSource;
+          if (props.itemsSource instanceof CollectionView) {
+            state.totalCount = props.itemsSource.items.length;
+          } else {
+            state.totalCount = props.itemsSource.length;
+          }
+        }
+      }
     );
 
     return {
