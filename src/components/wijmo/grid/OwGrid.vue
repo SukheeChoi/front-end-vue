@@ -1,6 +1,6 @@
 <template>
-  <ow-flex-wrap col>
-    <ow-flex-item v-if="headline">
+  <ow-flex-wrap class="size-full" col>
+    <ow-flex-item fix v-if="headline">
       <ow-flex-item class="headline-wrap" align="center" to="left">
         <slot name="left">
           <h1 class="h1" v-if="title">{{ title }}</h1>
@@ -17,14 +17,14 @@
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item>
+    <ow-flex-item class="ow-scroll has-grid">
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
         </ow-flex-grid>
       </div>
     </ow-flex-item>
-    <ow-flex-item class="mt-10 mb-10">
+    <ow-flex-item fix class="mt-10 mb-10">
       <ow-flex-item to="left">
         <button type="button" class="ow-button type-icon">
           <i class="fas fa-cog fa-fw" />
@@ -89,6 +89,7 @@ export default {
       type: [Array, CollectionView],
       default: () => [],
     },
+    itemValidator: [Function, Object],
     title: String,
     headline: {
       type: Boolean,
@@ -179,6 +180,36 @@ export default {
           e.item.__index__ = e.item.__index__ ?? e.index;
         }
       });
+      // s.collectionView.getError = (item, prop, parsing) => {
+      //   console.log('get error', item, prop, parsing);
+      //   let b = '';
+      //   const a = async () => {
+      //     if (props.itemValidator[prop] instanceof Function && props.itemValidator[prop](item[prop])) {
+      //       b = 'bbbbbbbb';
+      //       return await props.itemValidator[prop](item[prop]);
+      //     }
+      //   };
+      //   a();
+      //   console.log('b', b);
+
+      //   return null;
+      // };
+
+      // Item Validator
+      s.itemValidator = (r, c, p) => {
+        console.log('itemValidator', r, c);
+        if (props.itemValidator) {
+          if (props.itemValidator instanceof Function) {
+            return props.itemValidator(r, c, p);
+          } else if (props.itemValidator instanceof Object) {
+            const { dataItem: item } = s.rows[r];
+            const { binding: prop } = s.columns[c];
+            if (props.itemValidator[prop]) {
+              return props.itemValidator[prop](item[prop]);
+            }
+          }
+        }
+      };
 
       // 사용자가 설정한 초기화 함수 호출
       if (props.initialized) {
