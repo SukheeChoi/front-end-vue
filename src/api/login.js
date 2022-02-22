@@ -10,16 +10,16 @@ class Login {
   }
   requestReissueToken(url, id) {
     const params = { userId: id };
-    return restApi.get(url, params, 'ReissueToken');
+    return restApi.get(url, {}, 'ReissueToken');
   }
 
-  getUserInfo(url, id) {
-    const params = { userId: id };
-    return restApi.get(url, params, 'UserInfo');
+  getUserInfo(url) {
+    return restApi.get(url, {}, 'UserInfo');
   }
   getMenuList(url) {
     const params = store.getters.getUserInfo;
-    return restApi.getListPost(url, JSON.stringify(params));
+    //return restApi.getListPost(url, JSON.stringify(params));
+    return restApi.getList(url);
   }
 
   getUserAuth(url) {
@@ -32,6 +32,7 @@ class Login {
   }
 
   setAuth(response) {
+    console.log(response);
     const jsonData = JSON.parse(response.data.data);
     const accessToken = jsonData.accessToken;
     const ttl = jsonData.ttl;

@@ -99,7 +99,7 @@ export default {
       }
     },
     async getUserInfo() {
-      const userData = await login.getUserInfo('/com/Auth', this.loginId);
+      const userData = await login.getUserInfo('/com/Auth');
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         this.$store.commit('setUserInfo', userInfo);
@@ -117,6 +117,7 @@ export default {
           this.$store.commit('setRouteChildList', {root : routeRootList[i], child : screenList[i+1].children});          
         }
         for(var i=0;i<routeRootList.length;i++){
+          console.log(routeRootList);
           this.$router.addRoute(routeRootList[i]);
         }
 
