@@ -24,12 +24,16 @@
   </wj-popup>
 </template>
 <script>
-import { PopupTrigger } from '@grapecity/wijmo.input';
-
 import { ref, computed, onMounted, reactive, toRefs } from 'vue';
+
+import { PopupTrigger } from '@grapecity/wijmo.input';
+import { WjPopup } from '@grapecity/wijmo.vue2.input';
 
 export default {
   name: 'OwDialog',
+  components: {
+    WjPopup,
+  },
   props: {},
   setup() {
     const state = reactive({

@@ -14,8 +14,14 @@
 </template>
 <script>
 import { computed, reactive, toRefs } from 'vue';
+
+import { WjInputNumber } from '@grapecity/wijmo.vue2.input';
+
 export default {
   name: 'OwInputNumber',
+  components: {
+    WjInputNumber,
+  },
   props: {
     label: String,
     format: {

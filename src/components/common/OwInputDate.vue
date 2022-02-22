@@ -14,11 +14,17 @@
   </div>
 </template>
 <script>
-import { Globalize } from '@grapecity/wijmo';
 import { ref, watch, reactive } from 'vue';
+
+import { Globalize } from '@grapecity/wijmo';
+import { WjInputDate } from '@grapecity/wijmo.vue2.input';
+
 import { expando } from '@/utils';
 export default {
   name: 'OwInputDate',
+  components: {
+    WjInputDate,
+  },
   props: {
     label: String,
     unique: {

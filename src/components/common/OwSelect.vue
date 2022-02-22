@@ -10,19 +10,23 @@
       :selected-value-path="dataMap.selectedValuePath"
       :placeholder="placeholder"
       :initialized="initialized"
-    >
-    </wj-combo-box>
+    ></wj-combo-box>
   </div>
 </template>
 <script>
+import { computed, ref, watch, reactive, toRefs } from 'vue';
+
 import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
+import { WjComboBox } from '@grapecity/wijmo.vue2.input';
 
-import { computed, ref, watch, reactive, toRefs } from 'vue';
 import { expando } from '@/utils';
 
 export default {
   name: 'OwSelect',
+  components: {
+    WjComboBox,
+  },
   props: {
     label: String,
     unique: {
@@ -36,12 +40,9 @@ export default {
       default: '',
     },
     items: {
-      type: Object,
+      type: [Array, CollectionView, DataMap],
       default: () => {
         return new DataMap(new CollectionView(), 'value', 'name');
-      },
-      validator: (items) => {
-        return items instanceof DataMap || items instanceof CollectionView || items instanceof Array;
       },
     },
     modelValue: [String, Number, Object],

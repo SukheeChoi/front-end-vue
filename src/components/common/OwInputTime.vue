@@ -17,12 +17,18 @@
   </div>
 </template>
 <script>
-import { Globalize } from '@grapecity/wijmo';
-import { expando } from '@/utils';
 import { reactive, ref, toRefs, watch } from 'vue';
+
+import { Globalize } from '@grapecity/wijmo';
+import { WjInputTime } from '@grapecity/wijmo.vue2.input';
+
+import { expando } from '@/utils';
 
 export default {
   name: 'OwInputTime',
+  components: {
+    WjInputTime,
+  },
   props: {
     label: String,
     unique: {

@@ -18,9 +18,15 @@
 </template>
 <script>
 import { reactive, ref, watch } from 'vue';
+
+import { WjComboBox } from '@grapecity/wijmo.vue2.input';
+
 import { expando } from '@/utils';
 export default {
   name: 'OwInput',
+  components: {
+    WjComboBox,
+  },
   props: {
     label: String,
     unique: {

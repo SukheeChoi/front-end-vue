@@ -34,10 +34,11 @@
   </wj-popup>
 </template>
 <script>
+import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
+
 import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
-
-import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
+import { WjPopup } from '@grapecity/wijmo.vue2.input';
 
 import { expando } from '@/utils';
 
@@ -54,6 +55,9 @@ const MODAL_WIDTH = {
 
 export default {
   name: 'OwModal',
+  components: {
+    WjPopup,
+  },
   props: {
     type: {
       type: String,
