@@ -120,7 +120,7 @@ export default {
     const state = reactive({
       grid: null,
       source: _.cloneDeep(props.itemsSource),
-      empty: computed(() => !!state.grid?.collectionView.isEmpty),
+      empty: true,
       query: _.cloneDeep(props.query) ?? {},
       pageNo: +(props.paging.pageNo ?? 1),
       pageSize: +(props.paging.pageSize ?? 10),
@@ -135,10 +135,13 @@ export default {
       state.grid = s;
 
       // Grid의 초기값 설정
-      if (props.itemsSource) {
+      if (props.itemsSource instanceof CollectionView) {
         s.itemsSource = props.itemsSource;
-        state.totalCount = s.collectionView.items.length ?? 0;
+      } else if (props.itemsSource instanceof Array) {
+        s.itemsSource = new CollectionView();
+        s.collectionView.sourceCollection = props.itemsSource;
       }
+      state.totalCount = s.collectionView?.items.length ?? 0;
 
       // AllowStatus | RowStatus
       const statusHeader = new Column({
@@ -174,47 +177,18 @@ export default {
       );
       s.collectionView.collectionChanged.addHandler((c, e) => {
         state.grid.allowAddNew = false;
-        if (NotifyCollectionChangedAction.Reset === e.action) {
-          for (let i = 0, length = c.items.length; i < length; i += 1) {
-            const item = c.items.at(i);
-            item.__order__ = item.__order__ ?? state.totalCount - (state.pageNo - 1) * state.pageSize - i;
-            item.__index__ = item.__index__ ?? length - i - 1;
-          }
-        } else if (NotifyCollectionChangedAction.Add === e.action) {
+        if (NotifyCollectionChangedAction.Add === e.action) {
           e.item.__index__ = e.item.__index__ ?? e.index;
         }
       });
-      s.collectionView.onCollectionChanged();
-      // s.collectionView.getError = (item, prop, parsing) => {
-      //   console.log('get error', item, prop, parsing);
-      //   let b = '';
-      //   const a = async () => {
-      //     if (props.itemValidator[prop] instanceof Function && props.itemValidator[prop](item[prop])) {
-      //       b = 'bbbbbbbb';
-      //       return await props.itemValidator[prop](item[prop]);
-      //     }
-      //   };
-      //   a();
-      //   console.log('b', b);
-
-      //   return null;
-      // };
-
-      // Item Validator
-      s.itemValidator = (r, c, p) => {
-        // console.log('itemValidator', r, c);
-        if (props.itemValidator) {
-          if (props.itemValidator instanceof Function) {
-            return props.itemValidator(r, c, p);
-          } else if (props.itemValidator instanceof Object) {
-            const { dataItem: item } = s.rows[r];
-            const { binding: prop } = s.columns[c];
-            if (props.itemValidator[prop]) {
-              return props.itemValidator[prop](item[prop]);
-            }
-          }
-        }
-      };
+      s.collectionView.sourceCollectionChanged.addHandler((c) => {
+        _.forEach(c.items, (item, index) => {
+          item.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+          item.__index__ = item.__index__ ?? c.items.length - index - 1;
+        });
+        state.empty = c.isEmpty;
+        s.collectionView.refresh();
+      });
 
       // 사용자가 설정한 초기화 함수 호출
       if (props.initialized) {
@@ -366,20 +340,6 @@ export default {
     watch(
       () => state.pageSize,
       () => read(1)
-    );
-
-    watch(
-      () => props.itemsSource,
-      () => {
-        if (props.itemsSource) {
-          state.grid.sourceCollection = props.itemsSource;
-          if (props.itemsSource instanceof CollectionView) {
-            state.totalCount = props.itemsSource.items.length;
-          } else {
-            state.totalCount = props.itemsSource.length;
-          }
-        }
-      }
     );
 
     return {
