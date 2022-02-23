@@ -17,7 +17,7 @@
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item class="ow-scroll">
+    <ow-flex-item class="has-grid">
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
