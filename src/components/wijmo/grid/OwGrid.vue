@@ -17,7 +17,7 @@
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item class="has-grid">
+    <ow-flex-item class="ow-scroll">
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
@@ -374,14 +374,11 @@ export default {
     &::after {
       content: '검색 결과가 없습니다.';
       position: absolute;
-      top: 35px;
+      top: 15%;
       width: 100%;
       line-height: 35px;
       text-align: center;
       z-index: 999;
-      border-radius: 0;
-      border: 1px solid #d7dce3;
-      border-top: none;
     }
   }
   .ow-grid {
