@@ -227,12 +227,14 @@ export default {
       if (props.save) {
         const addItems = Array.from(state.grid?.collectionView.itemsAdded ?? []);
         const editItems = Array.from(state.grid?.collectionView.itemsEdited ?? []);
-        if (_.isEmpty(addItems) && _.isEmpty(editItems)) {
+        const removeItems = Array.from(state.grid?.collectionView.itemsRemoved ?? []);
+        if (_.isEmpty(addItems) && _.isEmpty(editItems) && _.isEmpty(removeItems)) {
           return instance.alert(t('wijmo.grid.save.noData'));
         }
-        if (await instance.confirm(t('wijmo.grid.save.confirm', [addItems.length + editItems.length]))) {
+        const total = addItems.length + editItems.length + removeItems.length;
+        if (await instance.confirm(t('wijmo.grid.save.confirm', [total]))) {
           // [TODO] 후처리 진행
-          if (await props.save(addItems, editItems)) {
+          if (await props.save(addItems, editItems, removeItems)) {
             read(); // 검색 조건과 페이지 유지
           }
         }
@@ -324,7 +326,10 @@ export default {
 
     const allowRowsExcelDownload = async () => {
       if (props.read) {
-        const { items } = await props.read(state.query, {});
+        const { items } = await props.read(state.query, {
+          pageNo: 1,
+          pageSize: state.totalCount,
+        });
         const { columns, itemsSource } = setCumstomColums(state.grid.columns, items);
         downloader.value.exec(columns, itemsSource);
       } else {
