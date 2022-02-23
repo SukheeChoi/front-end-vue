@@ -187,7 +187,7 @@ export default {
           item.__index__ = item.__index__ ?? c.items.length - index - 1;
         });
         state.empty = c.isEmpty;
-        s.collectionView.refresh();
+        c.refresh();
       });
 
       // 사용자가 설정한 초기화 함수 호출
