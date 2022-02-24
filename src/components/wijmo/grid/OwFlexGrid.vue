@@ -50,10 +50,12 @@ export default {
   },
   setup(props) {
     const init = (s) => {
+      const width = getComputedStyle(s.hostElement).getPropertyValue('width');
+      // [ISSUE | 2022.02.22] 데이터 바인딩 이후 폭이 변경됨, 바인딩 되기 전의 폭으로 강제 변경
+      nextTick(() => (s.hostElement.style.width = width));
+
       // AllowDragging
       const draggableHeader = new Column({
-        binding: 'drag',
-        header: '\u00A0',
         cellTemplate: (ctx) => {
           if (ctx.item) {
             return '<button class="wj-btn wj-btn-glyph"><span class="wj-glyph-drag"></span></button>';
@@ -182,11 +184,6 @@ export default {
       if (props.initialized) {
         props.initialized(s);
       }
-
-      // [ISSUE | 2022.02.22] 데이터 바인딩 이후 폭이 변경됨, 바인딩 되기 전의 폭으로 강제 변경
-      const width = getComputedStyle(s.hostElement).getPropertyValue('width');
-      console.log('width', width);
-      nextTick(() => (s.hostElement.style.width = width));
     };
     return {
       init,
