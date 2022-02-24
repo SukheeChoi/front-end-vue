@@ -1,5 +1,5 @@
 <template>
-  <new-ow-grid v-bind="$attrs" :initialized="init" :allow-pagination="false" ref="grid"
+  <new-ow-grid v-bind="$attrs" :initialized="init" :footer="false" ref="grid"
   >
   <!-- :read="read" :save="save" :remove="remove" :paging="paging" :query="query" -->
     <template #left>
@@ -39,11 +39,6 @@ export default {
       type: String,
       default: 'children',
     },
-    // read: Function,
-    // remove: Function,
-    // save: Function,
-    // query: Object,
-    // paging: Object,
   },
   setup(props, { emit }) {
     const state = reactive({
@@ -66,27 +61,9 @@ export default {
 
     const grid = ref(null);
 
-    const read = () => {
-      if (props.read) {
-        props.read();
-      }
-      grid.value.read();
-    }
-
-    const save = () => {
-      if (props.save) {
-        props.save();
-      }
-    }
-
-    const remove = () => {
-      if (props.remove) {
-        props.remove();
-      }
-    }
-
-    const query = props.query,
-          paging = props.paging;
+    const read = () => grid.value.read();
+    const save = () => grid.value.save();
+    const remove = () => grid.value.remove();
 
     onMounted(() => {
       if (props.drag) {
@@ -379,10 +356,8 @@ export default {
       makeDropTarget,
       grid,
       read,
-      // remove,
-      // save,
-      // query,
-      // paging
+      remove,
+      save,
     };
   },
 };

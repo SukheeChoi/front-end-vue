@@ -2,10 +2,7 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView, hasClass, addClass, removeClass } from '@grapecity/wijmo';
-import * as gridXlsx from '@grapecity/wijmo.grid.xlsx';
-import * as wjcGrid from '@grapecity/wijmo.grid';
-import * as wjGrid from '@grapecity/wijmo.grid';
+import { CollectionView } from '@grapecity/wijmo';
 
 export class GridApi extends CollectionView {
   _id = '';
@@ -34,25 +31,31 @@ export class GridApi extends CollectionView {
     this._storeChain = stores;
   }
 
-  init(vm, grid, qry = null, opt = null, autoLoading = true) {
+  init(
+    vm,
+    grid,
+    qry = null,
+    opt = null
+    // , autoLoading = true
+  ) {
     this._vm = vm;
     this._gridView = grid;
     // grid.cellEditEnding.addHandler(this.valid);
 
     if (qry == null) {
-      qry = this._vm.qry;
+      qry = this._vm.query;
     }
 
     if (opt == null) {
-      opt = this._vm.opt;
+      opt = this._vm.paging;
     }
 
     this._qry = qry;
     this._opt = opt;
 
-    if (autoLoading) {
-      this.getList();
-    }
+    // if (autoLoading) {
+    // this.getList();
+    // }
   }
 
   clearData() {
@@ -99,36 +102,67 @@ export class GridApi extends CollectionView {
     return opt;
   }
 
-  async getList(pageNo = -1, qry = null, pageSize = -1) {
-    let opt = this.mergePagingParams(pageNo, pageSize);
-    if (qry != null) {
-      this._qry = Object.assign(this._qry, qry);
+  getList = async (query = {}, paging = {}) => {
+    if (this._qry) {
+      query = this._qry;
     }
 
-    let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
-    if (resData.data.code == 'OK') {
-      this._orgValues = _.cloneDeep(resData.data.data);
-      this.sourceCollection = resData.data.data;
-      this._opt.totalCount = resData.data.totalCount;
+    const {
+      data: { data: items, totalCount, code, message },
+    } = await restApi.getList(this._uri, {
+      ...query,
+      ...paging,
+    });
 
+    if (code == 'OK') {
       if (this._storeChain.length > 0) {
         var dataItem = null;
 
-        if (this.sourceCollection.length > 0) {
-          dataItem = this.sourceCollection[0];
+        if (items.length > 0) {
+          dataItem = items[0];
         }
 
         this.chainQuery(dataItem);
       }
 
-      if (typeof this._vm?.totalCount !== 'undefined') {
-        this._vm.totalCount = this._opt.totalCount;
-        this.onSourceCollectionChanged();
-      }
+      console.log('vm', this._vm);
+
+      return {
+        query,
+        paging,
+        totalCount,
+        items,
+      };
     } else {
-      await this._vm.alert(resData.data.message);
+      await this._vm.alert(message);
     }
-  }
+  };
+
+  // async getList(pageNo = -1, qry = null, pageSize = -1) {
+  //   let opt = this.mergePagingParams(pageNo, pageSize);
+  //   if (qry != null) {
+  //     this._qry = Object.assign(this._qry, qry);
+  //   }
+  //   let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
+
+  //   if (resData.data.code == 'OK') {
+  //     this._orgValues = _.cloneDeep(resData.data.data);
+  //     this.sourceCollection = resData.data.data;
+  //     this._opt.totalCount = resData.data.totalCount;
+
+  //     if (this._storeChain.length > 0) {
+  //       var dataItem = null;
+
+  //       if (this.sourceCollection.length > 0) {
+  //         dataItem = this.sourceCollection[0];
+  //       }
+
+  //       this.chainQuery(dataItem);
+  //     }
+  //   } else {
+  //     await this._vm.alert(resData.data.message);
+  //   }
+  // }
 
   chainQuery(dataItem) {
     if (dataItem == null || dataItem.rowStatus == 'C') {
@@ -148,112 +182,106 @@ export class GridApi extends CollectionView {
     }
   }
 
-  add() {
-    if (this._isDetail && this._keyValues == null) {
-      this._vm.alert(this._model.title + ' 자료 입력중입니다.');
-      return;
-    }
+  // add() {
+  //   if (this._isDetail && this._keyValues == null) {
+  //     this._vm.alert(this._model.title + ' 자료 입력중입니다.');
+  //     return;
+  //   }
 
-    let addData = _.cloneDeep(this._newValues);
+  //   let addData = _.cloneDeep(this._newValues);
 
-    if (this._keyValues != null) {
-      addData = Object.assign(addData, this._keyValues);
-    }
+  //   if (this._keyValues != null) {
+  //     addData = Object.assign(addData, this._keyValues);
+  //   }
 
-    if (this._gridView.newRowAtTop) {
-      this.sourceCollection.splice(0, 0, addData);
-    } else {
-      this.sourceCollection.push(addData);
-    }
+  //   if (this._gridView.newRowAtTop) {
+  //     this.sourceCollection.splice(0, 0, addData);
+  //   } else {
+  //     this.sourceCollection.push(addData);
+  //   }
 
-    this.itemsAdded.push(addData);
-    this.refresh();
-  }
+  //   this.itemsAdded.push(addData);
+  //   this.refresh();
+  // }
 
-  async del() {
-    if (this._isDetail && this._keyValues == null) {
-      this._vm.alert(this._model.title + ' 자료 입력중입니다.');
-      return;
-    }
+  // async del() {
+  //   if (this._isDetail && this._keyValues == null) {
+  //     this._vm.alert(this._model.title + ' 자료 입력중입니다.');
+  //     return;
+  //   }
 
-    if (this._values.length == 0) {
-      this._vm.alert('삭제할 자료를 선택하세요.');
-      return;
-    }
+  //   if (this._values.length == 0) {
+  //     this._vm.alert('삭제할 자료를 선택하세요.');
+  //     return;
+  //   }
 
-    const ok = await this._vm.confirm('선택하신 자료를 삭제하시겠습니까?');
+  //   const ok = await this._vm.confirm('선택하신 자료를 삭제하시겠습니까?');
 
-    if (!ok) {
-      return;
-    }
+  //   if (!ok) {
+  //     return;
+  //   }
 
-    let delList = [];
+  //   let delList = [];
 
-    for (let value of this._values) {
-      if (value.rowStatus != 'C') {
-        delList.push(value);
-      }
-    }
+  //   for (let value of this._values) {
+  //     if (value.rowStatus != 'C') {
+  //       delList.push(value);
+  //     }
+  //   }
 
-    if (delList.length > 0) {
-      this.refreshQuery(await restApi.removeList(this._uri, delList, this._id));
-    } else {
-      for (let value of this._values) {
-        if (value.rowStatus == 'C') {
-          this.remove(value);
-        }
-      }
-    }
-  }
+  //   if (delList.length > 0) {
+  //     this.refreshQuery(await restApi.removeList(this._uri, delList, this._id));
+  //   } else {
+  //     for (let value of this._values) {
+  //       if (value.rowStatus == 'C') {
+  //         this.remove(value);
+  //       }
+  //     }
+  //   }
+  // }
 
-  async save() {
-    if (this._isDetail && this._keyValues == null) {
-      this._vm.alert(this._model.title + ' 자료 입력중입니다.');
-      return;
-    }
+  // async save() {
+  //   if (this._isDetail && this._keyValues == null) {
+  //     this._vm.alert(this._model.title + ' 자료 입력중입니다.');
+  //     return;
+  //   }
 
-    if (this.itemsAdded.length + this.itemsEdited.length == 0) {
-      this._vm.alert('신규로 추가된 자료나 수정된 자료가 없습니다.');
-      return;
-    }
+  //   if (this.itemsAdded.length + this.itemsEdited.length == 0) {
+  //     this._vm.alert('신규로 추가된 자료나 수정된 자료가 없습니다.');
+  //     return;
+  //   }
 
-    const ok = await this._vm.confirm('수정 혹은 추가된 자료를 저장하시겠습니까?');
-    if (!ok) {
-      return;
-    }
+  //   const ok = await this._vm.confirm('수정 혹은 추가된 자료를 저장하시겠습니까?');
+  //   if (!ok) {
+  //     return;
+  //   }
 
-    let saveList = [];
+  //   let saveList = [];
 
-    if (this.itemsAdded.length > 0) {
-      for (let i = 0; i < this.itemsAdded.length; i++) {
-        saveList.push(this.itemsAdded.at(i));
-      }
-    }
+  //   if (this.itemsAdded.length > 0) {
+  //     for (let i = 0; i < this.itemsAdded.length; i++) {
+  //       saveList.push(this.itemsAdded.at(i));
+  //     }
+  //   }
 
-    if (this.itemsEdited.length > 0) {
-      for (let i = 0; i < this.itemsEdited.length; i++) {
-        saveList.push(this.itemsEdited.at(i));
-      }
-    }
+  //   if (this.itemsEdited.length > 0) {
+  //     for (let i = 0; i < this.itemsEdited.length; i++) {
+  //       saveList.push(this.itemsEdited.at(i));
+  //     }
+  //   }
 
-    this.refreshQuery(await restApi.save(this._uri, saveList, this._id));
-  }
+  //   this.refreshQuery(await restApi.save(this._uri, saveList, this._id));
+  // }
 
-  clear() {
-    this.clearData();
-    const newItem = new this.constructor(this._uri, this._model, this._id);
-    newItem.init(this._vm, this._gridView);
-  }
-
-  async refreshQuery(resData) {
-    if (resData.data) {
-      if (resData.data.code == 'OK') {
-        await this.getList();
-      } else {
-        await this._vm.alert(resData.data.message);
-      }
-    }
-  }
+  // async refreshQuery(resData) {
+  //   if (resData.data) {
+  //     if (resData.data.code == 'OK') {
+  //       await this.getList();
+  //     } else {
+  //       await this._vm.alert(resData.data.message);
+  //     }
+  //   }
+  // }
 
   static markRecordStatus(grid, e) {
     const oldVal = grid.getCellData(e.row, e.col, true),
