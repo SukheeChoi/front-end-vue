@@ -56,6 +56,8 @@ export default {
 
       // AllowDragging
       const draggableHeader = new Column({
+        binding: 'drag',
+        header: '\u00A0',
         cellTemplate: (ctx) => {
           if (ctx.item) {
             return '<button class="wj-btn wj-btn-glyph"><span class="wj-glyph-drag"></span></button>';
@@ -191,3 +193,11 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.ow-grid {
+  border: 1px solid rgba(215, 220, 227, 1);
+  :deep(.wj-header) {
+    text-align: center;
+  }
+}
+</style>

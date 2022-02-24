@@ -277,34 +277,37 @@ export default {
         state.pageNo = +pageNo;
       }
       if (props.read) {
-        const {
-          query,
-          // paging: { pageNo, pageSize },
-          paging,
-          totalCount,
-          items,
-        } = await props.read(state.query, {
-          pageNo: state.pageNo,
-          pageSize: state.pageSize,
-          sort: state.sort,
-          direction: state.direction,
+        applier(
+          await props.read(state.query, {
+            pageNo: state.pageNo,
+            pageSize: state.pageSize,
+            sort: state.sort,
+            direction: state.direction,
+          })
+        );
+      }
+      const root = state.grid.hostElement.querySelector('[wj-part=root]');
+      if (root) {
+        root.scrollTop = 0;
+      }
+    };
+
+    const applier = ({ query, paging, totalCount, items }) => {
+      state.query = query;
+      state.pageNo = paging?.pageNo ?? 1;
+      state.pageSize = paging?.pageSize ?? 10;
+      state.totalCount = totalCount ?? 0;
+      state.source = _.cloneDeep(items);
+      state.grid.collectionView.sourceCollection = items;
+      if (props.allowPushState) {
+        router.push({
+          path: route.path,
+          query: {
+            ...state.query,
+            pageNo: state.pageNo,
+            pageSize: state.pageSize,
+          },
         });
-        state.query = query;
-        state.pageNo = paging?.pageNo ?? 1;
-        state.pageSize = paging?.pageSize ?? 10;
-        state.totalCount = totalCount ?? 0;
-        state.source = _.cloneDeep(items);
-        state.grid.collectionView.sourceCollection = items;
-        if (props.allowPushState) {
-          router.push({
-            path: route.path,
-            query: {
-              ...state.query,
-              pageNo: state.pageNo,
-              pageSize: state.pageSize,
-            },
-          });
-        }
       }
     };
 
@@ -357,6 +360,7 @@ export default {
       init,
       lookup,
       read,
+      applier,
       add,
       save,
       remove,
@@ -382,17 +386,6 @@ export default {
       line-height: 35px;
       text-align: center;
       z-index: 999;
-    }
-  }
-  .ow-grid {
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    :deep(.wj-header) {
-      text-align: center;
-      &:first-child {
-        border-left: 1px solid rgba(215, 220, 227, 1);
-      }
     }
   }
 }
