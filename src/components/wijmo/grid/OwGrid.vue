@@ -1,6 +1,6 @@
 <template>
   <ow-flex-wrap class="size-full" col>
-    <ow-flex-item fix v-if="headline">
+    <ow-flex-item fix v-if="header">
       <ow-flex-item class="headline-wrap" align="center" to="left">
         <slot name="left">
           <h1 class="h1" v-if="title">{{ title }}</h1>
@@ -8,8 +8,8 @@
       </ow-flex-item>
       <ow-flex-item align="center" to="right">
         <slot name="right">
-          <button type="button" class="ow-btn type-state" @click="allowRowsExcelDownload">엑셀1</button>
-          <button type="button" class="ow-btn type-state" @click="currentRowsExcelDownload">엑셀2</button>
+          <button type="button" class="ow-btn type-state" @click="download(true)">엑셀1</button>
+          <button type="button" class="ow-btn type-state" @click="download(false)">엑셀2</button>
           <button type="button" class="ow-btn type-state" @click="reset">초기화</button>
           <button type="button" class="ow-btn type-state" @click="add">추가</button>
           <button type="button" class="ow-btn type-state" @click="remove">삭제</button>
@@ -17,14 +17,14 @@
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item class="has-grid">
+    <ow-flex-item style="flex-direction: column">
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
         </ow-flex-grid>
       </div>
     </ow-flex-item>
-    <ow-flex-item fix class="mt-10 mb-10" v-if="allowPagination">
+    <ow-flex-item fix class="mt-10 mb-10" v-if="footer">
       <ow-flex-item to="left">
         <button type="button" class="ow-button type-icon">
           <i class="fas fa-cog fa-fw" />
@@ -59,7 +59,7 @@
 <script>
 import _ from 'lodash';
 
-import { reactive, ref, computed, watch, toRefs } from 'vue';
+import { reactive, ref, watch, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
@@ -92,9 +92,12 @@ export default {
     itemValidator: [Function, Object],
     allowStatus: Boolean,
     allowPushState: Boolean,
-    allowPagination: { type: Boolean, default: true },
+    header: {
+      type: Boolean,
+      default: true,
+    },
     title: String,
-    headline: {
+    footer: {
       type: Boolean,
       default: true,
     },
@@ -130,6 +133,10 @@ export default {
       pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
     });
 
+    // [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
+    const Order = Symbol('Order').toString();
+    const Index = Symbol('Index').toString();
+
     const init = (s) => {
       // state 설정
       state.grid = s;
@@ -155,20 +162,21 @@ export default {
               case 'U':
                 return '<button class="ow-btn type-icon"><span class="wj-glyph-pencil"></span></button>';
               default:
-                return ctx.item.__order__;
+                return ctx.item[Order];
             }
           }
           return ctx.text;
         },
         align: 'center',
         visible: props.allowStatus,
+        quickAutoSize: true,
       });
       s.rowHeaders.columns.push(statusHeader);
 
       // CollectionView 설정
       s.collectionView.trackChanges = true;
       s.collectionView.useStableSort = true;
-      s.collectionView.sortDescriptions.push(new SortDescription('__index__', false));
+      s.collectionView.sortDescriptions.push(new SortDescription(Index, false));
       s.collectionView.itemsAdded.collectionChanged.addHandler(
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.ADD)
       );
@@ -178,13 +186,13 @@ export default {
       s.collectionView.collectionChanged.addHandler((c, e) => {
         state.grid.allowAddNew = false;
         if (NotifyCollectionChangedAction.Add === e.action) {
-          e.item.__index__ = e.item.__index__ ?? e.index;
+          e.item[Index] = e.item[Index] ?? e.index;
         }
       });
       s.collectionView.sourceCollectionChanged.addHandler((c) => {
         _.forEach(c.items, (item, index) => {
-          item.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
-          item.__index__ = item.__index__ ?? c.items.length - index - 1;
+          item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+          item[Index] = item[Index] ?? c.items.length - index - 1;
         });
         state.empty = c.isEmpty;
         c.refresh();
@@ -312,10 +320,10 @@ export default {
       );
       const itemsSource = _.cloneDeep(Array.from(items));
       if (props.allowStatus) {
-        columns.unshift(new Column({ binding: '__order__', header: '번호' }));
+        columns.unshift(new Column({ binding: Order, header: '번호' }));
         for (let i = 0, length = itemsSource.length; i < length; i += 1) {
           const itemSource = itemsSource.at(i);
-          itemSource.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
+          itemSource[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
         }
       }
       return {
@@ -324,21 +332,17 @@ export default {
       };
     };
 
-    const allowRowsExcelDownload = async () => {
-      if (props.read) {
+    const download = async (isAll) => {
+      let columns, itemsSource;
+      if (props.read && isAll) {
         const { items } = await props.read(state.query, {
           pageNo: 1,
           pageSize: state.totalCount,
         });
-        const { columns, itemsSource } = setCumstomColums(state.grid.columns, items);
-        downloader.value.exec(columns, itemsSource);
+        ({ columns, itemsSource } = setCumstomColums(state.grid.columns, items));
       } else {
-        currentRowsExcelDownload();
+        ({ columns, itemsSource } = setCumstomColums(state.grid.columns, state.source));
       }
-    };
-
-    const currentRowsExcelDownload = () => {
-      const { columns, itemsSource } = setCumstomColums(state.grid.columns, state.source);
       downloader.value.exec(columns, itemsSource);
     };
 
@@ -358,8 +362,7 @@ export default {
       remove,
       reset,
       clear,
-      allowRowsExcelDownload,
-      currentRowsExcelDownload,
+      download,
     };
   },
 };
@@ -382,10 +385,14 @@ export default {
     }
   }
   .ow-grid {
+    border-left: none;
     border-right: none;
     border-bottom: none;
     :deep(.wj-header) {
       text-align: center;
+      &:first-child {
+        border-left: 1px solid rgba(215, 220, 227, 1);
+      }
     }
   }
 }
