@@ -30,7 +30,7 @@ import {
   SelMove,
 } from '@grapecity/wijmo.grid';
 import { Selector } from '@grapecity/wijmo.grid.selector';
-import { nextTick, onMounted } from '@vue/runtime-core';
+import { nextTick } from '@vue/runtime-core';
 
 export default {
   name: 'OwFlexGrid',
@@ -50,8 +50,8 @@ export default {
   },
   setup(props) {
     const init = (s) => {
-      const width = getComputedStyle(s.hostElement).getPropertyValue('width');
       // [ISSUE | 2022.02.22] 데이터 바인딩 이후 폭이 변경됨, 바인딩 되기 전의 폭으로 강제 변경
+      const width = getComputedStyle(s.hostElement).getPropertyValue('width');
       nextTick(() => (s.hostElement.style.width = width));
 
       // AllowDragging
@@ -164,14 +164,13 @@ export default {
       // [ISSUE | 2022.02.17] RowRange, ListBox, MultiRange인 경우 정상적으로 동작하지 않음
       // Selector
       const setSelector = () => {
-        const selector = new Selector(s, {
-          itemChecked: () => {
-            s.selector.checkedItems.clear();
-            s.selector.checkedItems.push(...s.rows.filter((row) => row.isSelected));
-          },
-        });
+        const selector = new Selector(s);
         s.selector = selector;
         s.selector.checkedItems = new ObservableArray();
+        s.selector.itemChecked.addHandler((selector) => {
+          selector.checkedItems.clear();
+          selector.checkedItems.push(...s.rows.filter((row) => row.isSelected));
+        });
 
         // [ISSUE | 2022.02.17] RowRange, ListBox, MultiRange인 경우 정상적으로 동작하지 않음
         s.selectionMode = props.selectionMode > SelectionMode.Row ? SelectionMode.Row : props.selectionMode;

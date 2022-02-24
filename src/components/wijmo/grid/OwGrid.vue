@@ -26,7 +26,7 @@
     </ow-flex-item>
     <ow-flex-item fix class="mt-10 mb-10" v-if="footer">
       <ow-flex-item to="left">
-        <button type="button" class="ow-button type-icon">
+        <button type="button" class="ow-button type-icon mr-5">
           <i class="fas fa-cog fa-fw" />
         </button>
         <ow-select :items="pageSizeList" v-model="pageSize" style="--width: 80px" />
@@ -47,9 +47,7 @@
           ></b-pagination>
         </template>
       </ow-flex-item>
-      <ow-flex-item to="right">
-        <div class="counter-board">전체 {{ totalCount }} 건</div>
-      </ow-flex-item>
+      <ow-flex-item to="right"> 전체 {{ totalCount }} 건 </ow-flex-item>
     </ow-flex-item>
   </ow-flex-wrap>
   <teleport to="#teleport">
