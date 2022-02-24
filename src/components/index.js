@@ -14,7 +14,6 @@ import OwFilterCheckbox from '@/components/common/OwFilterCheckbox';
 import OwFilterRadio from '@/components/common/OwFilterRadio';
 import OwFlexWrap from '@/components/common/OwFlexWrap';
 import OwFlexItem from '@/components/common/OwFlexItem';
-import OwGrid from '@/components/common/OwGrid';
 import OwInput from '@/components/common/OwInput';
 import OwInputDate from '@/components/common/OwInputDate';
 import OwInputTime from '@/components/common/OwInputTime';
@@ -29,47 +28,46 @@ import OwSignature from '@/components/common/OwSignature';
 import OwSpinner from '@/components/common/OwSpinner';
 import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
-import NewOwGrid from '@/components/wijmo/grid/OwGrid';
+import OwGrid from '@/components/wijmo/grid/OwGrid';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
 import OwTreeGrid from '@/components/wijmo/grid/OwTreeGrid';
 
 export function registerWijmo(app) {
-    registerCore(app);
-    registerInput(app);
-    registerGrid(app);
-    registerGridDetail(app);
-    registerGridFilter(app);
-    registerGridGrouppanel(app);
-    registerNav(app);
+  registerCore(app);
+  registerInput(app);
+  registerGrid(app);
+  registerGridDetail(app);
+  registerGridFilter(app);
+  registerGridGrouppanel(app);
+  registerNav(app);
 }
 
 let COMMON_COMPONENTS = {
-    OwCheckbox,
-    OwContainer,
-    OwContent,
-    OwDialog,
-    OwFilterCheckbox,
-    OwFilterRadio,
-    OwFlexWrap,
-    OwFlexItem,
-    OwGrid,
-    OwInput,
-    OwInputDate,
-    OwInputTime,
-    OwInputNumber,
-    OwModal,
-    OwPanel,
-    OwRadio,
-    OwRadioButton,
-    OwSelect,
-    OwCommonSelect,
-    OwSignature,
-    OwSpinner,
-    OwSwitch,
-    OwTab,
-    OwFlexGrid,
-    OwTreeGrid,
-    NewOwGrid,
+  OwCheckbox,
+  OwContainer,
+  OwContent,
+  OwDialog,
+  OwFilterCheckbox,
+  OwFilterRadio,
+  OwFlexWrap,
+  OwFlexItem,
+  OwGrid,
+  OwInput,
+  OwInputDate,
+  OwInputTime,
+  OwInputNumber,
+  OwModal,
+  OwPanel,
+  OwRadio,
+  OwRadioButton,
+  OwSelect,
+  OwCommonSelect,
+  OwSignature,
+  OwSpinner,
+  OwSwitch,
+  OwTab,
+  OwFlexGrid,
+  OwTreeGrid,
 };
 
 export function registerOwComponents(app) {

@@ -1,5 +1,5 @@
 <template>
-  <new-ow-grid v-bind="$attrs" :initialized="init" :footer="false" ref="grid"
+  <ow-grid v-bind="$attrs" :initialized="init" :footer="false" ref="grid"
   >
   <!-- :read="read" :save="save" :remove="remove" :paging="paging" :query="query" -->
     <template #left>
@@ -9,7 +9,7 @@
       <slot name="right"></slot>
     </template>
     <slot></slot>
-  </new-ow-grid>
+  </ow-grid>
 </template>
 <script>
 import _ from 'lodash';

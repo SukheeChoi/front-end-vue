@@ -81,27 +81,6 @@ export class GridApi extends CollectionView {
     this.sourceCollection = _.cloneDeep(this._orgValues);
   }
 
-  mergePagingParams(pageNo = -1, pageSize = -1) {
-    let opt = {};
-
-    if (pageNo > 0) {
-      this._opt.pageNo = pageNo;
-    }
-
-    if (pageSize > 0) {
-      this._opt.pageSize = pageSize;
-    }
-
-    if (this._opt.pageNo && this._opt.pageSize) {
-      opt = {
-        pageNo: this._opt.pageNo,
-        pageSize: this._opt.pageSize,
-      };
-    }
-
-    return opt;
-  }
-
   getList = async (query = {}, paging = {}) => {
     if (this._qry) {
       query = this._qry;
@@ -109,10 +88,14 @@ export class GridApi extends CollectionView {
 
     const {
       data: { data: items, totalCount, code, message },
-    } = await restApi.getList(this._uri, {
-      ...query,
-      ...paging,
-    });
+    } = await restApi.getList(
+      this._uri,
+      {
+        ...query,
+        ...paging,
+      },
+      this._id
+    );
 
     if (code == 'OK') {
       if (this._storeChain.length > 0) {
@@ -125,44 +108,22 @@ export class GridApi extends CollectionView {
         this.chainQuery(dataItem);
       }
 
-      console.log('vm', this._vm);
+      let applyVm = this._vm;
 
-      return {
+      if (!this._vm.applier) {
+        applyVm = this._vm.grid;
+      }
+
+      applyVm.applier({
         query,
         paging,
         totalCount,
         items,
-      };
+      });
     } else {
       await this._vm.alert(message);
     }
   };
-
-  // async getList(pageNo = -1, qry = null, pageSize = -1) {
-  //   let opt = this.mergePagingParams(pageNo, pageSize);
-  //   if (qry != null) {
-  //     this._qry = Object.assign(this._qry, qry);
-  //   }
-  //   let resData = await restApi.getList(this._uri, Object.assign(this._qry, opt), this._id);
-
-  //   if (resData.data.code == 'OK') {
-  //     this._orgValues = _.cloneDeep(resData.data.data);
-  //     this.sourceCollection = resData.data.data;
-  //     this._opt.totalCount = resData.data.totalCount;
-
-  //     if (this._storeChain.length > 0) {
-  //       var dataItem = null;
-
-  //       if (this.sourceCollection.length > 0) {
-  //         dataItem = this.sourceCollection[0];
-  //       }
-
-  //       this.chainQuery(dataItem);
-  //     }
-  //   } else {
-  //     await this._vm.alert(resData.data.message);
-  //   }
-  // }
 
   chainQuery(dataItem) {
     if (dataItem == null || dataItem.rowStatus == 'C') {
@@ -182,106 +143,21 @@ export class GridApi extends CollectionView {
     }
   }
 
-  // add() {
-  //   if (this._isDetail && this._keyValues == null) {
-  //     this._vm.alert(this._model.title + ' 자료 입력중입니다.');
-  //     return;
-  //   }
+  save = async (addItems, editItems) => {
+    const saveUri = this._uri;
+    const {
+      data: { code },
+    } = await restApi.save(saveUri, [...addItems, ...editItems]);
+    return code === 'OK';
+  };
 
-  //   let addData = _.cloneDeep(this._newValues);
-
-  //   if (this._keyValues != null) {
-  //     addData = Object.assign(addData, this._keyValues);
-  //   }
-
-  //   if (this._gridView.newRowAtTop) {
-  //     this.sourceCollection.splice(0, 0, addData);
-  //   } else {
-  //     this.sourceCollection.push(addData);
-  //   }
-
-  //   this.itemsAdded.push(addData);
-  //   this.refresh();
-  // }
-
-  // async del() {
-  //   if (this._isDetail && this._keyValues == null) {
-  //     this._vm.alert(this._model.title + ' 자료 입력중입니다.');
-  //     return;
-  //   }
-
-  //   if (this._values.length == 0) {
-  //     this._vm.alert('삭제할 자료를 선택하세요.');
-  //     return;
-  //   }
-
-  //   const ok = await this._vm.confirm('선택하신 자료를 삭제하시겠습니까?');
-
-  //   if (!ok) {
-  //     return;
-  //   }
-
-  //   let delList = [];
-
-  //   for (let value of this._values) {
-  //     if (value.rowStatus != 'C') {
-  //       delList.push(value);
-  //     }
-  //   }
-
-  //   if (delList.length > 0) {
-  //     this.refreshQuery(await restApi.removeList(this._uri, delList, this._id));
-  //   } else {
-  //     for (let value of this._values) {
-  //       if (value.rowStatus == 'C') {
-  //         this.remove(value);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // async save() {
-  //   if (this._isDetail && this._keyValues == null) {
-  //     this._vm.alert(this._model.title + ' 자료 입력중입니다.');
-  //     return;
-  //   }
-
-  //   if (this.itemsAdded.length + this.itemsEdited.length == 0) {
-  //     this._vm.alert('신규로 추가된 자료나 수정된 자료가 없습니다.');
-  //     return;
-  //   }
-
-  //   const ok = await this._vm.confirm('수정 혹은 추가된 자료를 저장하시겠습니까?');
-  //   if (!ok) {
-  //     return;
-  //   }
-
-  //   let saveList = [];
-
-  //   if (this.itemsAdded.length > 0) {
-  //     for (let i = 0; i < this.itemsAdded.length; i++) {
-  //       saveList.push(this.itemsAdded.at(i));
-  //     }
-  //   }
-
-  //   if (this.itemsEdited.length > 0) {
-  //     for (let i = 0; i < this.itemsEdited.length; i++) {
-  //       saveList.push(this.itemsEdited.at(i));
-  //     }
-  //   }
-
-  //   this.refreshQuery(await restApi.save(this._uri, saveList, this._id));
-  // }
-
-  // async refreshQuery(resData) {
-  //   if (resData.data) {
-  //     if (resData.data.code == 'OK') {
-  //       await this.getList();
-  //     } else {
-  //       await this._vm.alert(resData.data.message);
-  //     }
-  //   }
-  // }
+  remove = async (removeItems) => {
+    const removeUri = this._uri;
+    const {
+      data: { code },
+    } = await restApi.removeList(removeUri, [...removeItems]);
+    return code === 'OK';
+  };
 
   static markRecordStatus(grid, e) {
     const oldVal = grid.getCellData(e.row, e.col, true),
