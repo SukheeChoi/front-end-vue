@@ -1,5 +1,13 @@
 <template>
-  <new-ow-grid v-bind="$attrs" :initialized="init" :allow-pagination="false">
+  <new-ow-grid v-bind="$attrs" :initialized="init" :allow-pagination="false" ref="grid"
+  >
+  <!-- :read="read" :save="save" :remove="remove" :paging="paging" :query="query" -->
+    <template #left>
+      <slot name="left"></slot>
+    </template>
+    <template #right>
+      <slot name="right"></slot>
+    </template>
     <slot></slot>
   </new-ow-grid>
 </template>
@@ -7,10 +15,8 @@
 import _ from 'lodash';
 
 import { reactive, ref, computed, watch, toRefs, onMounted } from 'vue';
-import { CollectionView } from '@grapecity/wijmo';
 import { AllowDragging, SelectionMode, Column, RowCol } from '@grapecity/wijmo.grid';
 import { Selector } from '@grapecity/wijmo.grid.selector';
-import * as wjcGrid from '@grapecity/wijmo.grid';
 import * as wjGrid from '@grapecity/wijmo.grid';
 import utils from '@/utils/commUtils.js';
 
@@ -19,6 +25,7 @@ export default {
   inheritAttrs: false,
   components: {},
   props: {
+    initialized: Function,
     selector: Boolean,
     drag: {
       type: Object,
@@ -32,6 +39,11 @@ export default {
       type: String,
       default: 'children',
     },
+    // read: Function,
+    // remove: Function,
+    // save: Function,
+    // query: Object,
+    // paging: Object,
   },
   setup(props, { emit }) {
     const state = reactive({
@@ -41,15 +53,40 @@ export default {
     });
 
     const init = (grid) => {
-      // if (props.selector) {
-      //   addSelector(grid);
-      // }
+      if (props.initialized) {
+        props.initialized(grid);
+      }
+
       formatItem(grid);
       grid.selectionMode = props.selectionMode;
       grid.childItemsPath = props.childItemsPath;
 
       state.grid = grid;
     };
+
+    const grid = ref(null);
+
+    const read = () => {
+      if (props.read) {
+        props.read();
+      }
+      grid.value.read();
+    }
+
+    const save = () => {
+      if (props.save) {
+        props.save();
+      }
+    }
+
+    const remove = () => {
+      if (props.remove) {
+        props.remove();
+      }
+    }
+
+    const query = props.query,
+          paging = props.paging;
 
     onMounted(() => {
       if (props.drag) {
@@ -95,26 +132,11 @@ export default {
     };
 
     const addCellIcon = (s, e) => {
-      if (!state.drag.icon) {
-        return;
-      }
-
       if (e.panel.cellType != wjGrid.CellType.Cell) {
         return;
       }
 
-      let row = e.panel.rows[e.row],
-        binding = e.panel.columns[e.col].binding;
-
-      state.drag.icon.forEach((col) => {
-        if (binding == col) {
-          if (row.dataItem && row.dataItem[col]) {
-            e.cell.innerHTML =
-              row.dataItem[col] +
-              (utils.getOwIcon(row.dataItem.nodeType) ? utils.getOwIcon(row.dataItem.nodeType) : '');
-          }
-        }
-      });
+      let row = e.panel.rows[e.row];
 
       // 조직도 icon 추가
       if (e.panel.columns[e.col].binding == 'orgNm') {
@@ -126,7 +148,8 @@ export default {
           // clear content
           e.cell.innerHTML = '';
           let collapse = '',
-              icon = '';
+              icon = '',
+              text = '';
 
           if (row.isCollapsed) {
             collapse = utils.getWjGlyph('right', 'collapse');
@@ -135,14 +158,21 @@ export default {
           }
 
           if (row.dataItem.nodeType == 'org') {
-            if (row.dataItem.orgCd == '0000') {
-              icon = utils.getOwIcon('osstem');
-            } else {
-              icon = utils.getOwIcon(row.dataItem.nodeType);
-            }
+            
+            text = row.dataItem.orgNm;
+          } else if (row.dataItem.nodeType == 'person') {
+            icon = utils.getOwIcon(row.dataItem.nodeType);
+            text = row.dataItem.userNm;
+          } else if (row.dataItem.nodeType == 'biz') {
+            icon = utils.getOwIcon(row.dataItem.nodeType);
+            text = row.dataItem.bizGripNm;
           }
+          e.cell.innerHTML = collapse + icon + text;
 
-          e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
+          if (row.dataItem.nodeType == 'org' && row.dataItem.orgCd == '0000') {
+            icon = utils.getOwIcon('osstem');
+            e.cell.innerHTML = collapse + row.dataItem.orgNm + icon; 
+          }
         }
         e.cell.style.paddingLeft = padding + 'px';
       }
@@ -219,7 +249,16 @@ export default {
       }
 
       if (!grid.rows[ht.row].dataItem.children) {
-        if (grid.rows[ht.row].dataItem.nodeType == 'org') {
+        let findType = false;
+        if (state.drag.nodeType) {
+          state.drag.nodeType.forEach((type) => {
+            if (grid.rows[ht.row].dataItem.nodeType == type) {
+              findType = true;
+            }
+          })
+        }
+
+        if (findType) {
           grid.rows[ht.row].dataItem.children = [];
           grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
         } else {
@@ -248,6 +287,10 @@ export default {
             state.drag.readonly.forEach((type) => {
               if (type == row.dataItem.nodeType) {
                 cell.draggable = false;
+                // let btn = document.querySelector('.wj-glyph-drag').closest('button');
+                // btn[r].disabled;
+
+                //wj-glyph-drag
               }
             });
           }
@@ -334,6 +377,12 @@ export default {
       init,
       makeDragSource,
       makeDropTarget,
+      grid,
+      read,
+      // remove,
+      // save,
+      // query,
+      // paging
     };
   },
 };
