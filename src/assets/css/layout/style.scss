@@ -88,7 +88,7 @@ $clrs-accent: getColors("accent");
 }
 
 $ow-icon: '.ow-icon';
-$items: ( osstem: 'osstem', people-fill: 'people-fill', person-workspace: 'person-workspace', person: 'user', menu: 'menu', org: 'organization', biz: 'people');
+$items: ( osstem: 'osstem', people-fill: 'people-fill', person-workspace: 'person-workspace', person: 'user', menu: 'menu', org: 'organization', biz: 'people', root: 'folder', folder: 'list', program: 'doc');
 #{$ow-icon} {
     margin-right: calc(#{var(--bs-gutter)} * .5);
     width: calc(#{var(--bs-gutter)} * 2);

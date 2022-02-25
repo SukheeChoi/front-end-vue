@@ -117,7 +117,8 @@ export default {
       if (col.cssClass == 'icon') {
         let padding = row.level * 13,
             collapse = '',
-            icon = utils.getOwIcon(row.dataItem[state.drag.iconType].toLowerCase()) ?? '',
+            iconType = state.drag.iconType?.toLowerCase() ?? '',
+            icon = utils.getOwIcon(row.dataItem[iconType]) ?? '',
             text = e.cell.innerText ?? '';
 
         // has child node, add collapse/expand buttons
