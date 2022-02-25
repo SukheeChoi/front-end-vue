@@ -81,13 +81,16 @@ export class GridApi extends CollectionView {
     this.sourceCollection = _.cloneDeep(this._orgValues);
   }
 
-  getList = async (query = {}, paging = {}) => {
-    if (this._qry) {
-      query = this._qry;
+  getList = async (query = {}, paging = {}, self) => {
+    if (!_.isEmpty(query)) {
+      this._qry = query;
+    }
+    if (!_.isEmpty(paging)) {
+      this._opt = paging;
     }
 
     const {
-      data: { data: items, totalCount, code, message },
+      data: { data: items, totalCount, code },
     } = await restApi.getList(
       this._uri,
       {
@@ -114,15 +117,23 @@ export class GridApi extends CollectionView {
         applyVm = this._vm.grid;
       }
 
-      applyVm.applier({
-        query,
-        paging,
-        totalCount,
-        items,
-      });
-    } else {
-      await this._vm.alert(message);
+      if (self) {
+        applyVm.applier({
+          query,
+          paging,
+          totalCount,
+          items,
+        });
+        return;
+      }
     }
+
+    return {
+      query,
+      paging,
+      totalCount,
+      items,
+    };
   };
 
   chainQuery(dataItem) {
@@ -148,7 +159,10 @@ export class GridApi extends CollectionView {
     const {
       data: { code },
     } = await restApi.save(saveUri, [...addItems, ...editItems]);
-    return code === 'OK';
+
+    if (code == 'OK') {
+      return code === 'OK';
+    }
   };
 
   remove = async (removeItems) => {
@@ -158,21 +172,6 @@ export class GridApi extends CollectionView {
     } = await restApi.removeList(removeUri, [...removeItems]);
     return code === 'OK';
   };
-
-  static markRecordStatus(grid, e) {
-    const oldVal = grid.getCellData(e.row, e.col, true),
-      newVal = grid.activeEditor.value;
-
-    if (grid.getCellData(e.row, 'rowStatus') == 'C') {
-      return;
-    }
-
-    if (oldVal == newVal) {
-      return;
-    }
-
-    grid.setCellData(e.row, 'rowStatus', 'U');
-  }
 
   valid(grid, e) {
     let col = grid.columns[e.col];
