@@ -11,13 +11,12 @@
     :selection-mode="selectionMode"
     :sticky-headers="stickyHeaders"
     :new-row-at-top="newRowAtTop"
-    :lazy-render="false"
   >
     <slot></slot>
   </wj-flex-grid>
 </template>
 <script>
-import { addClass, createElement, Event, hasClass, setChecked, Tooltip, Key, ObservableArray } from '@grapecity/wijmo';
+import { createElement, Event, hasClass, setChecked, Tooltip, Key, ObservableArray } from '@grapecity/wijmo';
 import {
   AllowDragging,
   AllowMerging,
@@ -29,7 +28,6 @@ import {
   CellFactory,
   CellRange,
   Column,
-  FormatItemEventArgs,
   HeadersVisibility,
   Row,
   SelectionMode,
@@ -187,8 +185,8 @@ class OwSelector extends Selector {
   disabled(row) {
     if (row instanceof Row) {
       row.isSelectorDisabled = true;
-      this._grid.invalidate();
     }
+    this._grid.invalidate();
   }
 
   // 셀렉터 체크
@@ -199,8 +197,8 @@ class OwSelector extends Selector {
       } else {
         row.isSelected = force;
       }
-      this._grid.invalidate();
     }
+    this._grid.invalidate();
   }
 }
 
@@ -357,7 +355,7 @@ export default {
           s.rowHeaders.columns.shift();
         }
       }
-
+      console.log('s', s);
       if (props.initialized) {
         props.initialized(s);
       }
