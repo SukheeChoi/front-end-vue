@@ -220,7 +220,9 @@ export default {
     lazyRender: Boolean,
   },
   setup(props) {
-    const init = (s) => {
+    let s;
+    const init = (...args) => {
+      s = args.at(0);
       // [ISSUE | 2022.02.22] 데이터 바인딩 이후 폭이 변경됨, 바인딩 되기 전의 폭으로 강제 변경 이후에 다시 100%
       const width = getComputedStyle(s.hostElement).getPropertyValue('width');
       nextTick(() => (s.hostElement.style.width = width)).then(() => (s.hostElement.style.width = '100%'));
