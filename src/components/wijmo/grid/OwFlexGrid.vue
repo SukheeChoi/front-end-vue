@@ -356,7 +356,7 @@ export default {
           s.rowHeaders.columns.shift();
         }
       }
-      console.log('s', s);
+
       if (props.initialized) {
         props.initialized(s);
       }

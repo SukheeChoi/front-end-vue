@@ -109,7 +109,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    height: Number,
     query: Object,
     paging: {
       type: Object,
@@ -291,13 +290,19 @@ export default {
       reset();
     };
 
-    // 검색(새로운 검색 조건 설정)
+    /**
+     * 새로운 검색 조건으로 페이지를 조회합니다.
+     * @param {Object} query - 검색 조건
+     */
     const lookup = (query) => {
       state.query = query;
       read(1);
     };
 
-    // 검색(주어진 검색 조건으로 페이지 이동)
+    /**
+     * 주어진 검색 조건으로 페이지를 이동합니다.
+     * @param {Number} pageNo - 이동할 페이지 번호
+     */
     const read = async (pageNo) => {
       if (typeof pageNo !== 'undefined') {
         state.pageNo = +pageNo;
@@ -318,6 +323,15 @@ export default {
       }
     };
 
+    /**
+     * 검색 이후 변수를 설정합니다.
+     * @param {Object} query - 검색 조건
+     * @param {Object} paging - 이동된 페이지 정보
+     * @param {Number} paging.pageNo - 이동된 페이지 번호
+     * @param {Number} paging.pageSize - 이동된 페이지 사이즈
+     * @param {Number} totalCount - 조회된 데이터 개수
+     * @param {Array} items - 조회된 데이터
+     */
     const applier = ({ query, paging, totalCount, items }) => {
       state.query = query;
       state.pageNo = paging?.pageNo ?? 1;
