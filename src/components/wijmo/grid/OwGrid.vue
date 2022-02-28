@@ -1,5 +1,5 @@
 <template>
-  <ow-flex-wrap class="size-full" col>
+  <ow-flex-wrap class="size-full" col :class="$attrs.class" :style="$attrs.style">
     <ow-flex-item fix v-if="header">
       <ow-flex-item class="headline-wrap" align="center" to="left">
         <slot name="left">
@@ -27,7 +27,13 @@
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item style="flex-direction: column">
+    <ow-flex-item
+      style="
+        flex-direction: column;
+        min-height: var(--grid-min-height, var(--grid-height, 100%));
+        max-height: var(--grid-max-height, var(--grid-height, 100%));
+      "
+    >
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
@@ -35,13 +41,13 @@
       </div>
     </ow-flex-item>
     <ow-flex-item fix class="mt-10 mb-10" v-if="footer">
-      <ow-flex-item to="left">
+      <ow-flex-item to="left" align="center">
         <button type="button" class="ow-button type-icon mr-5">
           <i class="fas fa-cog fa-fw" />
         </button>
         <ow-select :items="pageSizeList" v-model="pageSize" style="--width: 80px" />
       </ow-flex-item>
-      <ow-flex-item to="center">
+      <ow-flex-item to="center" align="center">
         <template v-if="totalCount > 0">
           <b-pagination
             class="ow-pagination"
@@ -57,7 +63,7 @@
           ></b-pagination>
         </template>
       </ow-flex-item>
-      <ow-flex-item to="right"> 전체 {{ totalCount }} 건 </ow-flex-item>
+      <ow-flex-item to="right" align="center"> 전체 {{ totalCount }} 건 </ow-flex-item>
     </ow-flex-item>
   </ow-flex-wrap>
   <teleport to="#teleport">
@@ -109,6 +115,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    height: Number,
     query: Object,
     paging: {
       type: Object,
