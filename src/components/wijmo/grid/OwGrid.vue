@@ -134,9 +134,8 @@ export default {
     const downloader = ref(null);
 
     const state = reactive({
-      grid: null,
-      source: _.cloneDeep(props.itemsSource),
       empty: true,
+      source: _.cloneDeep(props.itemsSource),
       query: _.cloneDeep(props.query) ?? {},
       pageNo: +(props.paging.pageNo ?? 1),
       pageSize: +(props.paging.pageSize ?? 10),
@@ -150,9 +149,10 @@ export default {
     const Order = Symbol('Order').toString();
     const Index = Symbol('Index').toString();
 
-    const init = (s) => {
-      // state 설정
-      state.grid = s;
+    let s;
+
+    const init = (...args) => {
+      s = args.at(0);
 
       // Grid의 초기값 설정
       if (props.itemsSource instanceof CollectionView) {
@@ -208,7 +208,8 @@ export default {
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
       );
       s.collectionView.collectionChanged.addHandler((c, e) => {
-        state.grid.allowAddNew = false;
+        s.allowAddNew = false;
+        console.log('e', e);
         if (NotifyCollectionChangedAction.Add === e.action) {
           e.item[Index] = e.item[Index] ?? e.index;
         }
@@ -235,15 +236,14 @@ export default {
 
     // 행 추가
     const add = () => {
-      const s = state.grid;
       s.allowAddNew = true;
-      setTimeout(() => s.startEditing(true, 0, state.grid.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
+      setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
     };
 
     // 행 삭제
     const remove = async () => {
       if (props.remove) {
-        const items = Array.from(state.grid?.selector?.checkedItems ?? []).map((item) => item.dataItem);
+        const items = Array.from(s?.selector?.checkedItems ?? []).map((item) => item.dataItem);
         if (_.isEmpty(items)) {
           return instance.alert(t('wijmo.grid.remove.noData'));
         }
@@ -259,9 +259,9 @@ export default {
     // 저장
     const save = async () => {
       if (props.save) {
-        const addItems = Array.from(state.grid?.collectionView.itemsAdded ?? []);
-        const editItems = Array.from(state.grid?.collectionView.itemsEdited ?? []);
-        const removeItems = Array.from(state.grid?.collectionView.itemsRemoved ?? []);
+        const addItems = Array.from(s.collectionView.itemsAdded ?? []);
+        const editItems = Array.from(s.collectionView.itemsEdited ?? []);
+        const removeItems = Array.from(s.collectionView.itemsRemoved ?? []);
         if (_.isEmpty(addItems) && _.isEmpty(editItems) && _.isEmpty(removeItems)) {
           return instance.alert(t('wijmo.grid.save.noData'));
         }
@@ -278,7 +278,7 @@ export default {
     // 초기화
     const reset = async () => {
       if (await instance.confirm(t('wijmo.grid.reset.confirm'))) {
-        state.grid.collectionView.sourceCollection = _.cloneDeep(state.source);
+        s.collectionView.sourceCollection = _.cloneDeep(state.source);
       }
     };
 
@@ -312,7 +312,7 @@ export default {
           })
         );
       }
-      const root = state.grid.hostElement.querySelector('[wj-part=root]');
+      const root = s.hostElement.querySelector('[wj-part=root]');
       if (root) {
         root.scrollTop = 0;
       }
@@ -324,7 +324,7 @@ export default {
       state.pageSize = paging?.pageSize ?? 10;
       state.totalCount = totalCount ?? 0;
       state.source = _.cloneDeep(items);
-      state.grid.collectionView.sourceCollection = items;
+      s.collectionView.sourceCollection = items;
       if (props.allowPushState) {
         router.push({
           path: route.path,
@@ -368,9 +368,9 @@ export default {
           pageNo: 1,
           pageSize: state.totalCount,
         });
-        ({ columns, itemsSource } = setCumstomColums(state.grid.columns, items));
+        ({ columns, itemsSource } = setCumstomColums(s.columns, items));
       } else {
-        ({ columns, itemsSource } = setCumstomColums(state.grid.columns, state.source));
+        ({ columns, itemsSource } = setCumstomColums(s.columns, state.source));
       }
       downloader.value.exec(columns, itemsSource);
     };
