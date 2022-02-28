@@ -217,7 +217,6 @@ export default {
     selectionMode: { type: [Number, String], default: SelectionMode.Row },
     stickyHeaders: { type: Boolean, default: true },
     newRowAtTop: { type: Boolean, default: true },
-    lazyRender: Boolean,
   },
   setup(props) {
     let s;
