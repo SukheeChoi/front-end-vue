@@ -8,12 +8,22 @@
       </ow-flex-item>
       <ow-flex-item align="center" to="right">
         <slot name="right">
-          <button type="button" class="ow-btn type-state" @click="download(true)">엑셀1</button>
-          <button type="button" class="ow-btn type-state" @click="download(false)">엑셀2</button>
-          <button type="button" class="ow-btn type-state" @click="reset">초기화</button>
-          <button type="button" class="ow-btn type-state" @click="add">추가</button>
-          <button type="button" class="ow-btn type-state" @click="remove">삭제</button>
-          <button type="button" class="ow-btn type-state" @click="save">저장</button>
+          <template v-for="button in buttons" :key="button">
+            <button type="button" class="ow-btn type-state" @click="download(true)" v-if="button === 'ALL_EXCEL'">
+              엑셀
+            </button>
+            <button type="button" class="ow-btn type-state" @click="download(false)" v-else-if="button === 'EXCEL'">
+              엑셀
+            </button>
+            <button type="button" class="ow-btn type-state" @click="reset" v-else-if="button === 'RESET'">
+              초기화
+            </button>
+            <button type="button" class="ow-btn type-state" @click="add" v-else-if="button === 'ADD'">추가</button>
+            <button type="button" class="ow-btn type-state" @click="remove" v-else-if="button === 'REMOVE'">
+              삭제
+            </button>
+            <button type="button" class="ow-btn type-state" @click="save" v-else-if="button === 'SAVE'">저장</button>
+          </template>
         </slot>
       </ow-flex-item>
     </ow-flex-item>
@@ -57,11 +67,11 @@
 <script>
 import _ from 'lodash';
 
-import { reactive, ref, watch, toRefs } from 'vue';
+import { reactive, ref, watch, toRefs, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
-import { Column } from '@grapecity/wijmo.grid';
+import { createElement, CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
+import { Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
@@ -107,6 +117,10 @@ export default {
         pageSize: 10,
         totalCount: 0,
       }),
+    },
+    buttons: {
+      type: Array,
+      default: () => ['RESET', 'ADD', 'REMOVE', 'SAVE'],
     },
     read: Function,
     remove: Function,
@@ -209,7 +223,9 @@ export default {
 
     // 행 추가
     const add = () => {
-      state.grid.allowAddNew = true;
+      const s = state.grid;
+      s.allowAddNew = true;
+      setTimeout(() => s.startEditing(true, 0, state.grid.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
     };
 
     // 행 삭제
