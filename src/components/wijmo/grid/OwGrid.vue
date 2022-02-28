@@ -392,8 +392,8 @@ export default {
 }
 .ow-grid-wrapper {
   flex-direction: column;
-  min-height: var(--grid-min-height, var(--grid-height, 100%)) !important;
-  max-height: var(--grid-max-height, var(--grid-height, 100%)) !important;
+  min-height: var(--grid-min-height, var(--grid-height, none)) !important;
+  max-height: var(--grid-max-height, var(--grid-height, none)) !important;
   .ow-grid-wrap {
     position: relative;
     &.ow-grid-empty {
