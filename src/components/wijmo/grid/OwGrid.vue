@@ -1,6 +1,6 @@
 <template>
-  <ow-flex-wrap class="size-full" col>
-    <ow-flex-item fix v-if="headline">
+  <ow-flex-wrap class="size-full" col :class="$attrs.class" :style="$attrs.style">
+    <ow-flex-item fix v-if="header">
       <ow-flex-item class="headline-wrap" align="center" to="left">
         <slot name="left">
           <h1 class="h1" v-if="title">{{ title }}</h1>
@@ -8,30 +8,40 @@
       </ow-flex-item>
       <ow-flex-item align="center" to="right">
         <slot name="right">
-          <button type="button" class="ow-btn type-state" @click="allowRowsExcelDownload">엑셀1</button>
-          <button type="button" class="ow-btn type-state" @click="currentRowsExcelDownload">엑셀2</button>
-          <button type="button" class="ow-btn type-state" @click="reset">초기화</button>
-          <button type="button" class="ow-btn type-state" @click="add">추가</button>
-          <button type="button" class="ow-btn type-state" @click="remove">삭제</button>
-          <button type="button" class="ow-btn type-state" @click="save">저장</button>
+          <template v-for="button in buttons" :key="button">
+            <button type="button" class="ow-btn type-state" @click="download(true)" v-if="button === 'ALL_EXCEL'">
+              엑셀
+            </button>
+            <button type="button" class="ow-btn type-state" @click="download(false)" v-else-if="button === 'EXCEL'">
+              엑셀
+            </button>
+            <button type="button" class="ow-btn type-state" @click="reset" v-else-if="button === 'RESET'">
+              초기화
+            </button>
+            <button type="button" class="ow-btn type-state" @click="add" v-else-if="button === 'ADD'">추가</button>
+            <button type="button" class="ow-btn type-state" @click="remove" v-else-if="button === 'REMOVE'">
+              삭제
+            </button>
+            <button type="button" class="ow-btn type-state" @click="save" v-else-if="button === 'SAVE'">저장</button>
+          </template>
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item class="has-grid">
+    <ow-flex-item class="ow-grid-wrapper">
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
         </ow-flex-grid>
       </div>
     </ow-flex-item>
-    <ow-flex-item fix class="mt-10 mb-10" v-if="allowPagination">
-      <ow-flex-item to="left">
-        <button type="button" class="ow-button type-icon">
+    <ow-flex-item fix class="mt-10 mb-10" v-if="footer">
+      <ow-flex-item to="left" align="center">
+        <button type="button" class="ow-button type-icon mr-5">
           <i class="fas fa-cog fa-fw" />
         </button>
         <ow-select :items="pageSizeList" v-model="pageSize" style="--width: 80px" />
       </ow-flex-item>
-      <ow-flex-item to="center">
+      <ow-flex-item to="center" align="center">
         <template v-if="totalCount > 0">
           <b-pagination
             class="ow-pagination"
@@ -47,9 +57,7 @@
           ></b-pagination>
         </template>
       </ow-flex-item>
-      <ow-flex-item to="right">
-        <div class="counter-board">전체 {{ totalCount }} 건</div>
-      </ow-flex-item>
+      <ow-flex-item to="right" align="center"> 전체 {{ totalCount }} 건 </ow-flex-item>
     </ow-flex-item>
   </ow-flex-wrap>
   <teleport to="#teleport">
@@ -59,11 +67,11 @@
 <script>
 import _ from 'lodash';
 
-import { reactive, ref, computed, watch, toRefs } from 'vue';
+import { reactive, ref, watch, toRefs, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
-import { Column } from '@grapecity/wijmo.grid';
+import { CellType, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
@@ -92,12 +100,16 @@ export default {
     itemValidator: [Function, Object],
     allowStatus: Boolean,
     allowPushState: Boolean,
-    allowPagination: { type: Boolean, default: true },
-    title: String,
-    headline: {
+    header: {
       type: Boolean,
       default: true,
     },
+    title: String,
+    footer: {
+      type: Boolean,
+      default: true,
+    },
+    height: Number,
     query: Object,
     paging: {
       type: Object,
@@ -106,6 +118,10 @@ export default {
         pageSize: 10,
         totalCount: 0,
       }),
+    },
+    buttons: {
+      type: Array,
+      default: () => ['RESET', 'ADD', 'REMOVE', 'SAVE'],
     },
     read: Function,
     remove: Function,
@@ -118,9 +134,8 @@ export default {
     const downloader = ref(null);
 
     const state = reactive({
-      grid: null,
-      source: _.cloneDeep(props.itemsSource),
       empty: true,
+      source: _.cloneDeep(props.itemsSource),
       query: _.cloneDeep(props.query) ?? {},
       pageNo: +(props.paging.pageNo ?? 1),
       pageSize: +(props.paging.pageSize ?? 10),
@@ -130,9 +145,14 @@ export default {
       pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
     });
 
-    const init = (s) => {
-      // state 설정
-      state.grid = s;
+    // [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
+    const Order = Symbol('Order').toString();
+    const Index = Symbol('Index').toString();
+
+    let s;
+
+    const init = (...args) => {
+      s = args.at(0);
 
       // Grid의 초기값 설정
       if (props.itemsSource instanceof CollectionView) {
@@ -142,6 +162,17 @@ export default {
         s.collectionView.sourceCollection = props.itemsSource;
       }
       state.totalCount = s.collectionView?.items.length ?? 0;
+
+      // Required
+      s.formatItem.addHandler((s, e) => {
+        const row = e.getRow();
+        const col = e.getColumn();
+        if (row instanceof _NewRowTemplate) {
+          if (CellType.Cell === e.panel.cellType && col.isRequired) {
+            e.cell.classList.add('ow-grid-required');
+          }
+        }
+      });
 
       // AllowStatus | RowStatus
       const statusHeader = new Column({
@@ -155,20 +186,21 @@ export default {
               case 'U':
                 return '<button class="ow-btn type-icon"><span class="wj-glyph-pencil"></span></button>';
               default:
-                return ctx.item.__order__;
+                return ctx.item[Order];
             }
           }
           return ctx.text;
         },
         align: 'center',
         visible: props.allowStatus,
+        quickAutoSize: true,
       });
       s.rowHeaders.columns.push(statusHeader);
 
       // CollectionView 설정
       s.collectionView.trackChanges = true;
       s.collectionView.useStableSort = true;
-      s.collectionView.sortDescriptions.push(new SortDescription('__index__', false));
+      s.collectionView.sortDescriptions.push(new SortDescription(Index, false));
       s.collectionView.itemsAdded.collectionChanged.addHandler(
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.ADD)
       );
@@ -176,15 +208,16 @@ export default {
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
       );
       s.collectionView.collectionChanged.addHandler((c, e) => {
-        state.grid.allowAddNew = false;
+        s.allowAddNew = false;
+        console.log('e', e);
         if (NotifyCollectionChangedAction.Add === e.action) {
-          e.item.__index__ = e.item.__index__ ?? e.index;
+          e.item[Index] = e.item[Index] ?? e.index;
         }
       });
       s.collectionView.sourceCollectionChanged.addHandler((c) => {
         _.forEach(c.items, (item, index) => {
-          item.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
-          item.__index__ = item.__index__ ?? c.items.length - index - 1;
+          item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+          item[Index] = item[Index] ?? c.items.length - index - 1;
         });
         state.empty = c.isEmpty;
         c.refresh();
@@ -203,13 +236,14 @@ export default {
 
     // 행 추가
     const add = () => {
-      state.grid.allowAddNew = true;
+      s.allowAddNew = true;
+      setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
     };
 
     // 행 삭제
     const remove = async () => {
       if (props.remove) {
-        const items = Array.from(state.grid?.selector?.checkedItems ?? []).map((item) => item.dataItem);
+        const items = Array.from(s?.selector?.checkedItems ?? []).map((item) => item.dataItem);
         if (_.isEmpty(items)) {
           return instance.alert(t('wijmo.grid.remove.noData'));
         }
@@ -225,14 +259,16 @@ export default {
     // 저장
     const save = async () => {
       if (props.save) {
-        const addItems = Array.from(state.grid?.collectionView.itemsAdded ?? []);
-        const editItems = Array.from(state.grid?.collectionView.itemsEdited ?? []);
-        if (_.isEmpty(addItems) && _.isEmpty(editItems)) {
+        const addItems = Array.from(s.collectionView.itemsAdded ?? []);
+        const editItems = Array.from(s.collectionView.itemsEdited ?? []);
+        const removeItems = Array.from(s.collectionView.itemsRemoved ?? []);
+        if (_.isEmpty(addItems) && _.isEmpty(editItems) && _.isEmpty(removeItems)) {
           return instance.alert(t('wijmo.grid.save.noData'));
         }
-        if (await instance.confirm(t('wijmo.grid.save.confirm', [addItems.length + editItems.length]))) {
+        const total = addItems.length + editItems.length + removeItems.length;
+        if (await instance.confirm(t('wijmo.grid.save.confirm', [total]))) {
           // [TODO] 후처리 진행
-          if (await props.save(addItems, editItems)) {
+          if (await props.save(addItems, editItems, removeItems)) {
             read(); // 검색 조건과 페이지 유지
           }
         }
@@ -242,7 +278,7 @@ export default {
     // 초기화
     const reset = async () => {
       if (await instance.confirm(t('wijmo.grid.reset.confirm'))) {
-        state.grid.collectionView.sourceCollection = _.cloneDeep(state.source);
+        s.collectionView.sourceCollection = _.cloneDeep(state.source);
       }
     };
 
@@ -267,34 +303,37 @@ export default {
         state.pageNo = +pageNo;
       }
       if (props.read) {
-        const {
-          query,
-          // paging: { pageNo, pageSize },
-          paging,
-          totalCount,
-          items,
-        } = await props.read(state.query, {
-          pageNo: state.pageNo,
-          pageSize: state.pageSize,
-          sort: state.sort,
-          direction: state.direction,
+        applier(
+          await props.read(state.query, {
+            pageNo: state.pageNo,
+            pageSize: state.pageSize,
+            sort: state.sort,
+            direction: state.direction,
+          })
+        );
+      }
+      const root = s.hostElement.querySelector('[wj-part=root]');
+      if (root) {
+        root.scrollTop = 0;
+      }
+    };
+
+    const applier = ({ query, paging, totalCount, items }) => {
+      state.query = query;
+      state.pageNo = paging?.pageNo ?? 1;
+      state.pageSize = paging?.pageSize ?? 10;
+      state.totalCount = totalCount ?? 0;
+      state.source = _.cloneDeep(items);
+      s.collectionView.sourceCollection = items;
+      if (props.allowPushState) {
+        router.push({
+          path: route.path,
+          query: {
+            ...state.query,
+            pageNo: state.pageNo,
+            pageSize: state.pageSize,
+          },
         });
-        state.query = query;
-        state.pageNo = paging?.pageNo ?? 1;
-        state.pageSize = paging?.pageSize ?? 10;
-        state.totalCount = totalCount ?? 0;
-        state.source = _.cloneDeep(items);
-        state.grid.collectionView.sourceCollection = items;
-        if (props.allowPushState) {
-          router.push({
-            path: route.path,
-            query: {
-              ...state.query,
-              pageNo: state.pageNo,
-              pageSize: state.pageSize,
-            },
-          });
-        }
       }
     };
 
@@ -310,10 +349,10 @@ export default {
       );
       const itemsSource = _.cloneDeep(Array.from(items));
       if (props.allowStatus) {
-        columns.unshift(new Column({ binding: '__order__', header: '번호' }));
+        columns.unshift(new Column({ binding: Order, header: '번호' }));
         for (let i = 0, length = itemsSource.length; i < length; i += 1) {
           const itemSource = itemsSource.at(i);
-          itemSource.__order__ = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
+          itemSource[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
         }
       }
       return {
@@ -322,18 +361,17 @@ export default {
       };
     };
 
-    const allowRowsExcelDownload = async () => {
-      if (props.read) {
-        const { items } = await props.read(state.query, {});
-        const { columns, itemsSource } = setCumstomColums(state.grid.columns, items);
-        downloader.value.exec(columns, itemsSource);
+    const download = async (isAll) => {
+      let columns, itemsSource;
+      if (props.read && isAll) {
+        const { items } = await props.read(state.query, {
+          pageNo: 1,
+          pageSize: state.totalCount,
+        });
+        ({ columns, itemsSource } = setCumstomColums(s.columns, items));
       } else {
-        currentRowsExcelDownload();
+        ({ columns, itemsSource } = setCumstomColums(s.columns, state.source));
       }
-    };
-
-    const currentRowsExcelDownload = () => {
-      const { columns, itemsSource } = setCumstomColums(state.grid.columns, state.source);
       downloader.value.exec(columns, itemsSource);
     };
 
@@ -348,13 +386,13 @@ export default {
       init,
       lookup,
       read,
+      applier,
       add,
       save,
       remove,
       reset,
       clear,
-      allowRowsExcelDownload,
-      currentRowsExcelDownload,
+      download,
     };
   },
 };
@@ -363,35 +401,41 @@ export default {
 .headline-wrap {
   border-bottom: none;
 }
-.ow-grid-wrap {
-  position: relative;
-  &.ow-grid-empty {
-    &::after {
-      content: '검색 결과가 없습니다.';
-      position: absolute;
-      top: 35px;
-      width: 100%;
-      line-height: 35px;
-      text-align: center;
-      z-index: 999;
-      border-radius: 0;
-      border: 1px solid #d7dce3;
-      border-top: none;
+.ow-grid-wrapper {
+  flex-direction: column;
+  min-height: var(--grid-min-height, var(--grid-height, none)) !important;
+  max-height: var(--grid-max-height, var(--grid-height, none)) !important;
+  .ow-grid-wrap {
+    position: relative;
+    &.ow-grid-empty {
+      &::after {
+        content: '검색 결과가 없습니다.';
+        position: absolute;
+        top: 15%;
+        width: 100%;
+        line-height: 35px;
+        text-align: center;
+        z-index: 999;
+      }
+    }
+    :deep(.ow-grid-required) {
+      &::before {
+        position: absolute;
+        content: '';
+        width: 0;
+        right: 0;
+        top: -6px;
+        border: 6px solid transparent;
+        border-right-color: rgba(0, 0, 255, 1);
+      }
     }
   }
-  .ow-grid {
-    border-right: none;
-    border-bottom: none;
-    :deep(.wj-header) {
-      text-align: center;
-    }
-  }
-}
-.ow-pagination {
-  :deep(.page-link) {
-    &[role='menuitemradio'] {
-      width: 100%;
-      padding: 4px 8px;
+  .ow-pagination {
+    :deep(.page-link) {
+      &[role='menuitemradio'] {
+        width: 100%;
+        padding: 4px 8px;
+      }
     }
   }
 }

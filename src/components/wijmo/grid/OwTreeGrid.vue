@@ -1,16 +1,20 @@
 <template>
-  <new-ow-grid v-bind="$attrs" :initialized="init" :allow-pagination="false">
+  <ow-grid v-bind="$attrs" :initialized="init" :footer="false" ref="grid">
+    <template #left>
+      <slot name="left"></slot>
+    </template>
+    <template #right>
+      <slot name="right"></slot>
+    </template>
     <slot></slot>
-  </new-ow-grid>
+  </ow-grid>
 </template>
 <script>
 import _ from 'lodash';
 
-import { reactive, ref, computed, watch, toRefs, onMounted } from 'vue';
-import { CollectionView } from '@grapecity/wijmo';
-import { AllowDragging, SelectionMode, Column, RowCol } from '@grapecity/wijmo.grid';
+import { reactive, ref, toRefs, onMounted } from 'vue';
+import { SelectionMode } from '@grapecity/wijmo.grid';
 import { Selector } from '@grapecity/wijmo.grid.selector';
-import * as wjcGrid from '@grapecity/wijmo.grid';
 import * as wjGrid from '@grapecity/wijmo.grid';
 import utils from '@/utils/commUtils.js';
 
@@ -19,6 +23,7 @@ export default {
   inheritAttrs: false,
   components: {},
   props: {
+    initialized: Function,
     selector: Boolean,
     drag: {
       type: Object,
@@ -33,7 +38,7 @@ export default {
       default: 'children',
     },
   },
-  setup(props, { emit }) {
+  setup(props) {
     const state = reactive({
       grid: null,
       drag: props.drag,
@@ -41,15 +46,22 @@ export default {
     });
 
     const init = (grid) => {
-      // if (props.selector) {
-      //   addSelector(grid);
-      // }
+      if (props.initialized) {
+        props.initialized(grid);
+      }
+
       formatItem(grid);
       grid.selectionMode = props.selectionMode;
       grid.childItemsPath = props.childItemsPath;
 
       state.grid = grid;
     };
+
+    const grid = ref(null);
+
+    const read = () => grid.value.read();
+    const save = () => grid.value.save();
+    const remove = () => grid.value.remove();
 
     onMounted(() => {
       if (props.drag) {
@@ -59,9 +71,9 @@ export default {
     });
 
     let originalGrid = null,
-      dragDiv = null,
-      dragRow1 = null,
-      dragRow2 = null;
+        dragDiv = null,
+        dragRow1 = null,
+        dragRow2 = null;
 
     const addSelector = (grid) => {
       let chkIdx;
@@ -95,55 +107,36 @@ export default {
     };
 
     const addCellIcon = (s, e) => {
-      if (!state.drag.icon) {
-        return;
-      }
-
       if (e.panel.cellType != wjGrid.CellType.Cell) {
         return;
       }
 
       let row = e.panel.rows[e.row],
-        binding = e.panel.columns[e.col].binding;
+          col = e.panel.columns[e.col];
 
-      state.drag.icon.forEach((col) => {
-        if (binding == col) {
-          if (row.dataItem && row.dataItem[col]) {
-            e.cell.innerHTML =
-              row.dataItem[col] +
-              (utils.getOwIcon(row.dataItem.nodeType) ? utils.getOwIcon(row.dataItem.nodeType) : '');
-          }
-        }
-      });
+      if (col.cssClass == 'icon') {
+        let padding = row.level * 13,
+            collapse = '',
+            icon = utils.getOwIcon(row.dataItem.nodeType) ?? '',
+            text = e.cell.innerText ?? '';
 
-      // 조직도 icon 추가
-      if (e.panel.columns[e.col].binding == 'orgNm') {
-        let padding = row.level * 13;
-        if (!row.hasChildren) {
-          padding += 20;
-        } else {
-          // has child node, add collapse/expand buttons
-          // clear content
-          e.cell.innerHTML = '';
-          let collapse = '',
-              icon = '';
-
+        // has child node, add collapse/expand buttons
+        if (row.hasChildren) {
           if (row.isCollapsed) {
             collapse = utils.getWjGlyph('right', 'collapse');
           } else {
             collapse = utils.getWjGlyph('down-right', 'collapse');
           }
-
-          if (row.dataItem.nodeType == 'org') {
-            if (row.dataItem.orgCd == '0000') {
-              icon = utils.getOwIcon('osstem');
-            } else {
-              icon = utils.getOwIcon(row.dataItem.nodeType);
-            }
-          }
-
-          e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
         }
+
+        e.cell.innerHTML = collapse + icon + text;
+
+        // osstem logo
+        if (row.dataItem.nodeType == 'org' && row.dataItem.orgCd == '0000') {
+          icon = utils.getOwIcon('osstem');
+          e.cell.innerHTML = collapse + row.dataItem.orgNm + icon; 
+        }
+
         e.cell.style.paddingLeft = padding + 'px';
       }
     };
@@ -219,7 +212,16 @@ export default {
       }
 
       if (!grid.rows[ht.row].dataItem.children) {
-        if (grid.rows[ht.row].dataItem.nodeType == 'org') {
+        let findType = false;
+        if (state.drag.nodeType) {
+          state.drag.nodeType.forEach((type) => {
+            if (grid.rows[ht.row].dataItem.nodeType == type) {
+              findType = true;
+            }
+          })
+        }
+
+        if (findType) {
           grid.rows[ht.row].dataItem.children = [];
           grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
         } else {
@@ -334,6 +336,10 @@ export default {
       init,
       makeDragSource,
       makeDropTarget,
+      grid,
+      read,
+      remove,
+      save,
     };
   },
 };
