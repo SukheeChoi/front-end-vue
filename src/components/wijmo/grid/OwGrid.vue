@@ -70,8 +70,8 @@ import _ from 'lodash';
 import { reactive, ref, watch, toRefs, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { createElement, CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
-import { Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
+import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
+import { CellType, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
@@ -162,6 +162,17 @@ export default {
         s.collectionView.sourceCollection = props.itemsSource;
       }
       state.totalCount = s.collectionView?.items.length ?? 0;
+
+      // Required
+      s.formatItem.addHandler((s, e) => {
+        const row = e.getRow();
+        const col = e.getColumn();
+        if (row instanceof _NewRowTemplate) {
+          if (CellType.Cell === e.panel.cellType && col.isRequired) {
+            e.cell.classList.add('ow-grid-required');
+          }
+        }
+      });
 
       // AllowStatus | RowStatus
       const statusHeader = new Column({
@@ -405,6 +416,17 @@ export default {
         line-height: 35px;
         text-align: center;
         z-index: 999;
+      }
+    }
+    :deep(.ow-grid-required) {
+      &::before {
+        position: absolute;
+        content: '';
+        width: 0;
+        right: 0;
+        top: -6px;
+        border: 6px solid transparent;
+        border-right-color: rgba(0, 0, 255, 1);
       }
     }
   }
