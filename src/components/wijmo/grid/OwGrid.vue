@@ -27,13 +27,7 @@
         </slot>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item
-      style="
-        flex-direction: column;
-        min-height: var(--grid-min-height, var(--grid-height, 100%));
-        max-height: var(--grid-max-height, var(--grid-height, 100%));
-      "
-    >
+    <ow-flex-item class="ow-grid-wrapper">
       <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
@@ -396,25 +390,30 @@ export default {
 .headline-wrap {
   border-bottom: none;
 }
-.ow-grid-wrap {
-  position: relative;
-  &.ow-grid-empty {
-    &::after {
-      content: '검색 결과가 없습니다.';
-      position: absolute;
-      top: 15%;
-      width: 100%;
-      line-height: 35px;
-      text-align: center;
-      z-index: 999;
+.ow-grid-wrapper {
+  flex-direction: column;
+  min-height: var(--grid-min-height, var(--grid-height, 100%)) !important;
+  max-height: var(--grid-max-height, var(--grid-height, 100%)) !important;
+  .ow-grid-wrap {
+    position: relative;
+    &.ow-grid-empty {
+      &::after {
+        content: '검색 결과가 없습니다.';
+        position: absolute;
+        top: 15%;
+        width: 100%;
+        line-height: 35px;
+        text-align: center;
+        z-index: 999;
+      }
     }
   }
-}
-.ow-pagination {
-  :deep(.page-link) {
-    &[role='menuitemradio'] {
-      width: 100%;
-      padding: 4px 8px;
+  .ow-pagination {
+    :deep(.page-link) {
+      &[role='menuitemradio'] {
+        width: 100%;
+        padding: 4px 8px;
+      }
     }
   }
 }
