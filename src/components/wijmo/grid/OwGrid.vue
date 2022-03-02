@@ -7,28 +7,23 @@
         </slot>
       </ow-flex-item>
       <ow-flex-item align="center" to="right">
-        <slot name="right">
-          <template v-for="button in buttons" :key="button">
-            <button type="button" class="ow-btn type-state" @click="download(true)" v-if="button === 'ALL_EXCEL'">
-              엑셀
-            </button>
-            <button type="button" class="ow-btn type-state" @click="download(false)" v-else-if="button === 'EXCEL'">
-              엑셀
-            </button>
-            <button type="button" class="ow-btn type-state" @click="reset" v-else-if="button === 'RESET'">
-              초기화
-            </button>
-            <button type="button" class="ow-btn type-state" @click="add" v-else-if="button === 'ADD'">추가</button>
-            <button type="button" class="ow-btn type-state" @click="remove" v-else-if="button === 'REMOVE'">
-              삭제
-            </button>
-            <button type="button" class="ow-btn type-state" @click="save" v-else-if="button === 'SAVE'">저장</button>
-          </template>
-        </slot>
+        <slot name="right"> </slot>
+        <template v-for="button in buttons" :key="button">
+          <button type="button" class="ow-btn type-state" @click="download(true)" v-if="button === 'ALL_EXCEL'">
+            엑셀
+          </button>
+          <button type="button" class="ow-btn type-state" @click="download(false)" v-else-if="button === 'EXCEL'">
+            엑셀
+          </button>
+          <button type="button" class="ow-btn type-state" @click="reset" v-else-if="button === 'RESET'">초기화</button>
+          <button type="button" class="ow-btn type-state" @click="add" v-else-if="button === 'ADD'">추가</button>
+          <button type="button" class="ow-btn type-state" @click="remove" v-else-if="button === 'REMOVE'">삭제</button>
+          <button type="button" class="ow-btn type-state" @click="save" v-else-if="button === 'SAVE'">저장</button>
+        </template>
       </ow-flex-item>
     </ow-flex-item>
     <ow-flex-item class="ow-grid-wrapper">
-      <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': empty }">
+      <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': totalCount === 0 }">
         <ow-flex-grid :initialized="init" v-bind="$attrs">
           <slot></slot>
         </ow-flex-grid>
@@ -67,7 +62,7 @@
 <script>
 import _ from 'lodash';
 
-import { reactive, ref, watch, toRefs, onMounted } from 'vue';
+import { computed, reactive, ref, watch, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
@@ -133,8 +128,7 @@ export default {
     const downloader = ref(null);
 
     const state = reactive({
-      source: _.cloneDeep(props.itemsSource),
-      empty: !!(state?.source.length > 0),
+      source: [],
       query: _.cloneDeep(props.query) ?? {},
       pageNo: +(props.paging.pageNo ?? 1),
       pageSize: +(props.paging.pageSize ?? 10),
@@ -143,6 +137,8 @@ export default {
       direction: props.paging.direction ?? '',
       pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
     });
+
+    console.log('state', state);
 
     // [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
     const Order = Symbol('Order').toString();
@@ -159,7 +155,10 @@ export default {
       } else if (props.itemsSource instanceof Array) {
         s.itemsSource = new CollectionView();
         s.collectionView.sourceCollection = props.itemsSource;
+      } else {
+        s.itemsSource = new CollectionView();
       }
+      state.source = _.cloneDeep(s.collectionView.items);
       state.totalCount = s.collectionView?.items.length ?? 0;
 
       // Required
@@ -218,7 +217,6 @@ export default {
           item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
           item[Index] = item[Index] ?? c.items.length - index - 1;
         });
-        state.empty = c.isEmpty;
         c.refresh();
       });
 
@@ -417,7 +415,7 @@ export default {
 }
 .ow-grid-wrapper {
   flex-direction: column;
-  min-height: var(--grid-min-height, var(--grid-height, 70px)) !important;
+  min-height: var(--grid-min-height, var(--grid-height, 72px)) !important;
   max-height: var(--grid-max-height, var(--grid-height, none)) !important;
   .ow-grid-wrap {
     position: relative;
@@ -425,7 +423,7 @@ export default {
       &::after {
         content: '검색 결과가 없습니다.';
         position: absolute;
-        top: 35px;
+        top: 37px;
         width: 100%;
         line-height: 35px;
         text-align: center;
