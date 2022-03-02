@@ -1,19 +1,11 @@
 <template>
   <ow-panel>
     <template #title> 배치결과 </template>
-    <ow-grid :page-no="paging.pageNo" :page-size="paging.pageSize" :total-count="paging.totalCount">
-      <wj-flex-grid
-        class="ow-grid"
-        headersVisibility="Column"
-        selectionMode="Row"
-        :is-read-only="true"
-        :itemsSource="items"
-      >
-        <wj-flex-grid-column header="배치작업명" binding="a" width="*"></wj-flex-grid-column>
-        <wj-flex-grid-column header="대상시스템" binding="b" align="center" :width="100"></wj-flex-grid-column>
-        <wj-flex-grid-column header="상태" binding="c" align="center" :width="50"></wj-flex-grid-column>
-        <wj-flex-grid-column header="실행결과" binding="d" align="center" :width="100"></wj-flex-grid-column>
-      </wj-flex-grid>
+    <ow-grid :items-source="items" :header="false" :footer="false" :is-read-only="true">
+      <wj-flex-grid-column header="배치작업명" binding="a" width="*"></wj-flex-grid-column>
+      <wj-flex-grid-column header="대상시스템" binding="b" align="center" :width="100"></wj-flex-grid-column>
+      <wj-flex-grid-column header="상태" binding="c" align="center" :width="50"></wj-flex-grid-column>
+      <wj-flex-grid-column header="실행결과" binding="d" align="center" :width="100"></wj-flex-grid-column>
     </ow-grid>
   </ow-panel>
 </template>
@@ -25,11 +17,6 @@ export default {
   components: {},
   setup() {
     const state = reactive({
-      paging: {
-        pageNo: 0,
-        pageSize: 0,
-        totalCount: 10,
-      },
       items: [
         { a: 'SAP ITEM MASTER 수집', b: 'SAP', c: '정상', d: '성공' },
         { a: 'SAP ITEM MASTER 수집', b: 'SAP', c: '정상', d: '성공' },
@@ -50,13 +37,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-:deep(.ow-flex-wrap) {
-  .item {
-    &:first-child,
-    &:last-child {
-      display: none;
-    }
-  }
-}
-</style>
