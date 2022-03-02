@@ -6,7 +6,9 @@
       </router-link>
       <!-- TODO Breadcrumb, 위치기반, e.g. 본부명 > 메뉴 1 > 메뉴 2 -->
       <ul class="location">
-        <li><span>{{rootOrg.orgNm}}</span></li>
+        <li>
+          <span>{{ rootOrg.orgNm }}</span>
+        </li>
         <template v-for="{ list, index } of menuList" :key="list">
           <li>
             <span>{{ list[index].title }}</span>
@@ -15,20 +17,20 @@
       </ul>
       <div class="util-wrap">
         <ul class="meuns">
+          <li>
+            <a href="javascript:void(0);">
+              <i class="person"><span class="sr-only">유저 아이콘</span></i>
+              <span>{{ rootOrg.orgNm }}</span>
+            </a>
+          </li>
+          <template v-for="org in orgList" :key="org">
             <li>
               <a href="javascript:void(0);">
-                <i class="person"><span class="sr-only">유저 아이콘</span></i>
-                <span>{{rootOrg.orgNm}}</span>
-              </a>
-            </li>
-          <template v-for="(org) in orgList" :key="org">
-            <li>
-              <a href="javascript:void(0);">
-                <span>{{org.orgNm}}</span>
+                <span>{{ org.orgNm }}</span>
               </a>
             </li>
           </template>
-<!-- 
+          <!-- 
           <li>
             <a href="javascript:void(0);">
               <i class="person"><span class="sr-only">유저 아이콘</span></i>
@@ -40,6 +42,9 @@
           </li>
            -->
           <li>
+            <a href="javascript:void(0);">{{ userInfo.dtyNm }}</a>
+          </li>
+          <li>
             <a href="javascript:void(0);">{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a>
           </li>
         </ul>
@@ -48,8 +53,8 @@
           <button type="button" class="confirm" @click="openSidebar">
             알림<span class="count">{{ badgeCount }}</span>
           </button>
-          <button type="button" class="setting">설정</button>
-          <button type="button" class="logout" @click="logout();">로그아웃</button>
+          <button type="button" class="setting" @click="sse()">설정</button>
+          <button type="button" class="logout" @click="logout()">로그아웃</button>
         </div>
       </div>
     </div>
@@ -67,7 +72,7 @@ export default {
   data() {
     return {
       //userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
-      userInfo: store.getters.getUserInfo? store.getters.getUserInfo : {userNm: '홍길동', jbgrNm: '사원'},
+      userInfo: store.getters.getUserInfo ? store.getters.getUserInfo : { userNm: '홍길동', jbgrNm: '사원' },
       user: {},
     };
   },
@@ -78,7 +83,6 @@ export default {
       menuList: store.getters.getMyMenuList,
       rootOrg: store.getters.getRootOrg,
       orgList: store.getters.getOrgList,
-      
     });
 
     const route = useRoute();
@@ -95,6 +99,22 @@ export default {
     const openSidebar = () => {
       store.commit('setOpenSidebar');
     };
+    /*
+    const eventSource = new EventSource('http://localhost:8010/com/Message/subscribe');
+
+      eventSource.onmessage = event => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data.message);
+      }
+      eventSource.addEventListener("haha", function(event){
+        console.log(event);
+      })
+
+      eventSource.onerror = error => {
+        eventSource.close();
+      }
+*/
 
     // Hooks
     onMounted(() => {});
@@ -107,34 +127,39 @@ export default {
   },
 
   methods: {
+    async sse() {
+      const eventSource = new EventSource('http://localhost:8010/com/Message/subscribe');
 
+      eventSource.onmessage = (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data.message);
+      };
+      eventSource.addEventListener('haha', function (event) {
+        console.log(event);
+      });
 
-    test1:function(){
-     const test1 = login.getUserInfo('/com/Auth', "25052408");
-     console.log(test1);
+      eventSource.onerror = (error) => {
+        eventSource.close();
+      };
     },
-    test2:function(){
-      const test2 = login.getUserInfo('/com/Auth', "25052408");
-      console.log(test2);
-    },
 
-    async logout(){
+    async logout() {
       store.commit('reset');
       //this.$store.commit('reset');
       //store.getters.init;
       //window.localStorage.clear();
-      this.$router.push("/login");
+      this.$router.push('/login');
     },
     async getTtl() {
-      console.log("ttl");
+      console.log('ttl');
       const now = new Date();
 
       alert(store.getters.getTtl + '\n' + now.getTime());
       return await this.getUserInfo();
     },
     async getUserInfo() {
-
-      const userData = await login.getUserInfo('/com/Auth', "25052408");
+      const userData = await login.getUserInfo('/com/Auth', '25052408');
 
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
