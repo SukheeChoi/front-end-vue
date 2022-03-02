@@ -133,8 +133,8 @@ export default {
     const downloader = ref(null);
 
     const state = reactive({
-      empty: true,
       source: _.cloneDeep(props.itemsSource),
+      empty: !!(state?.source.length > 0),
       query: _.cloneDeep(props.query) ?? {},
       pageNo: +(props.paging.pageNo ?? 1),
       pageSize: +(props.paging.pageSize ?? 10),
@@ -417,7 +417,7 @@ export default {
 }
 .ow-grid-wrapper {
   flex-direction: column;
-  min-height: var(--grid-min-height, var(--grid-height, none)) !important;
+  min-height: var(--grid-min-height, var(--grid-height, 70px)) !important;
   max-height: var(--grid-max-height, var(--grid-height, none)) !important;
   .ow-grid-wrap {
     position: relative;
@@ -425,7 +425,7 @@ export default {
       &::after {
         content: '검색 결과가 없습니다.';
         position: absolute;
-        top: 15%;
+        top: 35px;
         width: 100%;
         line-height: 35px;
         text-align: center;
