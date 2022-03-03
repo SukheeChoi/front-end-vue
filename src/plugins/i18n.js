@@ -1,3 +1,5 @@
+'use strict';
+
 import { createI18n } from 'vue-i18n/index';
 
 import ko from '@/locales/ko';
