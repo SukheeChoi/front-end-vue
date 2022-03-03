@@ -65,7 +65,12 @@ import _ from 'lodash';
 import { computed, reactive, ref, watch, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { CollectionView, NotifyCollectionChangedAction, SortDescription } from '@grapecity/wijmo';
+import {
+  CollectionView,
+  NotifyCollectionChangedAction,
+  NotifyCollectionChangedEventArgs,
+  SortDescription,
+} from '@grapecity/wijmo';
 import { CellType, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
@@ -74,9 +79,19 @@ import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
 import { instance } from '@/main';
 import { t } from '@/plugins/i18n';
 
-export const ROW_STATUS = {
+const ROW_STATUS = {
   ADD: 'C',
   EDIT: 'U',
+};
+
+const withoutProperties = (source, ...keys) => {
+  const target = {};
+  for (let key in source) {
+    if (keys.indexOf(key) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
+    target[key] = source[key];
+  }
+  return target;
 };
 
 export default {
@@ -138,8 +153,6 @@ export default {
       pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
     });
 
-    console.log('state', state);
-
     // [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
     const Order = Symbol('Order').toString();
     const Index = Symbol('Index').toString();
@@ -199,17 +212,69 @@ export default {
       s.collectionView.trackChanges = true;
       s.collectionView.useStableSort = true;
       s.collectionView.sortDescriptions.push(new SortDescription(Index, false));
-      s.collectionView.itemsAdded.collectionChanged.addHandler(
-        (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.ADD)
-      );
-      s.collectionView.itemsEdited.collectionChanged.addHandler(
-        (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
-      );
+      s.collectionView.itemsAdded.collectionChanged.addHandler((c, e) => {
+        if (NotifyCollectionChangedAction.Add === e.action) {
+          e.item.rowStatus = ROW_STATUS.ADD;
+        } else if (NotifyCollectionChangedAction.Remove === e.action) {
+          e.item.rowStatus = undefined;
+        }
+      });
+      s.collectionView.itemsEdited.collectionChanged.addHandler((c, e) => {
+        if (NotifyCollectionChangedAction.Add === e.action) {
+          e.item.rowStatus = ROW_STATUS.EDIT;
+        } else if (NotifyCollectionChangedAction.Remove === e.action) {
+          e.item.rowStatus = undefined;
+        }
+      });
       s.collectionView.collectionChanged.addHandler((c, e) => {
         s.allowAddNew = false;
-        console.log('e', e);
         if (NotifyCollectionChangedAction.Add === e.action) {
           e.item[Index] = e.item[Index] ?? e.index;
+        }
+        // Tree Grid
+        if (s.childItemsPath && NotifyCollectionChangedAction.Reset > e.action && c.trackChanges) {
+          const getSourceContent = (indexes) => {
+            let source = state.source;
+            for (const index of indexes) {
+              source = source.at(index);
+              if (source[s.childItemsPath]) {
+                source = source[s.childItemsPath];
+              }
+            }
+            return source;
+          };
+
+          const recursiveTrackItemChanged = (items, indexes = []) => {
+            for (let i = 0, length = items.length; i < length; i += 1) {
+              const item = items.at(i);
+              if (item === e.item) {
+                const at = c.itemsEdited.indexOf(item);
+                const item1 = withoutProperties(item, 'rowStatus');
+                const item2 = withoutProperties(getSourceContent([...indexes, i]), 'rowStatus');
+                if (c._sameContent(item1, item2)) {
+                  c.itemsEdited.removeAt(at);
+                  return true;
+                }
+                if (at < 0 && c.itemsAdded.indexOf(item) < 0) {
+                  c.itemsEdited.push(item);
+                } else if (at > -1) {
+                  c.itemsEdited.onCollectionChanged(
+                    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Change, item, at)
+                  );
+                } else if ((at = c.itemsAdded.indexOf(item)) > -1) {
+                  c.itemsEdited.onCollectionChanged(
+                    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Change, item, at)
+                  );
+                }
+                return true;
+              } else {
+                if (item[s.childItemsPath] && recursiveTrackItemChanged(item[s.childItemsPath], [...indexes, i]) > -1) {
+                  break;
+                }
+              }
+            }
+          };
+          recursiveTrackItemChanged(c.sourceCollection);
         }
       });
       s.collectionView.sourceCollectionChanged.addHandler((c) => {
