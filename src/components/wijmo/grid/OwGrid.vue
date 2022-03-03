@@ -87,9 +87,9 @@ const ROW_STATUS = {
 const withoutProperties = (source, ...keys) => {
   const target = {};
   for (let key in source) {
-    if (keys.indexOf(key) >= 0) continue;
-    if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
-    target[key] = source[key];
+    if (Object.prototype.hasOwnProperty.call(source, key) && keys.indexOf(key) < 0) {
+      target[key] = _.cloneDeep(source[key]);
+    }
   }
   return target;
 };
