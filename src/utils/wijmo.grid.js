@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { Tooltip, PopupPosition, Key, hasClass } from '@grapecity/wijmo';
 import { MergeManager, CellRange, CellType, SelMove } from '@grapecity/wijmo.grid';
-import { WjFlexGrid } from '@grapecity/wijmo.vue2.grid';
 
 class SimpleMergeManager extends MergeManager {
   constructor(config) {

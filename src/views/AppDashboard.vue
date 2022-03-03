@@ -4,7 +4,7 @@
     <template v-for="{ default: panel } in panels" :key="panel">
       <component
         :is="panel"
-        style="width: calc(33% - 3px); height: calc(50% - 3px)"
+        style="min-width: calc(33% - 3px); height: calc(50% - 3px)"
         draggable
         @drag-start="dragstart"
         @drag-over="dragover"

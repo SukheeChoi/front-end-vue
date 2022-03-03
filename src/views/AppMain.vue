@@ -31,22 +31,27 @@
   </div>
   <app-footer></app-footer>
   <app-aside ref="aside"></app-aside>
-
+  <app-multiple-opener v-if="name" ref="opener"></app-multiple-opener>
+  <ow-dialog ref="dialog"></ow-dialog>
   <ow-spinner></ow-spinner>
 </template>
 <script>
+import { computed, ref, provide, toRefs } from 'vue';
+import { useStore } from 'vuex';
+import { useI18n } from 'vue-i18n';
+
 import AppHeader from '@/components/AppHeader';
 import AppNav from '@/components/AppNav';
 import AppSection from '@/components/AppSection';
 import AppArticle from '@/components/AppArticle';
 import AppFooter from '@/components/AppFooter';
 import AppAside from '@/components/AppAside';
+import AppMultipleOpener from '@/components/AppMultipleOpener';
 
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
 
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { app } from '@/main';
 
 export default {
   components: {
@@ -56,16 +61,11 @@ export default {
     AppArticle,
     AppFooter,
     AppAside,
+    AppMultipleOpener,
     TheActionPlan,
     TheApproval,
   },
   props: {
-    nav: {
-      type: Object,
-      default: function () {
-        return {};
-      },
-    },
     left: {
       type: Object,
       default: function () {
@@ -88,7 +88,44 @@ export default {
 
     const openLeft = computed(() => props.left.show);
 
+    const { t } = useI18n();
+
+    const dialog = ref(null);
+
+    const acceptButtonText = t('dialog.button.accept');
+    const cancelButtonText = t('dialog.button.cancel');
+
+    const $dialog = {
+      alert: (message, options = {}) => {
+        return dialog.value.open(
+          _.assign(
+            { type: 'alert', message },
+            {
+              acceptButtonText,
+              cancelButtonText,
+            },
+            options
+          )
+        );
+      },
+      confirm: (message, options = {}) => {
+        return dialog.value.open(
+          _.assign(
+            { type: 'confirm', message },
+            {
+              acceptButtonText,
+              cancelButtonText,
+            },
+            options
+          )
+        );
+      },
+    };
+
+    provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
+
     return {
+      dialog,
       showLoading,
       openLeft,
     };

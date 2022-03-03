@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export function expando(prefix = 'expando') {
   return prefix + '-' + ('' + Math.random()).replace(/\D/g, '');
 }
@@ -16,4 +18,14 @@ export function getMimeType(mime) {
     default:
       console.error('mime type이 없습니다.');
   }
+}
+
+export function objectWithoutProperties(source, ...withoutKeys) {
+  const target = {};
+  for (const key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key) && withoutKeys.indexOf(key) < 0) {
+      target[key] = _.cloneDeep(source[key]);
+    }
+  }
+  return target;
 }

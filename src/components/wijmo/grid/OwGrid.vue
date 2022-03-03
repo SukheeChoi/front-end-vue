@@ -62,8 +62,9 @@
 <script>
 import _ from 'lodash';
 
-import { computed, reactive, ref, watch, toRefs } from 'vue';
+import { reactive, ref, watch, toRefs, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import {
   CollectionView,
@@ -76,22 +77,11 @@ import { CellType, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.gri
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
 
-import { instance } from '@/main';
-import { t } from '@/plugins/i18n';
+import { objectWithoutProperties } from '@/utils';
 
 const ROW_STATUS = {
   ADD: 'C',
   EDIT: 'U',
-};
-
-const withoutProperties = (source, ...keys) => {
-  const target = {};
-  for (let key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key) && keys.indexOf(key) < 0) {
-      target[key] = _.cloneDeep(source[key]);
-    }
-  }
-  return target;
 };
 
 export default {
@@ -139,6 +129,9 @@ export default {
   setup(props) {
     const router = useRouter();
     const route = useRoute();
+
+    const { t } = useI18n();
+    const dialog = inject('$dialog');
 
     const downloader = ref(null);
 
@@ -249,8 +242,8 @@ export default {
               const item = items.at(i);
               if (item === e.item) {
                 const at = c.itemsEdited.indexOf(item);
-                const item1 = withoutProperties(item, 'rowStatus');
-                const item2 = withoutProperties(getSourceContent([...indexes, i]), 'rowStatus');
+                const item1 = objectWithoutProperties(item, 'rowStatus');
+                const item2 = objectWithoutProperties(getSourceContent([...indexes, i]), 'rowStatus');
                 if (c._sameContent(item1, item2)) {
                   c.itemsEdited.removeAt(at);
                   return true;
@@ -307,9 +300,9 @@ export default {
       if (props.remove) {
         const items = Array.from(s?.selector?.checkedItems ?? []).map((item) => item.dataItem);
         if (_.isEmpty(items)) {
-          return instance.alert(t('wijmo.grid.remove.noData'));
+          return dialog.alert(t('wijmo.grid.remove.noData'));
         }
-        if (await instance.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
+        if (await dialog.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
           // [TODO] 후처리 진행
           if (await props.remove(items)) {
             read(); // 검색 조건과 페이지 유지
@@ -325,10 +318,10 @@ export default {
         const editItems = Array.from(s.collectionView.itemsEdited ?? []);
         const removeItems = Array.from(s.collectionView.itemsRemoved ?? []);
         if (_.isEmpty(addItems) && _.isEmpty(editItems) && _.isEmpty(removeItems)) {
-          return instance.alert(t('wijmo.grid.save.noData'));
+          return dialog.alert(t('wijmo.grid.save.noData'));
         }
         const total = addItems.length + editItems.length + removeItems.length;
-        if (await instance.confirm(t('wijmo.grid.save.confirm', [total]))) {
+        if (await dialog.confirm(t('wijmo.grid.save.confirm', [total]))) {
           // [TODO] 후처리 진행
           if (await props.save(addItems, editItems, removeItems)) {
             read(); // 검색 조건과 페이지 유지
@@ -339,7 +332,7 @@ export default {
 
     // 초기화
     const reset = async () => {
-      if (await instance.confirm(t('wijmo.grid.reset.confirm'))) {
+      if (await dialog.confirm(t('wijmo.grid.reset.confirm'))) {
         s.collectionView.sourceCollection = _.cloneDeep(state.source);
       }
     };
