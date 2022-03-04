@@ -31,14 +31,12 @@
   </div>
   <app-footer></app-footer>
   <app-aside ref="aside"></app-aside>
-  <app-multiple-opener v-if="name" ref="opener"></app-multiple-opener>
   <ow-dialog ref="dialog"></ow-dialog>
   <ow-spinner></ow-spinner>
 </template>
 <script>
-import { computed, ref, provide, toRefs } from 'vue';
+import { computed, ref, provide } from 'vue';
 import { useStore } from 'vuex';
-import { useI18n } from 'vue-i18n';
 
 import AppHeader from '@/components/AppHeader';
 import AppNav from '@/components/AppNav';
@@ -46,12 +44,13 @@ import AppSection from '@/components/AppSection';
 import AppArticle from '@/components/AppArticle';
 import AppFooter from '@/components/AppFooter';
 import AppAside from '@/components/AppAside';
-import AppMultipleOpener from '@/components/AppMultipleOpener';
 
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
 
 import { app } from '@/main';
+
+import { t } from '@/plugins/i18n';
 
 export default {
   components: {
@@ -61,7 +60,6 @@ export default {
     AppArticle,
     AppFooter,
     AppAside,
-    AppMultipleOpener,
     TheActionPlan,
     TheApproval,
   },
@@ -87,8 +85,6 @@ export default {
     const showLoading = computed(() => store.state.showLoadingImage);
 
     const openLeft = computed(() => props.left.show);
-
-    const { t } = useI18n();
 
     const dialog = ref(null);
 
