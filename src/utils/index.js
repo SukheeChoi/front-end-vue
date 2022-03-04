@@ -29,3 +29,9 @@ export function objectWithoutProperties(source, ...withoutKeys) {
   }
   return target;
 }
+
+export function wait(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
