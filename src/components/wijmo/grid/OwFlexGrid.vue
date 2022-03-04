@@ -9,6 +9,7 @@
     :allow-sorting="allowSorting"
     :headers-visibility="headersVisibility"
     :selection-mode="selectionMode"
+    :show-marquee="showMarquee"
     :sticky-headers="stickyHeaders"
     :new-row-at-top="newRowAtTop"
   >
@@ -45,6 +46,7 @@ export default {
     allowTooltip: { type: Boolean, default: true },
     headersVisibility: { type: [Number, String], default: HeadersVisibility.All },
     selectionMode: { type: [Number, String], default: SelectionMode.Row },
+    showMarquee: { type: Boolean, default: true },
     stickyHeaders: { type: Boolean, default: true },
     newRowAtTop: { type: Boolean, default: true },
   },
@@ -99,25 +101,12 @@ export default {
       s.addEventListener(s.hostElement, 'mousedown', setSelection);
       s.addEventListener(s.hostElement, 'mouseup', setSelection);
 
-      // Tooltip
-      if (props.allowTooltip) {
-        // Cell에 대해서
-        s.formatItem.addHandler((s, { cell }) => {
-          const tt = new Tooltip();
-          const debounce = _.debounce(() => {
-            const content = _.trim(cell.textContent);
-            if (content && hasClass(cell, 'wj-cell') && !hasClass(cell, 'wj-state-invalid')) {
-              tt.show(cell, content);
-            }
-          }, 300);
-          const clear = () => {
-            tt.hide();
-            debounce.cancel();
-          };
-          cell.addEventListener('mouseenter', debounce);
-          cell.addEventListener('mouseleave', clear);
-        });
-      }
+      s.formatItem.addHandler((s, e) => {
+        // Tooltip
+        if (props.allowTooltip && CellType.Cell === e.panel.cellType) {
+          e.cell.setAttribute('title', _.trim(e.cell.textContent));
+        }
+      });
 
       // [ISSUE | 2022.02.17] 병합된 셀이 있는 경우 순회를 제대로 하지 못함.
       // Tab Index
@@ -207,12 +196,40 @@ export default {
 </script>
 <style lang="scss" scoped>
 .ow-grid {
-  border: 1px solid rgba(215, 220, 227, 1);
   :deep(.wj-header) {
     text-align: center;
   }
-  :deep(.wj-state-active) {
-    border: 1px solid black;
+  :deep(.wj-marquee) {
+    box-shadow: none;
+  }
+  :deep(.wj-cells) {
+    .wj-cell {
+      &.wj-state-active {
+        background-color: rgba(180, 220, 255, 1);
+      }
+      &[aria-readonly='true'] {
+        color: rgba(150, 150, 150, 1) !important;
+      }
+      // &[aria-readonly='true']:hover {
+      //   &::before {
+      //     content: '\270e\fe0e';
+      //     position: absolute;
+      //     right: 2px;
+      //   }
+      // }
+    }
+  }
+  :deep(.wj-cells),
+  :deep(.wj-colheaders) {
+    & .wj-cell:last-child {
+      border-right: 0;
+    }
+  }
+  :depp(.wj-topleft),
+  :deep(.wj-rowheaders) {
+    & .wj-cell:first-child {
+      border-left: 0;
+    }
   }
 }
 </style>
