@@ -64,7 +64,6 @@ import _ from 'lodash';
 
 import { reactive, ref, watch, toRefs, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 
 import {
   CollectionView,
@@ -76,6 +75,8 @@ import { CellType, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.gri
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
+
+import { t } from '@/plugins/i18n';
 
 import { objectWithoutProperties } from '@/utils';
 
@@ -130,7 +131,6 @@ export default {
     const router = useRouter();
     const route = useRoute();
 
-    const { t } = useI18n();
     const dialog = inject('$dialog');
 
     const downloader = ref(null);
@@ -205,20 +205,12 @@ export default {
       s.collectionView.trackChanges = true;
       s.collectionView.useStableSort = true;
       s.collectionView.sortDescriptions.push(new SortDescription(Index, false));
-      s.collectionView.itemsAdded.collectionChanged.addHandler((c, e) => {
-        if (NotifyCollectionChangedAction.Add === e.action) {
-          e.item.rowStatus = ROW_STATUS.ADD;
-        } else if (NotifyCollectionChangedAction.Remove === e.action) {
-          e.item.rowStatus = undefined;
-        }
-      });
-      s.collectionView.itemsEdited.collectionChanged.addHandler((c, e) => {
-        if (NotifyCollectionChangedAction.Add === e.action) {
-          e.item.rowStatus = ROW_STATUS.EDIT;
-        } else if (NotifyCollectionChangedAction.Remove === e.action) {
-          e.item.rowStatus = undefined;
-        }
-      });
+      s.collectionView.itemsAdded.collectionChanged.addHandler(
+        (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.ADD)
+      );
+      s.collectionView.itemsEdited.collectionChanged.addHandler(
+        (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
+      );
       s.collectionView.collectionChanged.addHandler((c, e) => {
         s.allowAddNew = false;
         if (NotifyCollectionChangedAction.Add === e.action) {
@@ -241,9 +233,10 @@ export default {
             for (let i = 0, length = items.length; i < length; i += 1) {
               const item = items.at(i);
               if (item === e.item) {
-                const at = c.itemsEdited.indexOf(item);
+                let at = c.itemsEdited.indexOf(item);
                 const item1 = objectWithoutProperties(item, 'rowStatus');
                 const item2 = objectWithoutProperties(getSourceContent([...indexes, i]), 'rowStatus');
+                console.log('item1, item2', item1, item2);
                 if (c._sameContent(item1, item2)) {
                   c.itemsEdited.removeAt(at);
                   return true;
