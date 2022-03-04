@@ -210,13 +210,13 @@ export default {
       // &[aria-readonly='true'] {
       //   color: rgba(150, 150, 150, 1) !important;
       // }
-      // &[aria-readonly='true']:hover {
-      //   &::before {
-      //     content: '\270e\fe0e';
-      //     position: absolute;
-      //     right: 2px;
-      //   }
-      // }
+      &[aria-readonly='true']:hover {
+        &::before {
+          content: '\1f512\fe0e';
+          position: absolute;
+          right: 2px;
+        }
+      }
     }
   }
   :deep(.wj-cells),
