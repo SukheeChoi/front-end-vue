@@ -53,11 +53,13 @@ export default {
     const init = (...args) => {
       s = args.at(0);
 
-      // [ISSUE | 2022.02.22] 데이터 바인딩 이후 폭이 변경됨, 바인딩 되기 전의 폭으로 강제 변경
+      // [ISSUE | 2022.03.04] 100%를 넘는 너비로 인해 상위 엘리먼트의 너비를 기준으로 resize 이벤트 발생시 변경
       const resize = () => {
-        const parentStyle = getComputedStyle(s.hostElement.parentElement);
-        const width = parentStyle.getPropertyValue('width');
-        s.hostElement.style.width = width;
+        if (s.hostElement.parentElement) {
+          const parentStyle = getComputedStyle(s.hostElement.parentElement);
+          const width = parentStyle.getPropertyValue('width');
+          s.hostElement.style.width = width;
+        }
       };
       window.addEventListener('resize', resize);
       resize();
