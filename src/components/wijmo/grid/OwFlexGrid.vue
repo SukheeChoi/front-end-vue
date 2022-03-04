@@ -207,9 +207,9 @@ export default {
       &.wj-state-active {
         background-color: rgba(180, 220, 255, 1);
       }
-      &[aria-readonly='true'] {
-        color: rgba(150, 150, 150, 1) !important;
-      }
+      // &[aria-readonly='true'] {
+      //   color: rgba(150, 150, 150, 1) !important;
+      // }
       // &[aria-readonly='true']:hover {
       //   &::before {
       //     content: '\270e\fe0e';
