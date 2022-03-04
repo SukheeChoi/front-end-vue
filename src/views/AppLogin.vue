@@ -44,17 +44,17 @@
             <dd>
               <div class="radio-group">
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio7" name="radio-group-3" value="osstem"/>
+                  <input type="radio" id="ow-radio7" name="radio-group-3" value="osstem" />
                   <label for="ow-radio7">정직원</label>
                 </div>
 
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio9" name="radio-group-3" value="partner"/>
+                  <input type="radio" id="ow-radio9" name="radio-group-3" value="partner" />
                   <label for="ow-radio9">협력사</label>
                 </div>
 
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio10" name="radio-group-3" value="contractor"/>
+                  <input type="radio" id="ow-radio10" name="radio-group-3" value="contractor" />
                   <label for="ow-radio10">도급직원</label>
                 </div>
               </div>
@@ -77,7 +77,9 @@
 import router from '@/routes/index.js';
 import menuMaker from '@/routes/menuMaker.js';
 import axios from 'axios';
-import login from '@/api/login.js';
+//import login from '@/api/login.js';
+import { requestLogin, getUserInfo, getMenuList } from '@/api/login.js';
+import store from '@/store';
 import restApi from '@/api/restApi.js';
 import { Menu } from '@/model';
 export default {
@@ -92,14 +94,18 @@ export default {
   },
   methods: {
     async getToken() {
-      const tokenData = await login.requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
+      //const tokenData = await login.requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
+      const tokenData = await requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
       if (tokenData.data.data !== null) {
-        login.setAuth(tokenData);
+        //login.setAuth(tokenData);
+        store.commit('setAuth', tokenData.data.data);
+
         return await this.getUserInfo();
       }
     },
     async getUserInfo() {
-      const userData = await login.getUserInfo('/com/Auth');
+      //const userData = await login.getUserInfo('/com/Auth');
+      const userData = await getUserInfo('/com/Auth');
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         this.$store.commit('setUserInfo', userInfo);
@@ -107,23 +113,24 @@ export default {
       }
     },
     async getMenus() {
-      const menuData = await login.getMenuList('/com/MenuMgr');
+      //const menuData = await login.getMenuList('/com/MenuMgr');
+      const menuData = await getMenuList('/com/MenuMgr');
       if (menuData.data !== null) {
         const screenList = menuData.data.data;
         this.$store.commit('setScreenList', screenList);
         this.$store.commit('setRouteRootList');
         var routeRootList = this.$store.getters.getRouteRootList;
-        for(var i=0;i< routeRootList.length; i++){
-          this.$store.commit('setRouteChildList', {root : routeRootList[i], child : screenList[i+1].children});          
+        for (var i = 0; i < routeRootList.length; i++) {
+          this.$store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
         }
-        for(var i=0;i<routeRootList.length;i++){
+        for (var i = 0; i < routeRootList.length; i++) {
           console.log(routeRootList);
           this.$router.addRoute(routeRootList[i]);
         }
 
-        this.$router.push('/')
+        this.$router.push('/');
       }
-    }
+    },
   },
 };
 </script>
