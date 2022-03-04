@@ -31,11 +31,10 @@
   </div>
   <app-footer></app-footer>
   <app-aside ref="aside"></app-aside>
-  <ow-dialog ref="dialog"></ow-dialog>
   <ow-spinner></ow-spinner>
 </template>
 <script>
-import { computed, ref, provide } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import AppHeader from '@/components/AppHeader';
@@ -47,10 +46,6 @@ import AppAside from '@/components/AppAside';
 
 import TheActionPlan from '@@/tsk/components/TheActionPlan';
 import TheApproval from '@@/eap/components/TheApproval';
-
-import { app } from '@/main';
-
-import { t } from '@/plugins/i18n';
 
 export default {
   components: {
@@ -86,42 +81,7 @@ export default {
 
     const openLeft = computed(() => props.left.show);
 
-    const dialog = ref(null);
-
-    const acceptButtonText = t('dialog.button.accept');
-    const cancelButtonText = t('dialog.button.cancel');
-
-    const $dialog = {
-      alert: (message, options = {}) => {
-        return dialog.value.open(
-          _.assign(
-            { type: 'alert', message },
-            {
-              acceptButtonText,
-              cancelButtonText,
-            },
-            options
-          )
-        );
-      },
-      confirm: (message, options = {}) => {
-        return dialog.value.open(
-          _.assign(
-            { type: 'confirm', message },
-            {
-              acceptButtonText,
-              cancelButtonText,
-            },
-            options
-          )
-        );
-      },
-    };
-
-    provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
-
     return {
-      dialog,
       showLoading,
       openLeft,
     };
