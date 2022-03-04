@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '@/store';
 import login from '@/api/login.js';
+import { requestReissueToken } from '@/api/login.js';
 import loading from '../store/modules/loading';
 const routes = [
   {
@@ -44,7 +45,7 @@ const routes = [
   {
     path: '/tabletLogin',
     name: 'tabletLogin',
-    component: () => import('@/views/TabletLogin')
+    component: () => import('@/views/TabletLogin'),
   },
   {
     path: '/:pathMatch(.*)*',
@@ -98,10 +99,12 @@ router.beforeEach(async (to, from, next) => {
 
   console.log('token time   : ' + store.getters.getTtl);
   console.log('current time : ' + now.getTime());
+  const nowTime = now.getTime();
 
   if (devMode === false && to.fullPath !== '/login' && store.getters.getTtl < now.getTime()) {
-    const newData = await login.requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
-    login.setAuth(newData);
+    const newData = await requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
+    //login.setAuth(newData);
+    store.commit('setAuth', newData.data.data);
   }
 
   if (devMode === false && to.fullPath !== '/login' && store.state.login.ttl < now.getTime()) {
@@ -118,8 +121,8 @@ router.beforeEach(async (to, from, next) => {
 });
 
 function checkAuthScreen(to, screenList) {
-  for (var i = 0; i < screenList; i++){
-    console.log(screenList[i])
+  for (var i = 0; i < screenList; i++) {
+    console.log(screenList[i]);
     if (screenList[i].name === 'main') {
       console.log(screenList[i].name);
       continue;

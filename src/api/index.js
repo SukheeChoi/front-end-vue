@@ -1,7 +1,8 @@
 import axios from 'axios';
 import store from '../store';
 import auth from '@/store/auth';
-import login from '@/api/login.js';
+//import login from '@/api/login.js';
+import { requestReissueToken } from '@/api/login.js';
 import router from '@/routes';
 import { app } from '@/main';
 
@@ -47,9 +48,9 @@ const addRefreshSubscriber = (callback) => {
   refreshSubscribers.push(callback);
 };
 
-function handleError(responseData) {
+async function handleError(responseData) {
   // 권한 오류
-  if (responseData.code === '401') {
+  if (responseData.code === '401' || responseData.code === '599') {
     handleAuthError(responseData);
   } else {
     //일반적인 오류
@@ -61,8 +62,10 @@ function handleError(responseData) {
 
 async function handleAuthError(responseData) {
   if (responseData.message === 'STATUS_EXPIRED') {
-    const newData = await login.requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
-    login.setAuth(newData);
+    //const newData = await login.requestReissueToken('/com/Auth');
+    const newData = await requestReissueToken('/com/Auth');
+    //login.setAuth(newData);
+    store.commit('setAuth', newData.data.data);
     onTokenRefreshed(store.getters.getToken);
   }
   if (responseData.message === 'STATUS_MALFORMED') {
@@ -70,6 +73,7 @@ async function handleAuthError(responseData) {
       '사용자 정보 확인에 실패하였습니다. 다시 로그인 해주세요'
     );
     store.commit('setShowLoadingImage', false);
+    store.commit('reset');
     router.push('/login');
   }
 }

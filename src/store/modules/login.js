@@ -25,19 +25,19 @@ export default {
       if (typeof state.userInfo === 'undefined') {
         return orgData;
       }
-        if (typeof state.userInfo.orgList !== 'undefined') {
-          if (state.userInfo.orgList[0].children) {
-            orgData = {
-              orgCd: state.userInfo.orgList[0].children[0].orgCd,
-              orgNm: state.userInfo.orgList[0].children[0].orgNm,
-            };
-          } else {
-            orgData = {
-              orgCd: state.userInfo.orgList[0].orgCd,
-              orgNm: state.userInfo.orgList[0].orgNm,
-            };
-          }
+      if (typeof state.userInfo.orgList !== 'undefined') {
+        if (state.userInfo.orgList[0].children) {
+          orgData = {
+            orgCd: state.userInfo.orgList[0].children[0].orgCd,
+            orgNm: state.userInfo.orgList[0].children[0].orgNm,
+          };
+        } else {
+          orgData = {
+            orgCd: state.userInfo.orgList[0].orgCd,
+            orgNm: state.userInfo.orgList[0].orgNm,
+          };
         }
+      }
       return orgData;
     },
     getOrgList(state) {
@@ -46,8 +46,6 @@ export default {
         return orgList;
       }
       if (state.userInfo.orgList) {
-        
-      
         let orgData = state.userInfo.orgList || [];
 
         while (orgData[0].children) {
@@ -63,10 +61,18 @@ export default {
       }
 
       return orgList || [];
-
-    }
+    },
   },
   mutations: {
+    setAuth(state, payload) {
+      const jsonData = JSON.parse(payload);
+      const accessToken = jsonData.accessToken;
+      const ttl = jsonData.ttl;
+
+      state.accessToken = accessToken;
+      state.ttl = ttl;
+    },
+
     setToken(state, payload) {
       state.accessToken = payload;
     },
@@ -75,6 +81,6 @@ export default {
     },
     setUserInfo(state, payload) {
       state.userInfo = payload;
-    }
+    },
   },
 };
