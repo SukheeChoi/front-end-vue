@@ -78,6 +78,11 @@ const MenuList2 = [
       Menu.create('알림 설정', 'COMPE005'),
     ]),
   ]),
+  Menu.create('전자결재', 'EAPROOT', [  
+    Menu.create('전자결재', 'EAPXX', [
+      Menu.create('결재문서 양식 설정', 'EAPXX001'),
+    ]),          
+  ]),   
 ];
 
 export default {
