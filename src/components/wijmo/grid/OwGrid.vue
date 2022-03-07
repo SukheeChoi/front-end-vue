@@ -200,16 +200,17 @@ export default {
       s.rowHeaders.columns.push(statusHeader);
 
       // CollectionView 설정
-      s.collectionView.trackChanges = true;
-      s.collectionView.useStableSort = true;
-      s.collectionView.sortDescriptions.push(new SortDescription(Index, false));
-      s.collectionView.itemsAdded.collectionChanged.addHandler(
+      const cv = s.collectionView;
+      cv.trackChanges = true;
+      cv.useStableSort = true;
+      cv.sortDescriptions.push(new SortDescription(Index, false));
+      cv.itemsAdded.collectionChanged.addHandler(
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.ADD)
       );
-      s.collectionView.itemsEdited.collectionChanged.addHandler(
+      cv.itemsEdited.collectionChanged.addHandler(
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
       );
-      s.collectionView.collectionChanged.addHandler((c, e) => {
+      cv.collectionChanged.addHandler((c, e) => {
         s.allowAddNew = false;
         if (NotifyCollectionChangedAction.Add === e.action) {
           e.item[Index] = e.item[Index] ?? e.index;
@@ -261,7 +262,7 @@ export default {
           recursiveTrackItemChanged(c.sourceCollection);
         }
       });
-      s.collectionView.sourceCollectionChanged.addHandler((c) => {
+      cv.sourceCollectionChanged.addHandler((c) => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
           item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
           item[Index] = item[Index] ?? c.items.length - index - 1;
@@ -309,7 +310,7 @@ export default {
         const editItems = Array.from(s.collectionView.itemsEdited ?? []);
         const removeItems = Array.from(s.collectionView.itemsRemoved ?? []);
         if (_.isEmpty(addItems) && _.isEmpty(editItems) && _.isEmpty(removeItems)) {
-          return dialog.alert(t('wijmo.grid.save.noData'));
+          return await dialog.alert(t('wijmo.grid.save.noData'));
         }
         const total = addItems.length + editItems.length + removeItems.length;
         if (await dialog.confirm(t('wijmo.grid.save.confirm', [total]))) {
@@ -321,20 +322,23 @@ export default {
       }
     };
 
-    // 초기화
-    const reset = async () => {
-      if (await dialog.confirm(t('wijmo.grid.reset.confirm'))) {
-        s.collectionView.sourceCollection = _.cloneDeep(state.source);
+    // 초기화(초기 조회된 내용으로)
+    const reset = async (usingConfirm = true) => {
+      if (usingConfirm) {
+        if (!(await dialog.confirm(t('wijmo.grid.reset.confirm')))) {
+          return;
+        }
       }
+      s.collectionView.sourceCollection = _.cloneDeep(state.source);
     };
 
-    // 초기화
-    const clear = () => {
+    // 초기화(빈 테이블로)
+    const clear = (...args) => {
       state.pageNo = 1;
       state.pageSize = 10;
       state.totalCount = 0;
       state.source = [];
-      reset();
+      reset(...args);
     };
 
     /**
