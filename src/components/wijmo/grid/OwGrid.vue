@@ -22,13 +22,11 @@
         </template>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item class="ow-grid-wrapper">
-      <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': totalCount === 0 }">
-        <ow-flex-grid :initialized="init" v-bind="$attrs">
-          <slot></slot>
-        </ow-flex-grid>
-      </div>
-    </ow-flex-item>
+    <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': totalCount === 0 }">
+      <ow-flex-grid :initialized="init" v-bind="$attrs">
+        <slot></slot>
+      </ow-flex-grid>
+    </div>
     <ow-flex-item fix class="mt-10 mb-10" v-if="footer">
       <ow-flex-item to="left" align="center">
         <button type="button" class="ow-button type-icon mr-5">
@@ -202,16 +200,17 @@ export default {
       s.rowHeaders.columns.push(statusHeader);
 
       // CollectionView 설정
-      s.collectionView.trackChanges = true;
-      s.collectionView.useStableSort = true;
-      s.collectionView.sortDescriptions.push(new SortDescription(Index, false));
-      s.collectionView.itemsAdded.collectionChanged.addHandler(
+      const cv = s.collectionView;
+      cv.trackChanges = true;
+      cv.useStableSort = true;
+      cv.sortDescriptions.push(new SortDescription(Index, false));
+      cv.itemsAdded.collectionChanged.addHandler(
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.ADD)
       );
-      s.collectionView.itemsEdited.collectionChanged.addHandler(
+      cv.itemsEdited.collectionChanged.addHandler(
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
       );
-      s.collectionView.collectionChanged.addHandler((c, e) => {
+      cv.collectionChanged.addHandler((c, e) => {
         s.allowAddNew = false;
         if (NotifyCollectionChangedAction.Add === e.action) {
           e.item[Index] = e.item[Index] ?? e.index;
@@ -263,7 +262,7 @@ export default {
           recursiveTrackItemChanged(c.sourceCollection);
         }
       });
-      s.collectionView.sourceCollectionChanged.addHandler((c) => {
+      cv.sourceCollectionChanged.addHandler((c) => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
           item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
           item[Index] = item[Index] ?? c.items.length - index - 1;
@@ -311,7 +310,7 @@ export default {
         const editItems = Array.from(s.collectionView.itemsEdited ?? []);
         const removeItems = Array.from(s.collectionView.itemsRemoved ?? []);
         if (_.isEmpty(addItems) && _.isEmpty(editItems) && _.isEmpty(removeItems)) {
-          return dialog.alert(t('wijmo.grid.save.noData'));
+          return await dialog.alert(t('wijmo.grid.save.noData'));
         }
         const total = addItems.length + editItems.length + removeItems.length;
         if (await dialog.confirm(t('wijmo.grid.save.confirm', [total]))) {
@@ -323,20 +322,23 @@ export default {
       }
     };
 
-    // 초기화
-    const reset = async () => {
-      if (await dialog.confirm(t('wijmo.grid.reset.confirm'))) {
-        s.collectionView.sourceCollection = _.cloneDeep(state.source);
+    // 초기화(초기 조회된 내용으로)
+    const reset = async (usingConfirm = true) => {
+      if (usingConfirm) {
+        if (!(await dialog.confirm(t('wijmo.grid.reset.confirm')))) {
+          return;
+        }
       }
+      s.collectionView.sourceCollection = _.cloneDeep(state.source);
     };
 
-    // 초기화
-    const clear = () => {
+    // 초기화(빈 테이블로)
+    const clear = (...args) => {
       state.pageNo = 1;
       state.pageSize = 10;
       state.totalCount = 0;
       state.source = [];
-      reset();
+      reset(...args);
     };
 
     /**
@@ -464,45 +466,40 @@ export default {
 .headline-wrap {
   border-bottom: none;
 }
-.ow-grid-wrapper {
-  flex-direction: column;
-  min-height: var(--grid-min-height, var(--grid-height, 72px)) !important;
-  max-height: var(--grid-max-height, var(--grid-height, none)) !important;
-  .ow-grid-wrap {
-    position: relative;
-    &.ow-grid-empty {
-      &::after {
-        content: '검색 결과가 없습니다.';
-        position: absolute;
-        top: 37px;
-        width: 100%;
-        line-height: 35px;
-        text-align: center;
-        z-index: 999;
-      }
+.ow-grid-wrap {
+  position: relative;
+  &.ow-grid-empty {
+    &::after {
+      content: '검색 결과가 없습니다.';
+      position: absolute;
+      top: 37px;
+      width: 100%;
+      line-height: 35px;
+      text-align: center;
+      z-index: 999;
     }
-    :deep(.ow-grid-required) {
-      &::after {
-        position: absolute;
-        content: '';
-        width: 0;
-        right: 0;
-        top: -14px;
-        border: 14px solid transparent;
-        border-right-color: rgba(0, 0, 255, 1);
-      }
+  }
+  :deep(.ow-grid-required) {
+    &::after {
+      position: absolute;
+      content: '';
+      width: 0;
+      right: 0;
+      top: -14px;
+      border: 14px solid transparent;
+      border-right-color: rgba(0, 0, 255, 1);
     }
-    :deep(.wj-state-invalid:not(.wj-header)) {
-      border-top: none;
-      border-left: none;
-      border-right: 1px solid rgba(215, 220, 227, 1);
-      border-bottom: 1px solid rgba(215, 220, 227, 1);
-      &::after {
-        top: -14px;
-        right: 0;
-        border: 14px solid transparent;
-        border-right-color: red;
-      }
+  }
+  :deep(.wj-state-invalid:not(.wj-header)) {
+    border-top: none;
+    border-left: none;
+    border-right: 1px solid rgba(215, 220, 227, 1);
+    border-bottom: 1px solid rgba(215, 220, 227, 1);
+    &::after {
+      top: -14px;
+      right: 0;
+      border: 14px solid transparent;
+      border-right-color: red;
     }
   }
 }
