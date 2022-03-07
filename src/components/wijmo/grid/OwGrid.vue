@@ -22,13 +22,11 @@
         </template>
       </ow-flex-item>
     </ow-flex-item>
-    <ow-flex-item class="ow-grid-wrapper">
-      <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': totalCount === 0 }">
-        <ow-flex-grid :initialized="init" v-bind="$attrs">
-          <slot></slot>
-        </ow-flex-grid>
-      </div>
-    </ow-flex-item>
+    <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': totalCount === 0 }">
+      <ow-flex-grid :initialized="init" v-bind="$attrs">
+        <slot></slot>
+      </ow-flex-grid>
+    </div>
     <ow-flex-item fix class="mt-10 mb-10" v-if="footer">
       <ow-flex-item to="left" align="center">
         <button type="button" class="ow-button type-icon mr-5">
@@ -464,45 +462,40 @@ export default {
 .headline-wrap {
   border-bottom: none;
 }
-.ow-grid-wrapper {
-  flex-direction: column;
-  min-height: var(--grid-min-height, var(--grid-height, 72px)) !important;
-  max-height: var(--grid-max-height, var(--grid-height, none)) !important;
-  .ow-grid-wrap {
-    position: relative;
-    &.ow-grid-empty {
-      &::after {
-        content: '검색 결과가 없습니다.';
-        position: absolute;
-        top: 37px;
-        width: 100%;
-        line-height: 35px;
-        text-align: center;
-        z-index: 999;
-      }
+.ow-grid-wrap {
+  position: relative;
+  &.ow-grid-empty {
+    &::after {
+      content: '검색 결과가 없습니다.';
+      position: absolute;
+      top: 37px;
+      width: 100%;
+      line-height: 35px;
+      text-align: center;
+      z-index: 999;
     }
-    :deep(.ow-grid-required) {
-      &::after {
-        position: absolute;
-        content: '';
-        width: 0;
-        right: 0;
-        top: -14px;
-        border: 14px solid transparent;
-        border-right-color: rgba(0, 0, 255, 1);
-      }
+  }
+  :deep(.ow-grid-required) {
+    &::after {
+      position: absolute;
+      content: '';
+      width: 0;
+      right: 0;
+      top: -14px;
+      border: 14px solid transparent;
+      border-right-color: rgba(0, 0, 255, 1);
     }
-    :deep(.wj-state-invalid:not(.wj-header)) {
-      border-top: none;
-      border-left: none;
-      border-right: 1px solid rgba(215, 220, 227, 1);
-      border-bottom: 1px solid rgba(215, 220, 227, 1);
-      &::after {
-        top: -14px;
-        right: 0;
-        border: 14px solid transparent;
-        border-right-color: red;
-      }
+  }
+  :deep(.wj-state-invalid:not(.wj-header)) {
+    border-top: none;
+    border-left: none;
+    border-right: 1px solid rgba(215, 220, 227, 1);
+    border-bottom: 1px solid rgba(215, 220, 227, 1);
+    &::after {
+      top: -14px;
+      right: 0;
+      border: 14px solid transparent;
+      border-right-color: red;
     }
   }
 }
