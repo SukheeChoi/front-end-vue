@@ -270,6 +270,15 @@ export default {
         c.refresh();
       });
 
+      // selection이 변경되면 새로운 행을 추가한다.
+      s.selectionChanging.addHandler((s, e) => {
+        const row = e.getRow();
+        if (row instanceof _NewRowTemplate) {
+          s._edtHdl._commitRowEdits();
+          setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(e.col, SelMove.NextEditableCell)), 20);
+        }
+      });
+
       // 사용자가 설정한 초기화 함수 호출
       if (props.initialized) {
         props.initialized(s);
