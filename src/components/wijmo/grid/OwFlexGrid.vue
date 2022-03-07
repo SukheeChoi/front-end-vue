@@ -17,7 +17,7 @@
   </wj-flex-grid>
 </template>
 <script>
-import { hasClass, Tooltip, Key } from '@grapecity/wijmo';
+import { hasClass, Tooltip, Key, setChecked } from '@grapecity/wijmo';
 import {
   AllowDragging,
   AllowMerging,
@@ -44,6 +44,7 @@ export default {
     allowSorting: { type: [Number, String], default: AllowSorting.None },
     allowSelector: Boolean,
     allowTooltip: { type: Boolean, default: true },
+    allowCheckbox: { type: Boolean, default: true },
     headersVisibility: { type: [Number, String], default: HeadersVisibility.All },
     selectionMode: { type: [Number, String], default: SelectionMode.Row },
     showMarquee: { type: Boolean, default: true },
@@ -182,6 +183,38 @@ export default {
         if (s.rowHeaders?.columns.length > 0) {
           s.rowHeaders.columns.shift();
         }
+      }
+
+      const setCheckbox = () => {
+        s.columns.forEach(col => {
+          if (col.cssClass === 'checkbox') {
+            col.isReadOnly = true;
+            col.cellTemplate = '<label><input type="checkbox" /><span></span></label>';
+          }
+        });
+
+        s.formatItem.addHandler((s, e) => {
+          let row = e.panel.rows[e.row],
+              col = e.panel.columns[e.col];
+          
+          if (e.panel.cellType === CellType.Cell && col.cssClass === 'checkbox') {
+            let input = e.cell.querySelector("input"),
+                check = row.dataItem[col.binding] === 'Y' ? true : false,
+                value = check ? 'N' : 'Y';
+
+            setChecked(input, check);
+
+            input.addEventListener("click", 
+              () => {
+                s.setCellData(s.selection.row, col.binding, value);
+              }
+            );
+          }
+        })
+      }
+
+      if (props.allowCheckbox) {
+        setCheckbox();
       }
 
       if (props.initialized) {
