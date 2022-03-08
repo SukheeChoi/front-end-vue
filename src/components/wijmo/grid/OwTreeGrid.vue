@@ -26,7 +26,13 @@ export default {
     selector: Boolean,
     drag: {
       type: Object,
-      default: () => [],
+      default: () => ({
+        allowAdding: 'add', // add : add row, set : set row data
+        targetType: [],
+        dragType: [],
+        key: [],
+        readonly: [],
+      }),
     },
     selectionMode: {
       type: [Number, String],
@@ -156,7 +162,8 @@ export default {
     const addItem = (grid, target) => {
       let targetRow = grid.hitTest(target).row,
           dragRow = target.dataTransfer.getData('text'),
-          item = originalGrid.rows[parseInt(dragRow)].dataItem;
+          item = originalGrid.rows[parseInt(dragRow)].dataItem,
+          isTargetValid = false;
 
       if (!dragRow || !targetRow) {
         return false;
@@ -175,19 +182,15 @@ export default {
       });
       
       // 추가해도 되는 행인지 check
-      let isTargetValid = false,
-          isSameValid = false,
-          isDragValid = false;
-
       // target type check  - biz -> org로 드래그한 경우 org에다가 추가
-      state.drag.targetType?.forEach((type) => {
+      state.drag.targetType.forEach((type) => {
         if (targetItem.nodeType === type) {
           isTargetValid = true;
         }
       })
       
       // drag type - biz -> biz로 드래그한 경우 biz의 상위 parent node에다가 추가
-      state.drag.dragType?.forEach((type) => {
+      state.drag.dragType.forEach((type) => {
         if (targetItem.nodeType === type) {
           isTargetValid = true;
         }
@@ -200,8 +203,7 @@ export default {
       if (!targetItem.children) {
         if (state.drag.targetType.includes(targetItem.nodeType)) {
           // biz -> org, biz -> person
-          targetItem.children = [];
-          targetItem.children.splice(0, 0, _item);
+          addChildItem(grid, targetItem, targetRow, _item);
         } else {
           // biz -> biz
           // find closest parent
@@ -217,21 +219,42 @@ export default {
             return;
           }
 
-          if (!utils.chkChildItem(parent, _item, state.drag.key)) {
-            parent.children.splice(0, 0, _item);
-            grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
+          if (utils.chkChildItem(parent, _item, state.drag.key)) {
+            return;
           }
+
+          addChildItem(grid, parent, targetRow, item);
         }
       } else {
-        if (!utils.chkChildItem(targetItem, _item, state.drag.key)) {
-          targetItem.children.splice(0, 0, _item);
+        if (utils.chkChildItem(targetItem, _item, state.drag.key)) {
+          return;
         }
+
+        addChildItem(grid, targetItem, targetRow, _item);
       }
 
       grid.collectionView.itemsAdded.push(_item);
 
       return true;
     };
+
+    const addChildItem = (grid, targetItem, targetRow, item) => {
+      if (state.drag.allowAdding === 'set') {
+        state.drag.key.forEach((key) => {
+          targetItem[key] = item[key];
+        })
+        grid.collectionView.itemsEdited.push(targetItem);
+        grid.invalidate();
+        // grid.refresh();
+      } else {
+        if (!targetItem.children) {
+          targetItem.children = [];
+        }
+  
+        targetItem.children.splice(0, 0, item);
+      }
+      grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
+    }
 
     const makeDragSource = (s) => {
       // make rows draggable
@@ -327,7 +350,7 @@ export default {
         } else {
           if (addItem(s, e)) {
             item.rowStatus = 'D';
-            utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, state.drag.key); //delete item
+            utils.removeChildItem(s.collectionView.sourceCollection[0], item, state.drag.key); //delete item
             s.collectionView.itemsRemoved.push(item);
           }
         }

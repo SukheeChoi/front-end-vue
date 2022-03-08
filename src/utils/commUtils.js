@@ -39,14 +39,14 @@ const Utils = {
     return resultMsg;
   },
 
-  removeBizGrpItem(dataItem, item, itemKey) {
+  removeChildItem(dataItem, item, itemKey) {
     if (dataItem.children) {
       let child;
       for (let i = 0; i < dataItem.children.length; i++) {
         child = dataItem.children[i];
 
         if (child.children) {
-          Utils.removeBizGrpItem(child, item, itemKey);
+          Utils.removeChildItem(child, item, itemKey);
         }
 
         if (itemKey) {
@@ -69,6 +69,10 @@ const Utils = {
   },
 
   chkChildItem(dataItem, item, itemKey) {
+    if (!dataItem.children) {
+      return;
+    }
+
     let isSameValid = false;
     dataItem.children.forEach((child) => {
       let cnt = 0;
