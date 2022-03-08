@@ -65,7 +65,9 @@ export default {
     onMounted(() => {
       if (props.drag) {
         makeDragSource(state.grid);
-        makeDropTarget(state.grid);
+        if (grid.value.allowStatus) {
+          makeDropTarget(state.grid);
+        }
       }
     });
 
@@ -152,104 +154,78 @@ export default {
     };
 
     const addItem = (grid, target) => {
-      let ht = grid.hitTest(target),
+      let targetRow = grid.hitTest(target).row,
           dragRow = target.dataTransfer.getData('text'),
-          item = originalGrid.rows[parseInt(dragRow)].dataItem,
-          parentRow = -1,
-          findIdx = false,
-          chkItem = [];
+          item = originalGrid.rows[parseInt(dragRow)].dataItem;
 
-      if (!dragRow || !ht.row) {
+      if (!dragRow || !targetRow) {
         return false;
       }
 
       let _item = _.cloneDeep(item),
-          targetItem = grid.rows[ht.row].dataItem;
-      // _item.orgCd = grid.rows[ht.row].dataItem.orgCd;
-      _item.rowStatus = 'C';
+          targetItem = grid.rows[targetRow].dataItem;
+      
+      _item.rowStatus = 'C',
+      _item.nodeType = state.drag.dragType.at(0);
 
       state.drag.key.forEach((key) => {
         if (!_item[key]) {
           _item[key] = targetItem[key];
         }
-
-        console.log('chkItem ', chkItem);
-        chkItem[key] = _item[key];
-        // chkItem.push(_item[key]);
       });
+      
+      // 추가해도 되는 행인지 check
+      let isTargetValid = false,
+          isSameValid = false,
+          isDragValid = false;
 
-
-      utils.addChildItem(grid.collectionView.sourceCollection[0], chkItem, state.drag.key);
-
-      // grid.rows.forEach((row) => {
-      //   if (row.hasChildren == true) {
-      //     console.log('grid', grid);
-      //     parentRow = row.index;
-
-      //     // console.log('findIndex', _.filter(row.dataItem.children, _.matches(chkItem)));
-      //     // if () {
-      //       // }
-
-      //     row.dataItem.children.forEach((findRow) => {
-      //       console.log('findRow', findRow);
-
-      //       if (findRow.children) {
-
-      //       }
-
-      //       let cnt = 0;
-              
-      //       state.drag.key.forEach((key) => {
-      //         if (findRow[key] == _item[key]) {
-      //           console.log('findRow[key]', findRow[key], '_item[key]', _item[key]);
-      //           cnt++;
-      //         }
-
-      //         if (cnt === state.drag.key.length) {
-      //           return;
-      //         }
-      //       })
-
-            
-
-      //     //   console.log('findIndex', _.findIndex(findRow, chkItem));
-      //       // console.log('------>', findRow, chkItem);
-      //     });
-
-      //     // row.dataItem.children.forEach((findRow) => {
-      //     //   console.log('findRow', findRow);
-      //     //   console.log('item', _item);
-      //     //   if (findRow.bizGrpId == item.bizGrpId) {
-      //     //     findIdx = true;
-      //     //   }
-      //     // });
-      //   }
-      // });
-
-      // if (findIdx) {
-      //   return false;
-      // }
-
-      if (!grid.rows[ht.row].dataItem.children) {
-        let findType = false;
-        if (state.drag.nodeType) {
-          state.drag.nodeType.forEach((type) => {
-            if (grid.rows[ht.row].dataItem.nodeType == type) {
-              findType = true;
-            }
-          })
+      // target type check  - biz -> org로 드래그한 경우 org에다가 추가
+      state.drag.targetType?.forEach((type) => {
+        if (targetItem.nodeType === type) {
+          isTargetValid = true;
         }
+      })
+      
+      // drag type - biz -> biz로 드래그한 경우 biz의 상위 parent node에다가 추가
+      state.drag.dragType?.forEach((type) => {
+        if (targetItem.nodeType === type) {
+          isTargetValid = true;
+        }
+      })
 
-        if (findType) {
-          grid.rows[ht.row].dataItem.children = [];
-          grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
+      if (!isTargetValid) {
+        return;
+      }
+
+      if (!targetItem.children) {
+        if (state.drag.targetType.includes(targetItem.nodeType)) {
+          // biz -> org, biz -> person
+          targetItem.children = [];
+          targetItem.children.splice(0, 0, _item);
         } else {
-          if (parentRow >= 0) {
-            grid.rows[parentRow].dataItem.children.splice(0, 0, _item);
+          // biz -> biz
+          // find closest parent
+          let parent = null;
+          for (let r = targetRow; r > 0; r--) {
+            if (grid.rows[r].hasChildren) {
+              parent = grid.rows[r].dataItem;
+              break;
+            }
+          }
+          
+          if (!state.drag.targetType.includes(parent.nodeType)) {
+            return;
+          }
+
+          if (!utils.chkChildItem(parent, _item, state.drag.key)) {
+            parent.children.splice(0, 0, _item);
+            grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
           }
         }
       } else {
-        grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
+        if (!utils.chkChildItem(targetItem, _item, state.drag.key)) {
+          targetItem.children.splice(0, 0, _item);
+        }
       }
 
       grid.collectionView.itemsAdded.push(_item);
@@ -291,6 +267,7 @@ export default {
       // handle drag start
       s.addEventListener(s.hostElement, "dragstart", (e) => {
           createImage();
+
           let ht = s.hitTest(e);
           if (ht.cellType == wjGrid.CellType.RowHeader) {
             s.select(new wjGrid.CellRange(ht.row, 0, ht.row, s.columns.length - 1));
@@ -310,11 +287,17 @@ export default {
       s.hostElement.addEventListener("dragover", (e) => {
         let ht = s.hitTest(e);
         let dragRow = e.dataTransfer.getData("text");
+
+        // console.log('dragover', ht, ht.panel, ht.row, dragRow1, dragRow2, dragRow);
+
         if (!ht || ht.panel == null) {
+          console.log('여기이111,,?');
+          removeImage();
           return;
         }
         // prevent Dragging for Selected items Children and the Cell panel
         if (ht.row >= dragRow1 && ht.row < dragRow2) {
+          console.log('여기이222,,?');
           removeImage();
           return;
         }
@@ -332,6 +315,12 @@ export default {
 
       s.hostElement.addEventListener("drop", (e) => {
         let item = originalGrid.rows[parseInt(e.dataTransfer.getData("text"))].dataItem; //drag data
+        console.log('drop', item);
+        
+        // if (!s.itemsSource._vm.grid.allowStatus && originalGrid == s) {
+          // removeImage();
+          // return;
+        // }
 
         if (s != originalGrid) {
           addItem(s, e);
