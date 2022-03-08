@@ -291,8 +291,8 @@ export default {
 
     // 행 추가
     const add = () => {
-      s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
       s.allowAddNew = true;
+      s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
       setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
     };
 
