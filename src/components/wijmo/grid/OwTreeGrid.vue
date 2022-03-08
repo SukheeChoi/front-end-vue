@@ -14,7 +14,6 @@ import _ from 'lodash';
 
 import { reactive, ref, toRefs, onMounted } from 'vue';
 import { SelectionMode } from '@grapecity/wijmo.grid';
-import { Selector } from '@grapecity/wijmo.grid.selector';
 import * as wjGrid from '@grapecity/wijmo.grid';
 import utils from '@/utils/commUtils.js';
 
@@ -75,46 +74,19 @@ export default {
         dragRow1 = null,
         dragRow2 = null;
 
-    const addSelector = (grid) => {
-      let chkIdx;
-      grid.columns.forEach((col) => {
-        if (col.name == 'chk') {
-          chkIdx = col.index;
-        }
-      });
-      return new Selector(grid.columns[chkIdx], {});
-    };
-
-    const addHeaderIcon = (grid, e) => {
-      if (e.panel.cellType != wjGrid.CellType.RowHeader) {
-        return;
-      }
-
-      let row = e.panel.rows[e.row],
-        colHeader = grid.rowHeaders.columns[e.col];
-
-      if (colHeader.binding == 'rowStatus') {
-        if (row.dataItem.rowStatus == 'U') {
-          e.cell.innerHTML = utils.getWjGlyph('pencil');
-        } else if (row.dataItem.rowStatus == 'C') {
-          e.cell.innerHTML = utils.getWjGlyph('asterisk');
-        } else {
-          e.cell.innerHTML = '';
-        }
-      } else if (colHeader.binding == 'drag') {
-        e.cell.innerHTML = utils.getWjGlyph('drag', 'button');
-      }
-    };
-
     const addCellIcon = (s, e) => {
       if (e.panel.cellType != wjGrid.CellType.Cell) {
         return;
       }
 
-      let row = e.panel.rows[e.row],
-          col = e.panel.columns[e.col];
-
+      let row = e.getRow(),
+          col = e.getColumn();
       if (col.cssClass == 'icon') {
+
+        if (s.activeEditor !== null) {
+          return;
+        }
+
         let padding = row.level * 13,
             collapse = '',
             icon = utils.getOwIcon(row.dataItem.nodeType) ?? '',
@@ -143,7 +115,6 @@ export default {
 
     const formatItem = (grid) => {
       grid.formatItem.addHandler(function(s, e) {
-        addHeaderIcon(grid, e);
         addCellIcon(s, e);
       });
     }
@@ -182,34 +153,82 @@ export default {
 
     const addItem = (grid, target) => {
       let ht = grid.hitTest(target),
-        dragRow = target.dataTransfer.getData('text'),
-        item = originalGrid.rows[parseInt(dragRow)].dataItem,
-        parentRow = -1,
-        findIdx = false;
+          dragRow = target.dataTransfer.getData('text'),
+          item = originalGrid.rows[parseInt(dragRow)].dataItem,
+          parentRow = -1,
+          findIdx = false,
+          chkItem = [];
 
       if (!dragRow || !ht.row) {
         return false;
       }
 
-      let _item = _.cloneDeep(item);
-      _item.orgCd = grid.rows[ht.row].dataItem.orgCd;
+      let _item = _.cloneDeep(item),
+          targetItem = grid.rows[ht.row].dataItem;
+      // _item.orgCd = grid.rows[ht.row].dataItem.orgCd;
       _item.rowStatus = 'C';
 
-      grid.rows.forEach((row) => {
-        if (row.hasChildren == true && row._data.orgCd == _item.orgCd) {
-          parentRow = row.index;
-
-          row.dataItem.children.forEach((findRow) => {
-            if (findRow.bizGrpId == item.bizGrpId) {
-              findIdx = true;
-            }
-          });
+      state.drag.key.forEach((key) => {
+        if (!_item[key]) {
+          _item[key] = targetItem[key];
         }
+
+        console.log('chkItem ', chkItem);
+        chkItem[key] = _item[key];
+        // chkItem.push(_item[key]);
       });
 
-      if (findIdx) {
-        return false;
-      }
+
+      utils.addChildItem(grid.collectionView.sourceCollection[0], chkItem, state.drag.key);
+
+      // grid.rows.forEach((row) => {
+      //   if (row.hasChildren == true) {
+      //     console.log('grid', grid);
+      //     parentRow = row.index;
+
+      //     // console.log('findIndex', _.filter(row.dataItem.children, _.matches(chkItem)));
+      //     // if () {
+      //       // }
+
+      //     row.dataItem.children.forEach((findRow) => {
+      //       console.log('findRow', findRow);
+
+      //       if (findRow.children) {
+
+      //       }
+
+      //       let cnt = 0;
+              
+      //       state.drag.key.forEach((key) => {
+      //         if (findRow[key] == _item[key]) {
+      //           console.log('findRow[key]', findRow[key], '_item[key]', _item[key]);
+      //           cnt++;
+      //         }
+
+      //         if (cnt === state.drag.key.length) {
+      //           return;
+      //         }
+      //       })
+
+            
+
+      //     //   console.log('findIndex', _.findIndex(findRow, chkItem));
+      //       // console.log('------>', findRow, chkItem);
+      //     });
+
+      //     // row.dataItem.children.forEach((findRow) => {
+      //     //   console.log('findRow', findRow);
+      //     //   console.log('item', _item);
+      //     //   if (findRow.bizGrpId == item.bizGrpId) {
+      //     //     findIdx = true;
+      //     //   }
+      //     // });
+      //   }
+      // });
+
+      // if (findIdx) {
+      //   return false;
+      // }
 
       if (!grid.rows[ht.row].dataItem.children) {
         let findType = false;
@@ -299,7 +318,7 @@ export default {
           removeImage();
           return;
         }
-        if (dragRow != null) {
+        if (dragRow != null && dragDiv) {
           dragDiv.style.display = 'inline-block';
           e.dataTransfer.dropEffect = "copy";
           e.preventDefault();
