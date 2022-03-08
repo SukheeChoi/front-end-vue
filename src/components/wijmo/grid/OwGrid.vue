@@ -69,7 +69,7 @@ import {
   NotifyCollectionChangedEventArgs,
   SortDescription,
 } from '@grapecity/wijmo';
-import { CellType, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
+import { CellType, CellRange, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
@@ -235,7 +235,6 @@ export default {
                 let at = c.itemsEdited.indexOf(item);
                 const item1 = objectWithoutProperties(item, 'rowStatus');
                 const item2 = objectWithoutProperties(getSourceContent([...indexes, i]), 'rowStatus');
-                console.log('item1, item2', item1, item2);
                 if (c._sameContent(item1, item2)) {
                   c.itemsEdited.removeAt(at);
                   return true;
@@ -293,6 +292,7 @@ export default {
     // 행 추가
     const add = () => {
       s.allowAddNew = true;
+      s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
       setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
     };
 
