@@ -58,7 +58,6 @@ export default {
       formatItem(grid);
       grid.selectionMode = props.selectionMode;
       grid.childItemsPath = props.childItemsPath;
-
       state.grid = grid;
     };
 
@@ -233,8 +232,6 @@ export default {
         addChildItem(grid, targetItem, targetRow, _item);
       }
 
-      grid.collectionView.itemsAdded.push(_item);
-
       return true;
     };
 
@@ -243,16 +240,16 @@ export default {
         state.drag.key.forEach((key) => {
           targetItem[key] = item[key];
         })
-        grid.collectionView.itemsEdited.push(targetItem);
+        // grid.collectionView.itemsEdited.push(targetItem);
         grid.invalidate();
-        // grid.refresh();
       } else {
         if (!targetItem.children) {
           targetItem.children = [];
         }
-  
         targetItem.children.splice(0, 0, item);
       }
+
+      grid.collectionView.itemsAdded.push(item);
       grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
     }
 
