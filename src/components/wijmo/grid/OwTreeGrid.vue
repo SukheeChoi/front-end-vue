@@ -161,22 +161,26 @@ export default {
     const addItem = (grid, target) => {
       let targetRow = grid.hitTest(target).row,
           dragRow = target.dataTransfer.getData('text'),
-          item = originalGrid.rows[parseInt(dragRow)].dataItem,
+          dataItem = originalGrid.rows[parseInt(dragRow)].dataItem,
           isTargetValid = false;
 
       if (!dragRow || !targetRow) {
         return false;
       }
 
-      let _item = _.cloneDeep(item),
+      let item = _.cloneDeep(dataItem),
           targetItem = grid.rows[targetRow].dataItem;
       
-      _item.rowStatus = 'C',
-      _item.nodeType = state.drag.dragType.at(0);
+      if (item.children) {
+        delete item[props.childItemsPath];
+      }
+
+      item.rowStatus = 'C',
+      item.nodeType = state.drag.dragType.at(0);
 
       state.drag.key.forEach((key) => {
-        if (!_item[key]) {
-          _item[key] = targetItem[key];
+        if (!item[key]) {
+          item[key] = targetItem[key];
         }
       });
       
@@ -202,7 +206,7 @@ export default {
       if (!targetItem.children) {
         if (state.drag.targetType.includes(targetItem.nodeType)) {
           // biz -> org, biz -> person
-          addChildItem(grid, targetItem, targetRow, _item);
+          addChildItem(grid, targetItem, targetRow, item);
         } else {
           // biz -> biz
           // find closest parent
@@ -218,18 +222,18 @@ export default {
             return;
           }
 
-          if (utils.chkChildItem(parent, _item, state.drag.key)) {
+          if (utils.chkChildItem(parent, item, state.drag.key)) {
             return;
           }
 
           addChildItem(grid, parent, targetRow, item);
         }
       } else {
-        if (utils.chkChildItem(targetItem, _item, state.drag.key)) {
+        if (utils.chkChildItem(targetItem, item, state.drag.key)) {
           return;
         }
 
-        addChildItem(grid, targetItem, targetRow, _item);
+        addChildItem(grid, targetItem, targetRow, item);
       }
 
       return true;
@@ -308,19 +312,16 @@ export default {
         let ht = s.hitTest(e);
         let dragRow = e.dataTransfer.getData("text");
 
-        // console.log('dragover', ht, ht.panel, ht.row, dragRow1, dragRow2, dragRow);
-
-        if (!ht || ht.panel == null) {
-          console.log('여기이111,,?');
+        if (!ht || ht.panel === null) {
           removeImage();
           return;
         }
         // prevent Dragging for Selected items Children and the Cell panel
         if (ht.row >= dragRow1 && ht.row < dragRow2) {
-          console.log('여기이222,,?');
           removeImage();
           return;
         }
+        
         if (dragRow != null && dragDiv) {
           dragDiv.style.display = 'inline-block';
           e.dataTransfer.dropEffect = "copy";
@@ -334,8 +335,7 @@ export default {
       });
 
       s.hostElement.addEventListener("drop", (e) => {
-        let item = originalGrid.rows[parseInt(e.dataTransfer.getData("text"))].dataItem; //drag data
-        console.log('drop', item);
+        let item = originalGrid.rows[+(e.dataTransfer.getData("text"))].dataItem; //drag data
         
         // if (!s.itemsSource._vm.grid.allowStatus && originalGrid == s) {
           // removeImage();
