@@ -155,7 +155,7 @@ export default {
             c = col;
           }
           s.finishEditing();
-          s.startEditing(false, r, c);
+          s.startEditing(false, Math.abs(r), Math.abs(c));
         }
       };
 
