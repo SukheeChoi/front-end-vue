@@ -17,8 +17,12 @@
           </button>
           <button type="button" class="ow-btn type-state" @click="reset" v-else-if="button === 'RESET'">초기화</button>
           <button type="button" class="ow-btn type-state" @click="add" v-else-if="button === 'ADD'">추가</button>
-          <button type="button" class="ow-btn type-state" @click="remove" v-else-if="button === 'REMOVE'">삭제</button>
-          <button type="button" class="ow-btn type-state" @click="save" v-else-if="button === 'SAVE'">저장</button>
+          <button type="button" class="ow-btn type-state" @click="internal_remove" v-else-if="button === 'REMOVE'">
+            삭제
+          </button>
+          <button type="button" class="ow-btn type-state" @click="internal_save" v-else-if="button === 'SAVE'">
+            저장
+          </button>
         </template>
       </ow-flex-item>
     </ow-flex-item>
@@ -46,7 +50,7 @@
             :per-page="pageSize"
             :limit="10"
             v-model="pageNo"
-            @page-click="(yg, pageNo) => read(pageNo)"
+            @page-click="(yg, pageNo) => internal_read(pageNo)"
           ></b-pagination>
         </template>
       </ow-flex-item>
@@ -216,7 +220,7 @@ export default {
           e.item[Index] = e.item[Index] ?? e.index;
         }
         // Tree Grid
-        if (s.childItemsPath && NotifyCollectionChangedAction.Reset > e.action && c.trackChanges) {
+        if (c.trackChanges && s.childItemsPath && NotifyCollectionChangedAction.Reset > e.action) {
           const getSourceContent = (indexes) => {
             let source = state.source;
             for (const index of indexes) {
@@ -285,7 +289,7 @@ export default {
 
       // 조회
       if (props.read) {
-        read();
+        internal_read();
       }
     };
 
@@ -297,7 +301,7 @@ export default {
     };
 
     // 행 삭제
-    const remove = async () => {
+    const internal_remove = async () => {
       if (props.remove) {
         const items = Array.from(s?.selector?.checkedItems ?? []).map((item) => item.dataItem);
         if (_.isEmpty(items)) {
@@ -313,7 +317,7 @@ export default {
     };
 
     // 저장
-    const save = async () => {
+    const internal_save = async () => {
       if (props.save) {
         const addItems = Array.from(s.collectionView.itemsAdded ?? []);
         const editItems = Array.from(s.collectionView.itemsEdited ?? []);
@@ -356,14 +360,14 @@ export default {
      */
     const lookup = (query) => {
       state.query = query;
-      read(1);
+      internal_read(1);
     };
 
     /**
      * 주어진 검색 조건으로 페이지를 이동합니다.
      * @param {Number} pageNo - 이동할 페이지 번호
      */
-    const read = async (pageNo) => {
+    const internal_read = async (pageNo) => {
       if (typeof pageNo !== 'undefined') {
         state.pageNo = +pageNo;
       }
@@ -377,7 +381,7 @@ export default {
           })
         );
       }
-      const root = s.hostElement.querySelector('[wj-part=root]');
+      const root = s.hostElement?.querySelector('[wj-part=root]');
       if (root) {
         root.scrollTop = 0;
       }
@@ -398,7 +402,9 @@ export default {
       state.pageSize = paging?.pageSize ?? 10;
       state.totalCount = totalCount ?? 0;
       state.source = _.cloneDeep(items);
-      s.collectionView.sourceCollection = items;
+      if (s.collectionView) {
+        s.collectionView.sourceCollection = _.cloneDeep(state.source);
+      }
       if (props.allowPushState) {
         router.push({
           path: route.path,
@@ -451,7 +457,7 @@ export default {
 
     watch(
       () => state.pageSize,
-      () => read(1)
+      () => internal_read(1)
     );
 
     return {
@@ -459,11 +465,11 @@ export default {
       ...toRefs(state),
       init,
       lookup,
-      read,
+      internal_read,
       applier,
       add,
-      save,
-      remove,
+      internal_save,
+      internal_remove,
       reset,
       clear,
       download,
@@ -485,7 +491,7 @@ export default {
       width: 100%;
       line-height: 35px;
       text-align: center;
-      z-index: 999;
+      z-index: 10;
     }
   }
   :deep(.ow-grid-required) {

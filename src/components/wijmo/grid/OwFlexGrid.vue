@@ -58,7 +58,7 @@ export default {
 
       // [ISSUE | 2022.03.04] 100%를 넘는 너비로 인해 상위 엘리먼트의 너비를 기준으로 resize 이벤트 발생시 변경
       const resize = () => {
-        if (s.hostElement.parentElement) {
+        if (s.hostElement?.parentElement) {
           const parentStyle = getComputedStyle(s.hostElement.parentElement);
           const width = parentStyle.getPropertyValue('width');
           s.hostElement.style.width = width;
@@ -186,7 +186,7 @@ export default {
       }
 
       const setCheckbox = () => {
-        s.columns.forEach(col => {
+        s.columns.forEach((col) => {
           if (col.cssClass === 'checkbox') {
             col.isReadOnly = true;
             col.cellTemplate = '<label><input type="checkbox" /><span></span></label>';
@@ -195,23 +195,21 @@ export default {
 
         s.formatItem.addHandler((s, e) => {
           let row = e.panel.rows[e.row],
-              col = e.panel.columns[e.col];
-          
+            col = e.panel.columns[e.col];
+
           if (e.panel.cellType === CellType.Cell && col.cssClass === 'checkbox') {
-            let input = e.cell.querySelector("input"),
-                check = row.dataItem[col.binding] === 'Y' ? true : false,
-                value = check ? 'N' : 'Y';
+            let input = e.cell.querySelector('input'),
+              check = row.dataItem[col.binding] === 'Y' ? true : false,
+              value = check ? 'N' : 'Y';
 
             setChecked(input, check);
 
-            input.addEventListener("click", 
-              () => {
-                s.setCellData(s.selection.row, col.binding, value);
-              }
-            );
+            input.addEventListener('click', () => {
+              s.setCellData(s.selection.row, col.binding, value);
+            });
           }
-        })
-      }
+        });
+      };
 
       if (props.allowCheckbox) {
         setCheckbox();
