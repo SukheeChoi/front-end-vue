@@ -161,7 +161,7 @@ export default {
     const addItem = (grid, target) => {
       let targetRow = grid.hitTest(target).row,
           dragRow = target.dataTransfer.getData('text'),
-          dataItem = originalGrid.rows[parseInt(dragRow)].dataItem,
+          dataItem = originalGrid.rows[+dragRow].dataItem,
           isTargetValid = false;
 
       if (!dragRow || !targetRow) {
@@ -269,6 +269,7 @@ export default {
             state.drag.readonly.forEach((type) => {
               if (type == row.dataItem.nodeType) {
                 cell.draggable = false;
+                console.log('cell', cell);
               }
             });
           }

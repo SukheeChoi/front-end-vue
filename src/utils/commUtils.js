@@ -1,3 +1,5 @@
+import { Globalize, isString, isDate } from '@grapecity/wijmo';
+
 const Utils = {
   copyDefaultValues(model) {
     let data = {};
@@ -114,6 +116,33 @@ const Utils = {
 
   getOwIcon(e) {
     return '' + '<span class="ow-btn type-icon">' + '<i class="' + 'ow-icon ' + e + '">' + '</i>' + '</span>' + '';
+  },
+
+  formatDate(date) {
+    if (!date) {
+      return '';
+    }
+    if (!isDate(date)) {
+      date = Utils.toDate(date);
+    }
+    return Globalize.format(new Date(date), 'yyyy-MM-dd');
+  },
+
+  toDate(date_str) {
+    if (!date_str) {
+      return;
+    }
+    const yyyyMMdd = String(date_str);
+
+    if (!isString(date_str) || yyyyMMdd.length != 8) {
+      return date_str;
+    }
+
+    const sYear = yyyyMMdd.substring(0, 4),
+      sMonth = yyyyMMdd.substring(4, 6),
+      sDate = yyyyMMdd.substring(6, 8);
+
+    return new Date(Number(sYear), Number(sMonth) - 1, Number(sDate));
   },
 };
 

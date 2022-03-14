@@ -40,7 +40,7 @@ export class GridApi extends CollectionView {
   ) {
     this._vm = vm;
     this._gridView = grid;
-    // grid.cellEditEnding.addHandler(this.valid);
+    grid.cellEditEnding.addHandler(this.valid);
 
     if (qry == null) {
       qry = this._vm.query;
@@ -179,25 +179,27 @@ export class GridApi extends CollectionView {
     let index = fields.findIndex((field) => field.id === col.binding);
     let field = fields[index];
 
-    if (field.vType) {
-      let result = ValidatorTypes[field.vType + 'Validator'](grid.activeEditor.value, field);
-
-      if (!result.isValid) {
-        e.cancel = true;
-        e.stayInEditMode = true;
-
-        let edtHandler = grid._edtHdl;
-        let rng = edtHandler._rng;
-        let cell = grid.cells.getCellElement(rng.row, rng.col);
-
-        if (cell) {
-          edtHandler._setCellError(cell, result.message);
-        }
-
-        return;
-      }
+    if (!field.vType) {
+      return;
     }
 
-    GridApi.markRecordStatus(grid, e);
+    let result = ValidatorTypes[field.vType + 'Validator'](grid.activeEditor.value, field);
+
+    if (!result.isValid) {
+      e.cancel = true;
+      e.stayInEditMode = true;
+
+      let edtHandler = grid._edtHdl;
+      let rng = edtHandler._rng;
+      let cell = grid.cells.getCellElement(rng.row, rng.col);
+
+      if (cell) {
+        edtHandler._setCellError(cell, result.message);
+      }
+
+      return;
+    }
+
+    // GridApi.markRecordStatus(grid, e);
   }
 }
