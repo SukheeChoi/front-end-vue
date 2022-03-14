@@ -149,7 +149,7 @@ export default {
       dragRow2 = rowIndex;
       let _lvl = grid.rows[rowIndex].level;
       if (grid.rows[rowIndex].hasChildren) {
-        for (let i = rowIndex + 1; i < grid.rows.length - 1; i++) {
+        for (let i = rowIndex; i < grid.rows.length - 1; i++) {
           if (grid.rows[i].level == _lvl) {
             break;
           }
@@ -178,21 +178,12 @@ export default {
       item.rowStatus = 'C',
       item.nodeType = state.drag.dragType.at(0);
 
-      state.drag.key.forEach((key) => {
-        if (!item[key]) {
-          item[key] = targetItem[key];
-        }
-      });
-      
-      // 추가해도 되는 행인지 check
-      // target type check  - biz -> org로 드래그한 경우 org에다가 추가
       state.drag.targetType.forEach((type) => {
         if (targetItem.nodeType === type) {
           isTargetValid = true;
         }
       })
       
-      // drag type - biz -> biz로 드래그한 경우 biz의 상위 parent node에다가 추가
       state.drag.dragType.forEach((type) => {
         if (targetItem.nodeType === type) {
           isTargetValid = true;
@@ -205,19 +196,31 @@ export default {
 
       if (!targetItem.children) {
         if (state.drag.targetType.includes(targetItem.nodeType)) {
-          // biz -> org, biz -> person
+          state.drag.key.forEach((key) => {
+            if (targetItem[key]) {
+              item[key] = targetItem[key];
+            }
+          });
+          
           addChildItem(grid, targetItem, targetRow, item);
         } else {
-          // biz -> biz
           // find closest parent
-          let parent = null;
-          for (let r = targetRow; r > 0; r--) {
-            if (grid.rows[r].hasChildren) {
-              parent = grid.rows[r].dataItem;
-              break;
+          let parent = [];
+          if (!targetItem.children) {
+            for (let r = targetRow; r >= 0; r--) {
+              if (grid.rows[r].hasChildren) {
+                parent = grid.rows[r].dataItem;
+                break;
+              }
             }
           }
-          
+
+          state.drag.key.forEach((key) => {
+            if (parent[key]) {
+              item[key] = parent[key];
+            }
+          });
+
           if (!state.drag.targetType.includes(parent.nodeType)) {
             return;
           }
@@ -229,6 +232,11 @@ export default {
           addChildItem(grid, parent, targetRow, item);
         }
       } else {
+        state.drag.key.forEach((key) => {
+          if (targetItem[key]) {
+            item[key] = targetItem[key];
+          }
+        });
         if (utils.chkChildItem(targetItem, item, state.drag.key)) {
           return;
         }
@@ -253,8 +261,15 @@ export default {
         targetItem.children.splice(0, 0, item);
       }
 
-      grid.collectionView.itemsAdded.push(item);
       grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
+
+      const Index = Symbol('Index').toString();
+      for (let i=0; i<grid.collectionView.itemsAdded.length; i++) {
+        if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
+          grid.collectionView.itemsAdded.splice(i, 1);
+        }
+      }
+      grid.collectionView.itemsAdded.push(item);
     }
 
     const makeDragSource = (s) => {
@@ -263,19 +278,20 @@ export default {
         let row = panel.rows[r];
         
         if (panel.cellType == wjGrid.CellType.RowHeader) {
-          cell.draggable = true;
+          if (s.rowHeaders.columns[c].binding !== 'drag') {
+            cell.draggable = false;
+            return;
+          } else {
+            cell.draggable = true;
+          }
 
           if (state.drag.readonly) {
             state.drag.readonly.forEach((type) => {
               if (type == row.dataItem.nodeType) {
+                cell.innerHTML = '';
                 cell.draggable = false;
-                console.log('cell', cell);
               }
             });
-          }
-
-          if (s.rowHeaders.columns[c].binding != 'drag') {
-            cell.draggable = false;
           }
         }
       };
@@ -336,20 +352,31 @@ export default {
       });
 
       s.hostElement.addEventListener("drop", (e) => {
-        let item = originalGrid.rows[+(e.dataTransfer.getData("text"))].dataItem; //drag data
-        
-        // if (!s.itemsSource._vm.grid.allowStatus && originalGrid == s) {
-          // removeImage();
-          // return;
-        // }
+        let item = originalGrid.rows[+(e.dataTransfer.getData("text"))].dataItem, //drag data
+            vmGrid = s.itemsSource._vm.grid;
 
         if (s != originalGrid) {
           addItem(s, e);
         } else {
+          if (!vmGrid.allowStatus) {
+            removeImage();
+            return;
+          }
           if (addItem(s, e)) {
-            item.rowStatus = 'D';
-            utils.removeChildItem(s.collectionView.sourceCollection[0], item, state.drag.key); //delete item
-            s.collectionView.itemsRemoved.push(item);
+            removeItem(s.itemsSource.sourceCollection, item, state.drag.key);
+
+            const Index = Symbol('Index').toString();
+            let isSymbol = false;
+            for (let i=0; i<s.collectionView.itemsRemoved.length; i++) {
+              if (s.collectionView.itemsRemoved[i][Index] === item[Index]) {
+                isSymbol = true;
+              }
+            }
+
+            if (!isSymbol) {
+              item.rowStatus = 'D';
+              s.collectionView.itemsRemoved.push(item);
+            }
           }
         }
 
@@ -358,6 +385,15 @@ export default {
         s.collectionView.refresh();
         e.preventDefault();
       });
+    }
+
+    const removeItem = (dataItem, item, itemKey) => {
+      for (let i = 0; i < dataItem.length; i++) {
+        if (utils.removeChildItem(dataItem[i], item, itemKey)) {
+          break;
+        }
+      }
+
     }
 
     return {

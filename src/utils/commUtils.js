@@ -42,6 +42,7 @@ const Utils = {
   },
 
   removeChildItem(dataItem, item, itemKey) {
+    let isRemoved = false;
     if (dataItem.children) {
       let child;
       for (let i = 0; i < dataItem.children.length; i++) {
@@ -61,13 +62,15 @@ const Utils = {
             }
           }
 
-          if (cnt === itemKey.length) {
+          if (cnt > 0 && cnt === itemKey.length) {
             dataItem.children.splice(i, 1); //remove
+            isRemoved = true;
             return;
           }
         }
       }
     }
+    return isRemoved;
   },
 
   chkChildItem(dataItem, item, itemKey) {
