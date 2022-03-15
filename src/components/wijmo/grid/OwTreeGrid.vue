@@ -171,7 +171,7 @@ export default {
       let item = _.cloneDeep(dataItem),
           targetItem = grid.rows[targetRow].dataItem;
       
-      if (item.children) {
+      if (item[props.childItemsPath]) {
         delete item[props.childItemsPath];
       }
 
@@ -194,19 +194,20 @@ export default {
         return;
       }
 
-      if (!targetItem.children) {
+      if (!targetItem[props.childItemsPath]) {
         if (state.drag.targetType.includes(targetItem.nodeType)) {
-          state.drag.key.forEach((key) => {
-            if (targetItem[key]) {
-              item[key] = targetItem[key];
-            }
-          });
+
+          if (state.drag.allowAdding === 'set') {
+            utils.setDragItemKey(item, targetItem, state.drag.key);
+          } else {
+            utils.setDragItemKey(targetItem, item, state.drag.key);
+          }
           
           addChildItem(grid, targetItem, targetRow, item);
         } else {
           // find closest parent
           let parent = [];
-          if (!targetItem.children) {
+          if (!targetItem[props.childItemsPath]) {
             for (let r = targetRow; r >= 0; r--) {
               if (grid.rows[r].hasChildren) {
                 parent = grid.rows[r].dataItem;
@@ -215,11 +216,7 @@ export default {
             }
           }
 
-          state.drag.key.forEach((key) => {
-            if (parent[key]) {
-              item[key] = parent[key];
-            }
-          });
+          utils.setDragItemKey(parent, item, state.drag.key);
 
           if (!state.drag.targetType.includes(parent.nodeType)) {
             return;
@@ -232,11 +229,8 @@ export default {
           addChildItem(grid, parent, targetRow, item);
         }
       } else {
-        state.drag.key.forEach((key) => {
-          if (targetItem[key]) {
-            item[key] = targetItem[key];
-          }
-        });
+        utils.setDragItemKey(targetItem, item, state.drag.key);
+
         if (utils.chkChildItem(targetItem, item, state.drag.key)) {
           return;
         }
@@ -248,19 +242,14 @@ export default {
     };
 
     const addChildItem = (grid, targetItem, targetRow, item) => {
-      if (state.drag.allowAdding === 'set') {
-        state.drag.key.forEach((key) => {
-          targetItem[key] = item[key];
-        })
-        // grid.collectionView.itemsEdited.push(targetItem);
-        grid.invalidate();
-      } else {
-        if (!targetItem.children) {
-          targetItem.children = [];
+      if (state.drag.allowAdding !== 'set') {
+        if (!targetItem[props.childItemsPath]) {
+          targetItem[props.childItemsPath] = [];
         }
-        targetItem.children.splice(0, 0, item);
+        targetItem[props.childItemsPath].splice(0, 0, item);
       }
 
+      grid.invalidate();
       grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
 
       const Index = Symbol('Index').toString();
@@ -325,9 +314,15 @@ export default {
 
     // enable drop operations on an element
     const makeDropTarget = (s) => {
+      const allowStatus = s.itemsSource._vm.allowStatus ?? s.itemsSource._vm.grid.allowStatus;
+
       s.hostElement.addEventListener("dragover", (e) => {
-        let ht = s.hitTest(e);
-        let dragRow = e.dataTransfer.getData("text");
+        let ht = s.hitTest(e),
+            dragRow = e.dataTransfer.getData("text");
+
+        if (!allowStatus) {
+          return;
+        }
 
         if (!ht || ht.panel === null) {
           removeImage();
@@ -352,13 +347,12 @@ export default {
       });
 
       s.hostElement.addEventListener("drop", (e) => {
-        let item = originalGrid.rows[+(e.dataTransfer.getData("text"))].dataItem, //drag data
-            vmGrid = s.itemsSource._vm.grid;
+        let item = originalGrid.rows[+(e.dataTransfer.getData("text"))].dataItem;
 
         if (s != originalGrid) {
           addItem(s, e);
         } else {
-          if (!vmGrid.allowStatus) {
+          if (!allowStatus) {
             removeImage();
             return;
           }
