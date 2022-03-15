@@ -59,11 +59,7 @@ export default {
     });
 
     const initialized = (timer) => {
-      if (Globalize.parseDate(state.control.text, state.format)) {
-        timer.value = state.control.text;
-      } else {
-        timer.value = '09:00';
-      }
+      timer.text = state.control.text || '09:00';
       state.control = timer;
     };
 
