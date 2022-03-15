@@ -60,11 +60,7 @@ export default {
     });
 
     const initialized = (calendar) => {
-      if (Globalize.parseDate(state.control.text, props.format)) {
-        calendar.value = state.control.text;
-      } else {
-        calendar.value = Globalize.format(new Date(), props.format);
-      }
+      calendar.text = state.control.text || Globalize.format(new Date(), props.format);
       state.control = calendar;
     };
 
