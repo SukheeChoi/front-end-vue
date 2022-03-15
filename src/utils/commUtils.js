@@ -95,6 +95,14 @@ const Utils = {
     return isSameValid;
   },
 
+  setDragItemKey(dataItem, item, itemKey) {
+    itemKey.forEach((key) => {
+      if (dataItem[key]) {
+        item[key] = dataItem[key];
+      }
+    });
+  },
+
   getWjGlyph(e, type) {
     let html;
     if (type == 'button') {

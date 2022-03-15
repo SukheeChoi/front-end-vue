@@ -174,6 +174,10 @@ export class GridApi extends CollectionView {
   };
 
   valid(grid, e) {
+    if (!fields) {
+      return;
+    }
+
     let col = grid.columns[e.col];
     let fields = grid.itemsSource._model.fields;
     let index = fields.findIndex((field) => field.id === col.binding);
