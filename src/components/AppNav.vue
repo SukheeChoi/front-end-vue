@@ -89,7 +89,7 @@ const MenuList2 = [
         Menu.create('Sample2', 'EAPZZ001'),
     ]),          
     Menu.create('김동은', 'EAPOO', [
-        Menu.create('Sample3', 'EAPOO001'),
+        Menu.create('RegisterLayout', 'EAPOO001'),
     ]),          
   ]),   
 ];
