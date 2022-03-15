@@ -84,11 +84,12 @@ const MenuList2 = [
     ]),          
     Menu.create('이경덕', 'EAPYY', [
       Menu.create('Sample1', 'EAPYY001'),
-      
     ]),          
     Menu.create('김종혁', 'EAPZZ', [
         Menu.create('Sample2', 'EAPZZ001'),
-      
+    ]),          
+    Menu.create('김동은', 'EAPOO', [
+        Menu.create('Sample3', 'EAPOO001'),
     ]),          
   ]),   
 ];
