@@ -21,12 +21,12 @@ const routes = [
         component: () => import('@/views/AppDashboard'),
         props: {
           components: [
-            require('@/views/dashboard/ThePanel1'),
-            require('@/views/dashboard/ThePanel2'),
-            require('@/views/dashboard/ThePanel3'),
-            require('@/views/dashboard/ThePanel4'),
-            require('@/views/dashboard/ThePanel5'),
-            require('@/views/dashboard/ThePanel6'),
+            require('@/views/dashboard/Panel1'),
+            require('@/views/dashboard/Panel2'),
+            require('@/views/dashboard/Panel3'),
+            require('@/views/dashboard/Panel4'),
+            require('@/views/dashboard/Panel5'),
+            require('@/views/dashboard/Panel6'),
           ],
         },
       },
@@ -70,14 +70,14 @@ const router = createRouter({
 });
 
 router.afterEach((to, from, failure) => {
-  console.log(to);
-  console.log(from);
+  // console.log(to);
+  // console.log(from);
 });
 
 router.beforeEach(async (to, from, next) => {
-  console.log('routing wait....................');
-  console.log(to);
-  console.log(from);
+  // console.log('routing wait....................');
+  // console.log(to);
+  // console.log(from);
 
   const routeList = store.getters.getRouteList;
 
@@ -97,8 +97,8 @@ router.beforeEach(async (to, from, next) => {
   const devMode = true;
   const now = new Date();
 
-  console.log('token time   : ' + store.getters.getTtl);
-  console.log('current time : ' + now.getTime());
+  // console.log('token time   : ' + store.getters.getTtl);
+  // console.log('current time : ' + now.getTime());
   const nowTime = now.getTime();
 
   if (devMode === false && to.fullPath !== '/login' && store.getters.getTtl < now.getTime()) {
@@ -122,13 +122,13 @@ router.beforeEach(async (to, from, next) => {
 
 function checkAuthScreen(to, screenList) {
   for (var i = 0; i < screenList; i++) {
-    console.log(screenList[i]);
+    // console.log(screenList[i]);
     if (screenList[i].name === 'main') {
-      console.log(screenList[i].name);
+      // console.log(screenList[i].name);
       continue;
     }
     if (screenList[i].url && screenList[i].url === to.fullPath) {
-      console.log(screenList[i].url);
+      // console.log(screenList[i].url);
       return true;
     }
 
