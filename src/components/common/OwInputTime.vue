@@ -59,7 +59,7 @@ export default {
     });
 
     const initialized = (timer) => {
-      timer.text = state.control.text || '09:00';
+      timer.text = state.control.text || state.min;
       state.control = timer;
     };
 
