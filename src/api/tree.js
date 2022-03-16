@@ -1,3 +1,5 @@
+'use strict';
+
 import http from '@/api';
 
 const ORG_URI = '/com/OrgMgr';
