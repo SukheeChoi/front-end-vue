@@ -120,6 +120,7 @@ export default {
       const { value: outer } = root;
       const { value: inner } = filter;
 
+      index = 0;
       inner.style.transform = 'translateX(0)';
 
       for (const entry of entries) {
