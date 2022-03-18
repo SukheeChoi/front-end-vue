@@ -117,10 +117,15 @@ export default {
     }, 300);
 
     const observer = new ResizeObserver((entries) => {
+      const { value: outer } = root;
+      const { value: inner } = filter;
+
+      inner.style.transform = 'translateX(0)';
+
       for (const entry of entries) {
         const { width: outerWidth } = entry.contentRect;
-        const { width: innerWidth } = getContentRect(filter.value);
-        if (entry.target === root.value) {
+        const { width: innerWidth } = getContentRect(inner);
+        if (entry.target === outer) {
           state.overflow = outerWidth < innerWidth;
         }
       }
