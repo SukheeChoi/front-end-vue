@@ -163,7 +163,7 @@ export default {
 }
 .ow-filter {
   width: var(--width, auto);
-  .ow-filter-list {
+  &-list {
     transition: all 0.2s ease-in-out;
   }
 }
