@@ -42,4 +42,19 @@ export default {
     { name: '라디오10', value: 10, scrnRto: [100, 33, 33, 33], path: 'dashboard_10.png' },
     { name: '라디오11', value: 11, scrnRto: [33, 33, 33, 100], path: 'dashboard_11.png' },
   ],
+  SYM_LCTN: [
+    { value: '', name: '공백' },
+    { value: 'P', name: '앞' },
+    { value: 'S', name: '뒤' },
+  ],
+  MSG_TPL_GRP_TP: [
+    { value: '', name: '공백' },
+    { value: 'P', name: '앞' },
+    { value: 'S', name: '뒤' },
+  ],
+  MSG_TPL_TP: [
+    { value: '', name: '공백' },
+    { value: 'P', name: '앞' },
+    { value: 'S', name: '뒤' },
+  ],
 };

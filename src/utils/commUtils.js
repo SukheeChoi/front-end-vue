@@ -129,14 +129,15 @@ const Utils = {
     return '' + '<span class="ow-btn type-icon">' + '<i class="' + 'ow-icon ' + e + '">' + '</i>' + '</span>' + '';
   },
 
-  formatDate(date) {
+  formatDate(date, format = 'yyyy-MM-dd') {
     if (!date) {
       return '';
     }
     if (!isDate(date)) {
       date = Utils.toDate(date);
     }
-    return Globalize.format(new Date(date), 'yyyy-MM-dd');
+
+    return Globalize.format(new Date(date), format);
   },
 
   toDate(date_str) {

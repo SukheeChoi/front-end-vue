@@ -4,7 +4,7 @@ import restApi from '@/api/restApi.js';
 import CodeData from '@/store/modules/comData';
 import { CollectionView } from '@grapecity/wijmo';
 
-const url = '/com/CommonCode';
+const url = '/com/Code';
 
 export class ComCode {
     static _store = CodeData;
