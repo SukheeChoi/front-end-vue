@@ -42,7 +42,7 @@
           </li>
            -->
           <li>
-            <a href="javascript:void(0);">{{ userInfo.dtyNm }}</a>
+            <a href="javascript:void(0);">{{ userInfo.jbdtyNm }}</a>
           </li>
           <li>
             <a href="javascript:void(0);">{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a>
