@@ -515,6 +515,69 @@ $ow-btn: '.ow-btn';
       height: 14px;
       background: url(~@/assets/images/icon/icon-close-border.png) no-repeat 0 0;
     }
+    &.close-xs {
+      @include xs(7, 7, 0);
+      background: url(~@/assets/images/icon/icon-close-xs.png) no-repeat 0 0;
+    }
+    &.close-delete {
+      @include xs(10, 10, 0);
+      background: #d8d8d8 url(~@/assets/images/icon/icon-close-delete.svg) no-repeat 0 0;
+      background-size: contain;
+      &.lg {
+        @include xs(16, 16, 0);
+      }
+    }
+    &.close-box {
+      @include xs(18, 18, 0);
+      background: url(~@/assets/images/icon/icon-close-box.svg) no-repeat 0 0;
+      &:hover {
+        background-image: url(~@/assets/images/icon/icon-close-box-over.svg);
+      }
+    }
+    &.fail {
+      @include xs(18, 18, 0);
+      background: url(~@/assets/images/icon/icon-fail.png) no-repeat 0 0;
+    }
+    &.work-icon {
+      $list: (
+        folder: 'folder',
+        folder-open: 'folder-open',
+        user: 'user',
+      );
+      @each $key, $value in $list {
+        &#{-#{$key}} {
+          @include xs(16, 16, 0);
+          background: url(~@/assets/images/icon/img/icon-work-#{$value}.svg) no-repeat 0 0;
+        }
+      }
+    }
+    &.s-icon {
+      $list: (
+        mail-a: 'mail-a',
+        mail-d: 'mail-d',
+        state: 'state',
+      );
+      @each $key, $value in $list {
+        &#{-#{$key}} {
+          @include xs(24, 24, 0);
+          background: url(~@/assets/images/icon/img/icon-s-#{$value}.svg) no-repeat 0 0;
+        }
+      }
+    }
+    &.s-progress {
+      $list: (
+        1: 'progress-1',
+        2: 'progress-2',
+        3: 'progress-3',
+        4: 'progress-4',
+      );
+      @each $key, $value in $list {
+        &#{-#{$key}} {
+          @include xs(24, 24, 0);
+          background: url(~@/assets/images/icon/img/icon-s-#{$value}.svg) no-repeat 0 0;
+        }
+      }
+    }
     &.round-minus {
       width: 16px;
       height: 16px;
@@ -652,6 +715,16 @@ $ow-btn: '.ow-btn';
     &.clock {
       @include xs(16, 16, 0);
       background: url(~@/assets/images/icon/icon-clock.png) no-repeat 0 0;
+      &.active {
+        background-image: url(~@/assets/images/icon/icon-clock-active.png);
+      }
+    }
+    &.editor-hs {
+      @include xs(16, 16, 0);
+      background: url(~@/assets/images/icon/icon-editor-hs.png) no-repeat 0 0;
+      &.active {
+        background-image: url(~@/assets/images/icon/icon-editor-hs-active.png);
+      }
     }
     &.layout {
       @include xs(16, 16, 0);
