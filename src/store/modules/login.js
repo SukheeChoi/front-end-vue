@@ -26,7 +26,7 @@ export default {
         return orgData;
       }
       if (typeof state.userInfo.orgList !== 'undefined') {
-        if (state.userInfo.orgList[0].children) {
+        if (state.userInfo.orgList[0].children && state.userInfo.orgList[0].children.length > 0) {
           orgData = {
             orgCd: state.userInfo.orgList[0].children[0].orgCd,
             orgNm: state.userInfo.orgList[0].children[0].orgNm,
@@ -48,7 +48,7 @@ export default {
       if (state.userInfo.orgList) {
         let orgData = state.userInfo.orgList || [];
 
-        while (orgData[0].children) {
+        while (orgData[0].children && state.userInfo.orgList[0].children.length > 0) {
           orgList.push({
             orgCd: orgData[0].children[0].orgCd,
             orgNm: orgData[0].children[0].orgNm,
