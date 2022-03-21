@@ -64,7 +64,7 @@
 <script>
 import _ from 'lodash';
 
-import { computed, reactive, ref, watch, toRefs, inject } from 'vue';
+import { reactive, ref, watch, toRefs, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import {
@@ -73,7 +73,13 @@ import {
   NotifyCollectionChangedEventArgs,
   SortDescription,
 } from '@grapecity/wijmo';
-import { CellType, CellRange, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
+import {
+  CellType,
+  // CellRange,
+  Column,
+  // SelMove,
+  _NewRowTemplate,
+} from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
@@ -93,7 +99,7 @@ const PAGE_SIZE_LIST = [5, 10, 20, 30, 50, 100, 150, 300, 500];
 const Order = Symbol('Order').toString();
 const Index = Symbol('Index').toString();
 
-const RowNum = t('wijmo.grid.header.rownum');
+const ROW_NUM = t('wijmo.grid.header.rownum');
 
 export default {
   name: 'OwGrid',
@@ -189,7 +195,7 @@ export default {
       // AllowStatus | RowStatus
       const statusHeader = new Column({
         binding: 'rowStatus',
-        header: RowNum,
+        header: ROW_NUM,
         cellTemplate: (ctx) => {
           if (ctx.item) {
             switch (ctx.item.rowStatus) {
@@ -436,7 +442,7 @@ export default {
       );
       const itemsSource = _.cloneDeep(Array.from(items));
       if (props.allowStatus) {
-        columns.unshift(new Column({ binding: Order, header: RowNum }));
+        columns.unshift(new Column({ binding: Order, header: ROW_NUM }));
         for (let i = 0, length = itemsSource.length; i < length; i += 1) {
           const itemSource = itemsSource.at(i);
           itemSource[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
