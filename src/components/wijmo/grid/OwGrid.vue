@@ -310,7 +310,7 @@ export default {
         if (await dialog.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
           // [TODO] 후처리 진행
           if (await props.remove(items)) {
-            read(); // 검색 조건과 페이지 유지
+            internal_read(); // 검색 조건과 페이지 유지
           }
         }
       }
@@ -329,7 +329,7 @@ export default {
         if (await dialog.confirm(t('wijmo.grid.save.confirm', [total]))) {
           // [TODO] 후처리 진행
           if (await props.save(addItems, editItems, removeItems)) {
-            read(); // 검색 조건과 페이지 유지
+            internal_read(); // 검색 조건과 페이지 유지
           }
         }
       }
