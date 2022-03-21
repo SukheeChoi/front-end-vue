@@ -8,10 +8,7 @@ import { reactive, computed, toRefs } from 'vue';
 export default {
   name: 'OwFlexWrap',
   props: {
-    col: {
-      type: Boolean,
-      default: false,
-    },
+    col: Boolean,
     gap: {
       type: Number,
       default: 6,

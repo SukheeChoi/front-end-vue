@@ -8,10 +8,8 @@ import { computed } from 'vue';
 export default {
   name: 'OwFlexItem',
   props: {
-    fix: {
-      type: Boolean,
-      default: false,
-    },
+    col: Boolean,
+    fix: Boolean,
     gap: {
       type: Number,
       default: 0,
@@ -41,6 +39,7 @@ export default {
   setup(props) {
     const classes = computed(() => {
       return {
+        'dir-col': props.col,
         'size-fix': props.fix,
         'align-to-left': props.to === 'left',
         'align-to-right': props.to === 'right',
