@@ -44,7 +44,7 @@
             <dd>
               <div class="radio-group">
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio7" name="radio-group-3" value="osstem" />
+                  <input type="radio" id="ow-radio7" name="radio-group-3" value="osstem" checked="checked" />
                   <label for="ow-radio7">정직원</label>
                 </div>
 
@@ -74,24 +74,19 @@
 </template>
 
 <script>
-import router from '@/routes/index.js';
-import menuMaker from '@/routes/menuMaker.js';
-import axios from 'axios';
-//import login from '@/api/login.js';
 import { requestLogin, getUserInfo, getMenuList } from '@/api/login.js';
 import store from '@/store';
-import restApi from '@/api/restApi.js';
-import { Menu } from '@/model';
 export default {
   name: 'AppLogin',
   data() {
     return {
       companyType: 'osstem',
-      loginId: '',
+      loginId: store.getters.getSavedId || '',
       password: '',
-      checkSaveUserId: false,
+      checkSaveUserId: store.getters.getChecked || false,
     };
   },
+  setup() {},
   methods: {
     async getToken() {
       //const tokenData = await login.requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
@@ -127,6 +122,11 @@ export default {
           console.log(routeRootList);
           this.$router.addRoute(routeRootList[i]);
         }
+
+        if (this.checkSaveUserId) {
+          this.$store.commit('setSavedId', this.loginId);
+        }
+        this.$store.commit('setChecked', this.checkSaveUserId);
 
         this.$router.push('/');
       }

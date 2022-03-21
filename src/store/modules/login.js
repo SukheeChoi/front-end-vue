@@ -10,6 +10,7 @@ export default {
       state.accessToken = '';
       state.userInfo = '';
       state.ttl = '';
+      state.savedIdInfo = '';
     },
     getToken(state) {
       return state.accessToken;
