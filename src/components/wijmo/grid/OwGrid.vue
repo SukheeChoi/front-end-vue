@@ -26,7 +26,7 @@
         </template>
       </ow-flex-item>
     </ow-flex-item>
-    <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': totalCount === 0 }">
+    <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': isEmpty }">
       <ow-flex-grid :initialized="init" v-bind="$attrs">
         <slot></slot>
       </ow-flex-grid>
@@ -64,7 +64,7 @@
 <script>
 import _ from 'lodash';
 
-import { reactive, ref, watch, toRefs, inject } from 'vue';
+import { computed, reactive, ref, watch, toRefs, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import {
@@ -86,6 +86,14 @@ const ROW_STATUS = {
   ADD: 'C',
   EDIT: 'U',
 };
+
+const PAGE_SIZE_LIST = [5, 10, 20, 30, 50, 100, 150, 300, 500];
+
+// [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
+const Order = Symbol('Order').toString();
+const Index = Symbol('Index').toString();
+
+const RowNum = t('wijmo.grid.header.rownum');
 
 export default {
   name: 'OwGrid',
@@ -137,22 +145,19 @@ export default {
 
     const downloader = ref(null);
 
+    let s;
+
     const state = reactive({
       source: [],
       query: _.cloneDeep(props.query) ?? {},
-      pageNo: +(props.paging.pageNo ?? 1),
-      pageSize: +(props.paging.pageSize ?? 10),
-      totalCount: +(props.paging.totalCount ?? 0),
-      sort: props.paging.sort ?? '',
-      direction: props.paging.direction ?? '',
-      pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
+      pageNo: +props.paging.pageNo ?? 1,
+      pageSize: +props.paging.pageSize ?? 10,
+      totalCount: +props.paging.totalCount ?? 0,
+      sort: props.paging.sort,
+      direction: props.paging.direction,
+      pageSizeList: PAGE_SIZE_LIST.map((size) => ({ name: `${size}건`, value: size })),
+      isEmpty: true,
     });
-
-    // [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
-    const Order = Symbol('Order').toString();
-    const Index = Symbol('Index').toString();
-
-    let s;
 
     const init = (...args) => {
       s = args.at(0);
@@ -168,6 +173,7 @@ export default {
       }
       state.source = _.cloneDeep(s.collectionView.items);
       state.totalCount = s.collectionView?.items.length ?? 0;
+      state.isEmpty = s.collectionView.isEmpty;
 
       // Required
       s.formatItem.addHandler((s, e) => {
@@ -183,7 +189,7 @@ export default {
       // AllowStatus | RowStatus
       const statusHeader = new Column({
         binding: 'rowStatus',
-        header: '번호',
+        header: RowNum,
         cellTemplate: (ctx) => {
           if (ctx.item) {
             switch (ctx.item.rowStatus) {
@@ -274,13 +280,13 @@ export default {
       });
 
       // selection이 변경되면 새로운 행을 추가한다.
-      s.selectionChanging.addHandler((s, e) => {
-        const row = e.getRow();
-        if (row instanceof _NewRowTemplate) {
-          s._edtHdl._commitRowEdits();
-          setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(e.col, SelMove.NextEditableCell)), 20);
-        }
-      });
+      // s.selectionChanging.addHandler((s, e) => {
+      //   const row = e.getRow();
+      //   if (row instanceof _NewRowTemplate) {
+      //     s._edtHdl._commitRowEdits();
+      //     setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(e.col, SelMove.NextEditableCell)), 20);
+      //   }
+      // });
 
       // 사용자가 설정한 초기화 함수 호출
       if (props.initialized) {
@@ -295,9 +301,9 @@ export default {
 
     // 행 추가
     const add = () => {
-      s.allowAddNew = true;
-      s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
-      setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
+      state.isEmpty = !(s.allowAddNew = true);
+      // s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
+      // setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
     };
 
     // 행 삭제
@@ -343,6 +349,7 @@ export default {
         }
       }
       s.collectionView.sourceCollection = _.cloneDeep(state.source);
+      state.isEmpty = s.collectionView.isEmpty;
     };
 
     // 초기화(빈 테이블로)
@@ -429,7 +436,7 @@ export default {
       );
       const itemsSource = _.cloneDeep(Array.from(items));
       if (props.allowStatus) {
-        columns.unshift(new Column({ binding: Order, header: '번호' }));
+        columns.unshift(new Column({ binding: Order, header: RowNum }));
         for (let i = 0, length = itemsSource.length; i < length; i += 1) {
           const itemSource = itemsSource.at(i);
           itemSource[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
