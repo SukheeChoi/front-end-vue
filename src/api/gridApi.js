@@ -31,13 +31,7 @@ export class GridApi extends CollectionView {
     this._storeChain = stores;
   }
 
-  init(
-    vm,
-    grid,
-    qry = null,
-    opt = null
-    // , autoLoading = true
-  ) {
+  init(vm, grid, qry = null, opt = null) {
     this._vm = vm;
     this._gridView = grid;
     grid.cellEditEnding.addHandler(this.valid);
@@ -52,10 +46,6 @@ export class GridApi extends CollectionView {
 
     this._qry = qry;
     this._opt = opt;
-
-    // if (autoLoading) {
-    // this.getList();
-    // }
   }
 
   clearData() {
@@ -174,10 +164,11 @@ export class GridApi extends CollectionView {
   };
 
   valid(grid, e) {
-    let col = grid.columns[e.col];
-    let fields = grid.itemsSource._model.fields;
-    let index = fields.findIndex((field) => field.id === col.binding);
-    let field = fields[index];
+    const col = e.getColumn(),
+      row = e.getRow(),
+      fields = grid.itemsSource._model.fields,
+      index = fields.findIndex((field) => field.id === col.binding),
+      field = fields[index];
 
     if (!field.vType) {
       return;
@@ -199,7 +190,5 @@ export class GridApi extends CollectionView {
 
       return;
     }
-
-    // GridApi.markRecordStatus(grid, e);
   }
 }

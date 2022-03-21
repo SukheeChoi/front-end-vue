@@ -48,13 +48,18 @@ export default {
     { value: 'S', name: '뒤' },
   ],
   MSG_TPL_GRP_TP: [
-    { value: '', name: '공백' },
-    { value: 'P', name: '앞' },
-    { value: 'S', name: '뒤' },
+    { value: '01', name: '시스템' },
+    { value: '02', name: '사용자' },
   ],
   MSG_TPL_TP: [
-    { value: '', name: '공백' },
-    { value: 'P', name: '앞' },
-    { value: 'S', name: '뒤' },
+    { value: '01', name: 'Email' },
+    { value: '02', name: 'SMS' },
+    { value: '03', name: 'Mobile Push' },
+    { value: '04', name: 'Web Push' },
+    { value: '05', name: 'Kakao' },
+  ],
+  TPL_CN_FMT_TP: [
+    { value: '01', name: 'HTML' },
+    { value: '02', name: 'TEXT' },
   ],
 };
