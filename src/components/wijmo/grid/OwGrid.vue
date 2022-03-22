@@ -290,7 +290,15 @@ export default {
         c.refresh();
       });
 
-      s.selectionChanged.addHandler(() => cv.commitEdit());
+      s.selectionChanging.addHandler((s, e) => {
+        const row = e.getRow();
+        if (row instanceof _NewRowTemplate) {
+          return;
+        }
+        if (s.finishEditing()) {
+          cv.commitEdit();
+        }
+      });
 
       // selection이 변경되면 새로운 행을 추가한다.
       // s.selectionChanging.addHandler((s, e) => {
