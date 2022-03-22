@@ -208,7 +208,7 @@ export class GridApi extends CollectionView {
     const removeUri = this._uri;
     const {
       data: { code },
-    } = await restApi.removeList(removeUri, [...removeItems]);
+    } = await restApi.removeList(removeUri, [...removeItems], this._id);
     return code === 'OK';
   };
 
