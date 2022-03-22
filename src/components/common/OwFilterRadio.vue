@@ -100,11 +100,9 @@ export default {
     const move = _.throttle((e) => {
       const { value: inner } = filter;
 
-      const isPrev = hasClass(e.target, 'prev');
-
       const filterList = Array.from(inner.querySelectorAll(':scope > li'));
       if (filterList.length > 0) {
-        if (isPrev) {
+        if (hasClass(e.target, 'prev')) {
           index = Math.max(0, (index -= props.step));
         } else {
           index = Math.min(props.items.length - 1, (index += props.step));
@@ -125,7 +123,7 @@ export default {
         const { width: outerWidth } = entry.contentRect;
         const { width: innerWidth } = getContentRect(inner);
         if (entry.target === outer) {
-          state.overflow = outerWidth < innerWidth;
+          state.overflow = Math.floor(outerWidth) < Math.floor(innerWidth);
         }
       }
     });

@@ -63,17 +63,13 @@ export default {
       state.control = timer;
     };
 
-    const textChanged = (timer) => {
-      state.control.text = timer.text;
-    };
+    const textChanged = (timer) => (state.control.text = timer.text);
 
-    const setText = (text) => {
-      state.control.text = text;
-    };
+    const setText = (text) => (state.control.text = text);
 
     watch(
       () => props.modelValue,
-      () => (state.control.text = props.modelValue)
+      () => (state.control.text = props.modelValue || state.min)
     );
 
     watch(

@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { reactive, computed, toRefs, onMounted, onUnmounted, ref, watch } from 'vue';
+import { reactive, computed, toRefs, onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
 import { expando } from '@/utils';
 
 import _ from 'lodash';
@@ -69,17 +69,15 @@ export default {
 
     watch(
       () => state.checkedValues,
-      (newCheckedValues, oldCheckedValues) => {
+      (newCheckedValues, oldCheckedValues = []) => {
         if (_.isEmpty(newCheckedValues)) {
           if (_.isEmpty(oldCheckedValues)) {
             const first = props.items.filter((item) => !item.disabled).at(0);
             if (first) {
-              oldCheckedValues = [first.value];
+              oldCheckedValues.push(first.value);
             }
           }
-          if (oldCheckedValues) {
-            state.checkedValues = oldCheckedValues;
-          }
+          nextTick(() => (state.checkedValues = oldCheckedValues));
         }
       },
       { immediate: true }
@@ -103,11 +101,9 @@ export default {
     const move = _.throttle((e) => {
       const { value: inner } = filter;
 
-      const isPrev = hasClass(e.target, 'prev');
-
       const filterList = Array.from(inner.querySelectorAll('.ow-checkbox'));
       if (filterList.length > 0) {
-        if (isPrev) {
+        if (hasClass(e.target, 'prev')) {
           index = Math.max(0, (index -= props.step));
         } else {
           index = Math.min(props.items.length - 1, (index += props.step));
@@ -128,7 +124,7 @@ export default {
         const { width: outerWidth } = entry.contentRect;
         const { width: innerWidth } = getContentRect(inner);
         if (entry.target === outer) {
-          state.overflow = outerWidth < innerWidth;
+          state.overflow = Math.floor(outerWidth) < Math.floor(innerWidth);
         }
       }
     });
