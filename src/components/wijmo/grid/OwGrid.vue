@@ -137,7 +137,7 @@ export default {
     },
     direction: {
       type: String,
-      default: 'DESC',
+      default: 'ASC',
       validator: (value) => ['ASC', 'DESC'].includes(value),
     },
     buttons: {
@@ -284,7 +284,7 @@ export default {
       cv.sourceCollectionChanged.addHandler((c) => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
           if (state.totalCount > 0) {
-            if (props.direction === 'DESC') {
+            if (_.toUpper(props.direction) === 'DESC') {
               item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
             } else {
               item[Order] = (state.pageNo - 1) * state.pageSize + index + 1;
