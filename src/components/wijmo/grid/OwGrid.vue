@@ -283,14 +283,10 @@ export default {
       });
       cv.sourceCollectionChanged.addHandler((c) => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
-          if (state.totalCount > 0) {
-            if (_.toUpper(props.direction) === 'DESC') {
-              item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
-            } else {
-              item[Order] = (state.pageNo - 1) * state.pageSize + index + 1;
-            }
+          if (_.toUpper(props.direction) === 'DESC') {
+            item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
           } else {
-            item[Order] = index + 1;
+            item[Order] = (state.pageNo - 1) * state.pageSize + index + 1;
           }
           item[Index] = item[Index] ?? c.items.length - index - 1;
         });
