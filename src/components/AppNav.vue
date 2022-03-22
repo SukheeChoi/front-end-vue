@@ -84,8 +84,8 @@ const MenuList2 = [
       Menu.create('기안', 'EAPXX002'),
       Menu.create('샘플', 'EAPXX003'),      
     ]),          
-    Menu.create('이경덕', 'EAPYY', [
-      Menu.create('Sample1', 'EAPYY001'),
+    Menu.create('메인보드', 'EAP01', [
+      Menu.create('기안작성', 'EAP02'), 
     ]),          
     Menu.create('김종혁', 'EAPZZ', [
         Menu.create('사용자설정', 'EAPZZ001'),
