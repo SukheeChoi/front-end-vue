@@ -159,8 +159,8 @@ export default {
       pageNo: +props.paging.pageNo ?? 1,
       pageSize: +props.paging.pageSize ?? 10,
       totalCount: +props.paging.totalCount ?? 0,
-      sort: props.paging.sort,
-      direction: props.paging.direction,
+      sort: props.paging.sort || '',
+      direction: props.paging.direction || '',
       pageSizeList: PAGE_SIZE_LIST.map((size) => ({ name: `${size}건`, value: size })),
       isEmpty: true,
     });
@@ -280,11 +280,17 @@ export default {
       });
       cv.sourceCollectionChanged.addHandler((c) => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
-          item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+          if (state.totalCount > 0) {
+            item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+          } else {
+            item[Order] = index + 1;
+          }
           item[Index] = item[Index] ?? c.items.length - index - 1;
         });
         c.refresh();
       });
+
+      s.selectionChanged.addHandler(() => cv.commitEdit());
 
       // selection이 변경되면 새로운 행을 추가한다.
       // s.selectionChanging.addHandler((s, e) => {
@@ -532,9 +538,14 @@ export default {
   }
 }
 .ow-pagination {
+  :deep(.page-item) {
+    &[role='presentation'] {
+      width: auto;
+    }
+  }
   :deep(.page-link) {
     &[role='menuitemradio'] {
-      width: 100%;
+      width: auto;
       min-width: 24px;
       padding: 4px 4px;
     }

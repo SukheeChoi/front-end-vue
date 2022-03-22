@@ -56,6 +56,8 @@ export default {
     const init = (...args) => {
       s = args.at(0);
 
+      s.autoRowHeights = true;
+
       // [ISSUE | 2022.03.04] 100%를 넘는 너비로 인해 상위 엘리먼트의 너비를 기준으로 resize 이벤트 발생시 변경
       const resize = () => {
         if (s.hostElement?.parentElement) {
