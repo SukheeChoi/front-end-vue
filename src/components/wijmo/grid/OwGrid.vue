@@ -135,6 +135,11 @@ export default {
         totalCount: 0,
       }),
     },
+    direction: {
+      type: String,
+      default: 'DESC',
+      validator: (value) => ['ASC', 'DESC'].includes(value),
+    },
     buttons: {
       type: Array,
       default: () => ['RESET', 'ADD', 'REMOVE', 'SAVE'],
@@ -159,8 +164,6 @@ export default {
       pageNo: +props.paging.pageNo ?? 1,
       pageSize: +props.paging.pageSize ?? 10,
       totalCount: +props.paging.totalCount ?? 0,
-      sort: props.paging.sort || '',
-      direction: props.paging.direction || '',
       pageSizeList: PAGE_SIZE_LIST.map((size) => ({ name: `${size}건`, value: size })),
       isEmpty: true,
     });
@@ -281,7 +284,11 @@ export default {
       cv.sourceCollectionChanged.addHandler((c) => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
           if (state.totalCount > 0) {
-            item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+            if (props.direction === 'DESC') {
+              item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+            } else {
+              item[Order] = (state.pageNo - 1) * state.pageSize + index + 1;
+            }
           } else {
             item[Order] = index + 1;
           }
