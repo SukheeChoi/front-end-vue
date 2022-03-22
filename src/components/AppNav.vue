@@ -80,7 +80,9 @@ const MenuList2 = [
   ]),
   Menu.create('전자결재', 'EAPROOT', [  
     Menu.create('정명훈', 'EAPXX', [
-      Menu.create('결재문서 양식 설정', 'EAPXX001'),
+      Menu.create('양식', 'EAPXX001'),
+      Menu.create('기안', 'EAPXX002'),
+      Menu.create('샘플', 'EAPXX003'),      
     ]),          
     Menu.create('이경덕', 'EAPYY', [
       Menu.create('Sample1', 'EAPYY001'),
