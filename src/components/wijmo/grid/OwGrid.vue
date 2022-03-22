@@ -228,6 +228,7 @@ export default {
       );
       cv.collectionChanged.addHandler((c, e) => {
         s.allowAddNew = false;
+        state.isEmpty = c.isEmpty;
         if (NotifyCollectionChangedAction.Add === e.action) {
           e.item[Index] = e.item[Index] ?? e.index;
         }
@@ -355,7 +356,6 @@ export default {
         }
       }
       s.collectionView.sourceCollection = _.cloneDeep(state.source);
-      state.isEmpty = s.collectionView.isEmpty;
     };
 
     // 초기화(빈 테이블로)
