@@ -62,4 +62,20 @@ export default {
     { value: '01', name: 'HTML' },
     { value: '02', name: 'TEXT' },
   ],
+  CTRY_CD: [{ value: 'ko', name: '대한민국' }],
+  CD_PSNT_DVCD: [
+    { value: 'CM', name: '공통코드' },
+    { value: 'DV', name: '개별코드' },
+    { value: 'IF', name: '연계코드' },
+  ],
+  CONN_SYS_CD: [
+    { value: 'SAP', name: 'SAP' },
+    { value: 'CRM', name: 'CRM' },
+    { value: 'CIMS', name: 'CIMS' },
+  ],
+  OW_TASK_CD: [
+    { value: 'LIF', name: 'LIF' },
+    { value: 'LCM', name: 'LCM' },
+    { value: 'LOG', name: 'LOG' },
+  ],
 };
