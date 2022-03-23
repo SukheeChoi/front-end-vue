@@ -59,25 +59,17 @@ export default {
     });
 
     const initialized = (timer) => {
-      if (Globalize.parseDate(state.control.text, state.format)) {
-        timer.value = state.control.text;
-      } else {
-        timer.value = '09:00';
-      }
+      timer.text = state.control.text || state.min;
       state.control = timer;
     };
 
-    const textChanged = (timer) => {
-      state.control.text = timer.text;
-    };
+    const textChanged = (timer) => (state.control.text = timer.text);
 
-    const setText = (text) => {
-      state.control.text = text;
-    };
+    const setText = (text) => (state.control.text = text);
 
     watch(
       () => props.modelValue,
-      () => (state.control.text = props.modelValue)
+      () => (state.control.text = props.modelValue || state.min)
     );
 
     watch(

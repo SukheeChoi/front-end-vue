@@ -17,12 +17,16 @@
           </button>
           <button type="button" class="ow-btn type-state" @click="reset" v-else-if="button === 'RESET'">초기화</button>
           <button type="button" class="ow-btn type-state" @click="add" v-else-if="button === 'ADD'">추가</button>
-          <button type="button" class="ow-btn type-state" @click="remove" v-else-if="button === 'REMOVE'">삭제</button>
-          <button type="button" class="ow-btn type-state" @click="save" v-else-if="button === 'SAVE'">저장</button>
+          <button type="button" class="ow-btn type-state" @click="internal_remove" v-else-if="button === 'REMOVE'">
+            삭제
+          </button>
+          <button type="button" class="ow-btn type-state" @click="internal_save" v-else-if="button === 'SAVE'">
+            저장
+          </button>
         </template>
       </ow-flex-item>
     </ow-flex-item>
-    <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': totalCount === 0 }">
+    <div class="ow-grid-wrap" :class="{ 'ow-grid-empty': isEmpty }">
       <ow-flex-grid :initialized="init" v-bind="$attrs">
         <slot></slot>
       </ow-flex-grid>
@@ -46,7 +50,7 @@
             :per-page="pageSize"
             :limit="10"
             v-model="pageNo"
-            @page-click="(yg, pageNo) => read(pageNo)"
+            @page-click="(yg, pageNo) => internal_read(pageNo)"
           ></b-pagination>
         </template>
       </ow-flex-item>
@@ -69,7 +73,13 @@ import {
   NotifyCollectionChangedEventArgs,
   SortDescription,
 } from '@grapecity/wijmo';
-import { CellType, Column, SelMove, _NewRowTemplate } from '@grapecity/wijmo.grid';
+import {
+  CellType,
+  // CellRange,
+  Column,
+  // SelMove,
+  _NewRowTemplate,
+} from '@grapecity/wijmo.grid';
 
 import OwGridExcelDownloader from '@/components/wijmo/grid/OwGridExcelDownloader';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
@@ -82,6 +92,14 @@ const ROW_STATUS = {
   ADD: 'C',
   EDIT: 'U',
 };
+
+const PAGE_SIZE_LIST = [5, 10, 20, 30, 50, 100, 150, 300, 500];
+
+// [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
+const Order = Symbol('Order').toString();
+const Index = Symbol('Index').toString();
+
+const ROW_NUM = t('wijmo.grid.header.rownum');
 
 export default {
   name: 'OwGrid',
@@ -117,6 +135,11 @@ export default {
         totalCount: 0,
       }),
     },
+    direction: {
+      type: String,
+      default: 'ASC',
+      validator: (value) => ['ASC', 'DESC'].includes(value),
+    },
     buttons: {
       type: Array,
       default: () => ['RESET', 'ADD', 'REMOVE', 'SAVE'],
@@ -133,22 +156,17 @@ export default {
 
     const downloader = ref(null);
 
+    let s;
+
     const state = reactive({
       source: [],
       query: _.cloneDeep(props.query) ?? {},
-      pageNo: +(props.paging.pageNo ?? 1),
-      pageSize: +(props.paging.pageSize ?? 10),
-      totalCount: +(props.paging.totalCount ?? 0),
-      sort: props.paging.sort ?? '',
-      direction: props.paging.direction ?? '',
-      pageSizeList: [5, 10, 20, 30, 50, 100, 150, 300, 500].map((size) => ({ name: `${size}건`, value: size })),
+      pageNo: +props.paging.pageNo ?? 1,
+      pageSize: +props.paging.pageSize ?? 10,
+      totalCount: +props.paging.totalCount ?? 0,
+      pageSizeList: PAGE_SIZE_LIST.map((size) => ({ name: `${size}건`, value: size })),
+      isEmpty: true,
     });
-
-    // [ISSUE | 2022.02.24] SortDescriptions의 기준이 String만 허용함. 그러므로 Symbol 대신 Symbol의 toString을 이용
-    const Order = Symbol('Order').toString();
-    const Index = Symbol('Index').toString();
-
-    let s;
 
     const init = (...args) => {
       s = args.at(0);
@@ -164,6 +182,7 @@ export default {
       }
       state.source = _.cloneDeep(s.collectionView.items);
       state.totalCount = s.collectionView?.items.length ?? 0;
+      state.isEmpty = s.collectionView.isEmpty;
 
       // Required
       s.formatItem.addHandler((s, e) => {
@@ -179,7 +198,7 @@ export default {
       // AllowStatus | RowStatus
       const statusHeader = new Column({
         binding: 'rowStatus',
-        header: '번호',
+        header: ROW_NUM,
         cellTemplate: (ctx) => {
           if (ctx.item) {
             switch (ctx.item.rowStatus) {
@@ -212,11 +231,12 @@ export default {
       );
       cv.collectionChanged.addHandler((c, e) => {
         s.allowAddNew = false;
+        state.isEmpty = c.isEmpty;
         if (NotifyCollectionChangedAction.Add === e.action) {
           e.item[Index] = e.item[Index] ?? e.index;
         }
         // Tree Grid
-        if (s.childItemsPath && NotifyCollectionChangedAction.Reset > e.action && c.trackChanges) {
+        if (c.trackChanges && s.childItemsPath && NotifyCollectionChangedAction.Reset > e.action) {
           const getSourceContent = (indexes) => {
             let source = state.source;
             for (const index of indexes) {
@@ -235,7 +255,6 @@ export default {
                 let at = c.itemsEdited.indexOf(item);
                 const item1 = objectWithoutProperties(item, 'rowStatus');
                 const item2 = objectWithoutProperties(getSourceContent([...indexes, i]), 'rowStatus');
-                console.log('item1, item2', item1, item2);
                 if (c._sameContent(item1, item2)) {
                   c.itemsEdited.removeAt(at);
                   return true;
@@ -264,11 +283,34 @@ export default {
       });
       cv.sourceCollectionChanged.addHandler((c) => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
-          item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+          if (_.toUpper(props.direction) === 'DESC') {
+            item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
+          } else {
+            item[Order] = (state.pageNo - 1) * state.pageSize + index + 1;
+          }
           item[Index] = item[Index] ?? c.items.length - index - 1;
         });
         c.refresh();
       });
+
+      s.selectionChanging.addHandler((s, e) => {
+        const row = e.getRow();
+        if (row instanceof _NewRowTemplate) {
+          return;
+        }
+        if (s.finishEditing()) {
+          cv.commitEdit();
+        }
+      });
+
+      // selection이 변경되면 새로운 행을 추가한다.
+      // s.selectionChanging.addHandler((s, e) => {
+      //   const row = e.getRow();
+      //   if (row instanceof _NewRowTemplate) {
+      //     s._edtHdl._commitRowEdits();
+      //     setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(e.col, SelMove.NextEditableCell)), 20);
+      //   }
+      // });
 
       // 사용자가 설정한 초기화 함수 호출
       if (props.initialized) {
@@ -277,18 +319,19 @@ export default {
 
       // 조회
       if (props.read) {
-        read();
+        internal_read();
       }
     };
 
     // 행 추가
     const add = () => {
-      s.allowAddNew = true;
-      setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
+      state.isEmpty = !(s.allowAddNew = true);
+      // s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
+      // setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
     };
 
     // 행 삭제
-    const remove = async () => {
+    const internal_remove = async () => {
       if (props.remove) {
         const items = Array.from(s?.selector?.checkedItems ?? []).map((item) => item.dataItem);
         if (_.isEmpty(items)) {
@@ -297,14 +340,14 @@ export default {
         if (await dialog.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
           // [TODO] 후처리 진행
           if (await props.remove(items)) {
-            read(); // 검색 조건과 페이지 유지
+            internal_read(); // 검색 조건과 페이지 유지
           }
         }
       }
     };
 
     // 저장
-    const save = async () => {
+    const internal_save = async () => {
       if (props.save) {
         const addItems = Array.from(s.collectionView.itemsAdded ?? []);
         const editItems = Array.from(s.collectionView.itemsEdited ?? []);
@@ -316,7 +359,7 @@ export default {
         if (await dialog.confirm(t('wijmo.grid.save.confirm', [total]))) {
           // [TODO] 후처리 진행
           if (await props.save(addItems, editItems, removeItems)) {
-            read(); // 검색 조건과 페이지 유지
+            internal_read(); // 검색 조건과 페이지 유지
           }
         }
       }
@@ -347,14 +390,14 @@ export default {
      */
     const lookup = (query) => {
       state.query = query;
-      read(1);
+      internal_read(1);
     };
 
     /**
      * 주어진 검색 조건으로 페이지를 이동합니다.
      * @param {Number} pageNo - 이동할 페이지 번호
      */
-    const read = async (pageNo) => {
+    const internal_read = async (pageNo) => {
       if (typeof pageNo !== 'undefined') {
         state.pageNo = +pageNo;
       }
@@ -368,7 +411,7 @@ export default {
           })
         );
       }
-      const root = s.hostElement.querySelector('[wj-part=root]');
+      const root = s.hostElement?.querySelector('[wj-part=root]');
       if (root) {
         root.scrollTop = 0;
       }
@@ -389,7 +432,9 @@ export default {
       state.pageSize = paging?.pageSize ?? 10;
       state.totalCount = totalCount ?? 0;
       state.source = _.cloneDeep(items);
-      s.collectionView.sourceCollection = items;
+      if (s.collectionView) {
+        s.collectionView.sourceCollection = _.cloneDeep(state.source);
+      }
       if (props.allowPushState) {
         router.push({
           path: route.path,
@@ -414,7 +459,7 @@ export default {
       );
       const itemsSource = _.cloneDeep(Array.from(items));
       if (props.allowStatus) {
-        columns.unshift(new Column({ binding: Order, header: '번호' }));
+        columns.unshift(new Column({ binding: Order, header: ROW_NUM }));
         for (let i = 0, length = itemsSource.length; i < length; i += 1) {
           const itemSource = itemsSource.at(i);
           itemSource[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - i;
@@ -442,7 +487,7 @@ export default {
 
     watch(
       () => state.pageSize,
-      () => read(1)
+      () => internal_read(1)
     );
 
     return {
@@ -450,11 +495,11 @@ export default {
       ...toRefs(state),
       init,
       lookup,
-      read,
+      internal_read,
       applier,
       add,
-      save,
-      remove,
+      internal_save,
+      internal_remove,
       reset,
       clear,
       download,
@@ -476,7 +521,7 @@ export default {
       width: 100%;
       line-height: 35px;
       text-align: center;
-      z-index: 999;
+      z-index: 10;
     }
   }
   :deep(.ow-grid-required) {
@@ -504,9 +549,14 @@ export default {
   }
 }
 .ow-pagination {
+  :deep(.page-item) {
+    &[role='presentation'] {
+      width: auto;
+    }
+  }
   :deep(.page-link) {
     &[role='menuitemradio'] {
-      width: 100%;
+      width: auto;
       min-width: 24px;
       padding: 4px 4px;
     }

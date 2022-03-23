@@ -59,26 +59,20 @@ export default {
       },
     });
 
+    const TODAY = Globalize.format(new Date(), props.format);
+
     const initialized = (calendar) => {
-      if (Globalize.parseDate(state.control.text, props.format)) {
-        calendar.value = state.control.text;
-      } else {
-        calendar.value = Globalize.format(new Date(), props.format);
-      }
+      calendar.text = state.control.text || TODAY;
       state.control = calendar;
     };
 
-    const textChanged = (calendar) => {
-      state.control.text = calendar.text;
-    };
+    const textChanged = (calendar) => (state.control.text = calendar.text);
 
-    const setText = (text) => {
-      state.control.text = text;
-    };
+    const setText = (text) => (state.control.text = text);
 
     watch(
       () => props.modelValue,
-      () => (state.control.text = props.modelValue)
+      () => (state.control.text = props.modelValue || TODAY)
     );
 
     watch(

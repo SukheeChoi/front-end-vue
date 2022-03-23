@@ -2,7 +2,7 @@
   <template v-if="label">
     <label class="checkbox-label">{{ label }}</label>
   </template>
-  <div class="checkbox-group" :class="{ 'has-btn': hasSlots, transparent }">
+  <div class="checkbox-group" :class="{ 'has-btn': hasSlots, transparent }" v-bind="$attrs">
     <slot></slot>
     <template v-for="({ name, value, disabled = false }, index) in items" :key="value">
       <div class="ow-checkbox">

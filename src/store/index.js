@@ -5,15 +5,21 @@ import menu from './modules/menu';
 import notification from './modules/notification';
 import loading from './modules/loading';
 import comData from './modules/comData';
+import savedInfo from './modules/savedInfo';
 
 const resetState = () => {
   return {
     login: {
-      state: {
-        accessToken: '',
-        userInfo: '',
-        ttl: '',
-      },
+      accessToken: '',
+      userInfo: '',
+      ttl: '',
+    },
+    menu: {
+      screenList: [],
+      routeRootList: [],
+      routeChildList: [],
+      routeList: [],
+      myMenuList: [],
     },
   };
 };
@@ -36,6 +42,7 @@ const modules = {
   notification,
   loading,
   comData,
+  savedInfo,
 };
 
 function loadModules() {

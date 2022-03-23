@@ -2,7 +2,8 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView } from '@grapecity/wijmo';
+import { CollectionView, isUndefined } from '@grapecity/wijmo';
+import { _NewRowTemplate } from '@grapecity/wijmo.grid';
 
 export class GridApi extends CollectionView {
   _id = '';
@@ -31,16 +32,9 @@ export class GridApi extends CollectionView {
     this._storeChain = stores;
   }
 
-  init(
-    vm,
-    grid,
-    qry = null,
-    opt = null
-    // , autoLoading = true
-  ) {
+  init(vm, grid, qry = null, opt = null) {
     this._vm = vm;
     this._gridView = grid;
-    // grid.cellEditEnding.addHandler(this.valid);
 
     if (qry == null) {
       qry = this._vm.query;
@@ -53,9 +47,54 @@ export class GridApi extends CollectionView {
     this._qry = qry;
     this._opt = opt;
 
-    // if (autoLoading) {
-    // this.getList();
-    // }
+    if (isUndefined(grid.itemsSource._model?.fields)) {
+      return;
+    }
+
+    grid.cellEditEnding.addHandler(this.valid);
+    this.setReadOnly(grid);
+  }
+
+  setReadOnly(grid) {
+    let fields = grid.itemsSource._model.fields;
+
+    grid.beginningEdit.addHandler((s, e) => {
+      const row = e.getRow(),
+        col = e.getColumn(),
+        index = fields.findIndex((field) => field.id === col.binding),
+        field = fields[index];
+
+      if (isUndefined(field?.key)) {
+        return;
+      }
+
+      if (row instanceof _NewRowTemplate || row.dataItem?.rowStatus === 'C') {
+        return;
+      }
+
+      if (col.binding === field.id) {
+        e.cancel = true;
+      }
+    });
+
+    grid.formatItem.addHandler((s, e) => {
+      const row = e.getRow(),
+        col = e.getColumn(),
+        index = fields.findIndex((field) => field.id === col.binding),
+        field = fields[index];
+
+      if (isUndefined(field?.key)) {
+        return;
+      }
+
+      if (row instanceof _NewRowTemplate || row.dataItem?.rowStatus === 'C') {
+        return;
+      }
+
+      if (col.binding === field.id) {
+        e.cell.setAttribute('aria-readonly', true);
+      }
+    });
   }
 
   clearData() {
@@ -158,7 +197,7 @@ export class GridApi extends CollectionView {
     const saveUri = this._uri;
     const {
       data: { code },
-    } = await restApi.save(saveUri, [...addItems, ...editItems]);
+    } = await restApi.save(saveUri, [...addItems, ...editItems], this._id);
 
     if (code == 'OK') {
       return code === 'OK';
@@ -169,35 +208,43 @@ export class GridApi extends CollectionView {
     const removeUri = this._uri;
     const {
       data: { code },
-    } = await restApi.removeList(removeUri, [...removeItems]);
+    } = await restApi.removeList(removeUri, [...removeItems], this._id);
     return code === 'OK';
   };
 
   valid(grid, e) {
-    let col = grid.columns[e.col];
+    const col = e.getColumn();
+
     let fields = grid.itemsSource._model.fields;
-    let index = fields.findIndex((field) => field.id === col.binding);
-    let field = fields[index];
 
-    if (field.vType) {
-      let result = ValidatorTypes[field.vType + 'Validator'](grid.activeEditor.value, field);
+    // if (!isUndefined(grid.itemsSource._model?.fields)) {
+    //   fields = grid.itemsSource._model.fields;
+    // } else {
+    //   return;
+    // }
 
-      if (!result.isValid) {
-        e.cancel = true;
-        e.stayInEditMode = true;
+    const index = fields.findIndex((field) => field.id === col.binding),
+      field = fields[index];
 
-        let edtHandler = grid._edtHdl;
-        let rng = edtHandler._rng;
-        let cell = grid.cells.getCellElement(rng.row, rng.col);
-
-        if (cell) {
-          edtHandler._setCellError(cell, result.message);
-        }
-
-        return;
-      }
+    if (!field.vType) {
+      return;
     }
 
-    GridApi.markRecordStatus(grid, e);
+    let result = ValidatorTypes[field.vType + 'Validator'](grid.activeEditor.value, field);
+
+    if (!result.isValid) {
+      e.cancel = true;
+      e.stayInEditMode = true;
+
+      let edtHandler = grid._edtHdl;
+      let rng = edtHandler._rng;
+      let cell = grid.cells.getCellElement(rng.row, rng.col);
+
+      if (cell) {
+        edtHandler._setCellError(cell, result.message);
+      }
+
+      return;
+    }
   }
 }

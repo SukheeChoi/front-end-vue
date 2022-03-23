@@ -4,23 +4,27 @@
   </template>
   <div class="ow-filter" ref="root" v-bind="$attrs">
     <template v-if="overflow">
-      <button type="button" class="ow-filter-btn-move prev" @click="move('prev')">&#60;</button>
+      <button type="button" class="ow-filter-btn-move prev" @click="move">&#60;</button>
     </template>
     <div class="ow-filter-list" ref="filter">
       <ow-checkbox :items="items" :unique="unique" v-model="checkedValues">
-        <button type="button" class="btn-check-all" :class="{ active: isAllChecked }" @click="onAllCheck">전체</button>
+        <button type="button" class="ow-checkbox btn-check-all" :class="{ active: isAllChecked }" @click="onAllCheck">
+          전체
+        </button>
       </ow-checkbox>
     </div>
     <template v-if="overflow">
-      <button type="button" class="ow-filter-btn-move next" @click="move('next')">&#62;</button>
+      <button type="button" class="ow-filter-btn-move next" @click="move">&#62;</button>
     </template>
   </div>
 </template>
 <script>
-import { reactive, computed, toRefs, onMounted, onUnmounted, ref, watch } from 'vue';
+import { reactive, computed, toRefs, onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
 import { expando } from '@/utils';
 
 import _ from 'lodash';
+
+import { hasClass } from '@grapecity/wijmo';
 
 export default {
   name: 'OwFilterCheckbox',
@@ -37,6 +41,10 @@ export default {
       default: () => {
         return [];
       },
+    },
+    step: {
+      type: Number,
+      default: 1,
     },
     modelValue: {
       type: Array,
@@ -61,17 +69,15 @@ export default {
 
     watch(
       () => state.checkedValues,
-      (newCheckedValues, oldCheckedValues) => {
+      (newCheckedValues, oldCheckedValues = []) => {
         if (_.isEmpty(newCheckedValues)) {
           if (_.isEmpty(oldCheckedValues)) {
             const first = props.items.filter((item) => !item.disabled).at(0);
             if (first) {
-              oldCheckedValues = [first.value];
+              oldCheckedValues.push(first.value);
             }
           }
-          if (oldCheckedValues) {
-            state.checkedValues = oldCheckedValues;
-          }
+          nextTick(() => (state.checkedValues = oldCheckedValues));
         }
       },
       { immediate: true }
@@ -92,37 +98,33 @@ export default {
     };
 
     let index = 0;
-    const move = _.throttle((direction) => {
-      const { value: outer } = root;
+    const move = _.throttle((e) => {
       const { value: inner } = filter;
 
-      const { left: outerLeft, right: outerRight } = getContentRect(outer);
-      const { left: innerLeft, right: innerRight, width: innerWidth } = getContentRect(inner);
+      const filterList = Array.from(inner.querySelectorAll('.ow-checkbox'));
+      if (filterList.length > 0) {
+        if (hasClass(e.target, 'prev')) {
+          index = Math.max(0, (index -= props.step));
+        } else {
+          index = Math.min(props.items.length - 1, (index += props.step));
+        }
 
-      let tx;
-      switch (direction) {
-        case 'prev':
-          if (outerLeft > innerLeft) {
-            tx = innerWidth * (index += 1) * 0.3;
-          }
-          break;
-        case 'next':
-          if (outerRight < innerRight) {
-            tx = innerWidth * (index -= 1) * 0.3;
-          }
-          break;
-      }
-      if (typeof tx === 'number') {
-        inner.style.transform = `translateX(${tx}px)`;
+        const { left: point1 } = getContentRect(inner);
+        const { left: point2 } = getContentRect(filterList.at(index));
+
+        inner.style.transform = `translateX(${point1 - point2}px)`;
       }
     }, 300);
 
     const observer = new ResizeObserver((entries) => {
+      const { value: outer } = root;
+      const { value: inner } = filter;
+
       for (const entry of entries) {
         const { width: outerWidth } = entry.contentRect;
-        const { width: innerWidth } = getContentRect(filter.value);
-        if (entry.target === root.value) {
-          state.overflow = outerWidth < innerWidth;
+        const { width: innerWidth } = getContentRect(inner);
+        if (entry.target === outer) {
+          state.overflow = Math.floor(outerWidth) < Math.floor(innerWidth);
         }
       }
     });
@@ -157,7 +159,7 @@ export default {
 }
 .ow-filter {
   width: var(--width, auto);
-  .ow-filter-list {
+  &-list {
     transition: all 0.2s ease-in-out;
   }
 }

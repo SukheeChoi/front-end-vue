@@ -25,9 +25,11 @@ class MenuMaker {
       path: isRoot ? '/' + data.path : data.path,
       name: data.name,
       title: data.title,
-      component: isRoot ? () => import('@/views/AppMain') : () => import('@@' + this.rootNode.path + '/views/The' + data.path),
+      component: isRoot
+        ? () => import('@/views/AppMain')
+        : () => import('@@' + this.rootNode.path + '/views/' + data.path),
       children: data.children ? [] : undefined,
-      redirect: undefined  
+      redirect: undefined,
     };
     return route;
   }

@@ -14,7 +14,6 @@ import _ from 'lodash';
 
 import { reactive, ref, toRefs, onMounted } from 'vue';
 import { SelectionMode } from '@grapecity/wijmo.grid';
-import { Selector } from '@grapecity/wijmo.grid.selector';
 import * as wjGrid from '@grapecity/wijmo.grid';
 import utils from '@/utils/commUtils.js';
 
@@ -27,7 +26,13 @@ export default {
     selector: Boolean,
     drag: {
       type: Object,
-      default: () => [],
+      default: () => ({
+        allowAdding: 'add', // add : add row, set : set row data
+        targetType: [],
+        dragType: [],
+        key: [],
+        readonly: [],
+      }),
     },
     selectionMode: {
       type: [Number, String],
@@ -53,7 +58,6 @@ export default {
       formatItem(grid);
       grid.selectionMode = props.selectionMode;
       grid.childItemsPath = props.childItemsPath;
-
       state.grid = grid;
     };
 
@@ -66,7 +70,9 @@ export default {
     onMounted(() => {
       if (props.drag) {
         makeDragSource(state.grid);
-        makeDropTarget(state.grid);
+        if (grid.value.allowStatus) {
+          makeDropTarget(state.grid);
+        }
       }
     });
 
@@ -75,46 +81,19 @@ export default {
         dragRow1 = null,
         dragRow2 = null;
 
-    const addSelector = (grid) => {
-      let chkIdx;
-      grid.columns.forEach((col) => {
-        if (col.name == 'chk') {
-          chkIdx = col.index;
-        }
-      });
-      return new Selector(grid.columns[chkIdx], {});
-    };
-
-    const addHeaderIcon = (grid, e) => {
-      if (e.panel.cellType != wjGrid.CellType.RowHeader) {
-        return;
-      }
-
-      let row = e.panel.rows[e.row],
-        colHeader = grid.rowHeaders.columns[e.col];
-
-      if (colHeader.binding == 'rowStatus') {
-        if (row.dataItem.rowStatus == 'U') {
-          e.cell.innerHTML = utils.getWjGlyph('pencil');
-        } else if (row.dataItem.rowStatus == 'C') {
-          e.cell.innerHTML = utils.getWjGlyph('asterisk');
-        } else {
-          e.cell.innerHTML = '';
-        }
-      } else if (colHeader.binding == 'drag') {
-        e.cell.innerHTML = utils.getWjGlyph('drag', 'button');
-      }
-    };
-
     const addCellIcon = (s, e) => {
       if (e.panel.cellType != wjGrid.CellType.Cell) {
         return;
       }
 
-      let row = e.panel.rows[e.row],
-          col = e.panel.columns[e.col];
-
+      let row = e.getRow(),
+          col = e.getColumn();
       if (col.cssClass == 'icon') {
+
+        if (s.activeEditor !== null) {
+          return;
+        }
+
         let padding = row.level * 13,
             collapse = '',
             icon = utils.getOwIcon(row.dataItem.nodeType) ?? '',
@@ -143,7 +122,6 @@ export default {
 
     const formatItem = (grid) => {
       grid.formatItem.addHandler(function(s, e) {
-        addHeaderIcon(grid, e);
         addCellIcon(s, e);
       });
     }
@@ -171,7 +149,7 @@ export default {
       dragRow2 = rowIndex;
       let _lvl = grid.rows[rowIndex].level;
       if (grid.rows[rowIndex].hasChildren) {
-        for (let i = rowIndex + 1; i < grid.rows.length - 1; i++) {
+        for (let i = rowIndex; i < grid.rows.length - 1; i++) {
           if (grid.rows[i].level == _lvl) {
             break;
           }
@@ -181,62 +159,107 @@ export default {
     };
 
     const addItem = (grid, target) => {
-      let ht = grid.hitTest(target),
-        dragRow = target.dataTransfer.getData('text'),
-        item = originalGrid.rows[parseInt(dragRow)].dataItem,
-        parentRow = -1,
-        findIdx = false;
+      let targetRow = grid.hitTest(target).row,
+          dragRow = target.dataTransfer.getData('text'),
+          dataItem = originalGrid.rows[+dragRow].dataItem,
+          isTargetValid = false;
 
-      if (!dragRow || !ht.row) {
+      if (!dragRow || !targetRow) {
         return false;
       }
 
-      let _item = _.cloneDeep(item);
-      _item.orgCd = grid.rows[ht.row].dataItem.orgCd;
-      _item.rowStatus = 'C';
-
-      grid.rows.forEach((row) => {
-        if (row.hasChildren == true && row._data.orgCd == _item.orgCd) {
-          parentRow = row.index;
-
-          row.dataItem.children.forEach((findRow) => {
-            if (findRow.bizGrpId == item.bizGrpId) {
-              findIdx = true;
-            }
-          });
-        }
-      });
-
-      if (findIdx) {
-        return false;
+      let item = _.cloneDeep(dataItem),
+          targetItem = grid.rows[targetRow].dataItem;
+      
+      if (item[props.childItemsPath]) {
+        delete item[props.childItemsPath];
       }
 
-      if (!grid.rows[ht.row].dataItem.children) {
-        let findType = false;
-        if (state.drag.nodeType) {
-          state.drag.nodeType.forEach((type) => {
-            if (grid.rows[ht.row].dataItem.nodeType == type) {
-              findType = true;
-            }
-          })
-        }
+      item.rowStatus = 'C',
+      item.nodeType = state.drag.dragType.at(0);
 
-        if (findType) {
-          grid.rows[ht.row].dataItem.children = [];
-          grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
-        } else {
-          if (parentRow >= 0) {
-            grid.rows[parentRow].dataItem.children.splice(0, 0, _item);
+      state.drag.targetType.forEach((type) => {
+        if (targetItem.nodeType === type) {
+          isTargetValid = true;
+        }
+      })
+      
+      state.drag.dragType.forEach((type) => {
+        if (targetItem.nodeType === type) {
+          isTargetValid = true;
+        }
+      })
+
+      if (!isTargetValid) {
+        return;
+      }
+
+      if (!targetItem[props.childItemsPath]) {
+        if (state.drag.targetType.includes(targetItem.nodeType)) {
+
+          if (state.drag.allowAdding === 'set') {
+            utils.setDragItemKey(item, targetItem, state.drag.key);
+          } else {
+            utils.setDragItemKey(targetItem, item, state.drag.key);
           }
+          
+          addChildItem(grid, targetItem, targetRow, item);
+        } else {
+          // find closest parent
+          let parent = [];
+          if (!targetItem[props.childItemsPath]) {
+            for (let r = targetRow; r >= 0; r--) {
+              if (grid.rows[r].hasChildren) {
+                parent = grid.rows[r].dataItem;
+                break;
+              }
+            }
+          }
+
+          utils.setDragItemKey(parent, item, state.drag.key);
+
+          if (!state.drag.targetType.includes(parent.nodeType)) {
+            return;
+          }
+
+          if (utils.chkChildItem(parent, item, state.drag.key)) {
+            return;
+          }
+
+          addChildItem(grid, parent, targetRow, item);
         }
       } else {
-        grid.rows[ht.row].dataItem.children.splice(0, 0, _item);
-      }
+        utils.setDragItemKey(targetItem, item, state.drag.key);
 
-      grid.collectionView.itemsAdded.push(_item);
+        if (utils.chkChildItem(targetItem, item, state.drag.key)) {
+          return;
+        }
+
+        addChildItem(grid, targetItem, targetRow, item);
+      }
 
       return true;
     };
+
+    const addChildItem = (grid, targetItem, targetRow, item) => {
+      if (state.drag.allowAdding !== 'set') {
+        if (!targetItem[props.childItemsPath]) {
+          targetItem[props.childItemsPath] = [];
+        }
+        targetItem[props.childItemsPath].splice(0, 0, item);
+      }
+
+      grid.invalidate();
+      grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
+
+      const Index = Symbol('Index').toString();
+      for (let i=0; i<grid.collectionView.itemsAdded.length; i++) {
+        if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
+          grid.collectionView.itemsAdded.splice(i, 1);
+        }
+      }
+      grid.collectionView.itemsAdded.push(item);
+    }
 
     const makeDragSource = (s) => {
       // make rows draggable
@@ -244,18 +267,20 @@ export default {
         let row = panel.rows[r];
         
         if (panel.cellType == wjGrid.CellType.RowHeader) {
-          cell.draggable = true;
+          if (s.rowHeaders.columns[c].binding !== 'drag') {
+            cell.draggable = false;
+            return;
+          } else {
+            cell.draggable = true;
+          }
 
           if (state.drag.readonly) {
             state.drag.readonly.forEach((type) => {
               if (type == row.dataItem.nodeType) {
+                cell.innerHTML = '';
                 cell.draggable = false;
               }
             });
-          }
-
-          if (s.rowHeaders.columns[c].binding != 'drag') {
-            cell.draggable = false;
           }
         }
       };
@@ -272,6 +297,7 @@ export default {
       // handle drag start
       s.addEventListener(s.hostElement, "dragstart", (e) => {
           createImage();
+
           let ht = s.hitTest(e);
           if (ht.cellType == wjGrid.CellType.RowHeader) {
             s.select(new wjGrid.CellRange(ht.row, 0, ht.row, s.columns.length - 1));
@@ -288,10 +314,18 @@ export default {
 
     // enable drop operations on an element
     const makeDropTarget = (s) => {
+      const allowStatus = s.itemsSource._vm.allowStatus ?? s.itemsSource._vm.grid.allowStatus;
+
       s.hostElement.addEventListener("dragover", (e) => {
-        let ht = s.hitTest(e);
-        let dragRow = e.dataTransfer.getData("text");
-        if (!ht || ht.panel == null) {
+        let ht = s.hitTest(e),
+            dragRow = e.dataTransfer.getData("text");
+
+        if (!allowStatus) {
+          return;
+        }
+
+        if (!ht || ht.panel === null) {
+          removeImage();
           return;
         }
         // prevent Dragging for Selected items Children and the Cell panel
@@ -299,7 +333,8 @@ export default {
           removeImage();
           return;
         }
-        if (dragRow != null) {
+        
+        if (dragRow != null && dragDiv) {
           dragDiv.style.display = 'inline-block';
           e.dataTransfer.dropEffect = "copy";
           e.preventDefault();
@@ -312,15 +347,30 @@ export default {
       });
 
       s.hostElement.addEventListener("drop", (e) => {
-        let item = originalGrid.rows[parseInt(e.dataTransfer.getData("text"))].dataItem; //drag data
+        let item = originalGrid.rows[+(e.dataTransfer.getData("text"))].dataItem;
 
         if (s != originalGrid) {
           addItem(s, e);
         } else {
+          if (!allowStatus) {
+            removeImage();
+            return;
+          }
           if (addItem(s, e)) {
-            item.rowStatus = 'D';
-            utils.removeBizGrpItem(s.collectionView.sourceCollection[0], item, state.drag.key); //delete item
-            s.collectionView.itemsRemoved.push(item);
+            removeItem(s.itemsSource.sourceCollection, item, state.drag.key);
+
+            const Index = Symbol('Index').toString();
+            let isSymbol = false;
+            for (let i=0; i<s.collectionView.itemsRemoved.length; i++) {
+              if (s.collectionView.itemsRemoved[i][Index] === item[Index]) {
+                isSymbol = true;
+              }
+            }
+
+            if (!isSymbol) {
+              item.rowStatus = 'D';
+              s.collectionView.itemsRemoved.push(item);
+            }
           }
         }
 
@@ -329,6 +379,15 @@ export default {
         s.collectionView.refresh();
         e.preventDefault();
       });
+    }
+
+    const removeItem = (dataItem, item, itemKey) => {
+      for (let i = 0; i < dataItem.length; i++) {
+        if (utils.removeChildItem(dataItem[i], item, itemKey)) {
+          break;
+        }
+      }
+
     }
 
     return {
