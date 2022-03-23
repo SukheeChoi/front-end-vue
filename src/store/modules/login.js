@@ -29,12 +29,12 @@ export default {
       if (typeof state.userInfo.orgList !== 'undefined') {
         if (state.userInfo.orgList[0].children && state.userInfo.orgList[0].children.length > 0) {
           orgData = {
-            orgCd: state.userInfo.orgList[0].children[0].orgCd,
+            ehrOrgCd: state.userInfo.orgList[0].children[0].ehrOrgCd,
             orgNm: state.userInfo.orgList[0].children[0].orgNm,
           };
         } else {
           orgData = {
-            orgCd: state.userInfo.orgList[0].orgCd,
+            ehrOrgCd: state.userInfo.orgList[0].ehrOrgCd,
             orgNm: state.userInfo.orgList[0].orgNm,
           };
         }
@@ -46,19 +46,17 @@ export default {
       if (typeof state.userInfo === 'undefined') {
         return orgList;
       }
-      if (state.userInfo.orgList) {
-        let orgData = state.userInfo.orgList || [];
+      if (state.userInfo.orgList[0].children.length <= 0) {
+        return orgList;
+      }
+      let orgData = state.userInfo.orgList[0].children;
 
-        while (orgData[0].children && state.userInfo.orgList[0].children.length > 0) {
-          orgList.push({
-            orgCd: orgData[0].children[0].orgCd,
-            orgNm: orgData[0].children[0].orgNm,
-          });
-          orgData = orgData[0].children;
-        }
-        if (orgList.length > 1) {
-          orgList.shift();
-        }
+      while (orgData[0].children && orgData[0].children.length > 0) {
+        orgList.push({
+          ehrOrgCd: orgData[0].children[0].ehrOrgCd,
+          orgNm: orgData[0].children[0].orgNm,
+        });
+        orgData = orgData[0].children;
       }
 
       return orgList || [];
