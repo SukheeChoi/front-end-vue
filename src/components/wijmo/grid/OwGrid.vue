@@ -281,27 +281,33 @@ export default {
           recursiveTrackItemChanged(c.sourceCollection);
         }
       });
-      cv.sourceCollectionChanged.addHandler((c) => {
+      cv.sourceCollectionChanged.addHandler(() => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
           if (_.toUpper(props.direction) === 'DESC') {
             item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
           } else {
             item[Order] = (state.pageNo - 1) * state.pageSize + index + 1;
           }
-          item[Index] = item[Index] ?? c.items.length - index - 1;
+          item[Index] = item[Index] ?? cv.items.length - index - 1;
         });
-        c.refresh();
+        cv.refresh();
       });
 
-      s.selectionChanging.addHandler((s, e) => {
+      s.cellEditEnded.addHandler((s, e) => {
         const row = e.getRow();
         if (row instanceof _NewRowTemplate) {
           return;
         }
-        if (s.finishEditing()) {
-          cv.commitEdit();
-        }
+        s.finishEditing();
+        cv.commitEdit();
+        cv.refresh();
       });
+
+      // s.cellEditEnded.addHandler(() => {
+      //   console.log('cv', cv);
+      //   // cv.refresh();
+      //   s.invalidate(true);
+      // });
 
       // selection이 변경되면 새로운 행을 추가한다.
       // s.selectionChanging.addHandler((s, e) => {
@@ -325,9 +331,7 @@ export default {
 
     // 행 추가
     const add = () => {
-      state.isEmpty = !(s.allowAddNew = true);
-      // s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
-      // setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
+      s.editableCollectionView.addNew(null, true);
     };
 
     // 행 삭제
