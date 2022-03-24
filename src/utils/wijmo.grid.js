@@ -365,6 +365,7 @@ class OwSelector extends Selector {
     if (row instanceof Row) {
       row.isSelectorDisabled = true;
     }
+    this.onItemChecked();
     this._grid.invalidate();
   }
 
@@ -377,6 +378,7 @@ class OwSelector extends Selector {
         row.isSelected = force;
       }
     }
+    this.onItemChecked();
     this._grid.invalidate();
   }
 }
