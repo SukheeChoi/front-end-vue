@@ -147,6 +147,10 @@ export default {
     read: Function,
     remove: Function,
     save: Function,
+    excel: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   setup(props) {
     const router = useRouter();
@@ -486,7 +490,7 @@ export default {
       } else {
         ({ columns, itemsSource } = setCumstomColums(s.columns, state.source));
       }
-      downloader.value.exec(columns, itemsSource);
+      downloader.value.exec(columns, itemsSource, ...props.excel);
     };
 
     watch(
