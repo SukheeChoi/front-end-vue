@@ -56,6 +56,7 @@ export default {
       }
 
       formatItem(grid);
+
       grid.selectionMode = props.selectionMode;
       grid.childItemsPath = props.childItemsPath;
       state.grid = grid;
@@ -111,7 +112,7 @@ export default {
         e.cell.innerHTML = collapse + icon + text;
 
         // osstem logo
-        if (row.dataItem.nodeType == 'org' && row.dataItem.orgCd == '0000') {
+        if (row.dataItem.nodeType == 'org' && row.dataItem.ehrOrgCd == '0000') {
           icon = utils.getOwIcon('osstem');
           e.cell.innerHTML = collapse + row.dataItem.orgNm + icon; 
         }
@@ -170,7 +171,7 @@ export default {
 
       let item = _.cloneDeep(dataItem),
           targetItem = grid.rows[targetRow].dataItem;
-      
+
       if (item[props.childItemsPath]) {
         delete item[props.childItemsPath];
       }
@@ -242,6 +243,8 @@ export default {
     };
 
     const addChildItem = (grid, targetItem, targetRow, item) => {
+      utils.setDefaultValues(item, grid.itemsSource._model);
+
       if (state.drag.allowAdding !== 'set') {
         if (!targetItem[props.childItemsPath]) {
           targetItem[props.childItemsPath] = [];
@@ -259,6 +262,7 @@ export default {
         }
       }
       grid.collectionView.itemsAdded.push(item);
+      grid.collectionView.refresh();
     }
 
     const makeDragSource = (s) => {
@@ -356,6 +360,7 @@ export default {
             removeImage();
             return;
           }
+
           if (addItem(s, e)) {
             removeItem(s.itemsSource.sourceCollection, item, state.drag.key);
 

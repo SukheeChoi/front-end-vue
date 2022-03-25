@@ -317,8 +317,7 @@ class OwSelector extends Selector {
   // [ISSUE | 2022.02.25] 셀렉터의 비활성화 추가(압축된 코드 재사용)
   _formatItem(e, t) {
     const o = t.getColumn();
-    const i = e.editRange;
-    if (o && o == this._col && (!i || !i.contains(t.row, t.col)) && t.panel.rows != e.columnFooters.rows) {
+    if (o && o === this._col && t.panel.rows !== e.columnFooters.rows) {
       const n = t.getRow();
       const s = t.cell;
       let l;
@@ -366,6 +365,7 @@ class OwSelector extends Selector {
     if (row instanceof Row) {
       row.isSelectorDisabled = true;
     }
+    this.onItemChecked();
     this._grid.invalidate();
   }
 
@@ -378,6 +378,7 @@ class OwSelector extends Selector {
         row.isSelected = force;
       }
     }
+    this.onItemChecked();
     this._grid.invalidate();
   }
 }

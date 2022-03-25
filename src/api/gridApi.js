@@ -2,7 +2,7 @@ import _ from 'lodash';
 import restApi from '@/api/restApi.js';
 import utils from '@/utils/commUtils.js';
 import ValidatorTypes from '@/utils/commVTypes.js';
-import { CollectionView, isUndefined } from '@grapecity/wijmo';
+import { CollectionView, isUndefined, NotifyCollectionChangedEventArgs } from '@grapecity/wijmo';
 import { _NewRowTemplate } from '@grapecity/wijmo.grid';
 
 export class GridApi extends CollectionView {
@@ -53,47 +53,9 @@ export class GridApi extends CollectionView {
 
     grid.cellEditEnding.addHandler(this.valid);
     this.setReadOnly(grid);
-  }
 
-  setReadOnly(grid) {
-    let fields = grid.itemsSource._model.fields;
-
-    grid.beginningEdit.addHandler((s, e) => {
-      const row = e.getRow(),
-        col = e.getColumn(),
-        index = fields.findIndex((field) => field.id === col.binding),
-        field = fields[index];
-
-      if (isUndefined(field?.key)) {
-        return;
-      }
-
-      if (row instanceof _NewRowTemplate || row.dataItem?.rowStatus === 'C') {
-        return;
-      }
-
-      if (col.binding === field.id) {
-        e.cancel = true;
-      }
-    });
-
-    grid.formatItem.addHandler((s, e) => {
-      const row = e.getRow(),
-        col = e.getColumn(),
-        index = fields.findIndex((field) => field.id === col.binding),
-        field = fields[index];
-
-      if (isUndefined(field?.key)) {
-        return;
-      }
-
-      if (row instanceof _NewRowTemplate || row.dataItem?.rowStatus === 'C') {
-        return;
-      }
-
-      if (col.binding === field.id) {
-        e.cell.setAttribute('aria-readonly', true);
-      }
+    this.itemsAdded.collectionChanged.addHandler((c, e) => {
+      utils.setDefaultValues(e.item, this._model);
     });
   }
 
@@ -213,17 +175,10 @@ export class GridApi extends CollectionView {
   };
 
   valid(grid, e) {
-    const col = e.getColumn();
-
     let fields = grid.itemsSource._model.fields;
 
-    // if (!isUndefined(grid.itemsSource._model?.fields)) {
-    //   fields = grid.itemsSource._model.fields;
-    // } else {
-    //   return;
-    // }
-
-    const index = fields.findIndex((field) => field.id === col.binding),
+    const col = e.getColumn(),
+      index = fields.findIndex((field) => field.id === col.binding),
       field = fields[index];
 
     if (!field.vType) {
@@ -246,5 +201,47 @@ export class GridApi extends CollectionView {
 
       return;
     }
+  }
+
+  setReadOnly(grid) {
+    let fields = grid.itemsSource._model.fields;
+
+    grid.beginningEdit.addHandler((s, e) => {
+      const row = e.getRow(),
+        col = e.getColumn(),
+        index = fields.findIndex((field) => field.id === col.binding),
+        field = fields[index];
+
+      if (isUndefined(field?.key)) {
+        return;
+      }
+
+      if (row instanceof _NewRowTemplate || row.dataItem?.rowStatus === 'C') {
+        return;
+      }
+
+      if (col.binding === field.id) {
+        e.cancel = true;
+      }
+    });
+
+    grid.formatItem.addHandler((s, e) => {
+      const row = e.getRow(),
+        col = e.getColumn(),
+        index = fields.findIndex((field) => field.id === col.binding),
+        field = fields[index];
+
+      if (isUndefined(field?.key)) {
+        return;
+      }
+
+      if (row instanceof _NewRowTemplate || row.dataItem?.rowStatus === 'C') {
+        return;
+      }
+
+      if (col.binding === field.id) {
+        e.cell.setAttribute('aria-readonly', true);
+      }
+    });
   }
 }

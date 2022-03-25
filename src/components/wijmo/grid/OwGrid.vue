@@ -147,6 +147,10 @@ export default {
     read: Function,
     remove: Function,
     save: Function,
+    excel: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   setup(props) {
     const router = useRouter();
@@ -230,6 +234,7 @@ export default {
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
       );
       cv.collectionChanged.addHandler((c, e) => {
+        console.log('changed', e);
         s.allowAddNew = false;
         state.isEmpty = c.isEmpty;
         if (NotifyCollectionChangedAction.Add === e.action) {
@@ -281,27 +286,33 @@ export default {
           recursiveTrackItemChanged(c.sourceCollection);
         }
       });
-      cv.sourceCollectionChanged.addHandler((c) => {
+      cv.sourceCollectionChanged.addHandler(() => {
         _.forEach(_.map(s.rows, 'dataItem'), (item, index) => {
           if (_.toUpper(props.direction) === 'DESC') {
             item[Order] = state.totalCount - (state.pageNo - 1) * state.pageSize - index;
           } else {
             item[Order] = (state.pageNo - 1) * state.pageSize + index + 1;
           }
-          item[Index] = item[Index] ?? c.items.length - index - 1;
+          item[Index] = item[Index] ?? cv.items.length - index - 1;
         });
-        c.refresh();
+        cv.refresh();
       });
 
-      s.selectionChanging.addHandler((s, e) => {
+      s.cellEditEnded.addHandler((s, e) => {
         const row = e.getRow();
         if (row instanceof _NewRowTemplate) {
           return;
         }
-        if (s.finishEditing()) {
-          cv.commitEdit();
-        }
+        s.finishEditing();
+        cv.commitEdit();
+        cv.refresh();
       });
+
+      // s.cellEditEnded.addHandler(() => {
+      //   console.log('cv', cv);
+      //   // cv.refresh();
+      //   s.invalidate(true);
+      // });
 
       // selection이 변경되면 새로운 행을 추가한다.
       // s.selectionChanging.addHandler((s, e) => {
@@ -325,21 +336,31 @@ export default {
 
     // 행 추가
     const add = () => {
-      state.isEmpty = !(s.allowAddNew = true);
-      // s.selection = new CellRange(0, s.columns.getNextCell(-1, SelMove.NextEditableCell));
-      // setTimeout(() => s.startEditing(true, 0, s.columns.getNextCell(-1, SelMove.NextEditableCell)), 20);
+      s.editableCollectionView.addNew(null, true);
     };
 
     // 행 삭제
     const internal_remove = async () => {
       if (props.remove) {
-        const items = Array.from(s?.selector?.checkedItems ?? []).map((item) => item.dataItem);
+        const items = Array.from(s.selector?.checkedItems ?? []).map((item) => item.dataItem);
         if (_.isEmpty(items)) {
           return dialog.alert(t('wijmo.grid.remove.noData'));
         }
+        // 새로 추가된 행(서버에는 존재하지 않는 데이터)
+        const addedNewItems = items.filter((item) => item.rowStatus === ROW_STATUS.ADD);
         if (await dialog.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
-          // [TODO] 후처리 진행
-          if (await props.remove(items)) {
+          // 서버로 요청하지 않음
+          let refesh = false;
+          if (items.length === addedNewItems.length) {
+            for (const addedNewItem of addedNewItems) {
+              s.editableCollectionView.remove(addedNewItem);
+            }
+          } else {
+            refesh = await props.remove(items);
+          }
+          await dialog.alert(t('wijmo.grid.remove.success'));
+          s.selector.checkedItems.clear();
+          if (refesh) {
             internal_read(); // 검색 조건과 페이지 유지
           }
         }
@@ -357,8 +378,8 @@ export default {
         }
         const total = addItems.length + editItems.length + removeItems.length;
         if (await dialog.confirm(t('wijmo.grid.save.confirm', [total]))) {
-          // [TODO] 후처리 진행
           if (await props.save(addItems, editItems, removeItems)) {
+            await dialog.alert(t('wijmo.grid.save.success'));
             internal_read(); // 검색 조건과 페이지 유지
           }
         }
@@ -482,7 +503,7 @@ export default {
       } else {
         ({ columns, itemsSource } = setCumstomColums(s.columns, state.source));
       }
-      downloader.value.exec(columns, itemsSource);
+      downloader.value.exec(columns, itemsSource, props.excel.filename, props.excel.options);
     };
 
     watch(
