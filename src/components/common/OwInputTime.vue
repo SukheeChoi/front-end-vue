@@ -67,6 +67,8 @@ export default {
 
     const setText = (text) => (state.control.text = text);
 
+    const setValue = (value) => (state.control.value = value);
+
     watch(
       () => props.modelValue,
       () => (state.control.text = props.modelValue || state.min)
