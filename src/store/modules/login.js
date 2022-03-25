@@ -43,7 +43,7 @@ export default {
     },
     getOrgList(state) {
       let orgList = [];
-      if (typeof state.userInfo === 'undefined') {
+      if (state.userInfo.length <= 0 || typeof state.userInfo === 'undefined') {
         return orgList;
       }
       if (state.userInfo.orgList[0].children.length <= 0) {

@@ -4,7 +4,7 @@
       <h2 class="modal-title">{{ title }}</h2>
       <button type="button" class="close" @click="onCancel">&#120;</button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" ref="body">
       <div class="layer-body">
         <template v-if="show">
           <ow-flex-wrap col>
@@ -34,7 +34,9 @@
   </wj-popup>
 </template>
 <script>
-import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
+import _ from 'lodash';
+
+import { ref, computed, onMounted, reactive, toRefs, watch, onUnmounted } from 'vue';
 
 import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
@@ -74,6 +76,7 @@ export default {
   },
   setup(props) {
     const root = ref(null);
+    const body = ref(null);
     const one = ref(null);
 
     const state = reactive({
@@ -105,7 +108,7 @@ export default {
           state.beforeAccept = accept;
         }
         state.resolvePromise = resolve;
-        Control.invalidateAll();
+        return state.control;
       });
     };
 
@@ -117,11 +120,15 @@ export default {
     const onCancel = () => {
       state.resolvePromise({ ok: false, control: state.control });
       state.control.hide();
+      hidden();
     };
 
     const hidden = () => {
       state.show = false;
     };
+
+    // Observer를 이용하여 Modal Body가 변경되면 invalidateAll을 수행한다.
+    const observer = new ResizeObserver(_.debounce(() => Control.invalidateAll(), 100));
 
     watch(
       () => props.once,
@@ -132,10 +139,16 @@ export default {
 
     onMounted(() => {
       state.control = root.value.control;
+      observer.observe(body.value);
+    });
+
+    onUnmounted(() => {
+      observer.disconnect();
     });
 
     return {
       root,
+      body,
       one,
       ...toRefs(state),
       open,

@@ -1,4 +1,4 @@
-import { Globalize, isString, isDate } from '@grapecity/wijmo';
+import { Globalize, isString, isDate, isUndefined } from '@grapecity/wijmo';
 
 const Utils = {
   copyDefaultValues(model) {
@@ -25,6 +25,14 @@ const Utils = {
     }
 
     return data;
+  },
+
+  setDefaultValues(item, model) {
+    model.fields.forEach((field) => {
+      if (isUndefined(item[field.id])) {
+        item[field.id] = field.value;
+      }
+    });
   },
 
   makeMsg(message, defaultMessage = '', args = []) {

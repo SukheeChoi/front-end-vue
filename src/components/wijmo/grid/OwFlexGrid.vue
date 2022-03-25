@@ -42,7 +42,7 @@ export default {
     allowPinning: { type: [Number, String], default: AllowPinning.None },
     allowResizing: { type: [Number, String], default: AllowResizing.None },
     allowSorting: { type: [Number, String], default: AllowSorting.None },
-    allowSelector: Boolean,
+    allowSelector: { type: Boolean, default: false },
     allowTooltip: { type: Boolean, default: true },
     allowCheckbox: { type: Boolean, default: true },
     headersVisibility: { type: [Number, String], default: HeadersVisibility.All },
@@ -52,40 +52,60 @@ export default {
     newRowAtTop: { type: Boolean, default: true },
   },
   setup(props) {
-    let s;
-    const init = (...args) => {
-      s = args.at(0);
+    const init = (s) => {
+      // 모든 RowHeaders 제거
+      s.rowHeaders.columns.clear();
 
-      s.autoRowHeights = true;
+      // 드래그 헤더 생성
+      if (AllowDragging.Rows <= AllowDragging[props.allowDragging]) {
+        const draggableHeader = new Column({
+          binding: 'drag',
+          header: '\u00A0',
+          cellTemplate: (ctx) => {
+            if (ctx.item) {
+              return `
+                <button class="wj-btn wj-btn-glyph">
+                  <span class="wj-glyph-drag"></span>
+                </button>
+              `;
+            }
+            return ctx.text;
+          },
+        });
+        s.rowHeaders.columns.push(draggableHeader);
+      }
+
+      // 셀렉터 헤더 생성
+      if (props.allowSelector) {
+        const selectableHeader = new Column({
+          binding: 'selector',
+          header: '\u00A0',
+        });
+        s.rowHeaders.columns.push(selectableHeader);
+
+        s.selector = new OwSelector(selectableHeader);
+
+        // [ISSUE | 2022.02.25] FlexGrid의 FormatItem에 등록하는 경우 Rendering이 수행된 지점만 formatItem이 호출됨
+        // => formatItem의 addHandler 대신 loadedRows의 addHandler를 사용함
+        s.loadedRows.addHandler(s.selector.onFormatItem, s.selector);
+
+        // [ISSUE | 2022.02.17] RowRange, ListBox, MultiRange인 경우 정상적으로 동작하지 않음
+        s.selectionMode = props.selectionMode > SelectionMode.Row ? SelectionMode.Row : props.selectionMode;
+      }
 
       // [ISSUE | 2022.03.04] 100%를 넘는 너비로 인해 상위 엘리먼트의 너비를 기준으로 resize 이벤트 발생시 변경
       const resize = () => {
         if (s.hostElement?.parentElement) {
           const parentStyle = getComputedStyle(s.hostElement.parentElement);
           const width = parentStyle.getPropertyValue('width');
-          s.hostElement.style.width = width;
+          s.hostElement.style.setProperty('width', width);
         }
       };
       window.addEventListener('resize', resize);
       resize();
 
-      // AllowDragging
-      const draggableHeader = new Column({
-        binding: 'drag',
-        header: '\u00A0',
-        cellTemplate: (ctx) => {
-          if (ctx.item) {
-            return '<button class="wj-btn wj-btn-glyph"><span class="wj-glyph-drag"></span></button>';
-          }
-          return ctx.text;
-        },
-        visible: AllowDragging.Rows <= AllowDragging[props.allowDragging],
-      });
-
-      s.rowHeaders.columns.push(draggableHeader);
-
       // RowRange, ListBox, MultiRange
-      const setSelection = (e) => {
+      const selectionModeHandler = (e) => {
         const hit = s.hitTest(e);
         if (hit.cellType === CellType.Cell && s.selectionMode > SelectionMode.Row) {
           const range = hit.range.clone();
@@ -101,15 +121,17 @@ export default {
         }
       };
 
-      s.addEventListener(s.hostElement, 'mousedown', setSelection);
-      s.addEventListener(s.hostElement, 'mouseup', setSelection);
+      s.addEventListener(s.hostElement, 'mousedown', selectionModeHandler);
+      s.addEventListener(s.hostElement, 'mouseup', selectionModeHandler);
 
-      s.formatItem.addHandler((s, e) => {
-        // Tooltip
-        if (props.allowTooltip && CellType.Cell === e.panel.cellType) {
-          e.cell.setAttribute('title', _.trim(e.cell.textContent));
-        }
-      });
+      // 툴팁
+      if (props.allowTooltip) {
+        s.formatItem.addHandler((s, e) => {
+          if (CellType.Cell === e.panel.cellType) {
+            e.cell.setAttribute('title', _.trim(e.cell.textContent));
+          }
+        });
+      }
 
       // [ISSUE | 2022.02.17] 병합된 셀이 있는 경우 순회를 제대로 하지 못함.
       // Tab Index
@@ -133,7 +155,7 @@ export default {
         };
       };
 
-      const setTabIndex = (e) => {
+      const tabIndexHandler = (e) => {
         const { keyCode, shiftKey, target } = e;
         if (keyCode === Key.Tab && hasClass(target, 'wj-cell')) {
           const { row, col } = findIndexByTab(e);
@@ -161,40 +183,20 @@ export default {
         }
       };
 
-      s.addEventListener(s.hostElement, 'keyup', setTabIndex);
-
-      // Selector
-      const setSelector = () => {
-        const selectorHeader = new Column({ binding: Symbol('Selector').toString() });
-        s.rowHeaders.columns.shift();
-        s.rowHeaders.columns.splice(0, 0, selectorHeader);
-
-        s.selector = new OwSelector(selectorHeader);
-
-        // [ISSUE | 2022.02.25] FlexGrid의 FormatItem에 등록하는 경우 Rendering이 수행된 지점만 formatItem이 호출됨
-        // => formatItem의 addHandler 대신 loadedRows의 addHandler를 사용함
-        s.loadedRows.addHandler(s.selector.onFormatItem, s.selector);
-
-        // [ISSUE | 2022.02.17] RowRange, ListBox, MultiRange인 경우 정상적으로 동작하지 않음
-        s.selectionMode = props.selectionMode > SelectionMode.Row ? SelectionMode.Row : props.selectionMode;
-      };
-
-      if (props.allowSelector) {
-        setSelector();
-      } else {
-        if (s.rowHeaders?.columns.length > 0) {
-          s.rowHeaders.columns.shift();
-        }
-      }
+      s.addEventListener(s.hostElement, 'keyup', tabIndexHandler);
 
       const setCheckbox = () => {
         s.columns.forEach((col) => {
           if (col.cssClass === 'checkbox') {
             col.isReadOnly = true;
-            col.cellTemplate = '<label><input type="checkbox" /><span></span></label>';
+            col.cellTemplate = `
+              <label>
+                <input type="checkbox" class="wj-cell-check" tabindex="-1" style="cursor: default;">
+                <span></span>
+              </label>
+            `;
           }
         });
-
         s.formatItem.addHandler((s, e) => {
           let row = e.panel.rows[e.row],
             col = e.panel.columns[e.col];
@@ -237,18 +239,22 @@ export default {
   }
   :deep(.wj-cells) {
     .wj-cell {
+      min-height: 35px;
       &.wj-state-active {
         background-color: rgba(180, 220, 255, 1);
       }
-      // &[aria-readonly='true'] {
-      //   color: rgba(150, 150, 150, 1) !important;
-      // }
       &[aria-readonly='true']:hover {
         &::before {
           content: '\1f512\fe0e';
           position: absolute;
           right: 2px;
         }
+      }
+      label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
     }
   }
