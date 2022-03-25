@@ -350,14 +350,19 @@ export default {
         const addedNewItems = items.filter((item) => item.rowStatus === ROW_STATUS.ADD);
         if (await dialog.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
           // 서버로 요청하지 않음
+          let refesh = false;
           if (items.length === addedNewItems.length) {
             for (const addedNewItem of addedNewItems) {
               s.editableCollectionView.remove(addedNewItem);
             }
-          } else if (await props.remove(items)) {
+          } else {
+            refesh = await props.remove(items);
+          }
+          await dialog.alert(t('wijmo.grid.remove.success'));
+          s.selector.checkedItems.clear();
+          if (refesh) {
             internal_read(); // 검색 조건과 페이지 유지
           }
-          s.selector.checkedItems.clear();
         }
       }
     };
@@ -373,8 +378,8 @@ export default {
         }
         const total = addItems.length + editItems.length + removeItems.length;
         if (await dialog.confirm(t('wijmo.grid.save.confirm', [total]))) {
-          // [TODO] 후처리 진행
           if (await props.save(addItems, editItems, removeItems)) {
+            await dialog.alert(t('wijmo.grid.save.success'));
             internal_read(); // 검색 조건과 페이지 유지
           }
         }
