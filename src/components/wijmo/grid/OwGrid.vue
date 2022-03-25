@@ -497,7 +497,7 @@ export default {
       } else {
         ({ columns, itemsSource } = setCumstomColums(s.columns, state.source));
       }
-      downloader.value.exec(columns, itemsSource, ...props.excel);
+      downloader.value.exec(columns, itemsSource, props.excel.filename, props.excel.options);
     };
 
     watch(
