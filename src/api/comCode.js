@@ -47,8 +47,12 @@ export class ComCode {
       displayFormat = null;
     }
 
-    if (displayFormat) {
-      itemSource = ComCode.reformat(itemSource, displayFormat);
+    if (itemSource == null) {
+      itemSource = [];
+    } else {
+      if (displayFormat) {
+        itemSource = ComCode.reformat(itemSource, displayFormat);
+      }
     }
 
     return itemSource;
@@ -59,8 +63,7 @@ export class ComCode {
       return;
     }
 
-    let resData = await restApi.getList(url, reqList, id);
-    // let resData = await restApi.getListPost(url, { data }, id, reqList);
+    let resData = await restApi.getList(url, { codeList: reqList }, id);
 
     if (resData.data.totalSize > 0) {
       for (var codeMap of resData.data.data) {
