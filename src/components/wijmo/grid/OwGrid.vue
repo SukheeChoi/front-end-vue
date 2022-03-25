@@ -234,6 +234,7 @@ export default {
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
       );
       cv.collectionChanged.addHandler((c, e) => {
+        console.log('changed', e);
         s.allowAddNew = false;
         state.isEmpty = c.isEmpty;
         if (NotifyCollectionChangedAction.Add === e.action) {
@@ -345,9 +346,15 @@ export default {
         if (_.isEmpty(items)) {
           return dialog.alert(t('wijmo.grid.remove.noData'));
         }
+        // 새로 추가된 행(서버에는 존재하지 않는 데이터)
+        const addedNewItems = items.filter((item) => item.rowStatus === ROW_STATUS.ADD);
         if (await dialog.confirm(t('wijmo.grid.remove.confirm', [items.length]))) {
-          // [TODO] 후처리 진행
-          if (await props.remove(items)) {
+          // 서버로 요청하지 않음
+          if (items.length === addedNewItems.length) {
+            for (const addedNewItem of addedNewItems) {
+              s.editableCollectionView.remove(addedNewItem);
+            }
+          } else if (await props.remove(items)) {
             internal_read(); // 검색 조건과 페이지 유지
           }
         }
