@@ -342,7 +342,7 @@ export default {
     // 행 삭제
     const internal_remove = async () => {
       if (props.remove) {
-        const items = Array.from(s?.selector?.checkedItems ?? []).map((item) => item.dataItem);
+        const items = Array.from(s.selector?.checkedItems ?? []).map((item) => item.dataItem);
         if (_.isEmpty(items)) {
           return dialog.alert(t('wijmo.grid.remove.noData'));
         }
@@ -357,6 +357,7 @@ export default {
           } else if (await props.remove(items)) {
             internal_read(); // 검색 조건과 페이지 유지
           }
+          s.selector.checkedItems.clear();
         }
       }
     };
