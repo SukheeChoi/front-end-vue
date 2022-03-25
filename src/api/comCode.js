@@ -39,7 +39,7 @@ export class ComCode {
     let itemSource = ComCode._store[code];
 
     if (itemSource == null) {
-      ComCode.loadList({ codeList: code });
+      ComCode.loadList(code);
       itemSource = ComCode._store[code];
     }
 
@@ -58,6 +58,7 @@ export class ComCode {
     return itemSource;
   }
 
+  //ComCode.loadList('OWTASK_CD,USER_STATCD');
   static async loadList(reqList, id = '') {
     if (reqList.length == 0) {
       return;
@@ -65,10 +66,13 @@ export class ComCode {
 
     let resData = await restApi.getList(url, { codeList: reqList }, id);
 
-    if (resData.data.totalSize > 0) {
-      for (var codeMap of resData.data.data) {
-        ComCode._store.push(codeMap);
-      }
+    if (resData.data.data) {
+      let codes = reqList.split(',');
+      codes.forEach((code) => {
+        if (resData.data.data[code].length > 0) {
+          Object.assign(ComCode._store, { [code]: resData.data.data[code] });
+        }
+      });
     }
   }
 
