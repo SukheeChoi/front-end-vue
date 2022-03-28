@@ -79,7 +79,8 @@ export default {
       state.ttl = payload;
     },
     setUserInfo(state, payload) {
-      state.userInfo = payload;
+      const jsonData = JSON.parse(payload);
+      state.userInfo = jsonData;
     },
   },
 };
