@@ -21,14 +21,27 @@ export class ComCode {
     ComCode.loadList(reqList);
   }
 
-  static get(code, displayFormat = '{value} - {name}') {
-    return new CollectionView(ComCode.getValue(code, displayFormat));
+  static get(code, displayFormat = '{name}') {
+    let itemSource = await ComCode.getValue(code, displayFormat);
+    console.log('1', code, itemSource);
+
+    if (itemSource.length <= 0) {
+      await ComCode.loadList(code);
+    }
+    console.log('2', code, ComCode._store[code]);
+
+    if (displayFormat) {
+      await ComCode.reformat(ComCode._store[code], displayFormat);
+    }
+    console.log('3', code, ComCode._store[code]);
+
+    return new CollectionView(ComCode._store[code]);
   }
 
   static getMap(
     code,
     filterKey = null,
-    displayFormat = '{value} - {name}',
+    displayFormat = '{name}',
     selectedValuePath = 'value',
     displayMemberPath = 'name'
   ) {
@@ -38,33 +51,32 @@ export class ComCode {
   static getValue(code, displayFormat = null) {
     let itemSource = ComCode._store[code];
 
-    if (itemSource == null) {
-      ComCode.loadList(code);
-      itemSource = ComCode._store[code];
-    }
-
-    if (code == 'USE_YN') {
-      displayFormat = null;
-    }
+    // if (itemSource == null) {
+    //   ComCode.loadList(code);
+    //   itemSource = ComCode._store[code];
+    // }
 
     if (itemSource == null) {
       itemSource = [];
-    } else {
-      if (displayFormat) {
-        itemSource = ComCode.reformat(itemSource, displayFormat);
-      }
     }
+    // else {
+    //   if (displayFormat) {
+    //     itemSource = ComCode.reformat(itemSource, displayFormat);
+    //   }
+    // }
 
     return itemSource;
   }
 
   //ComCode.loadList('OWTASK_CD,USER_STATCD');
   static async loadList(reqList, id = '') {
-    if (reqList.length == 0) {
-      return;
-    }
+    console.log('reqList', reqList);
+    // if (reqList.length == 0) {
+    //   return;
+    // }
 
     let resData = await restApi.getList(url, { codeList: reqList }, id);
+    console.log('resData', resData);
 
     if (resData.data.data) {
       let codes = reqList.split(',');
