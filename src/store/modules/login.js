@@ -80,6 +80,7 @@ export default {
     },
     setUserInfo(state, payload) {
       const jsonData = JSON.parse(payload);
+
       state.userInfo = jsonData;
     },
   },
