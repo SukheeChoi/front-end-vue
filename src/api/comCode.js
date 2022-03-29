@@ -21,7 +21,7 @@ export class ComCode {
     ComCode.loadList(reqList);
   }
 
-  static get(code, displayFormat = '{name}') {
+  static async get(code, displayFormat = '{name}') {
     let itemSource = await ComCode.getValue(code, displayFormat);
     console.log('1', code, itemSource);
 
@@ -45,6 +45,21 @@ export class ComCode {
     selectedValuePath = 'value',
     displayMemberPath = 'name'
   ) {
+    // let itemSource = ComCode.getValue(code, displayFormat);
+    // console.log('1', code, itemSource);
+
+    // if (itemSource.length <= 0) {
+    //   ComCode.loadList(code);
+    // }
+    // console.log('2', code, ComCode._store[code]);
+
+    // if (displayFormat) {
+    //   ComCode.reformat(ComCode._store[code], displayFormat);
+    // }
+    // console.log('3', code, ComCode._store[code]);
+
+    // return ComCode._store[code];
+
     return new OwMap(ComCode.getValue(code, displayFormat), filterKey, selectedValuePath, displayMemberPath);
   }
 
