@@ -8,57 +8,38 @@ const url = '/com/Code';
 export class ComCode {
   static _store = CodeData;
 
-  static async populateList(codeList) {
-    let reqList = [];
-
-    for (var code of codeList) {
-      if (ComCode._store[code] != null) {
-        reqList.push(code);
-      }
-    }
-
-    ComCode.loadList(reqList);
-  }
-
-  static get(code, displayFormat = '{value} - {name}') {
-    if (code == 'USE_YN') {
-      displayFormat = null;
-    }
-
+  static get(code, format = '{value} - {name}') {
     let itemSource = ComCode._store[code];
 
-    return itemSource;
-  }
-
-  static getMap(
-    code,
-    filterKey = null,
-    displayFormat = '{name}',
-    selectedValuePath = 'value',
-    displayMemberPath = 'name'
-  ) {
-    return new OwMap(ComCode.getValue(code, displayFormat), filterKey, selectedValuePath, displayMemberPath);
-  }
-
-  static getValue(code, displayFormat = null) {
-    let itemSource = ComCode._store[code];
-
-    if (itemSource == null) {
-      itemSource = [];
+    if (itemSource.length > 0 && code !== 'USE_YN') {
+      itemSource = ComCode.reforamt(itemSource, format);
     }
 
     return itemSource;
   }
 
-  static async loadList(reqList, id = '') {
-    let resData = await restApi.getList(url, { codeList: reqList }, id);
+  static getMap(code, filter = null, format = '{name}', value = 'value', name = 'name') {
+    return new OwMap(ComCode.get(code, format), filter, value, name);
+  }
 
-    if (resData.data.data) {
-      let codes = reqList.split(',');
+  static async loadList(codeList, id = '') {
+    let response = await restApi.getList(url, { codeList: codeList }, id);
+    let resData = response.data.data;
+    let codes = codeList.split(',');
+
+    if (resData) {
       codes.forEach((code) => {
-        if (resData.data.data[code].length > 0) {
-          Object.assign(ComCode._store, { [code]: resData.data.data[code] });
+        var codeData = resData[code];
+
+        if (codeData.length == 0) {
+            codeData = [];
         }
+
+        Object.assign(ComCode._store, { [code]: codeData });
+      });
+    } else {
+      codes.forEach((code) => {
+        Object.assign(ComCode._store, { [code]: [] });
       });
     }
   }
