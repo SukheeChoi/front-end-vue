@@ -12,7 +12,7 @@ export class ComCode {
     let itemSource = ComCode._store[code];
 
     if (itemSource.length > 0 && code !== 'USE_YN') {
-      itemSource = ComCode.reforamt(itemSource, format);
+      itemSource = ComCode.reformat(itemSource, format);
     }
 
     return itemSource;
@@ -31,8 +31,8 @@ export class ComCode {
       codes.forEach((code) => {
         var codeData = resData[code];
 
-        if (codeData.length > 0) {
-            codeData = [];
+        if (codeData.length <= 0) {
+          codeData = [];
         }
 
         Object.assign(ComCode._store, { [code]: codeData });
