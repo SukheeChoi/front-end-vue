@@ -41,11 +41,8 @@ export class ComCode {
     let codes = codeList.replace('link:', '').split(',');
 
     if (resData) {
-      console.log('resData ', resData);
-
       codes.forEach((code) => {
         code = code.trim();
-        console.log('code ', code);
         var codeData = resData[code.trim()];
 
         if (codeData.length == 0) {
