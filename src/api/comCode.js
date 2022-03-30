@@ -31,7 +31,7 @@ export class ComCode {
       codes.forEach((code) => {
         var codeData = resData[code];
 
-        if (codeData.length <= 0) {
+        if (codeData.length == 0) {
           codeData = [];
         }
 
