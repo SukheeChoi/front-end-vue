@@ -14,7 +14,7 @@ export class ComCode {
     let itemSource = ComCode._store[code];
     let newSource = [];
 
-    if (itemSource.length > 0) {
+    if (itemSource && itemSource.length > 0) {
       newSource = _.cloneDeep(itemSource);
     }
 
