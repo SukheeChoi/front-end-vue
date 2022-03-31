@@ -9,7 +9,7 @@ const url = '/com/Code';
 export class ComCode {
   static _store = CodeData;
 
-  static get(code, format = '{value} - {name}') {
+  static get(code, format = '{name}') {
     code = code.replace('link:', '').trim();
     let itemSource = ComCode._store[code];
     let newSource = [];
