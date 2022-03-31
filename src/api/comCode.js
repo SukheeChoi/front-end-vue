@@ -9,76 +9,57 @@ const url = '/com/Code';
 export class ComCode {
   static _store = CodeData;
 
-  static async populateList(codeList) {
-    let reqList = [];
+  static get(code, format = '{value} - {name}') {
+    code = code.replace('link:', '').trim();
+    let itemSource = ComCode._store[code];
+    let newSource = [];
 
-    for (var code of codeList) {
-      if (ComCode._store[code] != null) {
-        reqList.push(code);
-      }
+    if (itemSource && itemSource.length > 0) {
+      newSource = _.cloneDeep(itemSource);
     }
 
-    ComCode.loadList(reqList);
+    if (newSource.length > 0 && code !== 'USE_YN') {
+      newSource = ComCode.reformat(newSource, format);
+    }
+
+    return new CollectionView(newSource);
   }
 
-  static get(code, displayFormat = '{value} - {name}') {
-    return new CollectionView(ComCode.getValue(code, displayFormat));
-  }
-
-  static getMap(
-    code,
-    filterKey = null,
-    displayFormat = '{value} - {name}',
-    selectedValuePath = 'value',
-    displayMemberPath = 'name'
-  ) {
-    return new OwMap(ComCode.getValue(code, displayFormat), filterKey, selectedValuePath, displayMemberPath);
-  }
-
-  static getValue(code, displayFormat = null) {
+  static getMap(code, filter = null, format = '{name}', selectedValuePath = 'value', displayMemberPath = 'name') {
     let itemSource = ComCode._store[code];
 
-    if (itemSource == null) {
-      ComCode.loadList(code);
-      itemSource = ComCode._store[code];
+    if (itemSource.length > 0 && code !== 'USE_YN') {
+      itemSource = ComCode.reformat(itemSource, format);
     }
 
-    if (code == 'USE_YN') {
-      displayFormat = null;
-    }
-
-    if (itemSource == null) {
-      itemSource = [];
-    } else {
-      if (displayFormat) {
-        itemSource = ComCode.reformat(itemSource, displayFormat);
-      }
-    }
-
-    return itemSource;
+    return new OwMap(itemSource, filter, selectedValuePath, displayMemberPath);
   }
 
-  //ComCode.loadList('OWTASK_CD,USER_STATCD');
-  static async loadList(reqList, id = '') {
-    if (reqList.length == 0) {
-      return;
-    }
+  static async loadList(codeList, id = '') {
+    let response = await restApi.getList(url, { codeList: codeList }, id);
+    let resData = response.data.data;
+    let codes = codeList.replace('link:', '').split(',');
 
-    let resData = await restApi.getList(url, { codeList: reqList }, id);
-
-    if (resData.data.data) {
-      let codes = reqList.split(',');
+    if (resData) {
       codes.forEach((code) => {
-        if (resData.data.data[code].length > 0) {
-          Object.assign(ComCode._store, { [code]: resData.data.data[code] });
+        code = code.trim();
+        var codeData = resData[code.trim()];
+
+        if (codeData.length == 0) {
+          codeData = [];
         }
+
+        Object.assign(ComCode._store, { [code]: codeData });
+      });
+    } else {
+      codes.forEach((code) => {
+        code = code.trim();
+        Object.assign(ComCode._store, { [code]: [] });
       });
     }
   }
 
-  static reformat(itemSource, displayFormat) {
-    let reformatSource = _.cloneDeep(itemSource);
-
+  static reformat(reformatSource, displayFormat) {
     for (var idx in reformatSource) {
       reformatSource[idx].name = displayFormat
         .replace('{value}', reformatSource[idx].value)
