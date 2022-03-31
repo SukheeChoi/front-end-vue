@@ -23,7 +23,7 @@
               <span>{{ rootOrg.orgNm }}</span>
             </a>
           </li>
-          <template v-for="org in orgList" :key="org">
+          <template v-for="org in ehrOrgList" :key="org">
             <li>
               <a href="javascript:void(0);">
                 <span>{{ org.orgNm }}</span>
@@ -82,13 +82,13 @@ export default {
     const state = reactive({
       menuList: store.getters.getMyMenuList,
       rootOrg: store.getters.getRootOrg,
-      orgList: store.getters.getOrgList,
+      ehrOrgList: store.getters.getOrgList,
     });
 
     const route = useRoute();
     const router = useRouter();
 
-    const orgList = store.getters.getUserInfo ? store.getters.getUserInfo.orgList : [];
+    const ehrOrgList = store.getters.getUserInfo ? store.getters.getUserInfo.ehrOrgList : [];
 
     console.log('header route:', route, ', router:', router);
 

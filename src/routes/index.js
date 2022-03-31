@@ -53,13 +53,24 @@ const routes = [
   },
 ];
 function loadRoutes() {
+  console.log('initialize loadRoutes');
+  store.commit('setRouteRootChildClear');
+  var routeRootList = store.getters.getRouteRootList;
+  var screenList = store.getters.getScreenList;
+  for (var i = 0; i < routeRootList.length; i++) {
+    store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
+    routes.push(routeRootList[i]);
+  }
+  /*
   const context = require.context('@@', true, /(\/routes\/)index\.js$/);
   for (const key of context.keys()) {
     const module = context(key);
     if (module.default) {
+      console.log(module.default);
       routes.push(...module.default);
     }
   }
+  */
 }
 
 loadRoutes();

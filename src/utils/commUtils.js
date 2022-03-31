@@ -1,4 +1,5 @@
 import { Globalize, isString, isDate, isUndefined } from '@grapecity/wijmo';
+import * as wjGrid from '@grapecity/wijmo.grid';
 
 const Utils = {
   copyDefaultValues(model) {
@@ -47,6 +48,29 @@ const Utils = {
     }
 
     return resultMsg;
+  },
+
+  addChildItem(grid, targetItem, targetRow, item, childItemsPath = 'children', allowAdding = 'add') {
+    Utils.setDefaultValues(item, grid.itemsSource._model);
+
+    if (allowAdding !== 'set') {
+      if (!targetItem[childItemsPath]) {
+        targetItem[childItemsPath] = [];
+      }
+      targetItem[childItemsPath].splice(0, 0, item);
+    }
+
+    grid.invalidate();
+    grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
+
+    const Index = Symbol('Index').toString();
+    for (let i = 0; i < grid.collectionView.itemsAdded.length; i++) {
+      if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
+        grid.collectionView.itemsAdded.splice(i, 1);
+      }
+    }
+    grid.collectionView.itemsAdded.push(item);
+    grid.collectionView.refresh();
   },
 
   removeChildItem(dataItem, item, itemKey) {
@@ -109,6 +133,17 @@ const Utils = {
         item[key] = dataItem[key];
       }
     });
+  },
+
+  getRowIndex(rows, item) {
+    let index = 0;
+    rows.forEach((row) => {
+      if (row.dataItem == item) {
+        index = row.index;
+        return;
+      }
+    });
+    return index;
   },
 
   getWjGlyph(e, type) {
