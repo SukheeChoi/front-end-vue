@@ -234,7 +234,6 @@ export default {
         (c, e) => NotifyCollectionChangedAction.Add === e.action && (e.item.rowStatus = ROW_STATUS.EDIT)
       );
       cv.collectionChanged.addHandler((c, e) => {
-        console.log('changed', e);
         s.allowAddNew = false;
         state.isEmpty = c.isEmpty;
         if (NotifyCollectionChangedAction.Add === e.action) {
