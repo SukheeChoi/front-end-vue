@@ -32,7 +32,7 @@ instance.interceptors.request.use(
     return config;
   },
   function (error) {
-    app.config.globalProperties.$dialog.alert('요청에 실패하였습니다.');
+    app.config.globalProperties.$dialog.alert('요청에 실패하였습니다. \n' + error.message);
     store.commit('setShowLoadingImage', false);
 
     return Promise.reject(error);
@@ -54,7 +54,7 @@ async function handleError(responseData) {
     handleAuthError(responseData);
   } else {
     //일반적인 오류
-    app.config.globalProperties.$dialog.alert('응답에 실패하였습니다.');
+    app.config.globalProperties.$dialog.alert('응답에 실패하였습니다. \n' + responseData.message);
     store.commit('setShowLoadingImage', false);
     isTokenRefreshing = false;
   }
@@ -109,7 +109,7 @@ instance.interceptors.response.use(
     console.log(error);
     const { config } = error;
 
-    app.config.globalProperties.$dialog.alert('오류가 발생했습니다. 관리자에 문의해주세요');
+    app.config.globalProperties.$dialog.alert('오류가 발생했습니다. 관리자에 문의해주세요. \n' + error.message);
     //const $dialog = app.inject('$dialog');
     store.commit('setShowLoadingImage', false);
     return Promise.reject(error);
