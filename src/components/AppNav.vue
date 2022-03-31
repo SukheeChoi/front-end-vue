@@ -35,6 +35,7 @@ const MenuList2 = [
     ]),
     Menu.create('권한관리', 'COMAU', [
       Menu.create('사용자관리', 'COMAU001'),
+      Menu.create('협력/도급직원 관리', 'COMAU002'),
       Menu.create('업무그룹관리', 'COMAU003'),
       Menu.create('부서별 업무그룹관리', 'COMAU004'),
       Menu.create('화면관리', 'COMAU005'),
@@ -63,6 +64,7 @@ const MenuList2 = [
       Menu.create('공통코드', 'COMCF005'),
       Menu.create('템플릿관리', 'COMCF006'),
       Menu.create('시스템설정', 'COMCF007'),
+      Menu.create('비밀번호변경', 'COMCF008'),
     ]),
     Menu.create('인터페이스', 'COMIF', [
       Menu.create('인터페이스 등록', 'COMIF001'),
