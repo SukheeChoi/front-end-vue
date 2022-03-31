@@ -36,7 +36,7 @@ export class NGridApi {
         this._opt = opt;
 
         if (autoLoading) {
-            this.getList();
+            this.getList(qry, opt);
         }
     }
 
@@ -77,7 +77,11 @@ export class NGridApi {
         }
 
         if (!_.isEmpty(paging)) {
+<<<<<<< HEAD
           this._opt = paging;
+=======
+          this._opt =  Object.assign(this._opt, paging);
+>>>>>>> 9f6cea0c75ffa2a3674a0c8bde031b5d374cc70b
         }
 
         let nPaging = _.cloneDeep(this._opt);

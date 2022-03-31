@@ -43,6 +43,7 @@ export class ComCode {
     if (resData) {
       codes.forEach((code) => {
         code = code.trim();
+
         var codeData = resData[code.trim()];
 
         if (codeData.length == 0) {
