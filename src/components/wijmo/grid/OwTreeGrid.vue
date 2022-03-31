@@ -67,6 +67,7 @@ export default {
     const read = () => grid.value.read();
     const save = () => grid.value.save();
     const remove = () => grid.value.remove();
+    const add = () => grid.value.add();
 
     onMounted(() => {
       if (props.drag) {
@@ -204,7 +205,7 @@ export default {
             utils.setDragItemKey(targetItem, item, state.drag.key);
           }
           
-          addChildItem(grid, targetItem, targetRow, item);
+          utils.addChildItem(grid, targetItem, targetRow, item, props.childItemsPath, state.drag.allowAdding);
         } else {
           // find closest parent
           let parent = [];
@@ -227,7 +228,7 @@ export default {
             return;
           }
 
-          addChildItem(grid, parent, targetRow, item);
+          utils.addChildItem(grid, parent, targetRow, item, props.childItemsPath, state.drag.allowAdding);
         }
       } else {
         utils.setDragItemKey(targetItem, item, state.drag.key);
@@ -236,34 +237,34 @@ export default {
           return;
         }
 
-        addChildItem(grid, targetItem, targetRow, item);
+        utils.addChildItem(grid, targetItem, targetRow, item, props.childItemsPath, state.drag.allowAdding);
       }
 
       return true;
     };
 
-    const addChildItem = (grid, targetItem, targetRow, item) => {
-      utils.setDefaultValues(item, grid.itemsSource._model);
+    // const addChildItem = (grid, targetItem, targetRow, item) => {
+    //   utils.setDefaultValues(item, grid.itemsSource._model);
 
-      if (state.drag.allowAdding !== 'set') {
-        if (!targetItem[props.childItemsPath]) {
-          targetItem[props.childItemsPath] = [];
-        }
-        targetItem[props.childItemsPath].splice(0, 0, item);
-      }
+    //   if (state.drag.allowAdding !== 'set') {
+    //     if (!targetItem[props.childItemsPath]) {
+    //       targetItem[props.childItemsPath] = [];
+    //     }
+    //     targetItem[props.childItemsPath].splice(0, 0, item);
+    //   }
 
-      grid.invalidate();
-      grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
+    //   grid.invalidate();
+    //   grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
 
-      const Index = Symbol('Index').toString();
-      for (let i=0; i<grid.collectionView.itemsAdded.length; i++) {
-        if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
-          grid.collectionView.itemsAdded.splice(i, 1);
-        }
-      }
-      grid.collectionView.itemsAdded.push(item);
-      grid.collectionView.refresh();
-    }
+    //   const Index = Symbol('Index').toString();
+    //   for (let i=0; i<grid.collectionView.itemsAdded.length; i++) {
+    //     if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
+    //       grid.collectionView.itemsAdded.splice(i, 1);
+    //     }
+    //   }
+    //   grid.collectionView.itemsAdded.push(item);
+    //   grid.collectionView.refresh();
+    // }
 
     const makeDragSource = (s) => {
       // make rows draggable

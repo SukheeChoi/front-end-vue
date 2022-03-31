@@ -1,4 +1,6 @@
 import { Globalize, isString, isDate, isUndefined } from '@grapecity/wijmo';
+import * as wjGrid from '@grapecity/wijmo.grid';
+import { DxFileUploader } from 'devextreme-vue';
 
 const Utils = {
   copyDefaultValues(model) {
@@ -27,10 +29,14 @@ const Utils = {
     return data;
   },
 
-  setDefaultValues(item, model) {
+  setDefaultValues(item, model, targetItem = null) {
     model.fields.forEach((field) => {
       if (isUndefined(item[field.id])) {
-        item[field.id] = field.value;
+        if (targetItem) {
+          item[field.id] = targetItem[field.id];
+        } else {
+          item[field.id] = field.value;
+        }
       }
     });
   },
@@ -47,6 +53,37 @@ const Utils = {
     }
 
     return resultMsg;
+  },
+
+  addChildItem(grid, targetItem, targetRow, item, childItemsPath = 'children', allowAdding = 'add') {
+    if (allowAdding !== 'set') {
+      Utils.setDefaultValues(item, grid.itemsSource._model);
+      if (!targetItem[childItemsPath]) {
+        targetItem[childItemsPath] = [];
+      }
+      targetItem[childItemsPath].splice(targetItem[childItemsPath].length, 0, item);
+    } else {
+      Utils.setDefaultValues(item, grid.itemsSource._model, targetItem);
+    }
+    grid.invalidate();
+
+    const Index = Symbol('Index').toString();
+    for (let i = 0; i < grid.collectionView.itemsAdded.length; i++) {
+      if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
+        grid.collectionView.itemsAdded.splice(i, 1);
+      }
+    }
+    grid.collectionView.itemsAdded.push(item);
+    grid.collectionView.commitNew();
+    grid.collectionView.refresh();
+
+    let newIdx = allowAdding === 'set' ? targetRow : targetRow + 1;
+    if (newIdx) {
+      grid.select(new wjGrid.CellRange(targetRow));
+    } else {
+      newIdx = Utils.getRowIndex(grid.rows, item);
+      grid.select(new wjGrid.CellRange(newIdx));
+    }
   },
 
   removeChildItem(dataItem, item, itemKey) {
@@ -109,6 +146,17 @@ const Utils = {
         item[key] = dataItem[key];
       }
     });
+  },
+
+  getRowIndex(rows, item) {
+    let index = 0;
+    rows.forEach((row) => {
+      if (row.dataItem == item) {
+        index = row.index;
+        return;
+      }
+    });
+    return index;
   },
 
   getWjGlyph(e, type) {

@@ -26,40 +26,40 @@ export default {
       if (typeof state.userInfo === 'undefined') {
         return orgData;
       }
-      if (typeof state.userInfo.orgList !== 'undefined') {
-        if (state.userInfo.orgList[0].children && state.userInfo.orgList[0].children.length > 0) {
+      if (typeof state.userInfo.ehrOrgList !== 'undefined') {
+        if (state.userInfo.ehrOrgList[0].children && state.userInfo.ehrOrgList[0].children.length > 0) {
           orgData = {
-            ehrOrgCd: state.userInfo.orgList[0].children[0].ehrOrgCd,
-            orgNm: state.userInfo.orgList[0].children[0].orgNm,
+            ehrOrgCd: state.userInfo.ehrOrgList[0].children[0].ehrOrgCd,
+            orgNm: state.userInfo.ehrOrgList[0].children[0].orgNm,
           };
         } else {
           orgData = {
-            ehrOrgCd: state.userInfo.orgList[0].ehrOrgCd,
-            orgNm: state.userInfo.orgList[0].orgNm,
+            ehrOrgCd: state.userInfo.ehrOrgList[0].ehrOrgCd,
+            orgNm: state.userInfo.ehrOrgList[0].orgNm,
           };
         }
       }
       return orgData;
     },
     getOrgList(state) {
-      let orgList = [];
+      let ehrOrgList = [];
       if (state.userInfo.length <= 0 || typeof state.userInfo === 'undefined') {
-        return orgList;
+        return ehrOrgList;
       }
-      if (state.userInfo.orgList[0].children.length <= 0) {
-        return orgList;
+      if (state.userInfo.ehrOrgList[0].children.length <= 0) {
+        return ehrOrgList;
       }
-      let orgData = state.userInfo.orgList[0].children;
+      let orgData = state.userInfo.ehrOrgList[0].children;
 
       while (orgData[0].children && orgData[0].children.length > 0) {
-        orgList.push({
+        ehrOrgList.push({
           ehrOrgCd: orgData[0].children[0].ehrOrgCd,
           orgNm: orgData[0].children[0].orgNm,
         });
         orgData = orgData[0].children;
       }
 
-      return orgList || [];
+      return ehrOrgList || [];
     },
   },
   mutations: {
