@@ -21,12 +21,14 @@ const routes = [
         component: () => import('@/views/AppDashboard'),
         props: {
           components: [
-            require('@/views/dashboard/Panel1'),
+            require('@@/com/views/UserMgmt'),
+            /*
             require('@/views/dashboard/Panel2'),
             require('@/views/dashboard/Panel3'),
             require('@/views/dashboard/Panel4'),
             require('@/views/dashboard/Panel5'),
             require('@/views/dashboard/Panel6'),
+*/
           ],
         },
       },
@@ -53,6 +55,7 @@ const routes = [
   },
 ];
 function loadRoutes() {
+  /*
   console.log('initialize loadRoutes');
   store.commit('setRouteRootChildClear');
   var routeRootList = store.getters.getRouteRootList;
@@ -61,7 +64,7 @@ function loadRoutes() {
     store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
     routes.push(routeRootList[i]);
   }
-  /*
+  */
   const context = require.context('@@', true, /(\/routes\/)index\.js$/);
   for (const key of context.keys()) {
     const module = context(key);
@@ -70,7 +73,6 @@ function loadRoutes() {
       routes.push(...module.default);
     }
   }
-  */
 }
 
 loadRoutes();
@@ -91,7 +93,6 @@ router.beforeEach(async (to, from, next) => {
   // console.log(from);
 
   const routeList = store.getters.getRouteList;
-
   /*
   if (to.fullpath !== '/login' && router.getRoutes().length < routeList.length) {
     store.commit('setRouteRootChildClear');

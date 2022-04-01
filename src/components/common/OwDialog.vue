@@ -1,6 +1,6 @@
 <template>
   <wj-popup ref="root">
-    <div class="modal-body" :class="variant">
+    <div class="modal-body" :class="variant" ref="body">
       <div class="layer-body">
         {{ message }}
       </div>
@@ -24,8 +24,11 @@
   </wj-popup>
 </template>
 <script>
+import _ from 'lodash';
+
 import { ref, computed, onMounted, reactive, toRefs } from 'vue';
 
+import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
 import { WjPopup } from '@grapecity/wijmo.vue2.input';
 
@@ -36,6 +39,9 @@ export default {
   },
   props: {},
   setup() {
+    const root = ref(null);
+    const body = ref(null);
+
     const state = reactive({
       control: null,
       type: '',
@@ -47,8 +53,6 @@ export default {
       isConfirm: computed(() => state.type === 'confirm'),
       resolvePromise: null,
     });
-
-    const root = ref(null);
 
     const open = (options) => {
       return new Promise((resolve) => {
@@ -73,12 +77,17 @@ export default {
       state.control.hide();
     };
 
+    // Observer를 이용하여 Modal Body가 변경되면 invalidateAll을 수행한다.
+    const observer = new ResizeObserver(_.debounce(() => Control.invalidateAll(), 100));
+
     onMounted(() => {
       state.control = root.value.control;
+      observer.observe(body.value);
     });
 
     return {
       root,
+      body,
       ...toRefs(state),
       open,
       onAccept,

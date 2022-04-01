@@ -16,7 +16,11 @@ const GET_ORG_NODE_LIST_WITH_USERS = '/getNodeListWithUser';
  */
 export async function getOrganization(ehrOrgCd = null, withUsers = false) {
   const URI = ORG_URI + (withUsers ? GET_ORG_NODE_LIST_WITH_USERS : GET_ORG_NODE_LIST);
-  const res = await http.get(URI, { ehrOrgCd });
+  const res = await http.get(URI, {
+    params: {
+      ehrOrgCd,
+    },
+  });
   return res.data.data;
 }
 
