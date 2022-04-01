@@ -21,14 +21,11 @@ const routes = [
         component: () => import('@/views/AppDashboard'),
         props: {
           components: [
-            require('@@/com/views/UserMgmt'),
-            /*
             require('@/views/dashboard/Panel2'),
             require('@/views/dashboard/Panel3'),
             require('@/views/dashboard/Panel4'),
             require('@/views/dashboard/Panel5'),
             require('@/views/dashboard/Panel6'),
-*/
           ],
         },
       },
@@ -55,7 +52,6 @@ const routes = [
   },
 ];
 function loadRoutes() {
-  /*
   console.log('initialize loadRoutes');
   store.commit('setRouteRootChildClear');
   var routeRootList = store.getters.getRouteRootList;
@@ -64,7 +60,7 @@ function loadRoutes() {
     store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
     routes.push(routeRootList[i]);
   }
-  */
+
   const context = require.context('@@', true, /(\/routes\/)index\.js$/);
   for (const key of context.keys()) {
     const module = context(key);
