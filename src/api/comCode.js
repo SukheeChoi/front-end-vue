@@ -41,7 +41,9 @@ function createProxyCodeMap(itemsSource = {}) {
     get(target, prop, receiver) {
       if (!(prop in target)) {
         const value = createProxyCodeList();
-        load(prop, value);
+        if (Reflect.set(target, prop, value, receiver)) {
+          load(prop, value);
+        }
         return value;
       }
       return Reflect.get(target, prop, receiver);
