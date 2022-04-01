@@ -19,6 +19,9 @@ function createProxyCodeList(
 ) {
   return new Proxy(itemsSource, {
     get(target, prop, receiver) {
+      if (prop === 'collectionView') {
+        return asCollectionView(target);
+      }
       if (prop === 'dataMap') {
         return new DataMap(asCollectionView(target), selectedValuePath, displayMemberPath);
       }
@@ -31,6 +34,9 @@ function createProxyCodeList(
 }
 
 function createProxyCodeMap(itemsSource = {}) {
+  for (const k in itemsSource) {
+    itemsSource[k] = createProxyCodeList(itemsSource[k]);
+  }
   return new Proxy(itemsSource, {
     get(target, prop, receiver) {
       if (!(prop in target)) {
