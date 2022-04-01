@@ -21,6 +21,7 @@ const routes = [
         component: () => import('@/views/AppDashboard'),
         props: {
           components: [
+            require('@/views/dashboard/Panel1'),
             require('@/views/dashboard/Panel2'),
             require('@/views/dashboard/Panel3'),
             require('@/views/dashboard/Panel4'),
