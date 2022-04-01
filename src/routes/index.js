@@ -93,7 +93,7 @@ router.beforeEach(async (to, from, next) => {
   // console.log(from);
 
   const routeList = store.getters.getRouteList;
-
+  /*
   if (to.fullpath !== '/login' && router.getRoutes().length < routeList.length) {
     store.commit('setRouteRootChildClear');
     var routeRootList = store.getters.getRouteRootList;
@@ -105,7 +105,7 @@ router.beforeEach(async (to, from, next) => {
 
     next({ path: to.fullPath });
   }
-
+*/
   const devMode = true;
   const now = new Date();
 
