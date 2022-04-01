@@ -46,8 +46,6 @@ function createProxyCodeMap(itemsSource = {}) {
   });
 }
 
-const BASE_CODE = createProxyCodeMap(CODE_DATA);
-
 function load(cmmGrpCds, proxy) {
   if (!cmmGrpCds) {
     return null;
@@ -55,8 +53,10 @@ function load(cmmGrpCds, proxy) {
   const codeList = cmmGrpCds;
   http.get(URI + '/getList', { params: { codeList } }).then(({ data: { data: CODE_PART } }) => {
     proxy.push(...CODE_PART[cmmGrpCds]);
-    BASE_CODE[cmmGrpCds] = proxy;
+    COM_CODE[cmmGrpCds] = proxy;
   });
 }
 
-export { BASE_CODE };
+const COM_CODE = createProxyCodeMap(CODE_DATA);
+
+export { COM_CODE };
