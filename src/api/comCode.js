@@ -1,72 +1,62 @@
-import _ from 'lodash';
-import { OwMap } from '@/api/owMap.js';
-import restApi from '@/api/restApi.js';
-import CodeData from '@/store/modules/comData';
-import { CollectionView } from '@grapecity/wijmo';
+'use strict';
 
-const url = '/com/Code';
+import http from '@/api';
 
-export class ComCode {
-  static _store = CodeData;
+import { asCollectionView } from '@grapecity/wijmo';
+import { DataMap } from '@grapecity/wijmo.grid';
 
-  static get(code, format = '{name}') {
-    code = code.replace('link:', '').trim();
-    let itemSource = ComCode._store[code];
-    let newSource = [];
+import CODE_DATA from '@/store/modules/comData';
 
-    if (itemSource && itemSource.length > 0) {
-      newSource = _.cloneDeep(itemSource);
-    }
+const URI = '/com/Code';
 
-    if (newSource.length > 0 && code !== 'USE_YN') {
-      newSource = ComCode.reformat(newSource, format);
-    }
+const DEFAULT_SELECTED_VALUE_PATH = 'value';
+const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
-    return new CollectionView(newSource);
-  }
-
-  static getMap(code, filter = null, format = '{name}', selectedValuePath = 'value', displayMemberPath = 'name') {
-    let itemSource = ComCode._store[code];
-
-    if (itemSource.length > 0 && code !== 'USE_YN') {
-      itemSource = ComCode.reformat(itemSource, format);
-    }
-
-    return new OwMap(itemSource, filter, selectedValuePath, displayMemberPath);
-  }
-
-  static async loadList(codeList, id = '') {
-    let response = await restApi.getList(url, { codeList: codeList }, id);
-    let resData = response.data.data;
-    let codes = codeList.replace('link:', '').split(',');
-
-    if (resData) {
-      codes.forEach((code) => {
-        code = code.trim();
-
-        var codeData = resData[code.trim()];
-
-        if (codeData.length == 0) {
-          codeData = [];
-        }
-
-        Object.assign(ComCode._store, { [code]: codeData });
-      });
-    } else {
-      codes.forEach((code) => {
-        code = code.trim();
-        Object.assign(ComCode._store, { [code]: [] });
-      });
-    }
-  }
-
-  static reformat(reformatSource, displayFormat) {
-    for (var idx in reformatSource) {
-      reformatSource[idx].name = displayFormat
-        .replace('{value}', reformatSource[idx].value)
-        .replace('{name}', reformatSource[idx].name);
-    }
-
-    return reformatSource;
-  }
+function createProxyCodeList(
+  itemsSource = [],
+  selectedValuePath = DEFAULT_SELECTED_VALUE_PATH,
+  displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH
+) {
+  return new Proxy(itemsSource, {
+    get(target, prop, receiver) {
+      if (prop === 'dataMap') {
+        return new DataMap(asCollectionView(target), selectedValuePath, displayMemberPath);
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+    set(target, prop, value, receiver) {
+      return Reflect.set(target, prop, value, receiver);
+    },
+  });
 }
+
+function createProxyCodeMap(itemsSource = {}) {
+  return new Proxy(itemsSource, {
+    get(target, prop, receiver) {
+      if (!(prop in target)) {
+        const value = createProxyCodeList();
+        load(prop, value);
+        return value;
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+    set(target, prop, value, receiver) {
+      return Reflect.set(target, prop, value, receiver);
+    },
+  });
+}
+
+const BASE_CODE = createProxyCodeMap(CODE_DATA);
+
+function load(cmmGrpCds, proxy) {
+  if (!cmmGrpCds) {
+    return null;
+  }
+  const codeList = cmmGrpCds;
+  http.get(URI + '/getList', { params: { codeList } }).then(({ data: { data: CODE_PART } }) => {
+    proxy.push(...CODE_PART[cmmGrpCds]);
+    BASE_CODE[cmmGrpCds] = proxy;
+  });
+}
+
+export { BASE_CODE };
