@@ -243,29 +243,6 @@ export default {
       return true;
     };
 
-    // const addChildItem = (grid, targetItem, targetRow, item) => {
-    //   utils.setDefaultValues(item, grid.itemsSource._model);
-
-    //   if (state.drag.allowAdding !== 'set') {
-    //     if (!targetItem[props.childItemsPath]) {
-    //       targetItem[props.childItemsPath] = [];
-    //     }
-    //     targetItem[props.childItemsPath].splice(0, 0, item);
-    //   }
-
-    //   grid.invalidate();
-    //   grid.select(new wjGrid.CellRange(targetRow, 0, targetRow, 0));
-
-    //   const Index = Symbol('Index').toString();
-    //   for (let i=0; i<grid.collectionView.itemsAdded.length; i++) {
-    //     if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
-    //       grid.collectionView.itemsAdded.splice(i, 1);
-    //     }
-    //   }
-    //   grid.collectionView.itemsAdded.push(item);
-    //   grid.collectionView.refresh();
-    // }
-
     const makeDragSource = (s) => {
       // make rows draggable
       s.itemFormatter = (panel, r, c, cell) => {
@@ -367,6 +344,7 @@ export default {
 
             const Index = Symbol('Index').toString();
             let isSymbol = false;
+            
             for (let i=0; i<s.collectionView.itemsRemoved.length; i++) {
               if (s.collectionView.itemsRemoved[i][Index] === item[Index]) {
                 isSymbol = true;
@@ -376,6 +354,7 @@ export default {
             if (!isSymbol) {
               item.rowStatus = 'D';
               s.collectionView.itemsRemoved.push(item);
+              s.collectionView.refresh();
             }
           }
         }
@@ -393,7 +372,6 @@ export default {
           break;
         }
       }
-
     }
 
     return {

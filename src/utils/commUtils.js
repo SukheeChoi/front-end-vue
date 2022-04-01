@@ -1,6 +1,7 @@
 import { Globalize, isString, isDate, isUndefined } from '@grapecity/wijmo';
 import * as wjGrid from '@grapecity/wijmo.grid';
 import { DxFileUploader } from 'devextreme-vue';
+import _ from 'lodash';
 
 const Utils = {
   copyDefaultValues(model) {
@@ -77,13 +78,24 @@ const Utils = {
     grid.collectionView.commitNew();
     grid.collectionView.refresh();
 
-    let newIdx = allowAdding === 'set' ? targetRow : targetRow + 1;
-    if (newIdx) {
-      grid.select(new wjGrid.CellRange(targetRow));
-    } else {
-      newIdx = Utils.getRowIndex(grid.rows, item);
-      grid.select(new wjGrid.CellRange(newIdx));
+    let newIdx = targetRow;
+
+    console.log('targetItem', targetItem);
+    if (allowAdding === 'add') {
+      newIdx = +targetRow + +targetItem[childItemsPath].length;
     }
+
+    let newIdx2 = Utils.getRowIndex(grid.rows, item);
+    grid.select(new wjGrid.CellRange(newIdx2));
+    // grid.collectionView.moveCurrentToPosition(+newIdx2 - 1);
+    // grid.select(new wjGrid.CellRange(newIdx));
+    // if (newIdx) {
+    //   grid.select(new wjGrid.CellRange(targetRow));
+    // } else {
+    //   newIdx = Utils.getRowIndex(grid.rows, item);
+    //   console.log('newIdx', newIdx);
+    //   grid.select(new wjGrid.CellRange(newIdx));
+    // }
   },
 
   removeChildItem(dataItem, item, itemKey) {
@@ -151,7 +163,9 @@ const Utils = {
   getRowIndex(rows, item) {
     let index = 0;
     rows.forEach((row) => {
-      if (row.dataItem == item) {
+      console.log('rows', row.dataItem, item);
+      if (row.dataItem == item || _.isEqual(row.dataItem, item)) {
+        console.log('같아요!!!');
         index = row.index;
         return;
       }

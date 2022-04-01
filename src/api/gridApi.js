@@ -155,11 +155,11 @@ export class GridApi extends CollectionView {
     }
   }
 
-  save = async (addItems, editItems) => {
+  save = async (addItems, editItems, removeItems) => {
     const saveUri = this._uri;
     const {
       data: { code },
-    } = await restApi.save(saveUri, [...addItems, ...editItems], this._id);
+    } = await restApi.save(saveUri, [...removeItems, ...addItems, ...editItems], this._id);
 
     if (code == 'OK') {
       return code === 'OK';
