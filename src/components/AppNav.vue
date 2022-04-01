@@ -78,6 +78,24 @@ const MenuList2 = [
       Menu.create('알림 설정', 'COMPE005'),
     ]),
   ]),
+  Menu.create('전자결재', 'EAPROOT', [  
+    Menu.create('정명훈', 'EAPXX', [
+      Menu.create('양식', 'EAPXX001'),
+      Menu.create('기안', 'EAPXX002'),
+      Menu.create('샘플', 'EAPXX003'),      
+    ]),          
+    Menu.create('메인보드', 'EAP01', [
+      Menu.create('기안작성', 'EAP02'), 
+    ]),          
+    Menu.create('김종혁', 'EAPZZ', [
+        Menu.create('사용자설정', 'EAPZZ001'),
+        Menu.create('완료함', 'EAPZZ002')
+    ]),          
+    Menu.create('김동은', 'EAPOO', [
+        Menu.create('RegisterLayout', 'EAPOO001'),
+    ]),          
+  ]), 
+
 ];
 
 export default {

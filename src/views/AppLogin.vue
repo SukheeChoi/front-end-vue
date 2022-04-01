@@ -67,6 +67,13 @@
             담당자 연락처: 02-1234-5678 / admin@osstem.com
           </p>
           <p class="copyright">ⓒOsstem Implant Co.,LTD. All right reserved.</p>
+          <p>
+                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '25052408'">김성태</button>
+                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '25080905'">손영수</button>
+                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '25111511'">은홍기</button>
+                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '24021724'">최관식</button>
+                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '23021101'">김승기</button>
+          </p>          
         </div>
       </div>
     </div>
@@ -104,7 +111,8 @@ export default {
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         this.$store.commit('setUserInfo', userInfo);
-        return await this.getMenus();
+        //return await this.getMenus();
+        this.$router.push('/');
       }
     },
     async getMenus() {

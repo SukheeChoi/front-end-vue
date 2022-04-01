@@ -20,7 +20,7 @@ export class GridApi extends CollectionView {
   _keyValues = null;
   _isDetail = false;
 
-  constructor(uri, model = null, id = '') {
+  constructor(uri, model, id = '') {
     super([], { trackChanges: true });
     this._id = id;
     this._uri = uri;
@@ -178,7 +178,7 @@ export class GridApi extends CollectionView {
     let fields = grid.itemsSource._model.fields;
 
     const col = e.getColumn(),
-      index = fields.findIndex((eachField) => eachField.id === col.binding),
+      index = fields.findIndex((field) => field.id === col.binding),
       field = fields[index];
 
     if (!field.vType) {
@@ -198,6 +198,8 @@ export class GridApi extends CollectionView {
       if (cell) {
         edtHandler._setCellError(cell, result.message);
       }
+
+      return;
     }
   }
 
@@ -207,7 +209,7 @@ export class GridApi extends CollectionView {
     grid.beginningEdit.addHandler((s, e) => {
       const row = e.getRow(),
         col = e.getColumn(),
-        index = fields.findIndex((eachField) => eachField.id === col.binding),
+        index = fields.findIndex((field) => field.id === col.binding),
         field = fields[index];
 
       if (isUndefined(field?.key)) {
