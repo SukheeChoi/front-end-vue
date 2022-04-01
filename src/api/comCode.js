@@ -57,18 +57,18 @@ function createProxyCodeMap(itemsSource = {}) {
 const PREFIX_LINK_KEYWORD = 'link:';
 const SUFFIX_LINK_KEYWORD = '__LINK';
 
-function load(key, value) {
-  if (!key) {
+function load(keyword, proxy) {
+  if (!keyword) {
     return null;
   }
 
-  const PLAIN_KEYWORD = key.replace(/(\_\_LINK)$/, '');
-  const PARAMS_CODE_LIST = key.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : key;
+  const PLAIN_KEYWORD = keyword.replace(/(\_\_LINK)$/, '');
+  const PARAMS_CODE_LIST = keyword.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : keyword;
 
   const codeList = PARAMS_CODE_LIST;
   http.get(URI + '/getList', { params: { codeList } }).then(({ data: { data: CODE_PART } }) => {
-    value.push(...CODE_PART[PLAIN_KEYWORD]);
-    COM_CODE[key] = value;
+    COM_CODE[keyword] = proxy;
+    proxy.push(...CODE_PART[PLAIN_KEYWORD]);
   });
 }
 
