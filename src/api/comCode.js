@@ -54,14 +54,21 @@ function createProxyCodeMap(itemsSource = {}) {
   });
 }
 
-function load(cmmGrpCds, proxy) {
-  if (!cmmGrpCds) {
+const PREFIX_LINK_KEYWORD = 'link:';
+const SUFFIX_LINK_KEYWORD = '__LINK';
+
+function load(key, value) {
+  if (!key) {
     return null;
   }
-  const codeList = cmmGrpCds;
+
+  const PLAIN_KEYWORD = key.replace(/(\_\_LINK)$/, '');
+  const PARAMS_CODE_LIST = key.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : key;
+
+  const codeList = PARAMS_CODE_LIST;
   http.get(URI + '/getList', { params: { codeList } }).then(({ data: { data: CODE_PART } }) => {
-    proxy.push(...CODE_PART[cmmGrpCds]);
-    COM_CODE[cmmGrpCds] = proxy;
+    value.push(...CODE_PART[PLAIN_KEYWORD]);
+    COM_CODE[key] = value;
   });
 }
 
