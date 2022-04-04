@@ -14,12 +14,32 @@ const URI = '/com/Code';
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
+function createProxyCodeFunc(source, prop) {
+  return new Proxy(() => {}, {
+    apply(target, that, args) {
+      if (prop === 'prepend' && args.length > 0) {
+        const arg = args.at(0);
+        if (Array.isArray(source) && Array.isArray(arg)) {
+          return createProxyCodeList([...arg, ...source]);
+        }
+      }
+      if (prop === 'append' && args.length > 0) {
+        const arg = args.at(0);
+        if (Array.isArray(source) && Array.isArray(arg)) {
+          return createProxyCodeList([...source, ...arg]);
+        }
+      }
+      return that;
+    },
+  });
+}
+
 function createProxyCodeList(
-  itemsSource = [],
+  source = [],
   selectedValuePath = DEFAULT_SELECTED_VALUE_PATH,
   displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH
 ) {
-  return new Proxy(itemsSource, {
+  return new Proxy(source, {
     get(target, prop, receiver) {
       if (prop === 'collectionView') {
         return asCollectionView(target);
@@ -27,31 +47,27 @@ function createProxyCodeList(
       if (prop === 'dataMap') {
         return new DataMap(asCollectionView(target), selectedValuePath, displayMemberPath);
       }
+      if (prop === 'prepend' || prop === 'append') {
+        return createProxyCodeFunc(target, prop);
+      }
       return Reflect.get(target, prop, receiver);
-    },
-    set(target, prop, value, receiver) {
-      return Reflect.set(target, prop, value, receiver);
     },
   });
 }
 
-function createProxyCodeMap(itemsSource = {}) {
-  for (const k in itemsSource) {
-    itemsSource[k] = vue.ref(createProxyCodeList(itemsSource[k]));
+function createProxyCodeMap(source = {}) {
+  for (const k in source) {
+    source[k] = vue.ref(createProxyCodeList(source[k]));
   }
-  return new Proxy(itemsSource, {
+  return new Proxy(source, {
     get(target, prop, receiver) {
       if (!(prop in target)) {
-        const value = vue.ref(createProxyCodeList());
-        if (Reflect.set(target, prop, value, receiver)) {
-          load(prop, value);
+        const ref = vue.ref(createProxyCodeList());
+        if (Reflect.set(target, prop, ref, receiver)) {
+          load(prop, ref);
         }
-        return value;
       }
-      return Reflect.get(target, prop, receiver);
-    },
-    set(target, prop, value, receiver) {
-      return Reflect.set(target, prop, value, receiver);
+      return vue.unref(Reflect.get(target, prop, receiver));
     },
   });
 }
@@ -72,11 +88,10 @@ async function load(keyword, proxy) {
   } = await http.get(URI + '/getList', { params: { codeList: PARAMS_CODE_LIST } });
 
   if (CODE_PART && Array.isArray(CODE_PART[PLAIN_KEYWORD])) {
-    const ref = vue.isRef(proxy) ? proxy.value : proxy;
-    ref.push(...CODE_PART[PLAIN_KEYWORD]);
+    proxy.value.push(...CODE_PART[PLAIN_KEYWORD]);
   }
 }
 
-const COM_CODE = vue.reactive(createProxyCodeMap(CODE_DATA));
+const COM_CODE = createProxyCodeMap(CODE_DATA);
 
 export { COM_CODE };
