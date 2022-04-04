@@ -14,18 +14,24 @@ const URI = '/com/Code';
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
-function createProxyCodeList(
-  source = [],
-  selectedValuePath = DEFAULT_SELECTED_VALUE_PATH,
-  displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH
-) {
+function createProxyCodeList(source = []) {
   return new Proxy(source, {
     get(target, prop, receiver) {
       if (prop === 'collectionView') {
-        return asCollectionView(target);
+        return new Proxy(() => {}, {
+          apply() {
+            return asCollectionView(target);
+          },
+        });
       }
       if (prop === 'dataMap') {
-        return new DataMap(asCollectionView(target), selectedValuePath, displayMemberPath);
+        return new Proxy(() => {}, {
+          apply(fn, that, args) {
+            const selectedValuePath = args.at(0) ?? DEFAULT_SELECTED_VALUE_PATH;
+            const displayMemberPath = args.at(1) ?? DEFAULT_DISPLAY_MEMBER_PATH;
+            return new DataMap(asCollectionView(target), selectedValuePath, displayMemberPath);
+          },
+        });
       }
       return Reflect.get(target, prop, receiver);
     },
