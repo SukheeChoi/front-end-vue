@@ -27,8 +27,8 @@ function createProxyCodeList(source = []) {
       if (prop === 'dataMap') {
         return new Proxy(() => {}, {
           apply(fn, that, args) {
-            const selectedValuePath = args.at(0) ?? DEFAULT_SELECTED_VALUE_PATH;
-            const displayMemberPath = args.at(1) ?? DEFAULT_DISPLAY_MEMBER_PATH;
+            const displayMemberPath = args.at(0) ?? DEFAULT_DISPLAY_MEMBER_PATH;
+            const selectedValuePath = args.at(1) ?? DEFAULT_SELECTED_VALUE_PATH;
             return new DataMap(asCollectionView(target), selectedValuePath, displayMemberPath);
           },
         });
