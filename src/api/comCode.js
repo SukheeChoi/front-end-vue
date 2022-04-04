@@ -14,26 +14,6 @@ const URI = '/com/Code';
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
-function createProxyCodeFunc(source, prop) {
-  return new Proxy(() => {}, {
-    apply(target, that, args) {
-      if (prop === 'prepend' && args.length > 0) {
-        const arg = args.at(0);
-        if (Array.isArray(source) && Array.isArray(arg)) {
-          return createProxyCodeList([...arg, ...source]);
-        }
-      }
-      if (prop === 'append' && args.length > 0) {
-        const arg = args.at(0);
-        if (Array.isArray(source) && Array.isArray(arg)) {
-          return createProxyCodeList([...source, ...arg]);
-        }
-      }
-      return that;
-    },
-  });
-}
-
 function createProxyCodeList(
   source = [],
   selectedValuePath = DEFAULT_SELECTED_VALUE_PATH,
@@ -46,9 +26,6 @@ function createProxyCodeList(
       }
       if (prop === 'dataMap') {
         return new DataMap(asCollectionView(target), selectedValuePath, displayMemberPath);
-      }
-      if (prop === 'prepend' || prop === 'append') {
-        return createProxyCodeFunc(target, prop);
       }
       return Reflect.get(target, prop, receiver);
     },
