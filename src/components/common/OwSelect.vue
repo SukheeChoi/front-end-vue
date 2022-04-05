@@ -14,9 +14,9 @@
   </div>
 </template>
 <script>
-import { computed, ref, watch, reactive, toRefs } from 'vue';
+import { computed, ref, watch, reactive, toRefs, nextTick, unref } from 'vue';
 
-import { CollectionView } from '@grapecity/wijmo';
+import { asCollectionView, CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 import { WjComboBox } from '@grapecity/wijmo.vue2.input';
 
@@ -50,36 +50,34 @@ export default {
   setup(props, { emit }) {
     const root = ref(null);
 
-    const state = reactive({
-      dataMap: computed(() => {
-        if (props.items instanceof Array || props.items instanceof CollectionView) {
-          return ref(new DataMap(props.items, 'value', 'name'));
-        }
-        return props.items;
-      }),
-      control: {
-        selectedValue: props.modelValue,
-      },
+    const dataMap = computed(() => {
+      let items = props.items;
+      if (items instanceof Array || items instanceof CollectionView) {
+        items = ref(new DataMap(asCollectionView(items), 'value', 'name'));
+      }
+      return unref(items);
     });
 
+    let control;
+
     const initialized = (combo) => {
-      combo.selectedValue = state.control.selectedValue;
-      state.control = combo;
+      control = combo;
+      control.itemsSourceChanged.addHandler(() => (combo.selectedValue = props.modelValue));
+      control.selectedIndexChanged.addHandler(() => emit('update:modelValue', combo.selectedValue));
     };
 
     watch(
       () => props.modelValue,
-      () => (state.control.selectedValue = props.modelValue)
-    );
-
-    watch(
-      () => state.control.selectedValue,
-      () => emit('update:modelValue', state.control.selectedValue)
+      () => {
+        if (control) {
+          control.selectedValue = props.modelValue;
+        }
+      }
     );
 
     return {
       root,
-      ...toRefs(state),
+      dataMap,
       initialized,
     };
   },
