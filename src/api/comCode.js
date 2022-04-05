@@ -14,9 +14,21 @@ const URI = '/com/Code';
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
-const COM_CODE = createProxyCodeMap(CODE_DATA);
-
 const NOOP = () => {};
+
+const READ_ONLY_COM_CODE = vue.readonly(createProxyCodeMap(CODE_DATA));
+
+function getName(cmmGrpCd, cmmCd) {
+  const GROUP_CODE = READ_ONLY_COM_CODE[cmmGrpCd];
+  if (GROUP_CODE) {
+    for (const PART_CODE of GROUP_CODE) {
+      if (PART_CODE.value === cmmCd) {
+        return PART_CODE.name;
+      }
+    }
+  }
+  return '';
+}
 
 function createProxyCodeList(source = []) {
   return new Proxy(source, {
@@ -26,9 +38,10 @@ function createProxyCodeList(source = []) {
           apply(fn, that, args) {
             let cmmGrpCd = '';
             const cmmCd = args.at(0);
-            for (const KEY in READONLY_COM_CODE) {
-              if (READONLY_COM_CODE[KEY] === that) {
+            for (const KEY in READ_ONLY_COM_CODE) {
+              if (READ_ONLY_COM_CODE[KEY] === that) {
                 cmmGrpCd = KEY;
+                break;
               }
             }
             return getName(cmmGrpCd, cmmCd);
@@ -106,18 +119,4 @@ async function load(keyword, proxy) {
   }
 }
 
-const READONLY_COM_CODE = vue.readonly(COM_CODE);
-
-function getName(cmmGrpCd, cmmCd) {
-  const GROUP_CODE = READONLY_COM_CODE[cmmGrpCd];
-  if (GROUP_CODE) {
-    for (const PART_CODE of GROUP_CODE) {
-      if (PART_CODE.value === cmmCd) {
-        return PART_CODE.name;
-      }
-    }
-  }
-  return '';
-}
-
-export { READONLY_COM_CODE as COM_CODE };
+export { READ_ONLY_COM_CODE as COM_CODE };
