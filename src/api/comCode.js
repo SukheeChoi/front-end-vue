@@ -14,7 +14,7 @@ const URI = '/com/Code';
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
-const COM_CODE = createProxyCodeMap(CODE_DATA);
+const COM_CODE = vue.reactive(createProxyCodeMap(CODE_DATA));
 
 function getName(cmmGrpCd, cmmCd) {
   if (!cmmCd) {
@@ -72,6 +72,9 @@ function createProxyCodeMap(source = {}) {
   }
   return new Proxy(source, {
     get(target, prop, receiver) {
+      if (typeof prop === 'symbol' || prop.startsWith('__v')) {
+        return Reflect.get(target, prop, receiver);
+      }
       if (prop === 'getName') {
         return new Proxy(() => {}, {
           apply(fn, that, args) {
@@ -85,7 +88,7 @@ function createProxyCodeMap(source = {}) {
           load(prop, ref);
         }
       }
-      return vue.unref(Reflect.get(target, prop, receiver));
+      return Reflect.get(target, prop, receiver);
     },
   });
 }
@@ -110,4 +113,6 @@ async function load(keyword, proxy) {
   }
 }
 
-export { COM_CODE };
+const READONLY_COM_CODE = vue.readonly(COM_CODE);
+
+export { READONLY_COM_CODE as COM_CODE };
