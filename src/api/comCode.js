@@ -16,11 +16,13 @@ const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
 const COM_CODE = createProxyCodeMap(CODE_DATA);
 
+const NOOP = () => {};
+
 function createProxyCodeList(source = []) {
   return new Proxy(source, {
     get(target, prop, receiver) {
       if (prop === 'getName') {
-        return new Proxy(() => {}, {
+        return new Proxy(NOOP, {
           apply(fn, that, args) {
             let cmmGrpCd = '';
             const cmmCd = args.at(0);
@@ -34,14 +36,14 @@ function createProxyCodeList(source = []) {
         });
       }
       if (prop === 'collectionView') {
-        return new Proxy(() => {}, {
+        return new Proxy(NOOP, {
           apply() {
             return asCollectionView(receiver);
           },
         });
       }
       if (prop === 'dataMap') {
-        return new Proxy(() => {}, {
+        return new Proxy(NOOP, {
           apply(fn, that, args) {
             const displayMemberPath = args.at(0) ?? DEFAULT_DISPLAY_MEMBER_PATH;
             const selectedValuePath = args.at(1) ?? DEFAULT_SELECTED_VALUE_PATH;
@@ -65,7 +67,7 @@ function createProxyCodeMap(source = {}) {
         return Reflect.get(target, prop, receiver);
       }
       if (prop === 'getName') {
-        return new Proxy(() => {}, {
+        return new Proxy(NOOP, {
           apply(fn, that, args) {
             const cmmGrpCd = args.at(0);
             const cmmCd = args.at(1);
