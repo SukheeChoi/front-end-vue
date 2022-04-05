@@ -16,18 +16,6 @@ const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
 const COM_CODE = createProxyCodeMap(CODE_DATA);
 
-const CV = new Map();
-
-function trigger(target, value) {
-  if (CV.has(target)) {
-    const collection = CV.get(target);
-    collection.sourceCollection = value;
-  } else {
-    const collection = asCollectionView(value);
-    CV.set(target, collection);
-  }
-}
-
 function getName(cmmGrpCd, cmmCd) {
   if (!cmmCd) {
     return '';
@@ -60,11 +48,7 @@ function createProxyCodeList(source = []) {
       if (prop === 'collectionView') {
         return new Proxy(() => {}, {
           apply() {
-            if (CV.has(target)) {
-              return CV.get(target);
-            }
-            CV.set(target, asCollectionView(receiver));
-            return CV.get(target);
+            return asCollectionView(receiver);
           },
         });
       }
@@ -73,8 +57,7 @@ function createProxyCodeList(source = []) {
           apply(fn, that, args) {
             const displayMemberPath = args.at(0) ?? DEFAULT_DISPLAY_MEMBER_PATH;
             const selectedValuePath = args.at(1) ?? DEFAULT_SELECTED_VALUE_PATH;
-            const collection = CV.has(target) ? CV.get(target) : asCollectionView(receiver);
-            return new DataMap(collection, selectedValuePath, displayMemberPath);
+            return new DataMap(asCollectionView(receiver), selectedValuePath, displayMemberPath);
           },
         });
       }
@@ -99,7 +82,6 @@ function createProxyCodeMap(source = {}) {
       if (!(prop in target)) {
         const ref = vue.ref(createProxyCodeList());
         if (Reflect.set(target, prop, ref, receiver)) {
-          trigger(target, vue.unref(ref));
           load(prop, ref);
         }
       }
@@ -125,7 +107,6 @@ async function load(keyword, proxy) {
 
   if (CODE_PART && Array.isArray(CODE_PART[PLAIN_KEYWORD])) {
     proxy.value.push(...CODE_PART[PLAIN_KEYWORD]);
-    // proxy.push(...CODE_PART[PLAIN_KEYWORD]);
   }
 }
 
