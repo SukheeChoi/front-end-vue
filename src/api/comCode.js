@@ -14,21 +14,7 @@ const URI = '/com/Code';
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
-const COM_CODE = vue.reactive(createProxyCodeMap(CODE_DATA));
-
-function getName(cmmGrpCd, cmmCd) {
-  if (!cmmCd) {
-    return '';
-  }
-  const GROUP = COM_CODE[cmmGrpCd];
-  if (GROUP && Array.isArray(GROUP)) {
-    const PART = GROUP.find((g) => g.value === cmmCd);
-    if (PART) {
-      return PART.name;
-    }
-  }
-  return '';
-}
+const COM_CODE = createProxyCodeMap(CODE_DATA);
 
 function createProxyCodeList(source = []) {
   return new Proxy(source, {
@@ -36,12 +22,14 @@ function createProxyCodeList(source = []) {
       if (prop === 'getName') {
         return new Proxy(() => {}, {
           apply(fn, that, args) {
-            for (const KEY in COM_CODE) {
-              if (COM_CODE[KEY] === receiver) {
-                return getName(KEY, args.at(0));
+            let cmmGrpCd = '';
+            const cmmCd = args.at(0);
+            for (const KEY in READONLY_COM_CODE) {
+              if (READONLY_COM_CODE[KEY] === that) {
+                cmmGrpCd = KEY;
               }
             }
-            return '';
+            return getName(cmmGrpCd, cmmCd);
           },
         });
       }
@@ -68,7 +56,8 @@ function createProxyCodeList(source = []) {
 
 function createProxyCodeMap(source = {}) {
   for (const k in source) {
-    source[k] = vue.ref(createProxyCodeList(source[k]));
+    const ref = vue.ref(createProxyCodeList(source[k]));
+    source[k] = vue.unref(ref);
   }
   return new Proxy(source, {
     get(target, prop, receiver) {
@@ -78,13 +67,15 @@ function createProxyCodeMap(source = {}) {
       if (prop === 'getName') {
         return new Proxy(() => {}, {
           apply(fn, that, args) {
-            return getName(...args);
+            const cmmGrpCd = args.at(0);
+            const cmmCd = args.at(1);
+            return getName(cmmGrpCd, cmmCd);
           },
         });
       }
       if (!(prop in target)) {
         const ref = vue.ref(createProxyCodeList());
-        if (Reflect.set(target, prop, ref, receiver)) {
+        if (Reflect.set(target, prop, vue.unref(ref), receiver)) {
           load(prop, ref);
         }
       }
@@ -114,5 +105,17 @@ async function load(keyword, proxy) {
 }
 
 const READONLY_COM_CODE = vue.readonly(COM_CODE);
+
+function getName(cmmGrpCd, cmmCd) {
+  const GROUP_CODE = READONLY_COM_CODE[cmmGrpCd];
+  if (GROUP_CODE) {
+    for (const PART_CODE of GROUP_CODE) {
+      if (PART_CODE.value === cmmCd) {
+        return PART_CODE.name;
+      }
+    }
+  }
+  return '';
+}
 
 export { READONLY_COM_CODE as COM_CODE };
