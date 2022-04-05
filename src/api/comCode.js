@@ -14,9 +14,39 @@ const URI = '/com/Code';
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
+const COM_CODE = createProxyCodeMap(CODE_DATA);
+
+function getName(cmmGrpCd, cmmCd) {
+  if (!cmmCd) {
+    return '';
+  }
+  const GROUP = COM_CODE[cmmGrpCd];
+  if (GROUP && Array.isArray(GROUP)) {
+    const PART = GROUP.find((g) => g.value === cmmCd);
+    if (PART) {
+      return PART.name;
+    }
+  }
+  return '';
+}
+
+window.gggg = getName;
+
 function createProxyCodeList(source = []) {
   return new Proxy(source, {
     get(target, prop, receiver) {
+      if (prop === 'getName') {
+        return new Proxy(() => {}, {
+          apply(fn, that, args) {
+            for (const KEY in COM_CODE) {
+              if (COM_CODE[KEY] === receiver) {
+                return getName(KEY, args.at(0));
+              }
+            }
+            return '';
+          },
+        });
+      }
       if (prop === 'collectionView') {
         return new Proxy(() => {}, {
           apply() {
@@ -44,6 +74,13 @@ function createProxyCodeMap(source = {}) {
   }
   return new Proxy(source, {
     get(target, prop, receiver) {
+      if (prop === 'getName') {
+        return new Proxy(() => {}, {
+          apply(fn, that, args) {
+            return getName(...args);
+          },
+        });
+      }
       if (!(prop in target)) {
         const ref = vue.ref(createProxyCodeList());
         if (Reflect.set(target, prop, ref, receiver)) {
@@ -74,7 +111,5 @@ async function load(keyword, proxy) {
     proxy.value.push(...CODE_PART[PLAIN_KEYWORD]);
   }
 }
-
-const COM_CODE = createProxyCodeMap(CODE_DATA);
 
 export { COM_CODE };
