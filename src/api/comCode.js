@@ -7,116 +7,78 @@ import { DataMap } from '@grapecity/wijmo.grid';
 
 import CODE_DATA from '@/store/modules/comData';
 
-const vue = require('vue');
+import { reactive, readonly, ref, unref } from 'vue';
 
 const URI = '/com/Code';
 
 const DEFAULT_SELECTED_VALUE_PATH = 'value';
 const DEFAULT_DISPLAY_MEMBER_PATH = 'name';
 
-const NOOP = () => {};
-
-const READ_ONLY_COM_CODE = vue.readonly(createProxyCodeMap(CODE_DATA));
-
-function getName(cmmGrpCd, cmmCd) {
-  const GROUP_CODE = READ_ONLY_COM_CODE[cmmGrpCd];
-  if (GROUP_CODE) {
-    for (const PART_CODE of GROUP_CODE) {
-      if (PART_CODE.value === cmmCd) {
-        return PART_CODE.name;
-      }
-    }
-  }
-  return '';
-}
-
-function createProxyCodeList(source = []) {
-  return new Proxy(source, {
-    get(target, prop, receiver) {
-      if (prop === 'getName') {
-        return new Proxy(NOOP, {
-          apply(fn, that, args) {
-            let cmmGrpCd = '';
-            const cmmCd = args.at(0);
-            for (const KEY in READ_ONLY_COM_CODE) {
-              if (READ_ONLY_COM_CODE[KEY] === that) {
-                cmmGrpCd = KEY;
-                break;
-              }
-            }
-            return getName(cmmGrpCd, cmmCd);
-          },
-        });
-      }
-      if (prop === 'collectionView') {
-        return new Proxy(NOOP, {
-          apply() {
-            return asCollectionView(receiver);
-          },
-        });
-      }
-      if (prop === 'dataMap') {
-        return new Proxy(NOOP, {
-          apply(fn, that, args) {
-            const displayMemberPath = args.at(0) ?? DEFAULT_DISPLAY_MEMBER_PATH;
-            const selectedValuePath = args.at(1) ?? DEFAULT_SELECTED_VALUE_PATH;
-            return new DataMap(asCollectionView(receiver), selectedValuePath, displayMemberPath);
-          },
-        });
-      }
-      return Reflect.get(target, prop, receiver);
-    },
-  });
-}
-
-function createProxyCodeMap(source = {}) {
-  for (const k in source) {
-    const ref = vue.ref(createProxyCodeList(source[k]));
-    source[k] = vue.unref(ref);
-  }
-  return new Proxy(source, {
-    get(target, prop, receiver) {
-      if (typeof prop === 'symbol' || prop.startsWith('__v')) {
-        return Reflect.get(target, prop, receiver);
-      }
-      if (prop === 'getName') {
-        return new Proxy(NOOP, {
-          apply(fn, that, args) {
-            const cmmGrpCd = args.at(0);
-            const cmmCd = args.at(1);
-            return getName(cmmGrpCd, cmmCd);
-          },
-        });
-      }
-      if (!(prop in target)) {
-        const ref = vue.ref(createProxyCodeList());
-        if (Reflect.set(target, prop, vue.unref(ref), receiver)) {
-          load(prop, ref);
-        }
-      }
-      return Reflect.get(target, prop, receiver);
-    },
-  });
-}
-
 const PREFIX_LINK_KEYWORD = 'link:';
 const SUFFIX_LINK_KEYWORD = '__LINK';
 
-async function load(keyword, proxy) {
-  if (!keyword) {
-    return null;
+const COMMON_CODE = reactive({
+  ...CODE_DATA,
+});
+
+function getCodeList(cmmGrpCd) {
+  const commonCodeList = COMMON_CODE[cmmGrpCd];
+  if (commonCodeList) {
+    return readonly(unref(commonCodeList));
+  }
+  const newCommonCodeList = ref([]);
+  COMMON_CODE[cmmGrpCd] = newCommonCodeList;
+  loadCodeList(cmmGrpCd, newCommonCodeList);
+  return readonly(unref(newCommonCodeList));
+}
+
+function getCode(cmmGrpCd, cmmCd) {
+  const commonCodeList = getCodeList(cmmGrpCd);
+  for (const commonCode of commonCodeList) {
+    if (commonCode.value === cmmCd) {
+      return readonly(commonCode);
+    }
+  }
+  return null;
+}
+
+async function loadCodeList(cmmGrpCd, newCommonCodeList) {
+  if (!cmmGrpCd) {
+    return newCommonCodeList;
   }
 
-  const PLAIN_KEYWORD = keyword.replace(/(\_\_LINK)$/, '');
-  const PARAMS_CODE_LIST = keyword.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : keyword;
+  const PLAIN_KEYWORD = cmmGrpCd.replace(/(\_\_LINK)$/, '');
+  const PARAMS_CODE_LIST = cmmGrpCd.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : cmmGrpCd;
 
   const {
     data: { data: CODE_PART },
   } = await http.get(URI + '/getList', { params: { codeList: PARAMS_CODE_LIST } });
 
   if (CODE_PART && Array.isArray(CODE_PART[PLAIN_KEYWORD])) {
-    proxy.value.push(...CODE_PART[PLAIN_KEYWORD]);
+    newCommonCodeList.value.push(...CODE_PART[PLAIN_KEYWORD]);
   }
 }
 
-export { READ_ONLY_COM_CODE as COM_CODE };
+function asDataMap(
+  arr,
+  displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH,
+  selectedValuePath = DEFAULT_SELECTED_VALUE_PATH
+) {
+  return new DataMap(asCollectionView(arr), displayMemberPath, selectedValuePath);
+}
+
+function prepend(arr = [], args = []) {
+  return readonly([...args, ...unref(arr)]);
+}
+
+function append(arr = [], args = []) {
+  return readonly([...unref(arr), ...args]);
+}
+
+function combine(arr = [], ...args) {
+  const prepend = args.at(0) ?? [];
+  const append = args.at(1) ?? [];
+  return readonly([...prepend, ...unref(arr), ...append]);
+}
+
+export { getCodeList, getCode, asCollectionView, asDataMap, prepend, append, combine };
