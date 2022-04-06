@@ -2,12 +2,12 @@
 
 import http from '@/api';
 
+import { reactive, readonly, ref, unref } from 'vue';
+
 import { asCollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 
 import CODE_DATA from '@/store/modules/comData';
-
-import { reactive, readonly, ref, unref } from 'vue';
 
 const URI = '/com/Code';
 
@@ -27,8 +27,7 @@ function getCodeList(cmmGrpCd) {
     return readonly(unref(commonCodeList));
   }
   const newCommonCodeList = ref([]);
-  COMMON_CODE[cmmGrpCd] = newCommonCodeList;
-  loadCodeList(cmmGrpCd, newCommonCodeList);
+  loadCodeList(cmmGrpCd, (COMMON_CODE[cmmGrpCd] = newCommonCodeList));
   return readonly(unref(newCommonCodeList));
 }
 
