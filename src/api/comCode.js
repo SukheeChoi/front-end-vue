@@ -64,7 +64,24 @@ function asDataMap(
   displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH,
   selectedValuePath = DEFAULT_SELECTED_VALUE_PATH
 ) {
-  return new DataMap(asCollectionView(arr), displayMemberPath, selectedValuePath);
+  return new DataMap(asCollectionView(arr), selectedValuePath, displayMemberPath);
+}
+
+function asFilteredDataMap(
+  arr,
+  binding,
+  displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH,
+  selectedValuePath = DEFAULT_SELECTED_VALUE_PATH
+) {
+  const dataMap = asDataMap(arr, displayMemberPath, selectedValuePath);
+  dataMap.getDisplayValues = function (dataItem) {
+    if (!(this._cv && this._displayPath)) {
+      return [];
+    }
+    const items = binding ? this._cv.items.filter((item) => dataItem[binding] === item.link) : this._cv.items;
+    return items.map((item) => item[this._displayPath]);
+  };
+  return dataMap;
 }
 
 function prepend(arr = [], args = []) {
@@ -81,4 +98,4 @@ function combine(arr = [], ...args) {
   return readonly([...prepend, ...unref(arr), ...append]);
 }
 
-export { getCodeList, getCode, asCollectionView, asDataMap, prepend, append, combine };
+export { getCodeList, getCode, asCollectionView, asDataMap, asFilteredDataMap, prepend, append, combine };
