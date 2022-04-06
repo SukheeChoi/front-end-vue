@@ -39,7 +39,7 @@ function getCode(cmmGrpCd, cmmCd) {
       return readonly(commonCode);
     }
   }
-  return null;
+  return {};
 }
 
 async function loadCodeList(cmmGrpCd, newCommonCodeList) {
