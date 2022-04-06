@@ -1,7 +1,7 @@
 export default {
   USE_YN: [
-    { name: 'Y', value: 'Y' },
-    { name: 'N', value: 'N' },
+    { name: '사용', value: 'Y' },
+    { name: '미사용', value: 'N' },
   ],
   SCREEN_LAYOUT: [
     { name: '', value: 0, scrnRto: [] },

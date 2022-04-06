@@ -80,22 +80,11 @@ const Utils = {
 
     let newIdx = targetRow;
 
-    console.log('targetItem', targetItem);
     if (allowAdding === 'add') {
-      newIdx = +targetRow + +targetItem[childItemsPath].length;
+      newIdx = Utils.getRowIndex(grid.rows, item);
     }
 
-    let newIdx2 = Utils.getRowIndex(grid.rows, item);
-    grid.select(new wjGrid.CellRange(newIdx2));
-    // grid.collectionView.moveCurrentToPosition(+newIdx2 - 1);
-    // grid.select(new wjGrid.CellRange(newIdx));
-    // if (newIdx) {
-    //   grid.select(new wjGrid.CellRange(targetRow));
-    // } else {
-    //   newIdx = Utils.getRowIndex(grid.rows, item);
-    //   console.log('newIdx', newIdx);
-    //   grid.select(new wjGrid.CellRange(newIdx));
-    // }
+    grid.select(new wjGrid.CellRange(newIdx));
   },
 
   removeChildItem(dataItem, item, itemKey) {
@@ -163,9 +152,7 @@ const Utils = {
   getRowIndex(rows, item) {
     let index = 0;
     rows.forEach((row) => {
-      console.log('rows', row.dataItem, item);
       if (row.dataItem == item || _.isEqual(row.dataItem, item)) {
-        console.log('같아요!!!');
         index = row.index;
         return;
       }
