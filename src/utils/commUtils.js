@@ -57,31 +57,34 @@ const Utils = {
   },
 
   addChildItem(grid, targetItem, targetRow, item, childItemsPath = 'children', allowAdding = 'add') {
-    if (allowAdding !== 'set') {
+    let newIdx = targetRow,
+      _item = item;
+
+    if (allowAdding === 'add') {
       Utils.setDefaultValues(item, grid.itemsSource._model);
       if (!targetItem[childItemsPath]) {
         targetItem[childItemsPath] = [];
       }
       targetItem[childItemsPath].splice(targetItem[childItemsPath].length, 0, item);
     } else {
-      Utils.setDefaultValues(item, grid.itemsSource._model, targetItem);
+      targetItem.rowStatus = 'C';
+      _item = targetItem;
+      Utils.setDefaultValues(targetItem, grid.itemsSource._model, item);
     }
     grid.invalidate();
 
     const Index = Symbol('Index').toString();
     for (let i = 0; i < grid.collectionView.itemsAdded.length; i++) {
-      if (grid.collectionView.itemsAdded[i][Index] === item[Index]) {
+      if (grid.collectionView.itemsAdded[i][Index] === _item[Index]) {
         grid.collectionView.itemsAdded.splice(i, 1);
       }
     }
-    grid.collectionView.itemsAdded.push(item);
+    grid.collectionView.itemsAdded.push(_item);
     grid.collectionView.commitNew();
     grid.collectionView.refresh();
 
-    let newIdx = targetRow;
-
     if (allowAdding === 'add') {
-      newIdx = Utils.getRowIndex(grid.rows, item);
+      newIdx = Utils.getRowIndex(grid.rows, _item);
     }
 
     grid.select(new wjGrid.CellRange(newIdx));

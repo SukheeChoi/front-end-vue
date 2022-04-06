@@ -166,7 +166,7 @@ export default {
           dataItem = originalGrid.rows[+dragRow].dataItem,
           isTargetValid = false;
 
-      if (!dragRow || !targetRow) {
+      if ((!dragRow || !targetRow) && (dragRow < 0 || targetRow < 0)) {
         return false;
       }
 
