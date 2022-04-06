@@ -64,7 +64,8 @@ export default {
   },
   mutations: {
     setAuth(state, payload) {
-      const jsonData = JSON.parse(payload);
+      //const jsonData = JSON.parse(payload);
+      const jsonData = payload;
       const accessToken = jsonData.accessToken;
       const ttl = jsonData.ttl;
 
@@ -79,8 +80,8 @@ export default {
       state.ttl = payload;
     },
     setUserInfo(state, payload) {
-      const jsonData = JSON.parse(payload);
-
+      //const jsonData = JSON.parse(payload);
+      const jsonData = payload;
       state.userInfo = jsonData;
     },
   },
