@@ -35,7 +35,6 @@ const MenuList2 = [
     ]),
     Menu.create('권한관리', 'COMAU', [
       Menu.create('사용자관리', 'COMAU001'),
-      Menu.create('협력/도급직원 관리', 'COMAU002'),
       Menu.create('업무그룹관리', 'COMAU003'),
       Menu.create('부서별 업무그룹관리', 'COMAU004'),
       Menu.create('화면관리', 'COMAU005'),
@@ -58,7 +57,6 @@ const MenuList2 = [
       Menu.create('공통코드', 'COMCF005'),
       Menu.create('템플릿관리', 'COMCF006'),
       Menu.create('시스템설정', 'COMCF007'),
-      Menu.create('비밀번호변경', 'COMCF008'),
     ]),
     Menu.create('인터페이스', 'COMIF', [
       Menu.create('인터페이스 등록', 'COMIF001'),
@@ -81,6 +79,10 @@ const MenuList2 = [
     Menu.create('메인보드', 'EAP01', [Menu.create('기안작성', 'EAP02')]),
     Menu.create('김종혁', 'EAPZZ', [Menu.create('사용자설정', 'EAPZZ001'), Menu.create('완료함', 'EAPZZ002')]),
     Menu.create('김동은', 'EAPOO', [Menu.create('RegisterLayout', 'EAPOO001')]),
+  ]),
+  Menu.create('데이터표준', 'DAMROOT', [
+    Menu.create('표준단어', 'DAMST001'),
+    Menu.create('표준도메인', 'DAMST002'),
   ]),
 ];
 
