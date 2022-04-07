@@ -67,12 +67,7 @@ function asDataMap(
   return new DataMap(asCollectionView(arr), selectedValuePath, displayMemberPath);
 }
 
-function asFilteredDataMap(
-  arr,
-  binding,
-  displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH,
-  selectedValuePath = DEFAULT_SELECTED_VALUE_PATH
-) {
+function asFilteredDataMap(arr, binding, displayMemberPath, selectedValuePath) {
   const dataMap = asDataMap(arr, displayMemberPath, selectedValuePath);
   dataMap.getDisplayValues = function (dataItem) {
     if (!(this._cv && this._displayPath)) {
