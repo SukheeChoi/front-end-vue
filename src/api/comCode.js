@@ -21,7 +21,7 @@ const COMMON_CODE = reactive({
   ...CODE_DATA,
 });
 
-const CollectionViewMap = new Map();
+const COLLECTION_VIEW_MAP = new Map();
 
 function getCodeList(cmmGrpCd) {
   const commonCodeList = COMMON_CODE[cmmGrpCd];
@@ -44,18 +44,18 @@ function getCode(cmmGrpCd, cmmCd) {
 }
 
 function trigger() {
-  for (const [key, collectionView] of CollectionViewMap) {
+  for (const [key, collectionView] of COLLECTION_VIEW_MAP) {
     collectionView.onCollectionChanged();
-    CollectionViewMap.delete(key);
+    COLLECTION_VIEW_MAP.delete(key);
   }
 }
 
 function asCollectionView(arr) {
-  if (CollectionViewMap.has(arr)) {
-    return CollectionViewMap.get(arr);
+  if (COLLECTION_VIEW_MAP.has(arr)) {
+    return COLLECTION_VIEW_MAP.get(arr);
   }
   const collectionView = _asCollectionView(arr);
-  CollectionViewMap.set(arr, collectionView);
+  COLLECTION_VIEW_MAP.set(arr, collectionView);
   return collectionView;
 }
 
