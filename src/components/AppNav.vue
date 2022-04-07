@@ -45,12 +45,6 @@ const MenuList2 = [
       Menu.create('부서별 메인화면 관리', 'COMAU009'),
       Menu.create('부서별 대시보드 관리', 'COMAU010'),
     ]),
-    Menu.create('데이터표준', 'COMST', [
-      Menu.create('표준단어', 'COMST001'),
-      Menu.create('금칙어', 'COMST002'),
-      Menu.create('표준용어', 'COMST003'),
-      Menu.create('표준도메인', 'COMST004'),
-    ]),
     Menu.create('보고서', 'COMRP', [
       Menu.create('사용자로그인이력', 'COMRP001'),
       Menu.create('화면접속이력', 'COMRP002'),
@@ -78,24 +72,16 @@ const MenuList2 = [
       Menu.create('알림 설정', 'COMPE005'),
     ]),
   ]),
-  Menu.create('전자결재', 'EAPROOT', [  
+  Menu.create('전자결재', 'EAPROOT', [
     Menu.create('정명훈', 'EAPXX', [
       Menu.create('양식', 'EAPXX001'),
       Menu.create('기안', 'EAPXX002'),
-      Menu.create('샘플', 'EAPXX003'),      
-    ]),          
-    Menu.create('메인보드', 'EAP01', [
-      Menu.create('기안작성', 'EAP02'), 
-    ]),          
-    Menu.create('김종혁', 'EAPZZ', [
-        Menu.create('사용자설정', 'EAPZZ001'),
-        Menu.create('완료함', 'EAPZZ002')
-    ]),          
-    Menu.create('김동은', 'EAPOO', [
-        Menu.create('RegisterLayout', 'EAPOO001'),
-    ]),          
-  ]), 
-
+      Menu.create('샘플', 'EAPXX003'),
+    ]),
+    Menu.create('메인보드', 'EAP01', [Menu.create('기안작성', 'EAP02')]),
+    Menu.create('김종혁', 'EAPZZ', [Menu.create('사용자설정', 'EAPZZ001'), Menu.create('완료함', 'EAPZZ002')]),
+    Menu.create('김동은', 'EAPOO', [Menu.create('RegisterLayout', 'EAPOO001')]),
+  ]),
 ];
 
 export default {
