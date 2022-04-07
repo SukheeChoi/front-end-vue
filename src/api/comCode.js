@@ -2,7 +2,7 @@
 
 import http from '@/api';
 
-import { reactive, readonly, toRef, unref, isProxy } from 'vue';
+import { reactive, readonly, toRef, unref } from 'vue';
 
 import { asCollectionView as _asCollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
