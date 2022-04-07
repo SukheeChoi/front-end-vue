@@ -2,9 +2,9 @@
 
 import http from '@/api';
 
-import { reactive, readonly, ref, unref } from 'vue';
+import { reactive, readonly, toRef, unref, isProxy } from 'vue';
 
-import { asCollectionView } from '@grapecity/wijmo';
+import { asCollectionView as _asCollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 
 import CODE_DATA from '@/store/modules/comData';
@@ -21,13 +21,15 @@ const COMMON_CODE = reactive({
   ...CODE_DATA,
 });
 
+const CollectionViewMap = new Map();
+
 function getCodeList(cmmGrpCd) {
   const commonCodeList = COMMON_CODE[cmmGrpCd];
   if (commonCodeList) {
     return readonly(unref(commonCodeList));
   }
-  const newCommonCodeList = ref([]);
-  loadCodeList(cmmGrpCd, (COMMON_CODE[cmmGrpCd] = newCommonCodeList));
+  const newCommonCodeList = toRef(COMMON_CODE, cmmGrpCd);
+  loadCodeList(cmmGrpCd, newCommonCodeList);
   return readonly(unref(newCommonCodeList));
 }
 
@@ -41,21 +43,20 @@ function getCode(cmmGrpCd, cmmCd) {
   return {};
 }
 
-async function loadCodeList(cmmGrpCd, newCommonCodeList) {
-  if (!cmmGrpCd) {
-    return newCommonCodeList;
+function trigger() {
+  for (const [key, collectionView] of CollectionViewMap) {
+    collectionView.onCollectionChanged();
+    CollectionViewMap.delete(key);
   }
+}
 
-  const PLAIN_KEYWORD = cmmGrpCd.replace(/(\_\_LINK)$/, '');
-  const PARAMS_CODE_LIST = cmmGrpCd.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : cmmGrpCd;
-
-  const {
-    data: { data: CODE_PART },
-  } = await http.get(URI + '/getList', { params: { codeList: PARAMS_CODE_LIST } });
-
-  if (CODE_PART && Array.isArray(CODE_PART[PLAIN_KEYWORD])) {
-    newCommonCodeList.value.push(...CODE_PART[PLAIN_KEYWORD]);
+function asCollectionView(arr) {
+  if (CollectionViewMap.has(arr)) {
+    return CollectionViewMap.get(arr);
   }
+  const collectionView = _asCollectionView(arr);
+  CollectionViewMap.set(arr, collectionView);
+  return collectionView;
 }
 
 function asDataMap(
@@ -95,6 +96,25 @@ function combine(arr = [], ...args) {
   const prepend = args.at(0) ?? [];
   const append = args.at(1) ?? [];
   return readonly([...prepend, ...unref(arr), ...append]);
+}
+
+async function loadCodeList(cmmGrpCd, newCommonCodeList) {
+  newCommonCodeList.value = [];
+  if (!cmmGrpCd) {
+    return newCommonCodeList;
+  }
+
+  const PLAIN_KEYWORD = cmmGrpCd.replace(/(\_\_LINK)$/, '');
+  const PARAMS_CODE_LIST = cmmGrpCd.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : cmmGrpCd;
+
+  const {
+    data: { data: CODE_PART },
+  } = await http.get(URI + '/getList', { params: { codeList: PARAMS_CODE_LIST } });
+
+  if (CODE_PART && Array.isArray(CODE_PART[PLAIN_KEYWORD])) {
+    newCommonCodeList.value.push(...CODE_PART[PLAIN_KEYWORD]);
+    trigger();
+  }
 }
 
 export { getCodeList, getCode, asCollectionView, asDataMap, asFilteredDataMap, prepend, append, combine };
