@@ -68,12 +68,12 @@
           </p>
           <p class="copyright">ⓒOsstem Implant Co.,LTD. All right reserved.</p>
           <p>
-                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '25052408'">김성태</button>
-                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '25080905'">손영수</button>
-                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '25111511'">은홍기</button>
-                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '24021724'">최관식</button>
-                <button style="width:45px;" class="ow-btn type-util" @click="this.loginId = '23021101'">김승기</button>
-          </p>          
+            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '25052408'">김성태</button>
+            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '25080905'">손영수</button>
+            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '25111511'">은홍기</button>
+            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '24021724'">최관식</button>
+            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '23021101'">김승기</button>
+          </p>
         </div>
       </div>
     </div>
@@ -97,7 +97,7 @@ export default {
   methods: {
     async getToken() {
       //const tokenData = await login.requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
-      const tokenData = await requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
+      const tokenData = await requestLogin('/com/Auth', this.loginId, this.password, 'OSSTEM');
       if (tokenData.data.data !== null) {
         //login.setAuth(tokenData);
         store.commit('setAuth', tokenData.data.data);
