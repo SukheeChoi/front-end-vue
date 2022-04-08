@@ -30,7 +30,7 @@
               </a>
             </li>
           </template>
-          <!-- 
+          <!--
           <li>
             <a href="javascript:void(0);">
               <i class="person"><span class="sr-only">유저 아이콘</span></i>
@@ -42,7 +42,7 @@
           </li>
            -->
           <li>
-            <a href="javascript:void(0);">{{ userInfo.jbdtyNm }}</a>
+            <a href="javascript:void(0);">{{ userInfo.dtyNm }}</a>
           </li>
           <li>
             <a href="javascript:void(0);">{{ userInfo.userNm }} {{ userInfo.jbgrNm }}</a>
@@ -90,7 +90,7 @@ export default {
 
     const ehrOrgList = store.getters.getUserInfo ? store.getters.getUserInfo.ehrOrgList : [];
 
-    console.log('header route:', route, ', router:', router);
+    // console.log('header route:', route, ', router:', router);
 
     // Computed
     const badgeCount = computed(() => store.getters.getBadgeCount);

@@ -2,7 +2,7 @@
   <wj-popup ref="root">
     <div class="modal-body" :class="variant" ref="body">
       <div class="layer-body">
-        {{ message }}
+        <span>{{ message }}</span>
       </div>
       <div class="layer-foot">
         <div class="actions">
@@ -117,10 +117,14 @@ export default {
       justify-content: center;
       align-items: center;
       min-height: 100px;
-      max-height: calc(320px - 36px - 62px) !important;
-      overflow-y: auto;
-      word-break: break-word;
-      color: inherit;
+      max-height: 222px !important;
+      padding-bottom: 0;
+      & > span {
+        max-height: calc(222px - var(--bs-gutter, 0px) * 2);
+        overflow-y: auto;
+        word-break: break-word;
+        color: inherit;
+      }
     }
     .layer-foot {
       .actions {
