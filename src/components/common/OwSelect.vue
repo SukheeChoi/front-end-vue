@@ -64,6 +64,7 @@ export default {
       control = combo;
       control.itemsSourceChanged.addHandler(() => (combo.selectedValue = props.modelValue));
       control.selectedIndexChanged.addHandler(() => emit('update:modelValue', combo.selectedValue));
+      control.selectedValue = props.modelValue;
     };
 
     watch(
