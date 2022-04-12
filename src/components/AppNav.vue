@@ -39,6 +39,7 @@ const MenuList2 = [
       Menu.create('부서별 업무그룹관리', 'COMAU004'),
       Menu.create('화면관리', 'COMAU005'),
       Menu.create('메뉴관리', 'COMAU006'),
+      Menu.create('메뉴별 프로그램관리', 'COMAU011'),
       Menu.create('업무그룹별 메뉴관리', 'COMAU007'),
       Menu.create('개인별 업무그룹 관리', 'COMAU008'),
       Menu.create('부서별 메인화면 관리', 'COMAU009'),
