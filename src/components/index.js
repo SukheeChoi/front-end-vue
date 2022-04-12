@@ -12,6 +12,7 @@ import OwContent from '@/components/common/OwContent';
 import OwDialog from '@/components/common/OwDialog';
 import OwFilterCheckbox from '@/components/common/OwFilterCheckbox';
 import OwFilterRadio from '@/components/common/OwFilterRadio';
+import OwFilterTab from '@/components/common/OwFilterTab';
 import OwFlexWrap from '@/components/common/OwFlexWrap';
 import OwFlexItem from '@/components/common/OwFlexItem';
 import OwInput from '@/components/common/OwInput';
@@ -49,6 +50,7 @@ let COMMON_COMPONENTS = {
   OwDialog,
   OwFilterCheckbox,
   OwFilterRadio,
+  OwFilterTab,
   OwFlexWrap,
   OwFlexItem,
   OwGrid,
@@ -71,7 +73,7 @@ let COMMON_COMPONENTS = {
 };
 
 export function registerOwComponents(app) {
-    for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
-        app.component(name, component);
-    }
+  for (const [name, component] of Object.entries(COMMON_COMPONENTS)) {
+    app.component(name, component);
+  }
 }

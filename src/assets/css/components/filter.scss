@@ -56,10 +56,7 @@ $filter-name: '.ow-filter';
         color: #333;
         cursor: pointer;
         border: 1px solid transparent;
-        font: {
-          weight: bold;
-          size: 12px;
-        }
+        font: bold 12px sans-serif;
         &:hover {
           background-color: #fff;
           border: 1px solid #fff;
@@ -139,6 +136,7 @@ $filter-name: '.ow-filter';
     height: 100%;
     color: #fff;
     font-size: 11px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
     &:hover {
       background-color: rgba(0, 0, 0, 0.5);
     }
@@ -314,6 +312,43 @@ $filter-name: '.ow-filter';
     @for $i from 1 through length($colors) {
       .#{level}-#{$i}.depth {
         background-color: nth($colors, $i);
+      }
+    }
+  }
+}
+// filter list
+.contents-box-wrap {
+  & + & {
+    .contents-box-list {
+      border-left: 0;
+    }
+  }
+}
+.contents-box {
+  flex: 1;
+  height: 100%;
+  h3 {
+    + .contents-box-list {
+      margin-top: var(--bs-gutter);
+    }
+  }
+  .contents-box-list {
+    height: 100%;
+    border: 1px solid nth($clrs-border, 3);
+    overflow-y: auto;
+    li {
+      display: flex;
+      a {
+        padding: calc(#{var(--bs-gutter)} * 0.5) var(--bs-gutter);
+        flex: 1;
+        border-bottom: 1px solid nth($clrs-border, 1);
+        &.active {
+          &,
+          &:hover {
+            color: white;
+            background-color: nth($clrs-base, 8);
+          }
+        }
       }
     }
   }

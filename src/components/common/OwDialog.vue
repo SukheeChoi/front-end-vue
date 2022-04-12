@@ -2,7 +2,7 @@
   <wj-popup ref="root">
     <div class="modal-body" :class="variant" ref="body">
       <div class="layer-body">
-        <span>{{ message }}</span>
+        <span v-html="message"></span>
       </div>
       <div class="layer-foot">
         <div class="actions">
@@ -124,6 +124,7 @@ export default {
         overflow-y: auto;
         word-break: break-word;
         color: inherit;
+        padding: 0.5px;
       }
     }
     .layer-foot {
