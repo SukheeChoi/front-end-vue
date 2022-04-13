@@ -4,11 +4,10 @@
       <div class="owLogin">
         <div class="mainLogin"><i>Oway</i></div>
         <div class="loginGroup">
-          <label for="selcectCompany">회사선택</label>
-          <select id="" v-model="companyType">
-            <option value="" disabled selected hidden>회사를 선택하세요</option>
-            <option value="osstem">오스템임플란트(주)</option>
-            <option value="osstemPama">오스템파마</option>
+          <label for="selcectOrganization">회사선택</label>
+          <select id="selcectOrganization" v-model="cmpnCd">
+            <option value="OSSTEM">오스템임플란트(주)</option>
+            <option value="OSSTEMPHAMA">오스템파마</option>
           </select>
           <label for="inputLoginId">사원번호</label>
           <input
@@ -44,18 +43,18 @@
             <dd>
               <div class="radio-group">
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio7" name="radio-group-3" value="osstem" checked="checked" />
-                  <label for="ow-radio7">정직원</label>
+                  <input type="radio" id="OSSTEM" name="OSSTEM" value="OSSTEM" checked="checked" v-model="userType" />
+                  <label for="OSSTEM">정직원</label>
                 </div>
 
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio9" name="radio-group-3" value="partner" />
-                  <label for="ow-radio9">협력사</label>
+                  <input type="radio" id="PARTNER" name="PARTNER" value="PARTNER" v-model="userType" />
+                  <label for="PARTNER">협력사</label>
                 </div>
 
                 <div class="ow-radio">
-                  <input type="radio" id="ow-radio10" name="radio-group-3" value="contractor" />
-                  <label for="ow-radio10">도급직원</label>
+                  <input type="radio" id="CONTRACTOR" name="CONTRACTOR" value="CONTRACTOR" v-model="userType" />
+                  <label for="CONTRACTOR">도급직원</label>
                 </div>
               </div>
             </dd>
@@ -87,9 +86,10 @@ export default {
   name: 'AppLogin',
   data() {
     return {
-      companyType: 'osstem',
+      cmpnCd: 'OSSTEM',
       loginId: store.getters.getSavedId || '',
       password: '',
+      userType: 'OSSTEM',
       checkSaveUserId: store.getters.getChecked || false,
     };
   },
@@ -97,7 +97,7 @@ export default {
   methods: {
     async getToken() {
       //const tokenData = await login.requestLogin('/com/Auth', this.loginId, this.password, 'osstem');
-      const tokenData = await requestLogin('/com/Auth', this.loginId, this.password, 'OSSTEM');
+      const tokenData = await requestLogin('/com/Auth', this.cmpnCd, this.loginId, this.password, this.userType);
       if (tokenData.data.data !== null) {
         //login.setAuth(tokenData);
         store.commit('setAuth', tokenData.data.data);

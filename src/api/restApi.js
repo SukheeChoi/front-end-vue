@@ -30,6 +30,10 @@ const RestApi = {
     return http.post(url + '/modify' + id + 'List', data, { params });
   },
 
+  reissue(url, params = {}, id = '') {
+    return http.get(url + '/reissue' + id, { params });
+  },
+
   remove(url, data, id = '', params = {}) {
     return http.post(url + '/remove' + id, data, { params });
   },

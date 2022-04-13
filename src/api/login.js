@@ -1,10 +1,9 @@
 import restApi from './restApi';
 import store from '@/store';
-import axios from 'axios';
 
-export function requestLogin(url, id, pw, type) {
-  const params = { loginId: id, password: pw, userType: type };
-  return restApi.approve(url, JSON.stringify(params), 'Login');
+export function requestLogin(url, cmpnCd, id, pw, userType) {
+  const params = { cmpnCd: cmpnCd, loginId: id, password: pw, userType: userType };
+  return restApi.approve(url, params, 'Login');
 }
 
 export function getUserInfo(url) {
@@ -17,5 +16,5 @@ export function getMenuList(url) {
 }
 
 export function requestReissueToken(url) {
-  return restApi.get(url, {}, 'ReissueToken');
+  return restApi.reissue(url, {}, 'Token');
 }
