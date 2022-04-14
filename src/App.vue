@@ -41,6 +41,18 @@ export default {
           )
         );
       },
+      prompt: (message, options = {}) => {
+        return dialog.value.open(
+          _.assign(
+            { type: 'prompt', message },
+            {
+              acceptButtonText,
+              cancelButtonText,
+            },
+            options
+          )
+        );
+      },
     };
 
     provide('$dialog', (app.config.globalProperties.$dialog = $dialog));

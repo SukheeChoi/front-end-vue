@@ -3,16 +3,20 @@
     <div class="modal-body" :class="variant" ref="body">
       <div class="layer-body">
         <span v-html="message"></span>
+        <template v-if="isPrompt">
+          <br />
+          <ow-input v-model="answer" @keyup.enter="onAccept"></ow-input>
+        </template>
       </div>
       <div class="layer-foot">
         <div class="actions">
           <slot name="action">
-            <template v-if="isConfirm">
+            <template v-if="isConfirm || isPrompt">
               <button type="button" class="ow-btn type-base color-gray" @click.prevent="onCancel">
                 {{ cancelButtonText }}
               </button>
             </template>
-            <template v-if="isAlert || isConfirm">
+            <template v-if="isAlert || isConfirm || isPrompt">
               <button type="button" class="ow-btn type-base color-dark" @click.prevent="onAccept">
                 {{ acceptButtonText }}
               </button>
@@ -26,7 +30,7 @@
 <script>
 import _ from 'lodash';
 
-import { ref, computed, onMounted, reactive, toRefs } from 'vue';
+import { ref, computed, onMounted, reactive, toRefs, onUnmounted } from 'vue';
 
 import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
@@ -51,6 +55,8 @@ export default {
       cancelButtonText: '',
       isAlert: computed(() => state.type === 'alert'),
       isConfirm: computed(() => state.type === 'confirm'),
+      isPrompt: computed(() => state.type === 'prompt'),
+      answer: '',
       resolvePromise: null,
     });
 
@@ -68,7 +74,7 @@ export default {
     };
 
     const onAccept = () => {
-      state.resolvePromise(true);
+      state.resolvePromise(state.isPrompt ? state.answer : true);
       state.control.hide();
     };
 
@@ -83,6 +89,10 @@ export default {
     onMounted(() => {
       state.control = root.value.control;
       observer.observe(body.value);
+    });
+
+    onUnmounted(() => {
+      observer.disconnect();
     });
 
     return {
@@ -114,12 +124,14 @@ export default {
     }
     .layer-body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100px;
       max-height: 222px !important;
       padding-bottom: 0;
-      & > span {
+      & span {
+        text-align: center;
         max-height: calc(222px - var(--bs-gutter, 0px) * 2);
         overflow-y: auto;
         word-break: break-word;

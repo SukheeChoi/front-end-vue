@@ -11,11 +11,8 @@ export default {
     confirm(...args) {
       return this.$dialog.confirm(...args);
     },
-    getCode(code, displayFormat, selectedValuePath, displayMemberPath) {
-      return ComCode.get(code, displayFormat, selectedValuePath, displayMemberPath);
-    },
-    getCodeValue(code, displayFormat, selectedValuePath, displayMemberPath) {
-      return ComCode.getValue(code, displayFormat, selectedValuePath, displayMemberPath);
+    prompt(...args) {
+      return this.$dialog.prompt(...args);
     },
   },
 };
