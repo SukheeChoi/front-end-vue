@@ -72,7 +72,7 @@
   </div>
 </template>
 <script>
-import { computed, reactive, ref, toRefs, onMounted, onUnmounted, nextTick, toRef, unref } from 'vue';
+import { computed, reactive, ref, toRefs, onMounted, onUnmounted } from 'vue';
 
 import _ from 'lodash';
 
@@ -84,18 +84,45 @@ const DEBOUNCE_WAIT = 300;
 const DEBOUNCE_MAX_WAIT = 3000;
 
 class TreeNode {
-  constructor(item, name, parent, children) {
-    this.item = item;
-    this.name = name;
-    this.parent = parent;
-    this.children = children;
+  constructor(item, parent, displayMemberPath, childItemsPath) {
+    this._item = item;
+    this._parent = parent; // TreeNode
+    this._displayMemberPath = displayMemberPath;
+    this._childItemsPath = childItemsPath;
+  }
+
+  get item() {
+    return this._item;
+  }
+
+  get parent() {
+    return this._parent;
+  }
+
+  get name() {
+    return this._item[this._displayMemberPath];
+  }
+
+  get children() {
+    const children = [];
+    if (this._item[this._childItemsPath]) {
+      for (const child of this._item[this._childItemsPath]) {
+        children.push(new TreeNode(child, this, this._displayMemberPath, this._childItemsPath));
+      }
+    }
+    return children;
+  }
+
+  get hasChildren() {
+    const children = this.children;
+    return children && children.length > 0;
   }
 
   get siblings() {
     const siblings = [];
-    if (this.parent && this.parent.children) {
+    if (this.parent) {
       for (const sibling of this.parent.children) {
-        if (this !== sibling) {
+        if (this.item !== sibling.item) {
           siblings.push(sibling);
         }
       }
@@ -103,17 +130,22 @@ class TreeNode {
     return siblings;
   }
 
+  get hasSiblings() {
+    const siblings = this.siblings;
+    return siblings && siblings.length > 0;
+  }
+
   get index() {
-    if (this.parent && this.parent.children) {
-      const children = this.parent.children;
-      for (let i = 0, length = children.length; i < length; i += 1) {
-        const sibling = children.at(i);
-        if (this === sibling) {
-          return i;
+    let at = 0;
+    if (this.parent) {
+      for (const sibling of this.parent.children) {
+        if (this.item === sibling.item) {
+          break;
         }
+        at += 1;
       }
     }
-    return 0;
+    return at;
   }
 
   get level() {
@@ -121,16 +153,6 @@ class TreeNode {
     for (let self = this; self; self = self.parent) level += 1;
     return level;
   }
-}
-
-function setRootNode(items = [], root = { name: '전체', items }) {
-  if (items instanceof Array) {
-    if (items.length > 1) {
-      return root;
-    }
-    return items.at(0);
-  }
-  return items;
 }
 
 export default {
@@ -166,10 +188,12 @@ export default {
     const filter = ref(null);
     const modal = ref(null);
 
-    const item = computed(() => setRootNode(props.items));
+    const displayMemberPath = props.displayMemberPath;
+    const childItemsPath = props.childItemsPath;
 
     const state = reactive({
-      treeNodeList: computed(() => asTreeNodeList(unref(item))),
+      item: computed(() => setRootItem(props.items)),
+      treeNodeList: computed(() => asTreeNodeList(state.item)),
       filteredFlatNodeList: computed(() => filterFlatNodeList()),
       filteredPhaseNodeList: computed(() => filterPhaseNodeList()),
       selectedNode: null,
@@ -182,36 +206,49 @@ export default {
       },
     });
 
-    const asTreeNodeList = (item, parent) => {
-      const treeNode = new TreeNode(item, item[props.displayMemberPath], parent, item[props.childItemsPath]);
-      if (treeNode.children) {
-        treeNode.children = treeNode.children.map((child) => asTreeNodeList(child, treeNode));
+    const setRootItem = (items = []) => {
+      if (items instanceof Array) {
+        if (items.length > 1) {
+          return {
+            [displayMemberPath]: '전체',
+            [childItemsPath]: items,
+          };
+        }
+        return items.at(0);
+      }
+      return items;
+    };
+
+    const traversal = (treeNode) => {
+      if (treeNode.hasChildren) {
+        for (const child of treeNode.children) {
+          traversal(child);
+        }
       }
       if (treeNode.level > state.depth) {
         state.depth = treeNode.level;
       }
+    };
+
+    const asTreeNodeList = (item, parent) => {
+      const treeNode = new TreeNode(item, parent, displayMemberPath, childItemsPath);
+      traversal(treeNode);
       return treeNode;
     };
 
     const filterFlatNodeList = () => {
       const flatNodeList = [];
       if (!state.selectedNode) {
-        state.selectedNode = unref(state.treeNodeList);
+        state.selectedNode = state.treeNodeList;
       }
       const selectedNode = state.selectedNode;
-      const isLeafNode = !selectedNode.children;
+      const isLeafNode = !selectedNode.hasChildren;
       if (isLeafNode) {
-        const siblings = selectedNode.siblings;
-        if (siblings) {
-          flatNodeList.push(...siblings);
-        }
+        flatNodeList.push(...selectedNode.siblings);
         flatNodeList.splice(selectedNode.index, 0, selectedNode);
       } else {
-        const children = selectedNode.children;
-        if (children) {
-          flatNodeList.push(...children);
-        }
-        flatNodeList.splice(0, 0, selectedNode);
+        flatNodeList.push(selectedNode);
+        flatNodeList.push(...selectedNode.children);
       }
       for (let node = selectedNode.parent; node; node = node.parent) {
         flatNodeList.unshift(node);
@@ -221,14 +258,14 @@ export default {
 
     const filterPhaseNodeList = () => {
       const phaseNodeList = new Array(state.depth);
-      if (state.selectedNode && state.selectedNode.parent) {
-        for (let node = state.selectedNode; node; node = node.parent) {
-          const nodeList = node.siblings ?? [];
-          nodeList.splice(node.index, 0, node);
-          phaseNodeList[node.level - 1] = nodeList;
+      const selectedNode = state.selectedNode;
+      if (selectedNode && selectedNode.parent) {
+        for (let node = selectedNode; node; node = node.parent) {
+          phaseNodeList[node.level - 1] = node.siblings;
+          phaseNodeList[node.level - 1].splice(node.index, 0, node);
         }
-        if (state.selectedNode.children) {
-          phaseNodeList[state.selectedNode.level] = state.selectedNode.children;
+        if (selectedNode.hasChildren) {
+          phaseNodeList[selectedNode.level] = selectedNode.children;
         }
       } else {
         for (let i = 0, length = state.depth; i < length; i += 1) {
@@ -257,16 +294,17 @@ export default {
     };
 
     const getTabButtonClass = (flatNode) => {
+      const selectedNode = state.selectedNode;
       const classes = {};
       classes[`level-${flatNode.level}`] = true;
       classes.start = flatNode.level === 1;
-      classes.end = state.selectedNode
-        ? state.selectedNode.children
-          ? state.selectedNode === flatNode
-          : state.selectedNode.parent === flatNode
+      classes.end = selectedNode
+        ? selectedNode.hasChildren
+          ? selectedNode === flatNode
+          : selectedNode.parent === flatNode
         : false;
-      classes.depth = !!flatNode.children;
-      classes.active = !classes.depth && state.selectedNode === flatNode;
+      classes.depth = !!flatNode.hasChildren;
+      classes.active = !classes.depth && selectedNode === flatNode;
       return classes;
     };
 
