@@ -23,6 +23,7 @@ import { WjComboBox } from '@grapecity/wijmo.vue2.input';
 
 import { expando } from '@/utils';
 export default {
+  inheritAttrs: false,
   name: 'OwInput',
   components: {
     WjComboBox,
