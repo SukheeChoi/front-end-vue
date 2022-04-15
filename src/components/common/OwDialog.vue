@@ -3,10 +3,7 @@
     <div class="modal-body" :class="variant" ref="body">
       <div class="layer-body">
         <span v-html="message"></span>
-        <template v-if="isPrompt">
-          <br />
-          <ow-input v-model="answer" @keyup.enter="onAccept"></ow-input>
-        </template>
+        <ow-input class="mt-16" v-model="answer" @keyup.enter="onAccept" v-if="isPrompt"></ow-input>
       </div>
       <div class="layer-foot">
         <div class="actions">
