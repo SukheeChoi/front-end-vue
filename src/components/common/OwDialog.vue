@@ -50,17 +50,18 @@ export default {
       control: null,
       type: '',
       message: '',
+      answer: '',
       variant: '',
       acceptButtonText: '',
       cancelButtonText: '',
       isAlert: computed(() => state.type === 'alert'),
       isConfirm: computed(() => state.type === 'confirm'),
       isPrompt: computed(() => state.type === 'prompt'),
-      answer: '',
       resolvePromise: null,
     });
 
     const open = (options) => {
+      state.answer = '';
       return new Promise((resolve) => {
         state.control.hideTrigger = PopupTrigger.None;
         state.control.show(true);
