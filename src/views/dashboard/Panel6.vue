@@ -8,14 +8,15 @@
 import { reactive, toRefs } from 'vue';
 
 export default {
-  name: 'ThePanel3',
+  name: 'ThePanel6',
   components: {},
   setup() {
     const state = reactive({
       withUsers: true,
     });
 
-    const clicked = (item) => {
+    // https://demo.grapecity.co.kr/wijmo/api/classes/wijmo_nav.treeview.html#itemclicked
+    const clicked = ({ selectedItem: item }) => {
       console.log('item', item);
     };
 

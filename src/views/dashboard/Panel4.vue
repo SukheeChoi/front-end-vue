@@ -13,7 +13,7 @@
 import { reactive, toRefs } from 'vue';
 
 export default {
-  name: 'ThePanel3',
+  name: 'ThePanel4',
   components: {},
   setup() {
     const state = reactive({
