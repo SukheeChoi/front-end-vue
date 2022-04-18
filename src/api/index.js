@@ -61,12 +61,16 @@ async function handleError(responseData) {
 }
 
 async function handleAuthError(responseData) {
-  if (responseData.message === 'STATUS_EXPIRED') {
+  if (responseData.message === 'auth.expired') {
     //const newData = await login.requestReissueToken('/com/Auth');
     const newData = await requestReissueToken('/com/Auth');
     //login.setAuth(newData);
     store.commit('setAuth', newData.data.data);
     onTokenRefreshed(store.getters.getToken);
+  }
+  if (responseData.message === 'auth.session.expried') {
+    store.commit('reset');
+    router.push('/login');
   }
   if (responseData.message === 'STATUS_MALFORMED') {
     const alert = await app.config.globalProperties.$dialog.alert(
