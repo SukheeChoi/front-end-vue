@@ -1,9 +1,9 @@
 <template>
   <wj-tree-view
-    class="ow-tree-view"
     :auto-collapse="autoCollapse"
     :is-animated="isAnimated"
-    :initialize="init"
+    :show-checkboxes="showCheckboxes"
+    :initialized="init"
   ></wj-tree-view>
 </template>
 <script>
@@ -19,16 +19,36 @@ export default {
   props: {
     autoCollapse: Boolean,
     isAnimated: Boolean,
-    initialize: Function,
+    initialized: Function,
+    showCheckboxes: Boolean,
   },
   setup(props) {
-    const state = reactive({});
+    const state = reactive({
+      treeview: undefined,
+    });
 
-    let s;
-    const init = (...args) => {
-      s = args.at(0);
-      if (props.initialize) {
-        props.initialize();
+    const init = (s) => {
+      state.treeview = s;
+
+      s.formatItem.addHandler((s, e) => {
+        const item = e.dataItem;
+        let display;
+        if (Array.isArray(s.displayMemberPath)) {
+          for (const displayMemberPath of s.displayMemberPath) {
+            if ((display = item[displayMemberPath])) {
+              break;
+            }
+          }
+        } else {
+          display = item[s.displayMemberPath];
+        }
+        const textNode = e.element.querySelector('.wj-node-text');
+        if (textNode) {
+          textNode.textContent = display;
+        }
+      });
+      if (props.initialized) {
+        props.initialized(s);
       }
     };
 

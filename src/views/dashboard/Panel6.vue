@@ -1,11 +1,7 @@
 <template>
   <ow-panel>
-    <template #title> 공통코드 </template>
-    <ow-grid :items-source="items" :header="false" :footer="false" :is-read-only="true">
-      <wj-flex-grid-column header="코드그룹" binding="a" :width="80"></wj-flex-grid-column>
-      <wj-flex-grid-column header="코드그룹명" binding="b" width="*"></wj-flex-grid-column>
-      <wj-flex-grid-column header="사용여부" binding="d" align="center" :width="80"></wj-flex-grid-column>
-    </ow-grid>
+    <template #title> 조직도 </template>
+    <ow-org-tree-view :with-users="withUsers" :item-clicked="clicked"></ow-org-tree-view>
   </ow-panel>
 </template>
 <script>
@@ -16,14 +12,16 @@ export default {
   components: {},
   setup() {
     const state = reactive({
-      items: [
-        { a: 'USE_YN', b: '사용여부', d: 'Y' },
-        { a: 'CRUD_TP', b: 'CRUD 유형', d: 'Y' },
-      ],
+      withUsers: true,
     });
+
+    const clicked = (item) => {
+      console.log('item', item);
+    };
 
     return {
       ...toRefs(state),
+      clicked,
     };
   },
 };

@@ -29,9 +29,12 @@ import OwSignature from '@/components/common/OwSignature';
 import OwSpinner from '@/components/common/OwSpinner';
 import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
+
 import OwGrid from '@/components/wijmo/grid/OwGrid';
 import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
 import OwTreeGrid from '@/components/wijmo/grid/OwTreeGrid';
+
+import OwOrgTreeView from '@/components/wijmo/tree/OwOrgTreeView';
 
 export function registerWijmo(app) {
   registerCore(app);
@@ -70,6 +73,7 @@ let COMMON_COMPONENTS = {
   OwTab,
   OwFlexGrid,
   OwTreeGrid,
+  OwOrgTreeView,
 };
 
 export function registerOwComponents(app) {
