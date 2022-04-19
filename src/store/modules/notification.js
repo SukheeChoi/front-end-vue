@@ -8,11 +8,11 @@ const state = () => ({
     open: false,
   },
   alert: {
-    open: true,
+    open: false,
     index: 0,
+    dateTime: '',
     userNm: '',
     orgNm: '',
-    dateTime: '',
     message: '',
   },
   receiveList: [],
@@ -30,19 +30,23 @@ const mutations = {
   },
   setOpenAlert(state) {
     state.alert.open = true;
+    setTimeout(() => {
+      state.alert.open = false;
+    }, 3000);
   },
   setCloseAlert(state) {
     state.alert.open = false;
   },
+  receiveMessage(state, msg) {
+    state.alert = msg;
+    state.receiveList.unshift(msg);
+  },
   removeMessage(state, msg) {
     const getIdx = (element) => element.index === msg.index;
-    const findIdx = state.receiveList.findIndex(getIdx);
-    state.receiveList.splice(findIdx, 1);
-    state.badge.count = state.receiveList.length;
+    state.receiveList.splice(state.receiveList.findIndex(getIdx), 1);
   },
   removeAllMessage(state) {
     state.receiveList.splice(0, state.receiveList.length);
-    state.badge.count = 0;
   },
 };
 
@@ -50,7 +54,7 @@ const actions = {};
 
 const getters = {
   getBadgeCount(state) {
-    return state.badge.count;
+    return state.receiveList.length;
   },
   getAlertUserName(state) {
     return state.alert.userNm;
@@ -63,6 +67,12 @@ const getters = {
   },
   getAlertMessage(state) {
     return state.alert.message;
+  },
+  getAlertIndex(state) {
+    return state.alert.index++;
+  },
+  getAlertOpen(state) {
+    return state.alert.open;
   },
 };
 

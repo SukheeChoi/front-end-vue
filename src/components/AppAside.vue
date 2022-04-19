@@ -20,7 +20,7 @@
             <option>피킹</option>
           </select>
         </div>
-        <div class="toast" v-for="msg in receiveList.reverse()" :key="msg">
+        <div class="toast" v-for="msg in receiveList" :key="msg">
           <div class="toast-body">
             <div class="toast-area">
               <div class="toast-wrap">
@@ -67,7 +67,7 @@
     <!-- 사이드바 영역 E -->
     <!-- 푸시 알람 영역 S -->
     <transition name="alert">
-      <div class="ow-toast fixed-postion-bottom-right" v-if="alert.open">
+      <div class="ow-toast fixed-postion-bottom-right" v-if="alertOpen">
         <div class="toast-area" @click="check">
           <div class="toast-wrap">
             <div class="toast-top">
@@ -94,7 +94,7 @@
   </aside>
 </template>
 <script>
-import { reactive, toRefs, onMounted, computed, watch } from 'vue';
+import { reactive, toRefs, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 export default {
   name: 'AppAside',
@@ -134,6 +134,10 @@ export default {
       return store.getters.getAlertMessage;
     });
 
+    const alertOpen = computed(() => {
+      return store.getters.getAlertOpen;
+    })
+
     // Methods
     const close = () => {
       store.commit('setCloseSidebar');
@@ -155,13 +159,6 @@ export default {
       store.commit('setCloseAlert');
     });
 
-    watch(
-      () => alert.open,
-      () => setTimeout(() => {
-        store.commit('setCloseAlert');
-      }, 5000)
-    );
-
     return {
       // State
       ...toRefs(state),
@@ -170,6 +167,7 @@ export default {
       alertOrgName,
       alertDateTime,
       alertMessage,
+      alertOpen,
       // Methods
       close,
       removeMessage,
