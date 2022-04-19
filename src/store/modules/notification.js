@@ -10,9 +10,9 @@ const state = () => ({
   alert: {
     open: true,
     index: 0,
+    dateTime: '',
     userNm: '',
     orgNm: '',
-    dateTime: '',
     message: '',
   },
   receiveList: [],
@@ -34,13 +34,13 @@ const mutations = {
   setCloseAlert(state) {
     state.alert.open = false;
   },
-  addMessage(state, msg) {
+  receiveMessage(state, msg) {
+    state.alert = msg;
     state.receiveList.push(msg);
   },
   removeMessage(state, msg) {
-    const getIdx = (element) => element.index === msg.index,
-      findIdx = state.receiveList.findIndex(getIdx);
-    state.receiveList.splice(findIdx, 1);
+    const getIdx = (element) => element.index === msg.index;
+    state.receiveList.splice(state.receiveList.findIndex(getIdx), 1);
   },
   removeAllMessage(state) {
     state.receiveList.splice(0, state.receiveList.length);
@@ -64,6 +64,9 @@ const getters = {
   },
   getAlertMessage(state) {
     return state.alert.message;
+  },
+  getAlertIndex(state) {
+    return state.alert.index++;
   },
 };
 

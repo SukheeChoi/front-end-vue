@@ -17,47 +17,44 @@ function publish(client, message) {
 
 // SUBSCRIBES
 function subscribe(store, message) {
-  console.log('message', store, message);
-  // store.receiveList.push();
-  const item = JSON.parse(message.body);
+  let item = JSON.parse(message.body);
+  item = JSON.parse(item.message);
+  console.log('item', item);
 
   const now = new Date();
   const dateTime =
-      _.padStart(now.getMonth() + 1, 2, 0) +
-      '-' +
-      _.padStart(now.getDate(), 2, 0) +
-      ' ' +
-      _.padStart(now.getHours(), 2, 0) +
-      ':' +
-      _.padStart(now.getMinutes(), 2, 0),
-    index = now.getMonth() || now.getDate() || now.getHours() || now.getMinutes() || now.getMilliseconds();
-
-  store.commit('addMessage', {
+    _.padStart(now.getMonth() + 1, 2, 0) +
+    '-' +
+    _.padStart(now.getDate(), 2, 0) +
+    ' ' +
+    _.padStart(now.getHours(), 2, 0) +
+    ':' +
+    _.padStart(now.getMinutes(), 2, 0);
+  // const index = now.getMonth() || now.getDate() || now.getHours() || now.getMinutes() || now.getMilliseconds();
+  const addItem = {
     open: true,
-    index,
-    userNm: '홍길동',
-    orgNm: 'OW공통개발팀',
+    index: store.getters.getAlertIndex,
     dateTime,
-    message: item.message,
-  });
+  };
+  let returnedItem = Object.assign(addItem, item);
+  store.commit('receiveMessage', returnedItem);
   store.commit('setOpenAlert');
+  console.log('>>>> store', store.state.notification);
 }
 
-// const URL = 'http://local.osstem.com:9000/ws';
-const URL = 'http://local.osstem.com:8160/ws';
+const URL = 'http://local.osstem.com:8012/ntf';
 
 export default {
   install: (app, options) => {
     const store = app.config.globalProperties.$store;
     const client = new Client({
       webSocketFactory: () => {
-        // return new SockJS('http://local.osstem.com:8160/ws');
         return new SockJS(URL);
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
         client.subscribe('/topic/messages', (message) => {
-          subscribe('subscribe', store, message);
+          subscribe(store, message);
         });
       },
       onStompError: (frame) => {
@@ -69,7 +66,7 @@ export default {
     app.mixin({
       methods: {
         $publish: function (message) {
-          publish('publish', client, message);
+          publish(client, message);
         },
       },
     });
