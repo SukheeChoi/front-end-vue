@@ -5,6 +5,10 @@ import { Client } from '@stomp/stompjs';
 
 // PUBLISHES
 function publish(client, message) {
+  if (!client || !client.connected) {
+    console.log('client 연결실패', client);
+  }
+
   client.publish({
     destination: '/app/pub',
     body: JSON.stringify(message),
@@ -18,7 +22,7 @@ function subscribe(store, message) {
   const item = JSON.parse(message.body);
 
   const now = new Date();
-  let dateTime =
+  const dateTime =
       _.padStart(now.getMonth() + 1, 2, 0) +
       '-' +
       _.padStart(now.getDate(), 2, 0) +
@@ -37,20 +41,23 @@ function subscribe(store, message) {
     message: item.message,
   });
   store.commit('setOpenAlert');
-  store.commit('setBadgeCount', state.receiveList.length);
 }
+
+// const URL = 'http://local.osstem.com:9000/ws';
+const URL = 'http://local.osstem.com:8160/ws';
 
 export default {
   install: (app, options) => {
     const store = app.config.globalProperties.$store;
     const client = new Client({
       webSocketFactory: () => {
-        return new SockJS('http://10.160.39.3:8010/ws');
+        // return new SockJS('http://local.osstem.com:8160/ws');
+        return new SockJS(URL);
       },
       onConnect: (frame) => {
-        console.log('connect', frame);
+        console.log('>>>>>>>>>>>>> connect', frame);
         client.subscribe('/topic/messages', (message) => {
-          subscribe(store, message);
+          subscribe('subscribe', store, message);
         });
       },
       onStompError: (frame) => {
@@ -59,14 +66,13 @@ export default {
     });
     client.activate();
 
-    console.log('client', app, client);
-
     app.mixin({
       methods: {
         $publish: function (message) {
-          publish(client, message);
+          publish('publish', client, message);
         },
       },
     });
+    console.log('client', app, client);
   },
 };

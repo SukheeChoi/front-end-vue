@@ -34,15 +34,16 @@ const mutations = {
   setCloseAlert(state) {
     state.alert.open = false;
   },
+  addMessage(state, msg) {
+    state.receiveList.push(msg);
+  },
   removeMessage(state, msg) {
-    const getIdx = (element) => element.index === msg.index;
-    const findIdx = state.receiveList.findIndex(getIdx);
+    const getIdx = (element) => element.index === msg.index,
+      findIdx = state.receiveList.findIndex(getIdx);
     state.receiveList.splice(findIdx, 1);
-    state.badge.count = state.receiveList.length;
   },
   removeAllMessage(state) {
     state.receiveList.splice(0, state.receiveList.length);
-    state.badge.count = 0;
   },
 };
 
@@ -50,7 +51,7 @@ const actions = {};
 
 const getters = {
   getBadgeCount(state) {
-    return state.badge.count;
+    return state.receiveList.length;
   },
   getAlertUserName(state) {
     return state.alert.userNm;
