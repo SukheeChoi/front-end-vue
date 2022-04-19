@@ -11,7 +11,23 @@
 </template>
 <script>
 import { onMounted, ref } from 'vue';
-import { getMimeType } from '@/utils';
+
+function getMimeType(mime) {
+  switch (mime) {
+    case 'gif':
+      return 'image/gif';
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpg';
+    case 'png':
+      return 'image/png';
+    case 'svg':
+      return 'image/svg+xml';
+    default:
+      console.error('mime type이 없습니다.');
+  }
+}
+
 export default {
   name: 'OwSignature',
   props: {
