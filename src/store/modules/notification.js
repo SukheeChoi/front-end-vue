@@ -1,19 +1,21 @@
 const state = () => ({
   // AppHeader
   badge: {
-    count: 5,
+    count: 0,
   },
   // AppAside
   sidebar: {
     open: false,
   },
   alert: {
-    open: false,
-    user_name: '홍길동',
-    dept_name: '물류본부',
-    time: new Date(),
-    message: 'AA 제품 피킹 완료 - 주문서 내역을 확인후 빠른 처리가 요구됩니다.',
+    open: true,
+    index: 0,
+    userNm: '',
+    orgNm: '',
+    dateTime: '',
+    message: '',
   },
+  receiveList: [],
 });
 
 const mutations = {
@@ -32,6 +34,16 @@ const mutations = {
   setCloseAlert(state) {
     state.alert.open = false;
   },
+  removeMessage(state, msg) {
+    const getIdx = (element) => element.index === msg.index;
+    const findIdx = state.receiveList.findIndex(getIdx);
+    state.receiveList.splice(findIdx, 1);
+    state.badge.count = state.receiveList.length;
+  },
+  removeAllMessage(state) {
+    state.receiveList.splice(0, state.receiveList.length);
+    state.badge.count = 0;
+  },
 };
 
 const actions = {};
@@ -41,13 +53,13 @@ const getters = {
     return state.badge.count;
   },
   getAlertUserName(state) {
-    return state.alert.user_name;
+    return state.alert.userNm;
   },
-  getAlertDeptName(state) {
-    return state.alert.dept_name;
+  getAlertOrgName(state) {
+    return state.alert.orgNm;
   },
-  getAlertTime(state) {
-    return state.alert.time;
+  getAlertDateTime(state) {
+    return state.alert.dateTime;
   },
   getAlertMessage(state) {
     return state.alert.message;

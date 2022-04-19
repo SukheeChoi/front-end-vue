@@ -20,60 +20,29 @@
             <option>피킹</option>
           </select>
         </div>
-        <div class="toast">
+        <div class="toast" v-for="msg in receiveList.reverse()" :key="msg">
           <div class="toast-body">
             <div class="toast-area">
               <div class="toast-wrap">
                 <div class="toast-top mb-10">
                   <ul class="summary-list xs">
                     <li>
-                      <span class="head">홍길동</span>
+                      <span class="head">{{ msg.userNm }}</span>
                     </li>
                     <li>
-                      <span>물류본부</span>
+                      <span>{{ msg.orgNm }}</span>
                     </li>
                     <li>
-                      <span>10-22 11:50</span>
+                      <span>{{ msg.dateTime }}</span>
                     </li>
                   </ul>
-                  <button class="ow-btn type-icon cross" @click="close">
+                  <button class="ow-btn type-icon cross" @click="removeMessage(msg)">
                     <i class="cross"></i>
                     <div class="sr-only">닫기</div>
                   </button>
                 </div>
                 <div class="toast-contents">
-                  <p class="text-para">AA 제품 피킹 완료 - 주문서 내역을 확인후 빠른 처리</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="toast">
-          <div class="toast-body">
-            <div class="toast-area">
-              <div class="toast-wrap">
-                <div class="toast-top mb-10">
-                  <ul class="summary-list xs">
-                    <li>
-                      <span class="head">홍길동</span>
-                    </li>
-                    <li>
-                      <span>물류본부</span>
-                    </li>
-                    <li>
-                      <span>10-22 11:50</span>
-                    </li>
-                  </ul>
-                  <button class="ow-btn type-icon cross">
-                    <i class="cross"></i>
-                    <div class="sr-only">닫기</div>
-                  </button>
-                </div>
-                <div class="toast-contents">
-                  <p class="text-para">
-                    AA 제품 피킹 완료 - 주문서 내역을 확인후 빠른 처리가 요구됩니다. 처리후 관련 내역을 담당 부서에
-                    통보해주시기 바랍니다. 관련 부서는 국내물류운영팀이며 담당자는 고길동입니다.
-                  </p>
+                  <p class="text-para">{{ msg.message }}</p>
                 </div>
               </div>
             </div>
@@ -87,7 +56,7 @@
               </a>
             </li>
             <li>
-              <a href="javascript:void(0)">
+              <a href="javascript:void(0)" @click="removeAllMessage()">
                 <span>모든알림지우기</span>
               </a>
             </li>
@@ -107,10 +76,10 @@
                   <span class="head">{{ alertUserName }}</span>
                 </li>
                 <li>
-                  <span>{{ alertDeptName }}</span>
+                  <span>{{ alertOrgName }}</span>
                 </li>
                 <li>
-                  <span>{{ alertTime }}</span>
+                  <span>{{ alertDateTime }}</span>
                 </li>
               </ul>
             </div>
@@ -125,7 +94,7 @@
   </aside>
 </template>
 <script>
-import { reactive, toRefs, onMounted, computed } from 'vue';
+import { reactive, toRefs, onMounted, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 export default {
   name: 'AppAside',
@@ -140,11 +109,12 @@ export default {
   setup() {
     const store = useStore();
 
-    const { sidebar, alert } = store.state.notification;
+    const { sidebar, alert, receiveList } = store.state.notification;
 
     const state = reactive({
       sidebar,
       alert,
+      receiveList
     });
 
     // Computed
@@ -152,12 +122,12 @@ export default {
       return store.getters.getAlertUserName;
     });
 
-    const alertDeptName = computed(() => {
-      return store.getters.getAlertDeptName;
+    const alertOrgName = computed(() => {
+      return store.getters.getAlertOrgName;
     });
 
-    const alertTime = computed(() => {
-      return store.getters.getAlertTime;
+    const alertDateTime = computed(() => {
+      return store.getters.getAlertDateTime;
     });
 
     const alertMessage = computed(() => {
@@ -169,6 +139,14 @@ export default {
       store.commit('setCloseSidebar');
     };
 
+    const removeMessage = (msg) => {
+      store.commit('removeMessage', msg);
+    }
+
+    const removeAllMessage = () => {
+      store.commit('removeAllMessage');
+    }
+
     // const check = () => {};
 
     // Hooks
@@ -177,16 +155,25 @@ export default {
       store.commit('setCloseAlert');
     });
 
+    watch(
+      () => alert.open,
+      () => setTimeout(() => {
+        store.commit('setCloseAlert');
+      }, 5000)
+    );
+
     return {
       // State
       ...toRefs(state),
       // Computed
       alertUserName,
-      alertDeptName,
-      alertTime,
+      alertOrgName,
+      alertDateTime,
       alertMessage,
       // Methods
       close,
+      removeMessage,
+      removeAllMessage
     };
   },
 };
