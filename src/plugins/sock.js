@@ -32,7 +32,7 @@ function subscribe(store, message) {
     _.padStart(now.getMinutes(), 2, 0);
   // const index = now.getMonth() || now.getDate() || now.getHours() || now.getMinutes() || now.getMilliseconds();
   const addItem = {
-    open: true,
+    open: false,
     index: store.getters.getAlertIndex,
     dateTime,
   };

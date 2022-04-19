@@ -8,7 +8,7 @@ const state = () => ({
     open: false,
   },
   alert: {
-    open: true,
+    open: false,
     index: 0,
     dateTime: '',
     userNm: '',
@@ -30,13 +30,16 @@ const mutations = {
   },
   setOpenAlert(state) {
     state.alert.open = true;
+    setTimeout(() => {
+      state.alert.open = false;
+    }, 3000);
   },
   setCloseAlert(state) {
     state.alert.open = false;
   },
   receiveMessage(state, msg) {
     state.alert = msg;
-    state.receiveList.push(msg);
+    state.receiveList.unshift(msg);
   },
   removeMessage(state, msg) {
     const getIdx = (element) => element.index === msg.index;
@@ -67,6 +70,9 @@ const getters = {
   },
   getAlertIndex(state) {
     return state.alert.index++;
+  },
+  getAlertOpen(state) {
+    return state.alert.open;
   },
 };
 
