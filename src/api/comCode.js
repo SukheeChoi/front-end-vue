@@ -24,11 +24,14 @@ const COMMON_CODE = reactive({
 const COLLECTION_VIEW_MAP = new Map();
 
 function getCodeList(cmmGrpCd) {
+  if (!cmmGrpCd) {
+    return null;
+  }
   const commonCodeList = COMMON_CODE[cmmGrpCd];
   if (commonCodeList) {
     return readonly(unref(commonCodeList));
   }
-  const newCommonCodeList = toRef(COMMON_CODE, cmmGrpCd);
+  const newCommonCodeList = toRef(COMMON_CODE, cmmGrpCd, []);
   loadCodeList(cmmGrpCd, newCommonCodeList);
   return readonly(unref(newCommonCodeList));
 }
@@ -45,8 +48,9 @@ function getCode(cmmGrpCd, cmmCd) {
 
 function trigger() {
   for (const [key, collectionView] of COLLECTION_VIEW_MAP) {
-    collectionView.onCollectionChanged();
-    COLLECTION_VIEW_MAP.delete(key);
+    if (COLLECTION_VIEW_MAP.delete(key)) {
+      collectionView.onCollectionChanged();
+    }
   }
 }
 
@@ -94,11 +98,6 @@ function combine(arr = [], ...args) {
 }
 
 async function loadCodeList(cmmGrpCd, newCommonCodeList) {
-  newCommonCodeList.value = [];
-  if (!cmmGrpCd) {
-    return newCommonCodeList;
-  }
-
   const PLAIN_KEYWORD = cmmGrpCd.replace(/(\_\_LINK)$/, '');
   const PARAMS_CODE_LIST = cmmGrpCd.endsWith(SUFFIX_LINK_KEYWORD) ? PREFIX_LINK_KEYWORD + PLAIN_KEYWORD : cmmGrpCd;
 
