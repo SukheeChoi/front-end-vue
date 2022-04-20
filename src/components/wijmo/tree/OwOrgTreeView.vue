@@ -1,7 +1,9 @@
 <template>
-  <ow-flex-wrap>
-    <ow-flex-item class="size-full" col>
+  <ow-flex-wrap class="size-full" col>
+    <ow-flex-item fix>
       <ow-input search @lookup="lookup"></ow-input>
+    </ow-flex-item>
+    <ow-flex-item class="ow-scroll">
       <ow-tree-view
         :initialized="initTreeView"
         :items-source="treeData"
