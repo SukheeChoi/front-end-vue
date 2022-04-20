@@ -2,7 +2,7 @@
   <aside>
     <!-- 사이드바 영역 S -->
     <transition name="sidebar">
-      <div class="ow-toast toast-slide">
+      <div class="ow-toast toast-slide"  v-if="sidebarOpen">
         <div class="toast-area-top mb-15">
           <button class="ow-btn type-icon arrow" @click="close">
             <i class="triangle right"></i>
@@ -107,49 +107,55 @@ export default {
       sidebar,
       alert,
       receiveList,
-      messages: computed(() => store.getters.latestMessages),
+      messages: computed(() => store.getters["alert/latestMessages"]),
     });
 
     // Computed
     const alertUserName = computed(() => {
-      return store.getters.getAlertUserName;
+      return store.getters["alert/userName"];
     });
 
     const alertOrgName = computed(() => {
-      return store.getters.getAlertOrgName;
+      return store.getters["alert/orgName"];
     });
 
     const alertDateTime = computed(() => {
-      return store.getters.getAlertDateTime;
+      return store.getters["alert/dateTime"];
     });
 
     const alertMessage = computed(() => {
-      return store.getters.getAlertMessage;
+      return store.getters["alert/message"];
     });
 
     const alertOpen = computed(() => {
-      return store.getters.getAlertOpen;
+      return store.getters["alert/open"];
     });
+
+    const sidebarOpen = computed(() => {
+      return store.getters["sidebar/open"];
+    })
 
     // Methods
     const close = () => {
-      store.commit('setCloseSidebar');
+      // state.sidebarOpen = false;
+      store.commit('sidebar/close');
     };
 
     const removeMessage = (message) => {
-      store.dispatch('confirmMessage', message);
+      // store.dispatch('confirmMessage', message);
+      store.commit('message/remove', message);
     };
 
     const removeAllMessage = () => {
-      store.commit('removeAllMessage');
+      store.commit('message/clear');
     };
 
     // const check = () => {};
 
     // Hooks
     onMounted(() => {
-      store.commit('setCloseSidebar');
-      store.commit('setCloseAlert');
+      store.commit('sidebar/close');
+      store.commit('alert/close');
     });
 
     return {
@@ -161,6 +167,7 @@ export default {
       alertDateTime,
       alertMessage,
       alertOpen,
+      sidebarOpen,
       // Methods
       close,
       removeMessage,
