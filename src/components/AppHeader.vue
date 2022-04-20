@@ -64,7 +64,7 @@
 import store from '@/store';
 
 import { computed, onMounted, reactive, toRefs } from 'vue';
-import { useStore } from 'vuex';
+import { mapGetters, mapMutations, useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import login from '@/api/login.js';
 export default {
@@ -93,11 +93,11 @@ export default {
     // console.log('header route:', route, ', router:', router);
 
     // Computed
-    const badgeCount = computed(() => store.getters.getBadgeCount);
+    const badgeCount = computed(() => store.getters["message/count"]);
 
     // Methods
     const openSidebar = () => {
-      store.commit('setOpenSidebar');
+      store.commit("sidebar/open");
     };
     /*
     const eventSource = new EventSource('http://localhost:8010/com/Message/subscribe');

@@ -10,15 +10,18 @@ function publish(client, message) {
   }
 
   client.publish({
-    destination: '/app/pub',
+    // destination: '/Pub',
+    destination: '/ntf/Pub/Pub',
     body: JSON.stringify(message),
   });
+  console.log('message', message);
 }
 
 // SUBSCRIBES
 function subscribe(store, message) {
   let item = JSON.parse(message.body);
   item = JSON.parse(item.message);
+
   console.log('item', item);
 
   const now = new Date();
@@ -30,19 +33,18 @@ function subscribe(store, message) {
     _.padStart(now.getHours(), 2, 0) +
     ':' +
     _.padStart(now.getMinutes(), 2, 0);
-  // const index = now.getMonth() || now.getDate() || now.getHours() || now.getMinutes() || now.getMilliseconds();
   const addItem = {
     open: false,
-    index: store.getters.getAlertIndex,
     dateTime,
   };
   let returnedItem = Object.assign(addItem, item);
-  store.commit('receiveMessage', returnedItem);
-  store.commit('setOpenAlert');
+  store.commit('message/add', returnedItem);
+  store.commit('alert/open');
   console.log('>>>> store', store.state.notification);
 }
 
-const URL = 'http://local.osstem.com:8012/ntf';
+const URL = 'http://local.osstem.com/ntf/Auth/regist';
+// const URL = process.env.VUE_APP_SERVER_IP;
 
 export default {
   install: (app, options) => {
@@ -53,7 +55,8 @@ export default {
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
-        client.subscribe('/topic/messages', (message) => {
+        store.dispatch('message/init');
+        client.subscribe('/ntf/Sub', (message) => {
           subscribe(store, message);
         });
       },

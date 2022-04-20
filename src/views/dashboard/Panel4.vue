@@ -14,7 +14,6 @@ export default {
   name: 'ThePanel4',
   components: {},
   setup() {
-    const { sidebar, alert, receiveList, badge } = store.state.notification;
     const { orgNm, userNm } = store.state.login.userInfo;
 
     const state = reactive({
@@ -23,10 +22,6 @@ export default {
         userNm,
         orgNm,
       },
-      sidebar,
-      alert,
-      badge,
-      receiveList,
     });
 
     const sendMessage = (e) => {
