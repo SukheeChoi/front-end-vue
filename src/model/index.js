@@ -16,6 +16,9 @@ class Collection {
   constructor(arr = []) {
     this._arr = arr;
   }
+  search(item) {
+    return this._arr.indexOf(item);
+  }
   clear() {
     this._arr = [];
   }
