@@ -9,6 +9,7 @@
       :display-member-path="dataMap.displayMemberPath"
       :selected-value-path="dataMap.selectedValuePath"
       :placeholder="placeholder"
+      :is-read-only="readonly"
       :initialized="initialized"
     ></wj-combo-box>
   </div>
@@ -39,6 +40,7 @@ export default {
       type: String,
       default: '',
     },
+    readonly: Boolean,
     items: {
       type: [Array, CollectionView, DataMap],
       default: () => {
