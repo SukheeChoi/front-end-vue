@@ -2,7 +2,7 @@
   <template v-if="label">
     <label class="radio-label">{{ label }}</label>
   </template>
-  <div class="radio-group" :class="{ transparent }">
+  <div class="radio-group" :class="{ transparent }" v-bind="$attrs">
     <template v-for="({ name, value, disabled = false }, index) in items" :key="value">
       <slot></slot>
       <div class="ow-radio">
@@ -11,7 +11,7 @@
           :id="`${unique}-${index}`"
           :name="unique"
           :value="value"
-          :disabled="disabled"
+          :disabled="readonly || disabled"
           v-model="checkedValue"
         />
         <label :for="`${unique}-${index}`">{{ name }}</label>
@@ -32,6 +32,7 @@ export default {
         return expando('ow-radio');
       },
     },
+    readonly: Boolean,
     transparent: {
       type: Boolean,
       default: false,
