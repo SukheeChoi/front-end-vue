@@ -2,7 +2,7 @@
   <aside>
     <!-- 사이드바 영역 S -->
     <transition name="sidebar">
-      <div class="ow-toast toast-slide" v-if="sidebar.open">
+      <div class="ow-toast toast-slide">
         <div class="toast-area-top mb-15">
           <button class="ow-btn type-icon arrow" @click="close">
             <i class="triangle right"></i>
@@ -10,39 +10,31 @@
             <span class="sr-only">닫기</span>
           </button>
         </div>
-        <div class="toast-top-option mb-20">
-          <select class="ow-select dark">
-            <option>국내물류영업팀</option>
-            <option>국내물류영업팀</option>
-          </select>
-          <select class="ow-select dark ml-2">
-            <option>피킹</option>
-            <option>피킹</option>
-          </select>
-        </div>
-        <div class="toast" v-for="msg in receiveList" :key="msg">
-          <div class="toast-body">
-            <div class="toast-area">
-              <div class="toast-wrap">
-                <div class="toast-top mb-10">
-                  <ul class="summary-list xs">
-                    <li>
-                      <span class="head">{{ msg.userNm }}</span>
-                    </li>
-                    <li>
-                      <span>{{ msg.orgNm }}</span>
-                    </li>
-                    <li>
-                      <span>{{ msg.dateTime }}</span>
-                    </li>
-                  </ul>
-                  <button class="ow-btn type-icon cross" @click="removeMessage(msg)">
-                    <i class="cross"></i>
-                    <div class="sr-only">닫기</div>
-                  </button>
-                </div>
-                <div class="toast-contents">
-                  <p class="text-para">{{ msg.message }}</p>
+        <div class="toast-list">
+          <div class="toast" v-for="message in messages" :key="message">
+            <div class="toast-body">
+              <div class="toast-area">
+                <div class="toast-wrap">
+                  <div class="toast-top mb-10">
+                    <ul class="summary-list xs">
+                      <li>
+                        <span class="head">이름</span>
+                      </li>
+                      <li>
+                        <span>조직명</span>
+                      </li>
+                      <li>
+                        <span>{{ message.time }}</span>
+                      </li>
+                    </ul>
+                    <button class="ow-btn type-icon cross" @click="removeMessage(message)">
+                      <i class="cross"></i>
+                      <div class="sr-only">닫기</div>
+                    </button>
+                  </div>
+                  <div class="toast-contents">
+                    <p class="text-para">{{ message.message }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -114,7 +106,8 @@ export default {
     const state = reactive({
       sidebar,
       alert,
-      receiveList
+      receiveList,
+      messages: computed(() => store.getters.latestMessages),
     });
 
     // Computed
@@ -136,20 +129,20 @@ export default {
 
     const alertOpen = computed(() => {
       return store.getters.getAlertOpen;
-    })
+    });
 
     // Methods
     const close = () => {
       store.commit('setCloseSidebar');
     };
 
-    const removeMessage = (msg) => {
-      store.commit('removeMessage', msg);
-    }
+    const removeMessage = (message) => {
+      store.dispatch('confirmMessage', message);
+    };
 
     const removeAllMessage = () => {
       store.commit('removeAllMessage');
-    }
+    };
 
     // const check = () => {};
 
@@ -171,12 +164,22 @@ export default {
       // Methods
       close,
       removeMessage,
-      removeAllMessage
+      removeAllMessage,
     };
   },
 };
 </script>
 <style lang="scss" scoped>
+.toast-list {
+  height: calc(100% - 80px);
+  overflow: auto;
+  .toast {
+    &:hover {
+      cursor: default;
+      transform: scale(0.98);
+    }
+  }
+}
 /** 
  * v-enter-from: enter의 시작 상태. 엘리먼트가 삽입되기 전에 적용되고 한 프레임 후에 제거됩니다.
  * v-enter-active: enter의 활성 상태. 전체 진입 단계 동안 적용됩니다. 엘리먼트가 삽입되기 전에 적용됩니다. 트랜지션 / 애니메이션이 완료되면 제거됩니다. 이 클래스는 진입 트랜지션에서 duration, delay, easing curve를 정의 하는데 사용 될 수 있습니다.
