@@ -18,13 +18,13 @@
                   <div class="toast-top mb-10">
                     <ul class="summary-list xs">
                       <li>
-                        <span class="head">이름</span>
+                        <span class="head">{{ message.userNm }}</span>
                       </li>
                       <li>
-                        <span>조직명</span>
+                        <span>{{ message.orgNm }}</span>
                       </li>
                       <li>
-                        <span>{{ message.time }}</span>
+                        <span>{{ message.dateTime }}</span>
                       </li>
                     </ul>
                     <button class="ow-btn type-icon cross" @click="removeMessage(message)">
@@ -107,7 +107,7 @@ export default {
       sidebar,
       alert,
       receiveList,
-      messages: computed(() => store.getters["alert/latestMessages"]),
+      messages: computed(() => store.getters["message/latestMessages"]),
     });
 
     // Computed
@@ -137,12 +137,10 @@ export default {
 
     // Methods
     const close = () => {
-      // state.sidebarOpen = false;
       store.commit('sidebar/close');
     };
 
     const removeMessage = (message) => {
-      // store.dispatch('confirmMessage', message);
       store.commit('message/remove', message);
     };
 

@@ -10,11 +10,9 @@ function publish(client, message) {
   }
 
   client.publish({
-    // destination: '/Pub',
     destination: '/ntf/Pub/Pub',
     body: JSON.stringify(message),
   });
-  console.log('message', message);
 }
 
 // SUBSCRIBES
@@ -34,17 +32,17 @@ function subscribe(store, message) {
     ':' +
     _.padStart(now.getMinutes(), 2, 0);
   const addItem = {
-    open: false,
     dateTime,
   };
   let returnedItem = Object.assign(addItem, item);
   store.commit('message/add', returnedItem);
-  store.commit('alert/open');
+  store.dispatch('alert/set', returnedItem);
   console.log('>>>> store', store.state.notification);
 }
 
-const URL = 'http://local.osstem.com/ntf/Auth/regist';
-// const URL = process.env.VUE_APP_SERVER_IP;
+const SERVER_IP = process.env.VUE_APP_SERVER_IP;
+const MAPPING_PATH = '/ntf/Auth/regist';
+const URL = SERVER_IP + MAPPING_PATH;
 
 export default {
   install: (app, options) => {
@@ -56,7 +54,7 @@ export default {
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
         store.dispatch('message/init');
-        client.subscribe('/ntf/Sub', (message) => {
+        client.subscribe('/Sub', (message) => {
           subscribe(store, message);
         });
       },

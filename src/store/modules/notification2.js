@@ -30,6 +30,7 @@ const alert = {
   namespaced: true,
   state: () => ({
     open: false,
+    index: 0,
     dateTime: '',
     userNm: '',
     orgNm: '',
@@ -42,23 +43,22 @@ const alert = {
     close(state) {
       state.open = false;
     },
-    set(state, item) {
+  },
+  actions: {
+    open(state) {
+      state.open = true;
+      return setTimeout(() => {
+        state.open = false;
+      }, 3000);
+    },
+    setData(state, item) {
+      state.index = item.index;
       state.dateTime = item.dateTime;
       state.userNm = item.userNm;
       state.orgNm = item.orgNm;
       state.message = item.message;
-    },
-  },
-  actions: {
-    open({ commit }) {
-      commit('open');
-      return setTimeout(() => {
-        commit('close');
-      }, 3000);
-    },
-    async set({ commit, dispatch }, item) {
-      await commit('set', item);
-      await dispatch('open');
+
+      open(state);
     },
   },
   getters: {
