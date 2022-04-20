@@ -52,10 +52,9 @@ export default {
 
     const dataMap = computed(() => {
       let items = props.items;
-      if (items instanceof Array) {
-        items = asCollectionView(items);
+      if (items instanceof Array || items instanceof CollectionView) {
+        items = ref(new DataMap(asCollectionView(items), 'value', 'name'));
       }
-      items = ref(new DataMap(items, 'value', 'name'));
       return unref(items);
     });
 
