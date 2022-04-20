@@ -9,7 +9,6 @@
       :display-member-path="dataMap.displayMemberPath"
       :selected-value-path="dataMap.selectedValuePath"
       :placeholder="placeholder"
-      :is-read-only="readonly"
       :initialized="initialized"
     ></wj-combo-box>
   </div>
@@ -40,7 +39,6 @@ export default {
       type: String,
       default: '',
     },
-    readonly: Boolean,
     items: {
       type: [Array, CollectionView, DataMap],
       default: () => {
@@ -54,9 +52,10 @@ export default {
 
     const dataMap = computed(() => {
       let items = props.items;
-      if (items instanceof Array || items instanceof CollectionView) {
-        items = ref(new DataMap(asCollectionView(items), 'value', 'name'));
+      if (items instanceof Array) {
+        items = asCollectionView(items);
       }
+      items = ref(new DataMap(items, 'value', 'name'));
       return unref(items);
     });
 
