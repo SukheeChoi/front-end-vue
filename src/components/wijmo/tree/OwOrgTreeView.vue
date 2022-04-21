@@ -1,9 +1,11 @@
 <template>
-  <ow-flex-wrap class="size-full" col>
-    <ow-flex-item fix>
+  <!-- tree menu -->
+  <div class="ow-node-tree-wrap">
+    <div class="ow-node-tree-head">
+      <h3>검색</h3>
       <ow-input search @lookup="lookup"></ow-input>
-    </ow-flex-item>
-    <ow-flex-item class="ow-scroll">
+    </div>
+    <div class="ow-node-tree-body">
       <ow-tree-view
         :initialized="initTreeView"
         :items-source="treeData"
@@ -13,14 +15,15 @@
         :expand-on-load="false"
         v-bind="$attrs"
       ></ow-tree-view>
-    </ow-flex-item>
-  </ow-flex-wrap>
+    </div>
+  </div>
 </template>
+
 <script>
 import _ from 'lodash';
 
 import { reactive, toRefs } from 'vue';
-import { addClass, removeClass } from '@grapecity/wijmo';
+import { addClass, removeClass, hasClass } from '@grapecity/wijmo';
 import OwTreeView from '@/components/wijmo/tree/OwTreeView';
 import { getOrganization } from '@/api/tree';
 
@@ -49,15 +52,21 @@ export default {
     const traversal = (nodes, keyword) => {
       const regex = /(<span class="highlight">|<\/span>)/gi;
       const keywordReg = new RegExp(keyword, 'gi');
+
       for (const node of nodes) {
         const dataItem = node.dataItem;
         const name = dataItem.orgNm ?? dataItem.userNm ?? '';
         const isMatched = !!keyword && name.includes(keyword);
+
         if (isMatched) {
           for (let self = node; self; self = self.parentNode) {
             self.isCollapsed = false;
             const element = self.element;
             const html = element.innerHTML.replace(regex, '');
+
+            if (keywordReg.test(element.textContent)) {
+              addClass(element, 'show');
+            }
             element.innerHTML = html.replace(keywordReg, '<span class="highlight">$&</span>');
             addClass(element, CLS_MATCHED);
           }
@@ -67,6 +76,17 @@ export default {
           const html = element.innerHTML.replace(regex, '');
           element.innerHTML = html;
           removeClass(element, CLS_MATCHED);
+        }
+        if (
+          node.parentNode &&
+          hasClass(node.parentNode.element, 'show') &&
+          hasClass(node.parentNode.element, CLS_MATCHED)
+        ) {
+          console.log(node);
+          if (hasClass(node.element, CLS_USER)) {
+            addClass(node.element, CLS_MATCHED);
+          }
+          console.log(node.parentNode, node);
         }
         if (node.nodes) {
           traversal(node.nodes, keyword);
@@ -152,6 +172,42 @@ $user-img: '~@/assets/images/icon/ico_people.svg';
   }
   :deep(.user) {
     @include image-default(#{$user-img});
+  }
+}
+
+// ow-node-tree
+.ow-node-tree-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border: 1px solid #d7dce3;
+  overflow: auto;
+  .ow-node-tree-head {
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+  }
+  .ow-node-tree-body {
+    padding: 6px;
+    flex: 1;
+    overflow: auto;
+  }
+}
+.ow-node-tree-head {
+  padding: 0 6px;
+  height: 34px;
+  border: 1px solid #d7dce3;
+  background-color: #f1f5f9;
+  display: flex;
+  justify-content: normal;
+  align-items: center;
+  h3 {
+    flex-shrink: 0;
+    font-size: 12px;
+    line-height: 100%;
+    + :deep(.ow-combobox) {
+      margin-left: 5px;
+    }
   }
 }
 </style>
