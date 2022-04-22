@@ -21,6 +21,7 @@ import OwInputTime from '@/components/common/OwInputTime';
 import OwInputNumber from '@/components/common/OwInputNumber';
 import OwModal from '@/components/common/OwModal';
 import OwPanel from '@/components/common/OwPanel';
+import OwProgress from '@/components/common/OwProgress';
 import OwRadio from '@/components/common/OwRadio';
 import OwRadioButton from '@/components/common/OwRadioButton';
 import OwSelect from '@/components/common/OwSelect';
@@ -63,6 +64,7 @@ let COMMON_COMPONENTS = {
   OwInputNumber,
   OwModal,
   OwPanel,
+  OwProgress,
   OwRadio,
   OwRadioButton,
   OwSelect,

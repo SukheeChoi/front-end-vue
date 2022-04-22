@@ -1,13 +1,6 @@
 <template>
   <div class="ow-grid-downloader" ref="root"></div>
-  <template v-if="progress">
-    <div class="progress-wrap">
-      <div class="progress-container">
-        <label for="file">Downloading progress:</label>
-        <progress id="file" max="100" :value="progress">{{ progress }}%</progress>
-      </div>
-    </div>
-  </template>
+  <ow-progress label="Downloading progress" :progress="progress"></ow-progress>
 </template>
 <script>
 import { FlexGrid } from '@grapecity/wijmo.grid';
@@ -98,17 +91,5 @@ export default {
 }
 .wj-popup-backdrop {
   z-index: 999;
-}
-.wj-gauge {
-  position: absolute;
-  width: 90%;
-  height: 50px;
-  z-index: 999;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-#file {
-  --width: 70%;
 }
 </style>
