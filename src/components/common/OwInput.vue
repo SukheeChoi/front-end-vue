@@ -83,6 +83,11 @@ export default {
       () => emit('update:modelValue', state.control.text)
     );
 
+    watch(
+      () => props.readonly,
+      (readonly) => (state.control.isReadOnly = readonly)
+    );
+
     return {
       root,
       initialized,
