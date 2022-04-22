@@ -2,16 +2,19 @@
 
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import store from '@/store';
 
 // PUBLISHES
 function publish(client, message) {
   if (!client || !client.connected) {
     console.log('client 연결실패', client);
   }
+  console.log('this', store);
 
   client.publish({
     destination: '/ntf/Pub/Pub',
     body: JSON.stringify(message),
+    headers: { Authorization: 'Bearer ' + store.getters.getToken },
   });
 }
 
@@ -23,7 +26,7 @@ function subscribe(store, message) {
   console.log('item', item);
 
   const now = new Date();
-  const dateTime =
+  const sndDtm =
     _.padStart(now.getMonth() + 1, 2, 0) +
     '-' +
     _.padStart(now.getDate(), 2, 0) +
@@ -32,7 +35,7 @@ function subscribe(store, message) {
     ':' +
     _.padStart(now.getMinutes(), 2, 0);
   const addItem = {
-    dateTime,
+    sndDtm,
   };
   let returnedItem = Object.assign(addItem, item);
   store.commit('message/add', returnedItem);
@@ -40,9 +43,8 @@ function subscribe(store, message) {
   console.log('>>>> store', store.state.notification);
 }
 
-const SERVER_IP = process.env.VUE_APP_SERVER_IP;
 const MAPPING_PATH = '/ntf/Auth/regist';
-const URL = SERVER_IP + MAPPING_PATH;
+const URL = process.env.VUE_APP_SERVER_IP + MAPPING_PATH;
 
 export default {
   install: (app, options) => {
@@ -54,7 +56,7 @@ export default {
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
         store.dispatch('message/init');
-        client.subscribe('/Sub', (message) => {
+        client.subscribe('/Sub/' + store.state.login.userInfo.empNo, (message) => {
           subscribe(store, message);
         });
       },
