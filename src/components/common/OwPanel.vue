@@ -68,6 +68,11 @@ export default {
       transition: all 250ms;
     }
   }
+  .ow-panel-header {
+    &:hover {
+      background-color: rgba(10, 76, 173, 1);
+    }
+  }
   :deep(.ow-content) {
     --bs-gutter: 0;
   }
