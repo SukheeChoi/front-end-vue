@@ -9,12 +9,11 @@ function publish(client, message) {
   if (!client || !client.connected) {
     console.log('client 연결실패', client);
   }
-  console.log('this', store);
 
   client.publish({
     destination: '/ntf/Pub/Pub',
     body: JSON.stringify(message),
-    headers: { Authorization: 'Bearer ' + store.getters.getToken },
+    // headers: { Authorization: 'Bearer ' + store.getters.getToken },
   });
 }
 
@@ -26,7 +25,7 @@ function subscribe(store, message) {
   console.log('item', item);
 
   const now = new Date();
-  const sndDtm =
+  const dateTime =
     _.padStart(now.getMonth() + 1, 2, 0) +
     '-' +
     _.padStart(now.getDate(), 2, 0) +
@@ -35,7 +34,7 @@ function subscribe(store, message) {
     ':' +
     _.padStart(now.getMinutes(), 2, 0);
   const addItem = {
-    sndDtm,
+    dateTime,
   };
   let returnedItem = Object.assign(addItem, item);
   store.commit('message/add', returnedItem);
@@ -51,7 +50,9 @@ export default {
     const store = app.config.globalProperties.$store;
     const client = new Client({
       webSocketFactory: () => {
-        return new SockJS(URL);
+        return new SockJS(URL, null, {
+          headers: { Authorization: 'Bearer ' + store.getters.getToken },
+        });
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
