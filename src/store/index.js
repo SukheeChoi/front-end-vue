@@ -6,6 +6,7 @@ import notification from './modules/notification';
 import loading from './modules/loading';
 import comData from './modules/comData';
 import savedInfo from './modules/savedInfo';
+import progress from '@/store/modules/progress';
 
 const resetState = () => {
   return {
@@ -48,6 +49,7 @@ const modules = {
   loading,
   comData,
   savedInfo,
+  progress,
 };
 
 function loadModules() {

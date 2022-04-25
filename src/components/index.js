@@ -19,6 +19,7 @@ import OwInput from '@/components/common/OwInput';
 import OwInputDate from '@/components/common/OwInputDate';
 import OwInputTime from '@/components/common/OwInputTime';
 import OwInputNumber from '@/components/common/OwInputNumber';
+import OwInputFile from '@/components/common/OwInputFile';
 import OwModal from '@/components/common/OwModal';
 import OwPanel from '@/components/common/OwPanel';
 import OwProgress from '@/components/common/OwProgress';
@@ -62,6 +63,7 @@ let COMMON_COMPONENTS = {
   OwInputDate,
   OwInputTime,
   OwInputNumber,
+  OwInputFile,
   OwModal,
   OwPanel,
   OwProgress,

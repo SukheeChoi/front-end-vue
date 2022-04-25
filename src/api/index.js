@@ -86,13 +86,18 @@ let isTokenRefreshing = false;
 instance.interceptors.response.use(
   (response) => {
     console.log(response);
-    const responseCode = response.data.code;
+    const data = response.data;
+    if (data instanceof Blob) {
+      store.commit('setShowLoadingImage', false);
+      return data;
+    }
+    const responseCode = data.code;
     const { config } = response;
 
     if (responseCode !== 'OK') {
       if (!isTokenRefreshing) {
         isTokenRefreshing = true;
-        handleError(response.data);
+        handleError(data);
       }
       const retryRequest = new Promise((resolve) => {
         const accessToken = store.getters.getToken;
