@@ -25,7 +25,7 @@
       <i class="circle"></i>
       <span class="sr-only">팝업 보기</span>
     </button>
-    <teleport to="#teleport">
+    <teleport to="#ows-teleport-modal">
       <ow-modal type="XXL" ref="modal">
         <template #action>
           <button type="button" class="ow-btn type-base color-dark" @click.prevent="$refs.modal.onCancel">확인</button>

@@ -1,66 +1,15 @@
 <template>
   <router-view></router-view>
-  <ow-dialog ref="dialog"></ow-dialog>
+  <app-teleport></app-teleport>
 </template>
 <script>
-import { ref, provide } from 'vue';
-
-import { app } from '@/main';
-import { t } from '@/plugins/i18n';
-
+import AppTeleport from '@/components/AppTeleport';
 export default {
   name: 'App',
-  setup() {
-    const dialog = ref(null);
-
-    const acceptButtonText = t('dialog.button.accept');
-    const cancelButtonText = t('dialog.button.cancel');
-
-    const $dialog = {
-      alert: (message, options = {}) => {
-        return dialog.value.open(
-          _.assign(
-            { type: 'alert', message },
-            {
-              acceptButtonText,
-              cancelButtonText,
-            },
-            options
-          )
-        );
-      },
-      confirm: (message, options = {}) => {
-        return dialog.value.open(
-          _.assign(
-            { type: 'confirm', message },
-            {
-              acceptButtonText,
-              cancelButtonText,
-            },
-            options
-          )
-        );
-      },
-      prompt: (message, options = {}) => {
-        return dialog.value.open(
-          _.assign(
-            { type: 'prompt', message },
-            {
-              acceptButtonText,
-              cancelButtonText,
-            },
-            options
-          )
-        );
-      },
-    };
-
-    provide('$dialog', (app.config.globalProperties.$dialog = $dialog));
-
-    return {
-      dialog,
-    };
+  components: {
+    AppTeleport,
   },
+  setup() {},
 };
 </script>
 

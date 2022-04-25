@@ -10,12 +10,12 @@
           <slot name="action">
             <template v-if="isConfirm || isPrompt">
               <button type="button" class="ow-btn type-base color-gray" @click.prevent="onCancel">
-                {{ cancelButtonText }}
+                {{ cancelButtonText || $t('dialog.button.cancel') }}
               </button>
             </template>
             <template v-if="isAlert || isConfirm || isPrompt">
               <button type="button" class="ow-btn type-base color-dark" @click.prevent="onAccept">
-                {{ acceptButtonText }}
+                {{ acceptButtonText || $t('dialog.button.accept') }}
               </button>
             </template>
           </slot>
