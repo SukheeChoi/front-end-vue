@@ -2,6 +2,7 @@
 
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import store from '@/store';
 
 // PUBLISHES
 function publish(client, message) {
@@ -12,6 +13,7 @@ function publish(client, message) {
   client.publish({
     destination: '/ntf/Pub/Pub',
     body: JSON.stringify(message),
+    // headers: { Authorization: 'Bearer ' + store.getters.getToken },
   });
 }
 
@@ -40,21 +42,22 @@ function subscribe(store, message) {
   console.log('>>>> store', store.state.notification);
 }
 
-const SERVER_IP = process.env.VUE_APP_SERVER_IP;
 const MAPPING_PATH = '/ntf/Auth/regist';
-const URL = SERVER_IP + MAPPING_PATH;
+const URL = process.env.VUE_APP_SERVER_IP + MAPPING_PATH;
 
 export default {
   install: (app, options) => {
     const store = app.config.globalProperties.$store;
     const client = new Client({
       webSocketFactory: () => {
-        return new SockJS(URL);
+        return new SockJS(URL, null, {
+          headers: { Authorization: 'Bearer ' + store.getters.getToken },
+        });
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
         store.dispatch('message/init');
-        client.subscribe('/Sub', (message) => {
+        client.subscribe('/Sub/' + store.state.login.userInfo.empNo, (message) => {
           subscribe(store, message);
         });
       },
