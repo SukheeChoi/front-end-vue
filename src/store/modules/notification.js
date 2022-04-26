@@ -1,6 +1,7 @@
 'use strict';
 
 import { getAllUnconfirmedMessages, confirmMessage, allConfirmMessages } from '@/api/message';
+import { instance } from '@/main';
 
 // 보여줄 최대 메시지 개수
 const NUMBER_OF_MESSAGES_TO_DISPLAY = process.env.VUE_APP_NUMBER_OF_MESSAGES_TO_DISPLAY ?? 20;
@@ -30,10 +31,26 @@ const alert = {
   namespaced: true,
   state: () => ({
     open: false,
-    dateTime: '',
-    userNm: '',
-    orgNm: '',
-    message: '',
+    msgNo: '',
+    refMsgNo: '',
+    cmpnCd: '',
+    bizCd: '',
+    topic: '',
+    title: '',
+    msg: '',
+    attchCnt: '',
+    sndId: '',
+    sndDtm: '',
+    rcvDtm: '',
+    rcvIds: '',
+    rcvOrgs: '',
+    rcvGrpIds: '',
+    rdngProcYn: 'N',
+    delYn: 'N',
+    scrnUrl: '',
+    method: '',
+    reqParams: '',
+    refId: '',
   }),
   mutations: {
     open(state) {
@@ -46,7 +63,12 @@ const alert = {
       state.dateTime = item.dateTime;
       state.userNm = item.userNm;
       state.orgNm = item.orgNm;
-      state.message = item.message;
+      state.msg = item.msg;
+      state.sndId = item.sndId;
+      state.sndDtm = item.sndDtm;
+    },
+    setUserInfo(state) {
+      // state.cmpnCd =
     },
   },
   actions: {
@@ -69,16 +91,43 @@ const alert = {
       return state.orgNm;
     },
     dateTime(state) {
-      return state.dateTime;
+      return state.sndDtm;
     },
     message(state) {
-      return state.message;
-    },
-    index(state) {
-      return state.index++;
+      return state.msg;
     },
     open(state) {
       return state.open;
+    },
+  },
+};
+
+const socket = {
+  namespaced: true,
+  state: () => ({
+    connect: false,
+  }),
+  mutations: {
+    connect(state) {
+      state.connect = true;
+    },
+    disconnect(state) {
+      state.connect = false;
+    },
+  },
+  actions: {
+    async connect({ commit }) {
+      await instance.$connect();
+      commit('connect');
+    },
+    async disconnect({ commit }) {
+      await instance.$disconnect();
+      commit('disconnect');
+    },
+  },
+  getters: {
+    connect(state) {
+      return state.connect;
     },
   },
 };
@@ -114,7 +163,7 @@ const message = {
     // 메시지 초기화
     async init({ commit }) {
       // 서버로 확인하지 않은 메시지 목록을 받아서 설정
-      commit('set', await getAllUnconfirmedMessages()); // 두 번째 인자는 await 서버 다녀오기
+      // commit('set', await getAllUnconfirmedMessages()); // 두 번째 인자는 await 서버 다녀오기
     },
     // 메시지 확인(지우기)
     async confirm({ commit }, message) {
@@ -150,5 +199,5 @@ const message = {
 };
 
 export default {
-  modules: { alert, message, sidebar },
+  modules: { alert, message, sidebar, socket },
 };

@@ -11,7 +11,7 @@ function publish(client, message) {
   }
 
   client.publish({
-    destination: '/ntf/Pub/Pub',
+    destination: '/ntf/Pub/send',
     body: JSON.stringify(message),
     // headers: { Authorization: 'Bearer ' + store.getters.getToken },
   });
@@ -42,7 +42,7 @@ function subscribe(store, message) {
   console.log('>>>> store', store.state.notification);
 }
 
-const MAPPING_PATH = '/ntf/Auth/regist';
+const MAPPING_PATH = '/ntf/Auth/connect';
 const URL = process.env.VUE_APP_SERVER_IP + MAPPING_PATH;
 
 export default {
@@ -51,29 +51,39 @@ export default {
     const client = new Client({
       webSocketFactory: () => {
         return new SockJS(URL, null, {
-          headers: { Authorization: 'Bearer ' + store.getters.getToken },
+          // headers: { Authorization: 'Bearer ' + store.getters.getToken },
         });
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
         store.dispatch('message/init');
-        client.subscribe('/Sub/' + store.state.login.userInfo.empNo, (message) => {
-          subscribe(store, message);
-        });
+        client.subscribe(
+          '/Sub/' + store.state.login.userInfo.empNo,
+          (message) => {
+            subscribe(store, message);
+          },
+          { Authorization: 'Bearer ' + store.getters.getToken }
+        );
       },
       onStompError: (frame) => {
         console.log('stomp error', frame);
       },
     });
-    client.activate();
 
     app.mixin({
       methods: {
         $publish: function (message) {
           publish(client, message);
         },
+        $connect: function () {
+          console.log('---------- connect start');
+          client.activate();
+        },
+        $disconnect: function () {
+          console.log('---------- disconnect start');
+          client.deactivate();
+        },
       },
     });
-    console.log('client', app, client);
   },
 };

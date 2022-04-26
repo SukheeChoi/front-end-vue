@@ -82,6 +82,7 @@
 <script>
 import { requestLogin, getUserInfo, getMenuList } from '@/api/login.js';
 import store from '@/store';
+import { instance } from '@/main';
 export default {
   name: 'AppLogin',
   data() {
@@ -113,6 +114,8 @@ export default {
         this.$store.commit('setUserInfo', userInfo);
         //return await this.getMenus();
         this.$router.push('/');
+
+        this.$store.dispatch('socket/connect');
       }
     },
     async getMenus() {
@@ -138,6 +141,9 @@ export default {
 
         this.$router.push('/');
       }
+    },
+    async connectSocket() {
+      instance.$connect();
     },
   },
 };

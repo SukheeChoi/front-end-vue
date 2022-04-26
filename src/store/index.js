@@ -14,6 +14,7 @@ const resetState = () => {
       accessToken: '',
       userInfo: '',
       ttl: '',
+      isLogin: false,
     },
     menu: {
       screenList: [],

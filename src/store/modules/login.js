@@ -4,6 +4,7 @@ export default {
     accessToken: '',
     userInfo: '',
     ttl: '',
+    isLogin: false,
   },
   getters: {
     init(state) {
@@ -61,6 +62,9 @@ export default {
 
       return ehrOrgList || [];
     },
+    isLogin(state) {
+      return state.isLogin;
+    },
   },
   mutations: {
     setAuth(state, payload) {
@@ -83,6 +87,7 @@ export default {
       //const jsonData = JSON.parse(payload);
       const jsonData = payload;
       state.userInfo = jsonData;
+      state.isLogin = true;
     },
   },
 };
