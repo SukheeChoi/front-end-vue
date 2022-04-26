@@ -17,7 +17,7 @@
   </wj-flex-grid>
 </template>
 <script>
-import { hasClass, Tooltip, Key, setChecked } from '@grapecity/wijmo';
+import { addClass, hasClass, CollectionView, Key, setChecked } from '@grapecity/wijmo';
 import {
   AllowDragging,
   AllowMerging,
@@ -31,7 +31,11 @@ import {
   SelMove,
 } from '@grapecity/wijmo.grid';
 
+import { RestCollectionView } from '@grapecity/wijmo.rest';
+
 import { OwSelector } from '@/utils/wijmo.grid';
+
+const BINDING_SYMBOL_SELECTOR = Symbol('Selector');
 
 export default {
   name: 'OwFlexGrid',
@@ -53,6 +57,9 @@ export default {
   },
   setup(props) {
     const init = (s) => {
+      // 비어있는 컬렉션 생성
+      s.itemsSource = new CollectionView();
+
       // 모든 RowHeaders 제거
       s.rowHeaders.columns.clear();
 
@@ -88,10 +95,32 @@ export default {
         // [ISSUE | 2022.02.25] FlexGrid의 FormatItem에 등록하는 경우 Rendering이 수행된 지점만 formatItem이 호출됨
         // => formatItem의 addHandler 대신 loadedRows의 addHandler를 사용함
         s.loadedRows.addHandler(s.selector.onFormatItem, s.selector);
-
         // [ISSUE | 2022.02.17] RowRange, ListBox, MultiRange인 경우 정상적으로 동작하지 않음
         s.selectionMode = props.selectionMode > SelectionMode.Row ? SelectionMode.Row : props.selectionMode;
       }
+
+      // 셀이 변경되면 즉시 반영한다.
+      s.cellEditEnded.addHandler((s, e) => {
+        const ecv = s.editableCollectionView;
+        if (ecv) {
+          const editHandler = s._edtHdl;
+          editHandler._commitRowEdits();
+        }
+      });
+
+      // 필수 열 체크
+      s.formatItem.addHandler((s, e) => {
+        if (CellType.Cell === e.panel.cellType) {
+          const row = e.getRow();
+          const col = e.getColumn();
+          const item = row.dataItem;
+          const binding = col._binding;
+          const value = binding.getValue(item);
+          if (!col.isReadOnly && col.isRequired && _.isEmpty(value)) {
+            addClass(e.cell, 'ow-grid-required');
+          }
+        }
+      });
 
       // [ISSUE | 2022.03.04] 100%를 넘는 너비로 인해 상위 엘리먼트의 너비를 기준으로 resize 이벤트 발생시 변경
       const resize = () => {
@@ -247,7 +276,7 @@ export default {
         &::before {
           content: '\1f512\fe0e';
           position: absolute;
-          right: 2px;
+          right: 11px;
         }
       }
       label {

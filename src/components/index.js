@@ -32,11 +32,11 @@ import OwSpinner from '@/components/common/OwSpinner';
 import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
 
-import OwGrid from '@/components/wijmo/grid/OwGrid';
-import OwFlexGrid from '@/components/wijmo/grid/OwFlexGrid';
-import OwTreeGrid from '@/components/wijmo/grid/OwTreeGrid';
+import OwGrid from '@/components/grid/OwGrid';
+import OwFlexGrid from '@/components/grid/OwFlexGrid';
+import OwTreeGrid from '@/components/grid/OwTreeGrid';
 
-import OwOrgTreeView from '@/components/wijmo/tree/OwOrgTreeView';
+import OwOrgTreeView from '@/components/tree/OwOrgTreeView';
 
 export function registerWijmo(app) {
   registerCore(app);

@@ -24,7 +24,7 @@ import _ from 'lodash';
 
 import { reactive, toRefs } from 'vue';
 import { addClass, removeClass, hasClass } from '@grapecity/wijmo';
-import OwTreeView from '@/components/wijmo/tree/OwTreeView';
+import OwTreeView from '@/components/tree/OwTreeView';
 import { getOrganization } from '@/api/tree';
 
 const CLS_FILTERED = 'filtered';
