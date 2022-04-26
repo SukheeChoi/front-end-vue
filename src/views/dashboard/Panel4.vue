@@ -5,7 +5,7 @@
       <ow-flex-item :gap="6">
         <ow-flex-wrap col style="display: block">
           <ow-flex-item style="height:380px;">
-            <ow-org-tree-view :with-users="withUsers" :item-clicked="clicked" :show-checkboxes="true" :checkedItemsChanged="checkedItemsChanged" :initialized="initialized"/>
+            <ow-org-tree-view :with-users="withUsers" :show-checkboxes="true" :checkedItemsChanged="checkedItemsChanged"/>
           </ow-flex-item>
         </ow-flex-wrap>
         <ow-flex-wrap col>
@@ -33,7 +33,7 @@
           </ow-flex-item>
           <h1>message</h1>
           <ow-flex-item>
-            <textarea v-model="sendList.message" @keyup="sendMessage"/>
+            <textarea v-model="sendList.msg" @keyup="sendMessage"/>
           </ow-flex-item>
         </ow-flex-wrap>
       </ow-flex-item>
@@ -58,30 +58,28 @@ export default {
       checkedOrgs : [],
       connect : computed(() => store.getters["socket/connect"]),
       sendList : {
-        message : '',
+        msg : '',
         userNm,
         orgNm,
       },
     });
 
-    const initialized = (s) => {
-      s.checkedItemsChanged.addHandler(() => {
-        for (const currentDataItem of s.checkedItems) {
-          const currentNode = s.getNode(currentDataItem);
-          const parentNode = currentNode.parentNode;
-          const parentDataItem = parentNode.dataItem;
-          // 부모, 자식 데이터 mix
-          console.log('currentDataItem', currentDataItem);
-          console.log('currentNode', currentNode);
-          console.log('parentNode', parentNode);
-          console.log('parentDataItem', parentDataItem);
-          const currentDataItemWithParentPart = {
-            orgNm: parentDataItem.orgNm,
-            ...currentDataItem,
-          };
-        }
-      });
-    }
+    // const initialized = (s) => {
+    //   s.checkedItemsChanged.addHandler(() => {
+    //     for (const currentDataItem of s.checkedItems) {
+    //       const currentNode = s.getNode(currentDataItem);
+    //       const parentNode = currentNode.parentNode;
+    //       const parentDataItem = parentNode.dataItem;
+
+    //       // 부모, 자식 데이터 mix
+    //       state.checkedOrgs = _.xor(state.checkedUsers, s.checkedAllItems);
+    //       const currentDataItemWithParentPart = {
+    //         orgNm: parentDataItem.orgNm,
+    //         ...currentDataItem,
+    //       };
+    //     }
+    //   });
+    // }
 
     const connectSocket = (e) => {
       store.dispatch('socket/connect');
@@ -91,16 +89,8 @@ export default {
       store.dispatch('socket/disconnect');
     }
 
-    const clicked = ({ selectedItem: item }) => {
-      console.log('item', item);
-    };
-
     const checkedItemsChanged = (e) => {
       state.checkedUsers = e.checkedItems;
-      console.log('e', e);
-      if (e.selectedItem.orgNm) {
-        // state.checkedOrgs
-      }
     }
 
     const sendMessage = (e) => {
@@ -111,10 +101,9 @@ export default {
 
     return {
       ...toRefs(state),
-      initialized,
+      // initialized,
       connectSocket,
       disconnectSocket,
-      clicked,
       checkedItemsChanged,
       sendMessage
     };

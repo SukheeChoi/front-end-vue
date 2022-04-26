@@ -39,7 +39,6 @@ function subscribe(store, message) {
   let returnedItem = Object.assign(addItem, item);
   store.commit('message/add', returnedItem);
   store.dispatch('alert/set', returnedItem);
-  console.log('>>>> store', store.state.notification);
 }
 
 const MAPPING_PATH = '/ntf/Auth/connect';
@@ -58,7 +57,8 @@ export default {
         console.log('>>>>>>>>>>>>> connect', frame);
         store.dispatch('message/init');
         client.subscribe(
-          '/Sub/' + store.state.login.userInfo.empNo,
+          // '/ntf/Sub/' + store.state.login.userInfo.empNo,
+          '/ntf/Sub/messages',
           (message) => {
             subscribe(store, message);
           },
