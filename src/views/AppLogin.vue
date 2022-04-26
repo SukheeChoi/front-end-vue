@@ -115,7 +115,9 @@ export default {
         //return await this.getMenus();
         this.$router.push('/');
 
-        this.$store.dispatch('socket/connect');
+        if (instance.$connect) {
+          this.$store.dispatch('socket/connect');
+        }
       }
     },
     async getMenus() {
@@ -141,9 +143,6 @@ export default {
 
         this.$router.push('/');
       }
-    },
-    async connectSocket() {
-      instance.$connect();
     },
   },
 };
