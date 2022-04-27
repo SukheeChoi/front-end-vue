@@ -6,10 +6,10 @@
     :initialized="init"
   ></wj-tree-view>
 </template>
-<script>
-import { reactive, toRefs } from 'vue';
 
+<script>
 import { WjTreeView } from '@grapecity/wijmo.vue2.nav';
+import { TreeView } from '@grapecity/wijmo.nav';
 
 export default {
   name: 'OwTreeView',
@@ -23,13 +23,7 @@ export default {
     showCheckboxes: Boolean,
   },
   setup(props) {
-    const state = reactive({
-      treeview: undefined,
-    });
-
     const init = (s) => {
-      state.treeview = s;
-
       s.formatItem.addHandler((s, e) => {
         const item = e.dataItem;
         let display;
@@ -42,18 +36,30 @@ export default {
         } else {
           display = item[s.displayMemberPath];
         }
-        const textNode = e.element.querySelector('.wj-node-text');
+        const textNode = e.element.querySelector('.' + TreeView._CNDT);
         if (textNode) {
           textNode.textContent = display;
         }
       });
+
+      s.checkedItemsChanged.addHandler(
+        function () {
+          this.checkedAllItems = [];
+          const selector = '.' + TreeView._CND + ' > input:checked.' + TreeView._CNDC;
+          const checkboxes = this._root.querySelectorAll(selector);
+          for (const checkbox of checkboxes) {
+            const data = checkbox.parentElement[TreeView._DATAITEM_KEY];
+            this.checkedAllItems.push(data);
+          }
+        }.bind(s)
+      );
+
       if (props.initialized) {
         props.initialized(s);
       }
     };
 
     return {
-      ...toRefs(state),
       init,
     };
   },
