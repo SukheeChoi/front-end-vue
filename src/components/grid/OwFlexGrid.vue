@@ -17,7 +17,7 @@
   </wj-flex-grid>
 </template>
 <script>
-import { addClass, hasClass, CollectionView, Key, setChecked } from '@grapecity/wijmo';
+import { addClass, hasClass, createElement, CollectionView, Key, setChecked } from '@grapecity/wijmo';
 import {
   AllowDragging,
   AllowMerging,
@@ -25,6 +25,8 @@ import {
   AllowResizing,
   AllowSorting,
   CellType,
+  CellRange,
+  CellEditEndingEventArgs,
   Column,
   HeadersVisibility,
   SelectionMode,
@@ -215,33 +217,74 @@ export default {
       s.addEventListener(s.hostElement, 'keyup', tabIndexHandler);
 
       const setCheckbox = () => {
-        s.columns.forEach((col) => {
-          if (col.cssClass === 'checkbox') {
-            col.isReadOnly = true;
-            col.cellTemplate = `
-              <label>
-                <input type="checkbox" class="wj-cell-check" tabindex="-1" style="cursor: default;">
-                <span></span>
-              </label>
-            `;
+        const formatItem = (s, e) => {
+          const row = e.getRow();
+          const column = e.getColumn();
+          const dataItem = row.dataItem;
+          const cell = e.cell;
+          const cellType = e.panel.cellType;
+          if (CellType.Cell === cellType) {
+            const cssClass = column.cssClass;
+            if (cssClass && cssClass.includes('checkbox')) {
+              cell.textContent = '';
+              const element = createElement(`
+                <label>
+                  <input type="checkbox" class="wj-cell-check" />
+                  <span class="ow-cell-check"></span>
+                </label>
+              `);
+              const input = element.querySelector('input');
+              const value = column._binding.getValue(dataItem);
+              setChecked(input, value === 'Y');
+              if (column.isReadOnly) {
+                input.disabled = true;
+                input.style.cursor = 'default';
+              }
+              cell.insertBefore(element, cell.firstChild);
+            }
           }
-        });
-        s.formatItem.addHandler((s, e) => {
-          let row = e.panel.rows[e.row],
-            col = e.panel.columns[e.col];
-
-          if (e.panel.cellType === CellType.Cell && col.cssClass === 'checkbox') {
-            let input = e.cell.querySelector('input'),
-              check = row.dataItem[col.binding] === 'Y' ? true : false,
-              value = check ? 'N' : 'Y';
-
-            setChecked(input, check);
-
-            input.addEventListener('click', () => {
-              s.setCellData(s.selection.row, col.binding, value);
-            });
+        };
+        const click = function (e) {
+          if (e.target instanceof HTMLElement && hasClass(e.target, 'ow-cell-check')) {
+            const target = e.target.previousElementSibling;
+            const hit = s.hitTest(e);
+            const row = hit.getRow();
+            const column = hit.getColumn();
+            if (!column.isReadOnly && hasClass(target, 'wj-cell-check')) {
+              const collectionView = s.editableCollectionView;
+              let isUpdate = false;
+              let isEdit = collectionView instanceof CollectionView && collectionView.refreshOnEdit;
+              if (isEdit) {
+                isUpdate = true;
+                collectionView.beginUpdate();
+              }
+              s.deferUpdate(function () {
+                const dataItem = row.dataItem;
+                if (dataItem) {
+                  const checked = (target.checked = !target.checked) ? 'Y' : 'N';
+                  if (dataItem[column.binding] !== checked) {
+                    collectionView.editItem(dataItem);
+                    const range = new CellRange(row.index, column.index);
+                    const event = new CellEditEndingEventArgs(s.cells, range, dataItem[column.binding]);
+                    if (s.onCellEditEnding(event)) {
+                      column._binding.setValue(dataItem, checked);
+                      s.onCellEditEnded(event);
+                    }
+                  }
+                }
+              });
+              collectionView.commitEdit();
+              if (isUpdate) {
+                collectionView.endUpdate();
+              }
+              e.preventDefault();
+            }
           }
-        });
+        };
+        s.formatItem.removeHandler(formatItem);
+        s.removeEventListener(s.hostElement, 'click', click);
+        s.formatItem.addHandler(formatItem);
+        s.addEventListener(s.hostElement, 'click', click);
       };
 
       if (props.allowCheckbox) {
@@ -272,11 +315,16 @@ export default {
       &.wj-state-active {
         background-color: rgba(180, 220, 255, 1);
       }
-      &[aria-readonly='true']:hover {
-        &::before {
-          content: '\1f512\fe0e';
-          position: absolute;
-          right: 11px;
+      &[aria-readonly='true'] {
+        &:hover {
+          &::before {
+            content: '\1f512\fe0e';
+            position: absolute;
+            right: 11px;
+          }
+        }
+        .wj-btn.wj-btn-glyph {
+          display: none;
         }
       }
       label {
