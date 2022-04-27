@@ -121,7 +121,9 @@ export default {
           if (!col.isReadOnly && col.isRequired && _.isEmpty(value)) {
             addClass(e.cell, 'ow-grid-required');
           }
-          toggleClass(e.cell, 'wj-state-readonly');
+          if (!s.isReadOnly) {
+            toggleClass(e.cell, 'wj-state-readonly', !s.canEditCell(row.index, col.index));
+          }
         }
       });
 
@@ -291,6 +293,9 @@ export default {
       if (props.allowCheckbox) {
         setCheckbox();
       }
+
+      // 0.1 초 후에 모든 셀 리프레시
+      setTimeout(() => s.refreshCells(false, true, true), 100);
 
       if (props.initialized) {
         props.initialized(s);
