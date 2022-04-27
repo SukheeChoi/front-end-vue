@@ -29,7 +29,7 @@ const resetState = () => {
 const plugins = [
   createPersistedState({
     key: 'osstem',
-    paths: ['login'],
+    paths: ['login', 'menu'],
   }),
 ];
 

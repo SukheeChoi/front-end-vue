@@ -53,6 +53,7 @@ const routes = [
   },
 ];
 function loadRoutes() {
+  /*
   console.log('initialize loadRoutes');
   store.commit('setRouteRootChildClear');
   var routeRootList = store.getters.getRouteRootList;
@@ -61,7 +62,7 @@ function loadRoutes() {
     store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
     routes.push(routeRootList[i]);
   }
-
+*/
   const context = require.context('@@', true, /(\/routes\/)index\.js$/);
   for (const key of context.keys()) {
     const module = context(key);
@@ -93,6 +94,7 @@ router.beforeEach(async (to, from, next) => {
   const nowTime = now.getTime();
 
   if (devMode === false && to.fullPath !== '/login' && store.getters.getTtl < now.getTime()) {
+    console.log('need refreshing');
     const newData = await requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
     //login.setAuth(newData);
     store.commit('setAuth', newData.data.data);
