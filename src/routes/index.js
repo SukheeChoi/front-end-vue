@@ -53,7 +53,6 @@ const routes = [
   },
 ];
 function loadRoutes() {
-  /*
   console.log('initialize loadRoutes');
   store.commit('setRouteRootChildClear');
   var routeRootList = store.getters.getRouteRootList;
@@ -62,7 +61,7 @@ function loadRoutes() {
     store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
     routes.push(routeRootList[i]);
   }
-*/
+
   const context = require.context('@@', true, /(\/routes\/)index\.js$/);
   for (const key of context.keys()) {
     const module = context(key);
