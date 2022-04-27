@@ -240,7 +240,8 @@ export class GridApi extends CollectionView {
       }
 
       if (col.binding === field.id) {
-        e.cell.setAttribute('aria-readonly', true);
+        // e.cell.setAttribute('aria-readonly', true);
+        col.isReadOnly = true;
       }
     });
   }
