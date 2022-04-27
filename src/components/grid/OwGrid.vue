@@ -437,6 +437,7 @@ export default {
         if (root) {
           root.scrollTop = 0;
         }
+        setTimeout(() => s.refreshCells(false), 30);
       }; // props.read
       // 저장
       PM.saveRows = async () => {
@@ -577,6 +578,7 @@ export default {
       resetRows,
       exportRows,
       lookup,
+      applier,
     };
   },
 };

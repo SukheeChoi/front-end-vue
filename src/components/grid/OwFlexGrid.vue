@@ -294,9 +294,6 @@ export default {
         setCheckbox();
       }
 
-      // 0.1 초 후에 모든 셀 리프레시
-      setTimeout(() => s.refreshCells(false, true, true), 100);
-
       if (props.initialized) {
         props.initialized(s);
       }
