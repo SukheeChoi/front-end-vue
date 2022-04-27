@@ -121,9 +121,7 @@ export default {
           if (!col.isReadOnly && col.isRequired && _.isEmpty(value)) {
             addClass(e.cell, 'ow-grid-required');
           }
-          if (!s.isReadOnly) {
-            toggleClass(e.cell, 'wj-state-readonly', !s.canEditCell(row.index, col.index));
-          }
+          toggleClass(e.cell, 'wj-state-readonly', s.isReadOnly || !s.canEditCell(row.index, col.index));
         }
       });
 
@@ -323,7 +321,7 @@ export default {
           &::before {
             content: '\1f512\fe0e';
             position: absolute;
-            right: 11px;
+            right: 3px;
           }
         }
         // DataMap의 우측 화살표 제거
