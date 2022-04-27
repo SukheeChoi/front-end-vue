@@ -129,7 +129,9 @@ export default {
         this.$store.commit('setRouteRootList');
         var routeRootList = this.$store.getters.getRouteRootList;
         for (var i = 0; i < routeRootList.length; i++) {
-          this.$store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
+          if (screenList[i + 1].children != null) {
+            this.$store.commit('setRouteChildList', { root: routeRootList[i], child: screenList[i + 1].children });
+          }
         }
         for (var i = 0; i < routeRootList.length; i++) {
           console.log(routeRootList);

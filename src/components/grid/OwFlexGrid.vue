@@ -17,7 +17,7 @@
   </wj-flex-grid>
 </template>
 <script>
-import { addClass, hasClass, createElement, CollectionView, Key, setChecked } from '@grapecity/wijmo';
+import { addClass, hasClass, toggleClass, createElement, CollectionView, Key, setChecked } from '@grapecity/wijmo';
 import {
   AllowDragging,
   AllowMerging,
@@ -110,7 +110,6 @@ export default {
         }
       });
 
-      // 필수 열 체크
       s.formatItem.addHandler((s, e) => {
         if (CellType.Cell === e.panel.cellType) {
           const row = e.getRow();
@@ -118,9 +117,11 @@ export default {
           const item = row.dataItem;
           const binding = col._binding;
           const value = binding.getValue(item);
+          // 필수 열 체크
           if (!col.isReadOnly && col.isRequired && _.isEmpty(value)) {
             addClass(e.cell, 'ow-grid-required');
           }
+          toggleClass(e.cell, 'wj-state-readonly');
         }
       });
 
@@ -315,7 +316,7 @@ export default {
       &.wj-state-active {
         background-color: rgba(180, 220, 255, 1);
       }
-      &[aria-readonly='true'] {
+      &.wj-state-readonly {
         &:hover {
           &::before {
             content: '\1f512\fe0e';
