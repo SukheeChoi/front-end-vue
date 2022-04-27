@@ -323,7 +323,8 @@ export default {
             right: 11px;
           }
         }
-        .wj-btn.wj-btn-glyph {
+        // DataMap의 우측 화살표 제거
+        .wj-btn.wj-btn-glyph.wj-right.wj-elem-dropdown {
           display: none;
         }
       }
