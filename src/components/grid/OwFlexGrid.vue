@@ -33,8 +33,6 @@ import {
   SelMove,
 } from '@grapecity/wijmo.grid';
 
-import { RestCollectionView } from '@grapecity/wijmo.rest';
-
 import { OwSelector } from '@/utils/wijmo.grid';
 
 const BINDING_SYMBOL_SELECTOR = Symbol('Selector');
