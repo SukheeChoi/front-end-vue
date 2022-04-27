@@ -133,6 +133,7 @@ export default {
         max-height: calc(222px - var(--bs-gutter, 0px) * 2);
         overflow-y: auto;
         word-break: break-word;
+        white-space: pre-wrap;
         color: inherit;
         padding: 0.5px;
       }
