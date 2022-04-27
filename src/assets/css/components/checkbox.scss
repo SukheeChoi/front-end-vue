@@ -1,11 +1,11 @@
-$checkbox-name: ".ow-checkbox";
+$checkbox-name: '.ow-checkbox';
 
-$clrs-achromatic: getColors("achromatic");
-$clrs-base: getColors("base");
+$clrs-achromatic: getColors('achromatic');
+$clrs-base: getColors('base');
 
 $clr-checkbox-default: #8c96a5;
-$clr-checkbox-checked: nth( $clrs-base, 7 ) ;
-$clr-checkbox-checked-line: nth( $clrs-base, 2 ) ;
+$clr-checkbox-checked: nth($clrs-base, 7);
+$clr-checkbox-checked-line: nth($clrs-base, 2);
 $clr-checkbox-disabled: #edf0f2;
 $clr-checkbox-disabled-line: #bfc6ce;
 
@@ -63,7 +63,7 @@ $size-chk: 16px;
     white-space: nowrap;
     &:before {
       position: absolute;
-      content: "";
+      content: '';
       top: 50%;
       left: 0;
       display: inline-flex;
@@ -83,14 +83,14 @@ $size-chk: 16px;
       font-weight: 400;
     }
   }
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     display: none;
     &:checked + label {
       // 체크상태 이미지 다운이 안되서 나중에 처리할 예정
       &:before {
         background-color: $clr-checkbox-checked;
         border-color: $clr-checkbox-checked-line;
-        background-image: url("~@/assets/images/icon/icon_check.svg");
+        background-image: url('~@/assets/images/icon/icon_check.svg');
         background-position: 50% 50%;
         background-repeat: no-repeat;
       }
@@ -114,7 +114,7 @@ $size-chk: 16px;
         content: none;
       }
       &:after {
-        content: "";
+        content: '';
         display: inline-flex;
         flex: 0 0 auto;
         width: $size-chk;
@@ -125,14 +125,14 @@ $size-chk: 16px;
         background-color: #fff;
       }
     }
-    input[type="checkbox"] {
+    input[type='checkbox'] {
       display: none;
       &:checked + label {
         // 체크상태 이미지 다운이 안되서 나중에 처리할 예정
         &:after {
           background-color: $clr-checkbox-checked;
           border-color: $clr-checkbox-checked-line;
-          background-image: url("~@/assets/images/icon/icon_check.svg");
+          background-image: url('~@/assets/images/icon/icon_check.svg');
           background-position: 50% 50%;
           background-repeat: no-repeat;
         }
@@ -168,29 +168,29 @@ $size-chk: 16px;
 }
 
 // 위즈모 그리드 내 체크박스
-.ow-grid-wrap .ow-grid .wj-cells .wj-cell{
+.ow-grid-wrap .ow-grid .wj-cells .wj-cell {
   label {
     display: inline-flex;
-    align-items: center ;
+    align-items: center;
   }
-  .wj-cell-check{
+  .wj-cell-check {
     position: absolute;
     width: 0;
     height: 0;
     padding: 0;
     overflow: hidden;
     border: 0;
-    margin : 0 ; 
+    margin: 0;
     & + span {
       display: inline-flex;
       cursor: pointer;
       width: 34px;
       height: 26px;
       margin: 0;
-      background: url(~@/assets/images/icon/icon-check-custom.png) no-repeat 0 0 ;
+      background: url(~@/assets/images/icon/icon-layout-01-hs.png) no-repeat center;
     }
     &:checked + span {
-      background: url(~@/assets/images/icon/icon-check-custom-active.png) no-repeat 0 0 ;
+      background: url(~@/assets/images/icon/icon-layout-03-hs.png) no-repeat center;
     }
   }
 }

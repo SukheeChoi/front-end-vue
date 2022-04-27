@@ -235,7 +235,7 @@ export default {
               const input = element.querySelector('input');
               const value = column._binding.getValue(dataItem);
               setChecked(input, value === 'Y');
-              if (column.isReadOnly) {
+              if (s.isReadOnly || !s.canEditCell(row.index, column.index)) {
                 input.disabled = true;
                 input.style.cursor = 'default';
               }
@@ -249,7 +249,7 @@ export default {
             const hit = s.hitTest(e);
             const row = hit.getRow();
             const column = hit.getColumn();
-            if (!column.isReadOnly && hasClass(target, 'wj-cell-check')) {
+            if (!s.isReadOnly && s.canEditCell(row.index, column.index) && hasClass(target, 'wj-cell-check')) {
               const collectionView = s.editableCollectionView;
               let isUpdate = false;
               let isEdit = collectionView instanceof CollectionView && collectionView.refreshOnEdit;
