@@ -263,7 +263,6 @@ export default {
 
           if (state.drag.readonly) {
             state.drag.readonly.forEach((type) => {
-              console.log('READ_ONLY_NODE_TYPE_ID', READ_ONLY_NODE_TYPE_ID);
               if (type == row.dataItem[READ_ONLY_NODE_TYPE_ID]) {
                 cell.innerHTML = '';
                 cell.draggable = false;
