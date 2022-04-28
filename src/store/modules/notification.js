@@ -2,6 +2,8 @@
 
 import { getAllUnconfirmedMessages, confirmMessage, allConfirmMessages } from '@/api/message';
 import { instance } from '@/main';
+import store from '@/store';
+import template from '@/model/notification';
 
 // 보여줄 최대 메시지 개수
 const NUMBER_OF_MESSAGES_TO_DISPLAY = process.env.VUE_APP_NUMBER_OF_MESSAGES_TO_DISPLAY ?? 20;
@@ -31,26 +33,7 @@ const alert = {
   namespaced: true,
   state: () => ({
     open: false,
-    msgNo: '',
-    refMsgNo: '',
-    cmpnCd: '',
-    bizCd: '',
-    topic: '',
-    title: '',
-    msg: '',
-    attchCnt: '',
-    sndId: '',
-    sndDtm: '',
-    rcvDtm: '',
-    rcvIds: '',
-    rcvOrgs: '',
-    rcvGrpIds: '',
-    rdngProcYn: 'N',
-    delYn: 'N',
-    scrnUrl: '',
-    method: '',
-    reqParams: '',
-    refId: '',
+    message: [],
   }),
   mutations: {
     open(state) {
@@ -60,15 +43,12 @@ const alert = {
       state.open = false;
     },
     set(state, item) {
-      state.dateTime = item.dateTime;
-      state.userNm = item.userNm;
-      state.orgNm = item.orgNm;
-      state.msg = item.msg;
-      state.sndId = item.sndId;
-      state.sndDtm = item.sndDtm;
-    },
-    setUserInfo(state) {
-      // state.cmpnCd =
+      state.message.sndDtm = item.sndDtm;
+      state.message.sndId = item.sndId;
+      state.message.sndNm = item.sndNm;
+      state.message.ehrOrgCd = item.ehrOrgCd;
+      state.message.orgNm = item.orgNm;
+      state.message.msg = item.msg;
     },
   },
   actions: {
@@ -84,17 +64,17 @@ const alert = {
     },
   },
   getters: {
-    userName(state) {
-      return state.userNm;
+    sndNm(state) {
+      return state.message.sndNm;
     },
-    orgName(state) {
-      return state.orgNm;
+    orgNm(state) {
+      return state.message.orgNm;
     },
-    dateTime(state) {
-      return state.sndDtm;
+    sndDtm(state) {
+      return state.message.sndDtm;
     },
-    message(state) {
-      return state.msg;
+    msg(state) {
+      return state.message.msg;
     },
     open(state) {
       return state.open;
@@ -106,6 +86,7 @@ const socket = {
   namespaced: true,
   state: () => ({
     connect: false,
+    status: 'disconnect',
   }),
   mutations: {
     connect(state) {
@@ -113,6 +94,9 @@ const socket = {
     },
     disconnect(state) {
       state.connect = false;
+    },
+    status(state, value) {
+      state.status = value;
     },
   },
   actions: {
@@ -129,6 +113,9 @@ const socket = {
     connect(state) {
       return state.connect;
     },
+    status(state) {
+      return state.status;
+    },
   },
 };
 
@@ -137,6 +124,7 @@ const message = {
   state: () => ({
     open: false,
     messages: [],
+    message: [],
   }),
   mutations: {
     set(state, messages) {
@@ -157,6 +145,35 @@ const message = {
     },
     clear(state) {
       state.messages = [];
+    },
+    payload(state, message) {
+      state.message = template;
+      if (state.message) {
+        const userInfo = store.getters.getUserInfo;
+        const now = new Date();
+        const dateTime =
+          _.padStart(now.getMonth() + 1, 2, 0) +
+          '-' +
+          _.padStart(now.getDate(), 2, 0) +
+          ' ' +
+          _.padStart(now.getHours(), 2, 0) +
+          ':' +
+          _.padStart(now.getMinutes(), 2, 0);
+
+        state.message.cmpnCd = userInfo.cmpnCd;
+        state.message.bizCd = message.bizCd;
+        state.message.topic = message.topic;
+        state.message.title = message.title;
+        state.message.msg = message.msg;
+        state.message.sndId = userInfo.empNo;
+        state.message.sndDtm = dateTime;
+        state.message.rcvIds = message.rcvIds;
+        state.message.rcvOrgs = message.rcvOrgs;
+        state.message.rcvGrpIds = message.rcvGrpIds;
+
+        state.message.sndNm = userInfo.userNm;
+        state.message.orgNm = userInfo.orgNm;
+      }
     },
   },
   actions: {
@@ -179,6 +196,10 @@ const message = {
         commit('clear');
       }
     },
+    async send({ commit, state }, message) {
+      await commit('payload', message);
+      await instance.$publish(state.message);
+    },
   },
   getters: {
     count(state) {
@@ -194,6 +215,9 @@ const message = {
     },
     messages(state) {
       return state.messages;
+    },
+    message(state) {
+      return state.message;
     },
   },
 };

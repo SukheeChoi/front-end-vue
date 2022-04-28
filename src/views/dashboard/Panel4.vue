@@ -5,25 +5,28 @@
       <ow-flex-item :gap="6">
         <ow-flex-wrap col style="display: block">
           <ow-flex-item style="height:380px;">
-            <ow-org-tree-view :with-users="withUsers" :show-checkboxes="true" :checkedItemsChanged="checkedItemsChanged"/>
+            <ow-org-tree-view :with-users="withUsers" :show-checkboxes="true"  :initialized="initialized"/>
           </ow-flex-item>
         </ow-flex-wrap>
         <ow-flex-wrap col>
           <ow-flex-item>
-            <button v-if="connect" @click="disconnectSocket" type="button" class="ow-btn type-base color-dark">disconnect</button>
-            <button v-else @click="connectSocket" type="button" class="ow-btn type-base color-dark">connect</button>
+            <button v-if="connect === 'connect'" @click="disconnectSocket" type="button" class="ow-btn type-base color-dark">disconnect</button>
+            <button v-else-if="connect === 'disconnect'" @click="connectSocket" type="button" class="ow-btn type-base color-dark">connect</button>
+            <button v-else type="button" class="ow-btn type-base color-dark" disabled>connecting...</button>
           </ow-flex-item>
           <h1>대상자</h1>
           <ow-flex-item>
-            <template v-for="({userNm, empNo}) in checkedUsers" :key="empNo">
-              <label>{{ userNm }}, </label>
-            </template>
+            <label>{{ checkedEmpNo }}</label>
+            <!-- <template v-for="({userNm, empNo}) in checkedUsers" :key="empNo">
+              <label>{{ empNo }}, </label>
+            </template> -->
           </ow-flex-item>
           <h1>대상부서</h1>
           <ow-flex-item>
-            <template v-for="({orgNm, empNo}) in checkedOrgs" :key="empNo">
-              <label>{{ orgNm }}, </label>
-            </template>
+            <label>{{ checkedEhrOrgCd }}</label>
+            <!-- <template v-for="({orgNm, ehrOrgCd}) in checkedOrgs" :key="ehrOrgCd">
+              <label>{{ ehrOrgCd }}, </label>
+            </template> -->
           </ow-flex-item>
           <h1>선택그룹</h1>
           <ow-flex-item>
@@ -50,36 +53,54 @@ export default {
   name: 'ThePanel4',
   components: {},
   setup() {
-    const { orgNm, userNm } = store.state.login.userInfo;
 
     const state = reactive({
       withUsers: true,
       checkedUsers : [],
       checkedOrgs : [],
-      connect : computed(() => store.getters["socket/connect"]),
-      sendList : {
-        msg : '',
-        userNm,
-        orgNm,
-      },
+      checkedEmpNo : computed(
+        () => {
+          let items = [];
+          for (let i = 0; i < state.checkedUsers.length; i++) {
+            items.push(state.checkedUsers[i].empNo);
+          }
+          return _.uniq(items);
+        }),
+      checkedEhrOrgCd : computed(
+        () => {
+          let items = [];
+          for (let i = 0; i < state.checkedOrgs.length; i++) {
+            items.push(state.checkedOrgs[i].ehrOrgCd);
+          }
+          return _.uniq(items);
+        }),
+      checkedGrps : [],
+      connect : computed(() => store.getters["socket/status"]),
+      sendList : computed(() => {
+        let list = {
+          cmpnCd : '',  // 보내는사람,,? 받는사람 회사,,?
+          bizCd : '',
+          topic : '',
+          title : '',
+          msg : '',
+          rcvIds : state.checkedEmpNo,
+          rcvOrgs : state.checkedEhrOrgCd,
+          rcvGrpIds : state.checkedGrps,
+        }
+        return list;
+      })
     });
 
-    // const initialized = (s) => {
-    //   s.checkedItemsChanged.addHandler(() => {
-    //     for (const currentDataItem of s.checkedItems) {
-    //       const currentNode = s.getNode(currentDataItem);
-    //       const parentNode = currentNode.parentNode;
-    //       const parentDataItem = parentNode.dataItem;
-
-    //       // 부모, 자식 데이터 mix
-    //       state.checkedOrgs = _.xor(state.checkedUsers, s.checkedAllItems);
-    //       const currentDataItemWithParentPart = {
-    //         orgNm: parentDataItem.orgNm,
-    //         ...currentDataItem,
-    //       };
-    //     }
-    //   });
-    // }
+    const initialized = (s) => {
+      s.checkedItemsChanged.addHandler(() => {
+        if (s.checkedAllItems.length > 0) {
+          state.checkedOrgs = _.xor(state.checkedUsers, s.checkedAllItems);
+        } else {
+          state.checkedOrgs = [];
+        }
+        state.checkedUsers = s.checkedItems;
+      });
+    }
 
     const connectSocket = (e) => {
       store.dispatch('socket/connect');
@@ -89,22 +110,17 @@ export default {
       store.dispatch('socket/disconnect');
     }
 
-    const checkedItemsChanged = (e) => {
-      state.checkedUsers = e.checkedItems;
-    }
-
     const sendMessage = (e) => {
       if (e.keyCode === 13) {
-        instance.$publish(state.sendList);
+        store.dispatch('message/send', state.sendList);
       }
     }
 
     return {
       ...toRefs(state),
-      // initialized,
+      initialized,
       connectSocket,
       disconnectSocket,
-      checkedItemsChanged,
       sendMessage
     };
   },

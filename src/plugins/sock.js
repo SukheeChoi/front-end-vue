@@ -2,19 +2,21 @@
 
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-import store from '@/store';
 
 // PUBLISHES
 function publish(client, message) {
   if (!client || !client.connected) {
-    console.log('client 연결실패', client);
+    console.log('client disconnected, cant send message');
+    return false;
   }
 
-  client.publish({
-    destination: '/ntf/Pub/send',
-    body: JSON.stringify(message),
-    // headers: { Authorization: 'Bearer ' + store.getters.getToken },
-  });
+  if (message) {
+    client.publish({
+      destination: '/ntf/Pub/send',
+      body: JSON.stringify(message),
+    });
+  }
+  return true;
 }
 
 // SUBSCRIBES
@@ -22,23 +24,10 @@ function subscribe(store, message) {
   let item = JSON.parse(message.body);
   item = JSON.parse(item.message);
 
-  console.log('item', item);
+  console.log('subscribe', item);
 
-  const now = new Date();
-  const dateTime =
-    _.padStart(now.getMonth() + 1, 2, 0) +
-    '-' +
-    _.padStart(now.getDate(), 2, 0) +
-    ' ' +
-    _.padStart(now.getHours(), 2, 0) +
-    ':' +
-    _.padStart(now.getMinutes(), 2, 0);
-  const addItem = {
-    dateTime,
-  };
-  let returnedItem = Object.assign(addItem, item);
-  store.commit('message/add', returnedItem);
-  store.dispatch('alert/set', returnedItem);
+  store.commit('message/add', item);
+  store.dispatch('alert/set', item);
 }
 
 const MAPPING_PATH = '/ntf/Auth/connect';
@@ -47,40 +36,59 @@ const URL = process.env.VUE_APP_SERVER_IP + MAPPING_PATH;
 export default {
   install: (app, options) => {
     const store = app.config.globalProperties.$store;
+    const userInfo = store.getters.getUserInfo;
+    const stompConfig = {
+      reconnectDelay: 200,
+    };
+
     const client = new Client({
       webSocketFactory: () => {
-        return new SockJS(URL, null, {
-          // headers: { Authorization: 'Bearer ' + store.getters.getToken },
-        });
+        return new SockJS(URL);
+      },
+      beforeConnect: (frame) => {
+        store.commit('socket/status', 'connecting...');
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
+
+        store.commit('socket/status', 'connect');
         store.dispatch('message/init');
-        client.subscribe(
-          // '/ntf/Sub/' + store.state.login.userInfo.empNo,
-          '/ntf/Sub/messages',
-          (message) => {
-            subscribe(store, message);
-          },
-          { Authorization: 'Bearer ' + store.getters.getToken }
-        );
+
+        //test
+        client.subscribe('/ntf/Sub/messages', (message) => {
+          subscribe(store, message);
+        });
+
+        client.subscribe('/ntf/Sub/' + userInfo.empNo, (message) => {
+          subscribe(store, message);
+        });
+        client.subscribe('/ntf/Sub/@' + userInfo.ehrOrgCd, (message) => {
+          subscribe(store, message);
+        });
+      },
+      onDisconnect: (frame) => {
+        console.log('>>>>>>>>>>>>>> disconnect', frame);
+        store.commit('socket/status', 'disconnect');
       },
       onStompError: (frame) => {
         console.log('stomp error', frame);
       },
     });
 
+    client.configure(stompConfig);
+
     app.mixin({
       methods: {
         $publish: function (message) {
           publish(client, message);
+          // if (publish(client, message)) {
+          //   //clear message
+          // }
         },
         $connect: function () {
-          console.log('---------- connect start');
           client.activate();
         },
         $disconnect: function () {
-          console.log('---------- disconnect start');
           client.deactivate();
         },
       },
