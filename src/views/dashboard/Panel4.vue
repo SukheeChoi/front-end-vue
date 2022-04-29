@@ -5,7 +5,7 @@
       <ow-flex-item :gap="6">
         <ow-flex-wrap col style="display: block">
           <ow-flex-item style="height:380px;">
-            <ow-org-tree-view :with-users="withUsers" :show-checkboxes="true"  :initialized="initialized"/>
+            <ow-org-tree-view :show-checkboxes="true"  :initialized="initialized"/>
           </ow-flex-item>
         </ow-flex-wrap>
         <ow-flex-wrap col>
@@ -13,6 +13,7 @@
             <button v-if="connect === 'connect'" @click="disconnectSocket" type="button" class="ow-btn type-base color-dark">disconnect</button>
             <button v-else-if="connect === 'disconnect'" @click="connectSocket" type="button" class="ow-btn type-base color-dark">connect</button>
             <button v-else type="button" class="ow-btn type-base color-dark" disabled>connecting...</button>
+            <button class="ow-btn type-icon user" @click="openAddressBook"></button>
           </ow-flex-item>
           <h1>대상자</h1>
           <ow-flex-item>
@@ -42,18 +43,22 @@
       </ow-flex-item>
     </ow-flex-wrap>
   </ow-panel>
+
+  <ow-org-addr-book ref="addrBook"/>
 </template>
 <script>
-import { computed, reactive, toRefs } from 'vue';
+import { computed, reactive, ref, toRefs } from 'vue';
 import store from '@/store';
 import _ from 'lodash';
-import { instance } from '@/main';
+import OwOrgAddrBook from '@/components/tree/OwOrgAddrBook';
 
 export default {
   name: 'ThePanel4',
-  components: {},
+  components: {
+    OwOrgAddrBook,
+  },
   setup() {
-
+    const addrBook = ref(null);
     const state = reactive({
       withUsers: true,
       checkedUsers : [],
@@ -78,7 +83,7 @@ export default {
       connect : computed(() => store.getters["socket/status"]),
       sendList : computed(() => {
         let list = {
-          cmpnCd : '',  // 보내는사람,,? 받는사람 회사,,?
+          cmpnCd : '',
           bizCd : '',
           topic : '',
           title : '',
@@ -116,12 +121,23 @@ export default {
       }
     }
 
+    const openAddressBook = async (e) => {
+      const modal = addrBook.value.modal;
+      const { ok, control } = await modal.open();
+
+      if (!ok) {
+        return true;
+      }
+    }
+
     return {
       ...toRefs(state),
+      addrBook,
       initialized,
       connectSocket,
       disconnectSocket,
-      sendMessage
+      sendMessage,
+      openAddressBook,
     };
   },
 };
