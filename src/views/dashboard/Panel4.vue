@@ -1,150 +1,37 @@
 <template>
   <ow-panel>
-    <template #title> Send Message </template>
-    <ow-flex-wrap class="size-full">
-      <ow-flex-item :gap="6">
-        <ow-flex-wrap col style="display: block">
-          <ow-flex-item style="height:380px;">
-            <ow-org-tree-view :show-checkboxes="true"  :initialized="initialized"/>
-          </ow-flex-item>
-        </ow-flex-wrap>
-        <ow-flex-wrap col>
-          <ow-flex-item>
-            <button v-if="connect === 'connect'" @click="disconnectSocket" type="button" class="ow-btn type-base color-dark">disconnect</button>
-            <button v-else-if="connect === 'disconnect'" @click="connectSocket" type="button" class="ow-btn type-base color-dark">connect</button>
-            <button v-else type="button" class="ow-btn type-base color-dark" disabled>connecting...</button>
-            <button class="ow-btn type-icon user" @click="openAddressBook"></button>
-          </ow-flex-item>
-          <h1>대상자</h1>
-          <ow-flex-item>
-            <label>{{ checkedEmpNo }}</label>
-            <!-- <template v-for="({userNm, empNo}) in checkedUsers" :key="empNo">
-              <label>{{ empNo }}, </label>
-            </template> -->
-          </ow-flex-item>
-          <h1>대상부서</h1>
-          <ow-flex-item>
-            <label>{{ checkedEhrOrgCd }}</label>
-            <!-- <template v-for="({orgNm, ehrOrgCd}) in checkedOrgs" :key="ehrOrgCd">
-              <label>{{ ehrOrgCd }}, </label>
-            </template> -->
-          </ow-flex-item>
-          <h1>선택그룹</h1>
-          <ow-flex-item>
-            <!-- <template v-for="({orgNm, empNo}) in checkedOrgs" :key="empNo">
-              <label>{{ orgNm }}, </label>
-            </template> -->
-          </ow-flex-item>
-          <h1>message</h1>
-          <ow-flex-item>
-            <textarea v-model="sendList.msg" @keyup="sendMessage"/>
-          </ow-flex-item>
-        </ow-flex-wrap>
-      </ow-flex-item>
-    </ow-flex-wrap>
+    <template #title> 타임존 </template>
+    <ow-grid :items-source="items" :header="false" :footer="false" :is-read-only="true">
+      <wj-flex-grid-column header="타임존 ID" binding="a" :width="80"></wj-flex-grid-column>
+      <wj-flex-grid-column header="타임존명" binding="b" width="*"></wj-flex-grid-column>
+      <wj-flex-grid-column header="오프셋" binding="c" align="center" :width="80"></wj-flex-grid-column>
+      <wj-flex-grid-column header="사용여부" binding="d" align="center" :width="80"></wj-flex-grid-column>
+    </ow-grid>
   </ow-panel>
-
-  <ow-org-addr-book ref="addrBook"/>
 </template>
 <script>
-import { computed, reactive, ref, toRefs } from 'vue';
-import store from '@/store';
-import _ from 'lodash';
-import OwOrgAddrBook from '@/components/tree/OwOrgAddrBook';
+import { reactive, toRefs } from 'vue';
 
 export default {
-  name: 'ThePanel4',
-  components: {
-    OwOrgAddrBook,
-  },
+  name: 'ThePanel3',
+  components: {},
   setup() {
-    const addrBook = ref(null);
     const state = reactive({
-      withUsers: true,
-      checkedUsers : [],
-      checkedOrgs : [],
-      checkedEmpNo : computed(
-        () => {
-          let items = [];
-          for (let i = 0; i < state.checkedUsers.length; i++) {
-            items.push(state.checkedUsers[i].empNo);
-          }
-          return _.uniq(items);
-        }),
-      checkedEhrOrgCd : computed(
-        () => {
-          let items = [];
-          for (let i = 0; i < state.checkedOrgs.length; i++) {
-            items.push(state.checkedOrgs[i].ehrOrgCd);
-          }
-          return _.uniq(items);
-        }),
-      checkedGrps : [],
-      connect : computed(() => store.getters["socket/status"]),
-      sendList : computed(() => {
-        let list = {
-          cmpnCd : '',
-          bizCd : '',
-          topic : '',
-          title : '',
-          msg : '',
-          rcvIds : state.checkedEmpNo,
-          rcvOrgs : state.checkedEhrOrgCd,
-          rcvGrpIds : state.checkedGrps,
-        }
-        return list;
-      })
+      items: [
+        { a: '대한민국/서울', b: 'Asia/Seoul', c: '+09:00', d: 'Y' },
+        { a: '일본/도쿄', b: 'Asia/Tokyo', c: '+09:00', d: 'Y' },
+        { a: '중국/베이징', b: 'Asia/Beijing', c: '+08:00', d: 'Y' },
+        { a: '미국/시카고', b: 'America/Chicago', c: '-06:00', d: 'Y' },
+        { a: '미국/덴버', b: 'America/Denver', c: '-07:00', d: 'Y' },
+        { a: '미국/LA', b: 'America/Los_Angeles', c: '-08:00', d: 'Y' },
+        { a: '미국/앵커리지', b: 'America/Anchorage', c: '-09:00', d: 'Y' },
+        { a: '영국/런던', b: 'Europe/London', c: '+00:00', d: 'Y' },
+      ],
     });
-
-    const initialized = (s) => {
-      s.checkedItemsChanged.addHandler(() => {
-        if (s.checkedAllItems.length > 0) {
-          state.checkedOrgs = _.xor(state.checkedUsers, s.checkedAllItems);
-        } else {
-          state.checkedOrgs = [];
-        }
-        state.checkedUsers = s.checkedItems;
-      });
-    }
-
-    const connectSocket = (e) => {
-      store.dispatch('socket/connect');
-    }
-
-    const disconnectSocket = () => {
-      store.dispatch('socket/disconnect');
-    }
-
-    const sendMessage = (e) => {
-      if (e.keyCode === 13) {
-        store.dispatch('message/send', state.sendList);
-      }
-    }
-
-    const openAddressBook = async (e) => {
-      const modal = addrBook.value.modal;
-      const { ok, control } = await modal.open();
-
-      if (!ok) {
-        return true;
-      }
-    }
 
     return {
       ...toRefs(state),
-      addrBook,
-      initialized,
-      connectSocket,
-      disconnectSocket,
-      sendMessage,
-      openAddressBook,
     };
   },
 };
 </script>
-<style scoped>
-.ow-node-tree-body {
-  height: 200px;
-}
-
-</style>
