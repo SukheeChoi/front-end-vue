@@ -32,12 +32,7 @@
             <input type="checkbox" class="k-checkbox mb-05" v-model="checkSaveUserId" />
             <span class="status-title ml-10">사원번호 저장</span>
           </label>
-          <!-- <label>로그인 구분</label>
-          <fieldset id="radio-group2" class="radio-group login">
-              <input type="radio" class="radio-type" id="radio-oss" name="radio-group2" checked><label for="radio-oss" Style="width:30%;">정직원</label>
-              <input type="radio" class="radio-type" id="radio-sup" name="radio-group2"><label for="radio-sup" Style="width:30%;">협력사</label>
-              <input type="radio" class="radio-type" id="radio-part-timer" name="radio-group2"><label for="radio-part-timer">도급직원</label>
-          </fieldset> -->
+
           <dl class="radio-title-wrap">
             <dt>로그인 구분</dt>
             <dd>
@@ -66,13 +61,6 @@
             담당자 연락처: 02-1234-5678 / admin@osstem.com
           </p>
           <p class="copyright">ⓒOsstem Implant Co.,LTD. All right reserved.</p>
-          <p>
-            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '25052408'">김성태</button>
-            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '25080905'">손영수</button>
-            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '25111511'">은홍기</button>
-            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '24021724'">최관식</button>
-            <button style="width: 45px" class="ow-btn type-util" @click="this.loginId = '23021101'">김승기</button>
-          </p>
         </div>
       </div>
     </div>
