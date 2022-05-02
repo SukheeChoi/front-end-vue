@@ -18,13 +18,13 @@
                   <div class="toast-top mb-10">
                     <ul class="summary-list xs">
                       <li>
-                        <span class="head">{{ message.userNm }}</span>
+                        <span class="head">{{ message.sndNm }}</span>
                       </li>
                       <li>
                         <span>{{ message.orgNm }}</span>
                       </li>
                       <li>
-                        <span>{{ message.dateTime }}</span>
+                        <span>{{ message.sndDtm }}</span>
                       </li>
                     </ul>
                     <button class="ow-btn type-icon cross" @click="removeMessage(message)">
@@ -33,7 +33,7 @@
                     </button>
                   </div>
                   <div class="toast-contents">
-                    <p class="text-para">{{ message.message }}</p>
+                    <p class="text-para">{{ message.msg }}</p>
                   </div>
                 </div>
               </div>
@@ -65,18 +65,18 @@
             <div class="toast-top">
               <ul class="summary-list xs">
                 <li>
-                  <span class="head">{{ alertUserName }}</span>
+                  <span class="head">{{ alertSndNm }}</span>
                 </li>
                 <li>
-                  <span>{{ alertOrgName }}</span>
+                  <span>{{ alertOrgNm }}</span>
                 </li>
                 <li>
-                  <span>{{ alertDateTime }}</span>
+                  <span>{{ alertSndDtm }}</span>
                 </li>
               </ul>
             </div>
             <div class="toast-contents">
-              <p class="text-para">{{ alertMessage }}</p>
+              <p class="text-para">{{ alertMsg }}</p>
             </div>
           </div>
         </div>
@@ -111,20 +111,20 @@ export default {
     });
 
     // Computed
-    const alertUserName = computed(() => {
-      return store.getters["alert/userName"];
+    const alertSndNm = computed(() => {
+      return store.getters["alert/sndNm"];
     });
 
-    const alertOrgName = computed(() => {
-      return store.getters["alert/orgName"];
+    const alertOrgNm = computed(() => {
+      return store.getters["alert/orgNm"];
     });
 
-    const alertDateTime = computed(() => {
-      return store.getters["alert/dateTime"];
+    const alertSndDtm = computed(() => {
+      return store.getters["alert/sndDtm"];
     });
 
-    const alertMessage = computed(() => {
-      return store.getters["alert/message"];
+    const alertMsg = computed(() => {
+      return store.getters["alert/msg"];
     });
 
     const alertOpen = computed(() => {
@@ -160,10 +160,10 @@ export default {
       // State
       ...toRefs(state),
       // Computed
-      alertUserName,
-      alertOrgName,
-      alertDateTime,
-      alertMessage,
+      alertSndNm,
+      alertOrgNm,
+      alertSndDtm,
+      alertMsg,
       alertOpen,
       sidebarOpen,
       // Methods

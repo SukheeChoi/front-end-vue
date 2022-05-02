@@ -32,6 +32,8 @@ export default {
         dragType: [],
         key: [],
         readonly: [],
+        nodeTypeId: 'nodeType',
+        readOnlyNodeTypeId: 'nodeType',
       }),
     },
     selectionMode: {
@@ -44,6 +46,9 @@ export default {
     },
   },
   setup(props) {
+    const NODE_TYPE_ID = props.drag.nodeTypeId ? props.drag.nodeTypeId : 'nodeType',
+          READ_ONLY_NODE_TYPE_ID = props.drag.readOnlyNodeTypeId ? props.drag.readOnlyNodeTypeId : NODE_TYPE_ID;
+
     const state = reactive({
       grid: null,
       drag: props.drag,
@@ -95,9 +100,9 @@ export default {
           return;
         }
 
-        let padding = row.level * 13,
+        let padding = row.level * 20,
           collapse = '',
-          icon = utils.getOwIcon(row.dataItem.nodeType) ?? '',
+          icon = utils.getOwIcon(row.dataItem[NODE_TYPE_ID]) ?? '',
           text = e.cell.innerText ?? '';
 
         // has child node, add collapse/expand buttons
@@ -107,12 +112,14 @@ export default {
           } else {
             collapse = utils.getWjGlyph('down-right', 'collapse');
           }
+        } else {
+          padding += 18;
         }
 
         e.cell.innerHTML = collapse + icon + text;
 
         // osstem logo
-        if (row.dataItem.nodeType == 'org' && row.dataItem.ehrOrgCd == '0000') {
+        if (row.dataItem[NODE_TYPE_ID] == 'org' && row.dataItem.ehrOrgCd == '0000') {
           icon = utils.getOwIcon('osstem');
           e.cell.innerHTML = collapse + row.dataItem.orgNm + icon;
         }
@@ -177,16 +184,16 @@ export default {
       }
 
       item.rowStatus = 'C';
-      item.nodeType = state.drag.dragType.at(0);
+      item[NODE_TYPE_ID] = state.drag.dragType.at(0);
 
       state.drag.targetType.forEach((type) => {
-        if (targetItem.nodeType === type) {
+        if (targetItem[NODE_TYPE_ID] === type) {
           isTargetValid = true;
         }
       });
 
       state.drag.dragType.forEach((type) => {
-        if (targetItem.nodeType === type) {
+        if (targetItem[NODE_TYPE_ID] === type) {
           isTargetValid = true;
         }
       });
@@ -196,7 +203,7 @@ export default {
       }
 
       if (!targetItem[props.childItemsPath]) {
-        if (state.drag.targetType.includes(targetItem.nodeType)) {
+        if (state.drag.targetType.includes(targetItem[NODE_TYPE_ID])) {
           if (state.drag.allowAdding === 'set') {
             utils.setDragItemKey(item, targetItem, state.drag.key);
           } else {
@@ -218,7 +225,7 @@ export default {
 
           utils.setDragItemKey(parent, item, state.drag.key);
 
-          if (!state.drag.targetType.includes(parent.nodeType)) {
+          if (!state.drag.targetType.includes(parent[NODE_TYPE_ID])) {
             return;
           }
 
@@ -256,7 +263,7 @@ export default {
 
           if (state.drag.readonly) {
             state.drag.readonly.forEach((type) => {
-              if (type == row.dataItem.nodeType) {
+              if (type == row.dataItem[READ_ONLY_NODE_TYPE_ID]) {
                 cell.innerHTML = '';
                 cell.draggable = false;
               }
