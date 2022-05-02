@@ -82,26 +82,22 @@ const router = createRouter({
 router.afterEach((to, from, failure) => {});
 
 router.beforeEach(async (to, from, next) => {
-  console.log(to);
   const routeList = store.getters.getRouteList;
 
   const devMode = false;
   const now = new Date();
-
-  // console.log('token time   : ' + store.getters.getTtl);
-  // console.log('current time : ' + now.getTime());
   const nowTime = now.getTime();
 
   if (devMode === false && to.fullPath !== '/login' && store.getters.getTtl < now.getTime()) {
-    console.log('need refreshing');
     const newData = await requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
-    //login.setAuth(newData);
     store.commit('setAuth', newData.data.data);
   }
 
-  if (devMode === false && to.fullPath !== '/login' && store.state.login.ttl < now.getTime()) {
-    //store.commit('reset');
-    //router.push('/login');
+  console.log(store.getters.getUserInfo);
+  console.log(store.getters.getToken);
+
+  if (devMode == false && to.fullPath === '/login' && store.getters.getToken.length > 0) {
+    router.push('/main');
   }
 
   if (devMode === false && to.fullPath !== '/login' && !store.state.login.accessToken) {
