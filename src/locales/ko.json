@@ -37,5 +37,13 @@
       "noData": "삭제할 데이터가 없습니다.",
       "success": "삭제되었습니다."
     }
+  },
+  "permission": {
+    "window-placement": {
+      "notSupported": "권한 관련 기능을 사용할 수 없습니다.",
+      "extend": "확장된 창이 필요합니다.",
+      "denied": "창 배치 권한이 차단됐습니다.",
+      "promprt": "창 배치 권한이 필요합니다."
+    }
   }
 }
