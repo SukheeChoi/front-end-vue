@@ -93,29 +93,12 @@ export default {
     // console.log('header route:', route, ', router:', router);
 
     // Computed
-    const badgeCount = computed(() => store.getters["message/count"]);
+    const badgeCount = computed(() => store.getters['message/count']);
 
     // Methods
     const openSidebar = () => {
-      store.commit("sidebar/open");
+      store.commit('sidebar/open');
     };
-    /*
-    const eventSource = new EventSource('http://localhost:8010/com/Message/subscribe');
-
-      eventSource.onmessage = event => {
-        console.log(event);
-        const data = JSON.parse(event.data);
-        console.log(data.message);
-      }
-      eventSource.addEventListener("haha", function(event){
-        console.log(event);
-      })
-
-      eventSource.onerror = error => {
-        eventSource.close();
-      }
-*/
-
     // Hooks
     onMounted(() => {});
 
@@ -127,48 +110,13 @@ export default {
   },
 
   methods: {
-    async sse() {
-      const eventSource = new EventSource('http://localhost:8010/com/Message/subscribe');
-
-      eventSource.onmessage = (event) => {
-        console.log(event);
-        const data = JSON.parse(event.data);
-        console.log(data.message);
-      };
-      eventSource.addEventListener('haha', function (event) {
-        console.log(event);
-      });
-
-      eventSource.onerror = (error) => {
-        eventSource.close();
-      };
-    },
-
     async logout() {
       store.commit('reset');
       //this.$store.commit('reset');
       //store.getters.init;
       //window.localStorage.clear();
+      //this.$disconnect();
       this.$router.push('/login');
-    },
-    async getTtl() {
-      console.log('ttl');
-      const now = new Date();
-
-      alert(store.getters.getTtl + '\n' + now.getTime());
-      return await this.getUserInfo();
-    },
-    async getUserInfo() {
-      const userData = await login.getUserInfo('/com/Auth', '25052408');
-
-      if (userData.data.data !== null) {
-        const userInfo = userData.data.data;
-        console.log(userInfo);
-        //localStorage.setItem("userInfo", JSON.stringify(userInfo));
-        //this.$store.commit('setUserInfo', userInfo);
-        //return await this.getMenus();
-        //this.$router.push("/");
-      }
     },
   },
 };
