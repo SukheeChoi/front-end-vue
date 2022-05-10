@@ -1,6 +1,7 @@
 import { createStore, storeKey } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import login from './modules/login';
+import dashboard from './modules/dashboard';
 import menu from './modules/menu';
 import notification from './modules/notification';
 import loading from './modules/loading';
@@ -16,6 +17,9 @@ const resetState = () => {
       ttl: '',
       isLogin: false,
     },
+    dashboard: {
+      dsbdMpngScrnList: [],
+    },
     menu: {
       screenList: [],
       routeRootList: [],
@@ -29,7 +33,7 @@ const resetState = () => {
 const plugins = [
   createPersistedState({
     key: 'osstem',
-    paths: ['login', 'menu'],
+    paths: ['login', 'dashboard', 'menu'],
   }),
 ];
 
@@ -45,6 +49,7 @@ const getters = {};
 
 const modules = {
   login,
+  dashboard,
   menu,
   notification,
   loading,

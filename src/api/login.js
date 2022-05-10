@@ -1,3 +1,4 @@
+import http from './index';
 import restApi from './restApi';
 import store from '@/store';
 
@@ -17,4 +18,8 @@ export function getMenuList(url) {
 
 export function requestReissueToken(url) {
   return restApi.reissue(url, {}, 'Token');
+}
+
+export function requestLogout(url) {
+  return http.get(url + 'logout', {});
 }

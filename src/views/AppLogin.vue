@@ -71,6 +71,7 @@
 import { requestLogin, getUserInfo, getMenuList } from '@/api/login.js';
 import store from '@/store';
 import { instance } from '@/main';
+import restApi from '@/api/restApi';
 export default {
   name: 'AppLogin',
   data() {
@@ -100,12 +101,21 @@ export default {
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         this.$store.commit('setUserInfo', userInfo);
-        return await this.getMenus();
+        return await this.getDashboard();
+        //return await this.getMenus();
         //this.$router.push('/');
 
         if (instance.$connect) {
           this.$store.dispatch('socket/connect');
         }
+      }
+    },
+    async getDashboard() {
+      const dashboardData = await restApi.getList('/com/Dashboard');
+      if (dashboardData != null) {
+        const dashboardList = dashboardData.data.data;
+        this.$store.commit('setDashboard', dashboardList);
+        return await this.getMenus();
       }
     },
     async getMenus() {
@@ -130,7 +140,7 @@ export default {
           this.$store.commit('setSavedId', this.loginId);
         }
         this.$store.commit('setChecked', this.checkSaveUserId);
-
+        this.$_openSubScreens(['http://gw.osstem.com']);
         this.$router.push('/');
       }
     },
