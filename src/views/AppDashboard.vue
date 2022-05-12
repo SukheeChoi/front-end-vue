@@ -12,10 +12,26 @@
         @drag-end="dragend"
       ></component>
     </template>
+    <!--
+    <template v-for="panel in panels" :key="panel">
+      <ow-panel>
+        <template #title>{{ panel.scrnNm }}</template>
+        <component
+          :is="getPanel(panel)"
+          style="min-width: calc(33% - 3px); height: calc(50% - 3px)"
+          draggable
+          @drag-start="dragstart"
+          @drag-over="dragover"
+          @drag-finish="dragfinish"
+          @drag-end="dragend"
+        ></component>
+      </ow-panel>
+    </template>
+-->
   </ow-flex-wrap>
 </template>
 <script>
-import { reactive, ref, toRefs } from 'vue';
+import { defineAsyncComponent, reactive, ref, toRefs, computed } from 'vue';
 
 import { Control } from '@grapecity/wijmo';
 import { useStore } from 'vuex';
@@ -26,14 +42,17 @@ export default {
   props: ['components'],
   setup(props) {
     const store = useStore();
-
-    console.log(store);
-
     const root = ref(null);
 
     const state = reactive({
       panels: props.components,
+      //panels: computed(() => store.getters.getDsbdMpngScrnList),
     });
+
+    const getPanel = (panel) =>
+      defineAsyncComponent(() => {
+        return import('@@/' + panel.path);
+      });
 
     const getRoot = () => {
       return root.value.$el;
@@ -96,6 +115,7 @@ export default {
     return {
       root,
       ...toRefs(state),
+      getPanel,
       dragstart,
       dragover,
       dragfinish,
