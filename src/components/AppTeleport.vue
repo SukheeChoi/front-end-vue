@@ -1,4 +1,9 @@
 <template>
+  <teleport to="#ows-teleport">
+    <template v-for="teleportComponent in teleportComponents" :key="teleportComponent">
+      <component :is="teleportComponent.is" v-bind="teleportComponent.attrs"></component>
+    </template>
+  </teleport>
   <teleport to="#ows-teleport-dialog">
     <ow-dialog ref="dialog"></ow-dialog>
   </teleport>
@@ -7,12 +12,12 @@
   </teleport>
 </template>
 <script>
-import _ from 'lodash';
-
-import { computed, ref, inject, reactive, toRefs } from 'vue';
+import { ref } from 'vue';
 import { createNamespacedHelpers } from 'vuex';
 
 import { app } from '@/main';
+
+import teleports from '@/teleport';
 
 const DIALOG_TYPES = ['alert', 'confirm', 'prompt'];
 
@@ -29,7 +34,7 @@ export default {
     const $dialog = {};
     for (const type of DIALOG_TYPES) {
       $dialog[type] = function (message, options = {}) {
-        return dialog.value.open(_.assign({ type, message }, options));
+        return dialog.value.open(Object.assign({ type, message }, options));
       };
     }
 
@@ -37,6 +42,7 @@ export default {
 
     return {
       dialog,
+      teleportComponents: teleports,
     };
   },
 };
