@@ -4,9 +4,6 @@ export default {
     dsbdMpngScrnList: [],
   },
   getters: {
-    init(state) {
-      state.dsbdMpngScrnList = [];
-    },
     getDsbdMpngScrnList(state) {
       return state.dsbdMpngScrnList || [];
     },
