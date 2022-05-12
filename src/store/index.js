@@ -1,13 +1,29 @@
-import { createStore, storeKey } from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
-import login from './modules/login';
-import dashboard from './modules/dashboard';
-import menu from './modules/menu';
-import notification from './modules/notification';
-import loading from './modules/loading';
-import comData from './modules/comData';
-import savedInfo from './modules/savedInfo';
+'use strict';
+
+import { createStore } from 'vuex';
+import persistedstate from 'vuex-persistedstate';
+
+import login from '@/store/modules/login';
+import menu from '@/store/modules/menu';
+import notification from '@/store/modules/notification';
+import dashboard from '@/store/modules/dashboard';
+import loading from '@/store/modules/loading';
+import comData from '@/store/modules/comData';
+import savedInfo from '@/store/modules/savedInfo';
 import progress from '@/store/modules/progress';
+
+function getNamespace(key) {
+  const namespace = key.replace(/^(\.\/app\/|\.\/)/, '');
+  if (namespace.startsWith('store')) {
+    return '';
+  }
+  const at = namespace.indexOf('/');
+  return namespace.substring(0, at);
+}
+
+function asModule(module, defaultModule = {}) {
+  return module.default || module || defaultModule;
+}
 
 const resetState = () => {
   return {
@@ -31,9 +47,9 @@ const resetState = () => {
 };
 
 const plugins = [
-  createPersistedState({
-    key: 'osstem',
-    paths: ['login', 'dashboard', 'menu'],
+  persistedstate({
+    key: process.env.VUE_APP_STORE_PERSISTED_STATE_KEY,
+    paths: (process.env.VUE_APP_STORE_PERSISTED_STATE_PATHS || '').split(','),
   }),
 ];
 
@@ -49,26 +65,27 @@ const getters = {};
 
 const modules = {
   login,
-  dashboard,
   menu,
   notification,
+  dashboard,
   loading,
   comData,
   savedInfo,
   progress,
 };
 
-function loadModules() {
-  const context = require.context('@@', true, /(\/store\/)(index)\.js$/);
-  for (const key of context.keys()) {
-    const namespace = key.match(/[a-z]+/).at(0);
-    const { default: module } = context(key);
+const context = require.context('@@', true, /\/store\/index\.(js)$/);
+const keys = context.keys();
+for (const key of keys) {
+  const module = asModule(context(key));
+  if (module) {
     module.namespaced = true;
-    modules[namespace] = module;
+    const namespace = getNamespace(key);
+    if (namespace) {
+      modules[namespace] = module;
+    }
   }
 }
-
-loadModules();
 
 export default createStore({
   plugins,

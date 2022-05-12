@@ -1,42 +1,51 @@
 'use strict';
 
-import { createI18n } from 'vue-i18n/index';
+import { createI18n } from 'vue-i18n';
 
-import ko from '@/locales/ko';
-import en from '@/locales/en';
+function getNamespace(key) {
+  const namespace = key.replace(/^(\.\/app\/|\.\/)/, '');
+  // 전역
+  if (namespace.startsWith('locales')) {
+    return '';
+  }
+  // 지역
+  const at = namespace.indexOf('/');
+  return namespace.substring(0, at);
+}
 
-const messages = {
-  ko,
-  en,
-};
+function asModule(module, defaultModule = {}) {
+  return module.default || module || defaultModule;
+}
 
-function loadMessage() {
-  const context = require.context('@@', true, /(\/locales\/).*\.json$/);
-  for (const key of context.keys()) {
-    const unit = key.match(/[a-z]+/).at(0);
-    const locale = key
-      .match(/([A-Za-z0-9-_]+)\./)
-      .filter((locale) => !locale.endsWith('.'))
-      .at(0);
-    if (locale) {
-      if (typeof messages[locale] === 'undefined') {
-        messages[locale] = {};
-      }
-      messages[locale][unit] = context(key) || {};
-    }
+const messages = {};
+
+const context = require.context('@', true, /(\/locales\/).*\.json$/);
+const keys = context.keys();
+for (const key of keys) {
+  const locale = key.replace(/^.+\//, '').replace(/\.\w+$/, '');
+  const namespace = getNamespace(key);
+  const module = asModule(context(key));
+  if (!messages[locale]) {
+    messages[locale] = {};
+  }
+  if (namespace) {
+    messages[locale][namespace] = module;
+  } else {
+    const message = messages[locale];
+    messages[locale] = {
+      ...message,
+      ...module,
+    };
   }
 }
 
-loadMessage();
-
 const i18n = createI18n({
-  locale: process.env.VUE_APP_I18N_LOCALE,
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE,
+  locale: process.env.VUE_APP_I18N_LOCALE || 'ko',
+  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'ko',
   messages,
 });
 
-const { global } = i18n;
-const { t } = global;
+const t = i18n.global.t;
 
 export { t };
 

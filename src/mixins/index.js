@@ -1,4 +1,4 @@
-import { ComCode } from '@/api/comCode.js';
+'use strict';
 
 export default {
   beforeCreate() {
