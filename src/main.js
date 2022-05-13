@@ -4,7 +4,6 @@ import { createApp } from 'vue';
 import App from '@/App.vue';
 import router from '@/routes';
 import store from '@/store';
-import i18n from '@/plugins/i18n';
 import plugin from '@/plugins';
 
 import BootStrapVue from 'bootstrap-vue-3';
@@ -24,7 +23,6 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
-app.use(i18n);
 app.use(plugin);
 
 app.use(BootStrapVue);

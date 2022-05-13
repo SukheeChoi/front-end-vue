@@ -44,24 +44,26 @@ const isSupported =
 // 창 배치 권한 변경 이벤트
 async function permissionStatusChangeHandler(e) {
   permissionStatus = e.currentTarget;
-  switch (permissionStatus.state) {
-    // 창 배치 권한 거절
-    case PermissionState.DENIED:
-      // 스크린 정보 초기화
-      screenDetails = null;
-      return await instance.alert(t('permission.window-placement.denied'));
-    // 창 배치 권한 요청
-    case PermissionState.PROMPT:
-      // 스크린 정보 초기화
-      screenDetails = null;
-      return await requestPermission();
-    // 창 배치 권한 수락
-    case PermissionState.GRANTED:
-      screenDetails = await getScreenInfo();
-  }
-  if (cachedCallUrls) {
-    openSubScreens(cachedCallUrls);
-    cachedCallUrls = [];
+  if (isScreenExtended) {
+    switch (permissionStatus.state) {
+      // 창 배치 권한 거절
+      case PermissionState.DENIED:
+        // 스크린 정보 초기화
+        screenDetails = null;
+        return await instance.alert(t('permission.window-placement.denied'));
+      // 창 배치 권한 요청
+      case PermissionState.PROMPT:
+        // 스크린 정보 초기화
+        screenDetails = null;
+        return await requestPermission();
+      // 창 배치 권한 수락
+      case PermissionState.GRANTED:
+        screenDetails = await getScreenInfo();
+    }
+    if (cachedCallUrls) {
+      openSubScreens(cachedCallUrls);
+      cachedCallUrls = [];
+    }
   }
 }
 
