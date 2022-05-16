@@ -10,7 +10,7 @@
         :initialized="initTreeView"
         :items-source="treeData"
         :format-item="formatItem"
-        :display-member-path="['orgNm', 'userNm']"
+        :display-member-path="['userNm', 'orgNm']"
         child-items-path="children"
         :expand-on-load="false"
         v-bind="$attrs"
