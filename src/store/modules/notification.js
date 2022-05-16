@@ -1,6 +1,6 @@
 'use strict';
 
-import { getAllUnconfirmedMessages, confirmMessage, allConfirmMessages } from '@/api/message';
+import { getAllUnconfirmedMessages, removeMessage, allConfirmMessages } from '@/api/message';
 import { instance } from '@/main';
 import store from '@/store';
 import template from '@/model/notification';
@@ -130,7 +130,7 @@ const message = {
     set(state, messages) {
       if (state.messages.length > 0) {
         console.warn('메시지가 안비어있음');
-        return;
+        // return;
       }
       state.messages = messages;
     },
@@ -147,18 +147,10 @@ const message = {
       state.messages = [];
     },
     payload(state, message) {
+      console.log('payload');
       state.message = template;
       if (state.message) {
         const userInfo = store.getters.getUserInfo;
-        const now = new Date();
-        const dateTime =
-          _.padStart(now.getMonth() + 1, 2, 0) +
-          '-' +
-          _.padStart(now.getDate(), 2, 0) +
-          ' ' +
-          _.padStart(now.getHours(), 2, 0) +
-          ':' +
-          _.padStart(now.getMinutes(), 2, 0);
 
         state.message.cmpnCd = userInfo.cmpnCd;
         state.message.bizCd = message.bizCd;
@@ -166,13 +158,10 @@ const message = {
         state.message.title = message.title;
         state.message.msg = message.msg;
         state.message.sndId = userInfo.empNo;
-        state.message.sndDtm = dateTime;
-        state.message.rcvIds = message.rcvIds;
-        state.message.rcvOrgs = message.rcvOrgs;
-        state.message.rcvGrpIds = message.rcvGrpIds;
-
-        state.message.sndNm = userInfo.userNm;
-        state.message.orgNm = userInfo.orgNm;
+        state.message.sndDtm = '';
+        state.message.recvIds = message.recvIds;
+        state.message.recvOrgs = message.recvOrgs;
+        state.message.recvGrpIds = message.recvGrpIds;
       }
     },
   },
@@ -180,24 +169,25 @@ const message = {
     // 메시지 초기화
     async init({ commit }) {
       // 서버로 확인하지 않은 메시지 목록을 받아서 설정
-      // commit('set', await getAllUnconfirmedMessages()); // 두 번째 인자는 await 서버 다녀오기
+      const userInfo = store.getters.getUserInfo;
+      commit('set', await getAllUnconfirmedMessages(userInfo.empNo)); // 두 번째 인자는 await 서버 다녀오기
     },
     // 메시지 확인(지우기)
-    async confirm({ commit }, message) {
+    async remove({ commit }, message) {
       // 서버로 메시지 확인에 대한 처리 이후에 메시지 지우기
-      if (await confirmMessage(message.id)) {
+      if (await removeMessage(message)) {
         commit('remove', message);
       }
     },
     // 모든 메시지 확인(지우기)
-    async allConfirm({ commit }) {
+    async removeAll({ commit }) {
       // 서버로 메시지 확인에 대한 처리 이후에 메시지 초기화
-      if (await allConfirmMessages()) {
+      if (await removeAllMessages()) {
         commit('clear');
       }
     },
     async send({ commit, state }, message) {
-      await commit('payload', message);
+      await commit('payload', message)
       await instance.$publish(state.message);
     },
   },

@@ -24,7 +24,7 @@
                         <span>{{ message.orgNm }}</span>
                       </li>
                       <li>
-                        <span>{{ message.sndDtm }}</span>
+                        <span>{{ formatDateTime(message.sndDtm) }}</span>
                       </li>
                     </ul>
                     <button class="ow-btn type-icon cross" @click="removeMessage(message)">
@@ -88,6 +88,7 @@
 <script>
 import { reactive, toRefs, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
+import _ from 'lodash';
 export default {
   name: 'AppAside',
   components: {},
@@ -102,6 +103,17 @@ export default {
     const store = useStore();
 
     const { sidebar, alert, receiveList } = store.state.notification;
+
+    const formatDateTime = ((dateTime) => {
+      let formatDt = new Date(dateTime);
+      return _.padStart(formatDt.getMonth() + 1, 2, 0) +
+              '-' +
+              _.padStart(formatDt.getDate(), 2, 0) +
+              ' ' +
+              _.padStart(formatDt.getHours(), 2, 0) +
+              ':' +
+              _.padStart(formatDt.getMinutes(), 2, 0);
+    });
 
     const state = reactive({
       sidebar,
@@ -141,11 +153,11 @@ export default {
     };
 
     const removeMessage = (message) => {
-      store.commit('message/remove', message);
+      store.dispatch('message/remove', message);
     };
 
     const removeAllMessage = () => {
-      store.commit('message/clear');
+      store.dispatch('message/removeAll');
     };
 
     // const check = () => {};
@@ -170,6 +182,7 @@ export default {
       close,
       removeMessage,
       removeAllMessage,
+      formatDateTime,
     };
   },
 };
