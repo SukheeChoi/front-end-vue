@@ -1,27 +1,22 @@
 const template = {
-  msgNo: '',
-  refMsgNo: '',
+  ntfNo: '',
+  refNtfNo: '',
   cmpnCd: '',
   bizCd: '',
   topic: '',
   title: '',
   msg: '',
-  attchCnt: '',
   sndId: '',
   sndDtm: '',
-  rcvDtm: '',
-  rcvIds: [],
-  rcvOrgs: [],
-  rcvGrpIds: [],
   rdngProcYn: 'N',
   delYn: 'N',
+  fileAttchYn: '',
+  recvIds: [],
+  recvOrgs: [],
+  recvGrpIds: [],
   scrnUrl: '',
   method: '',
   reqParams: '',
-  refId: '',
-  //////////////////
-  sndNm: '',
-  orgNm: '',
 };
 
 export default template;

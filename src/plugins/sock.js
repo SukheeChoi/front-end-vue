@@ -11,8 +11,9 @@ function publish(client, message) {
   }
 
   if (message) {
+    console.log('publish', message);
     client.publish({
-      destination: '/ntf/Pub/send',
+      destination: '/ntf/Colabo/publish',
       body: JSON.stringify(message),
     });
   }
@@ -38,7 +39,8 @@ export default {
     const store = app.config.globalProperties.$store;
     const userInfo = store.getters.getUserInfo;
     const stompConfig = {
-      reconnectDelay: 200,
+      reconnectDelay: 3000,
+      connectionTimeout: 3000,
     };
 
     const client = new Client({
@@ -47,6 +49,7 @@ export default {
       },
       beforeConnect: (frame) => {
         store.commit('socket/status', 'connecting...');
+        console.log('beforeConnet', frame);
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
@@ -55,14 +58,15 @@ export default {
         store.dispatch('message/init');
 
         //test
-        client.subscribe('/ntf/Sub/messages', (message) => {
+        // client.subscribe('/ntf/Sub/messages', (message) => {
+        //   subscribe(store, message);
+        // });
+
+        client.subscribe('/ntf/subscribe/' + userInfo.empNo, (message) => {
           subscribe(store, message);
         });
 
-        client.subscribe('/ntf/Sub/' + userInfo.empNo, (message) => {
-          subscribe(store, message);
-        });
-        client.subscribe('/ntf/Sub/@' + userInfo.ehrOrgCd, (message) => {
+        client.subscribe('/ntf/subscribe/@' + userInfo.ehrOrgCd, (message) => {
           subscribe(store, message);
         });
       },
