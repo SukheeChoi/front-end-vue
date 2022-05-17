@@ -11,7 +11,6 @@ function publish(client, message) {
   }
 
   if (message) {
-    console.log('publish', message);
     client.publish({
       destination: '/ntf/Colabo/publish',
       body: JSON.stringify(message),
@@ -24,8 +23,9 @@ function publish(client, message) {
 function subscribe(store, message) {
   let item = JSON.parse(message.body);
 
-  store.commit('message/add', item);
-  store.dispatch('alert/set', item);
+  // store.commit('message/add', item);
+  // store.dispatch('alert/set', item);
+  store.dispatch('message/receive', item);
 }
 
 
