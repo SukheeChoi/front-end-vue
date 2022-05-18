@@ -65,18 +65,18 @@
             <div class="toast-top">
               <ul class="summary-list xs">
                 <li>
-                  <span class="head">{{ alertSndNm }}</span>
+                  <span class="head">{{ latestMessage.sndNm }}</span>
                 </li>
                 <li>
-                  <span>{{ alertOrgNm }}</span>
+                  <span>{{ latestMessage.orgNm }}</span>
                 </li>
                 <li>
-                  <span>{{ alertSndDtm }}</span>
+                  <span>{{ formatDateTime(latestMessage.sndDtm) }}</span>
                 </li>
               </ul>
             </div>
             <div class="toast-contents">
-              <p class="text-para">{{ alertMsg }}</p>
+              <p class="text-para">{{ latestMessage.msg }}</p>
             </div>
           </div>
         </div>
@@ -120,25 +120,10 @@ export default {
       alert,
       receiveList,
       messages: computed(() => store.getters["message/latestMessages"]),
+      latestMessage: computed(() => store.getters["message/latestMessage"]),
     });
 
     // Computed
-    const alertSndNm = computed(() => {
-      return store.getters["alert/sndNm"];
-    });
-
-    const alertOrgNm = computed(() => {
-      return store.getters["alert/orgNm"];
-    });
-
-    const alertSndDtm = computed(() => {
-      return store.getters["alert/sndDtm"];
-    });
-
-    const alertMsg = computed(() => {
-      return store.getters["alert/msg"];
-    });
-
     const alertOpen = computed(() => {
       return store.getters["alert/open"];
     });
@@ -172,10 +157,6 @@ export default {
       // State
       ...toRefs(state),
       // Computed
-      alertSndNm,
-      alertOrgNm,
-      alertSndDtm,
-      alertMsg,
       alertOpen,
       sidebarOpen,
       // Methods

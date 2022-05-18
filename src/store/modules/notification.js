@@ -33,7 +33,6 @@ const alert = {
   namespaced: true,
   state: () => ({
     open: false,
-    message: [],
   }),
   mutations: {
     open(state) {
@@ -42,40 +41,19 @@ const alert = {
     close(state) {
       state.open = false;
     },
-    set(state, item) {
-      state.message.sndDtm = item.sndDtm;
-      state.message.sndId = item.sndId;
-      state.message.sndNm = item.sndNm;
-      state.message.ehrOrgCd = item.ehrOrgCd;
-      state.message.orgNm = item.orgNm;
-      state.message.msg = item.msg;
-    },
   },
   actions: {
     open({ commit }) {
       commit('open');
       return setTimeout(() => {
         commit('close');
-      }, 3000);
+      }, 5000);
     },
-    async set({ commit, dispatch }, item) {
-      await commit('set', item);
+    async set({ dispatch }) {
       await dispatch('open');
     },
   },
   getters: {
-    sndNm(state) {
-      return state.message.sndNm;
-    },
-    orgNm(state) {
-      return state.message.orgNm;
-    },
-    sndDtm(state) {
-      return state.message.sndDtm;
-    },
-    msg(state) {
-      return state.message.msg;
-    },
     open(state) {
       return state.open;
     },
@@ -87,6 +65,7 @@ const socket = {
   state: () => ({
     connect: false,
     status: 'disconnect',
+    websocket: 'close',
   }),
   mutations: {
     connect(state) {
@@ -148,6 +127,9 @@ const message = {
       if (state.message) {
         const userInfo = store.getters.getUserInfo;
 
+        state.message.rowStatus = 'C';
+        state.message.ntfNo = Date.now().toString();
+        state.message.refNtfNo = Date.now().toString();
         state.message.cmpnCd = userInfo.cmpnCd;
         state.message.bizCd = message.bizCd;
         state.message.topic = message.topic;
@@ -187,7 +169,7 @@ const message = {
       await commit('payload', message)
       await instance.$publish(state.message);
     },
-    async receive({ commit, state }, message) {
+    async receive({ commit, dispatch }, message) {
       const userInfo = store.getters.getUserInfo;
       commit('set', await getAllUnconfirmedMessages(userInfo.empNo));
     },

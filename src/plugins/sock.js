@@ -21,13 +21,11 @@ function publish(client, message) {
 
 // SUBSCRIBES
 function subscribe(store, message) {
-  let item = JSON.parse(message.body);
+  let _message = JSON.parse(message.body);
 
-  // store.commit('message/add', item);
-  // store.dispatch('alert/set', item);
-  store.dispatch('message/receive', item);
+  store.dispatch('message/receive', _message);
+  store.dispatch('alert/set');
 }
-
 
 const MAPPING_PATH = '/ntf/Auth/connect';
 const URL = process.env.VUE_APP_SERVER_IP + MAPPING_PATH;
@@ -68,7 +66,6 @@ export default {
           
         const userInfo = store.getters.getUserInfo;
         const subscription = client.subscribe('/ntf/Colabo/subscribe/' + userInfo.empNo, (message) => {
-          console.log('/ntf/Colabo/subscribe/' + userInfo.empNo, message);
           subscribe(store, message);
         });
 
@@ -97,9 +94,6 @@ export default {
       methods: {
         $publish: function (message) {
           publish(client, message);
-          // if (publish(client, message)) {
-          //   //clear message
-          // }
         },
         $connect: function () {
           client.activate();
