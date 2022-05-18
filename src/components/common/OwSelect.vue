@@ -5,9 +5,10 @@
   <div class="ow-combobox" ref="root" v-bind="$attrs">
     <wj-combo-box
       :id="unique"
-      :itemsSource="dataMap.collectionView"
+      :items-source="dataMap.itemsSource"
       :display-member-path="dataMap.displayMemberPath"
       :selected-value-path="dataMap.selectedValuePath"
+      :selected-value="dataMap.selectedValue"
       :placeholder="placeholder"
       :is-read-only="readonly"
       :initialized="initialized"
@@ -15,9 +16,9 @@
   </div>
 </template>
 <script>
-import { computed, ref, watch, reactive, toRefs, nextTick, unref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
-import { asCollectionView, CollectionView } from '@grapecity/wijmo';
+import { CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 import { WjComboBox } from '@grapecity/wijmo.vue2.input';
 
@@ -50,14 +51,29 @@ export default {
     modelValue: [String, Number, Object],
   },
   setup(props, { emit }) {
-    const root = ref(null);
+    const root = ref();
 
     const dataMap = computed(() => {
-      let items = props.items;
-      if (items instanceof Array || items instanceof CollectionView) {
-        items = ref(new DataMap(asCollectionView(items), 'value', 'name'));
+      const selectedValue = props.modelValue;
+      const items = props.items;
+      let itemsSource;
+      let displayMemberPath = 'name';
+      let selectedValuePath = 'value';
+      if (items instanceof DataMap) {
+        itemsSource = items.collectionView.items;
+        displayMemberPath = items.displayMemberPath;
+        selectedValuePath = items.selectedValuePath;
+      } else if (items instanceof CollectionView) {
+        itemsSource = items.items;
+      } else {
+        itemsSource = items;
       }
-      return unref(items);
+      return {
+        itemsSource,
+        displayMemberPath,
+        selectedValuePath,
+        selectedValue,
+      };
     });
 
     let control;
@@ -66,17 +82,11 @@ export default {
       control = combo;
       control.itemsSourceChanged.addHandler(() => (combo.selectedValue = props.modelValue));
       control.selectedIndexChanged.addHandler(() => emit('update:modelValue', combo.selectedValue));
-      control.selectedValue = props.modelValue;
+      watch(
+        () => props.items,
+        () => (control.selectedValue = props.items)
+      );
     };
-
-    watch(
-      () => props.modelValue,
-      () => {
-        if (control) {
-          control.selectedValue = props.modelValue;
-        }
-      }
-    );
 
     return {
       root,
