@@ -1,0 +1,214 @@
+<template>
+  <div>
+    <div class="d-flex justify-content-between align-items-end">
+      <div class="headline-wrap">
+        <slot name="left">
+          <h1 class="h1">그리드 샘플</h1>
+        </slot>
+      </div>
+      <div>
+        <slot name="right">
+          <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
+        </slot>
+      </div>
+    </div>
+    <div class="ow-grid-wrap mt-8 mb-8">
+      <ow-flex-grid :initialized="initialize" v-bind="$attrs">
+        <slot></slot>
+      </ow-flex-grid>
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <button type="button" class="ow-button type-icon mr-5"><i class="fas fa-cog fa-fw" /></button>
+        <ow-select :items="pageSizeList" v-model="pageSize" style="--width: 80px"></ow-select>
+      </div>
+      <div>
+        <b-pagination
+          class="ow-pagination"
+          first-class="go-first"
+          prev-class="go-prev"
+          next-class="go-next"
+          last-class="go-last"
+          :total-rows="totalCount"
+          :per-page="pageSize"
+          :limit="10"
+          v-model="pageNo"
+        ></b-pagination>
+      </div>
+      <div>전체 {{ totalCount }} 건</div>
+    </div>
+    <ow-flex-grid-editor :src="[grid]">
+      <template #default="item">
+        <slot name="editor" :data="item.data"> </slot>
+      </template>
+    </ow-flex-grid-editor>
+  </div>
+</template>
+
+<script>
+import OwFlexGrid from '@/components/grid/new/OwFlexGrid';
+import OwFlexGridEditor from '@/components/grid/new/OwFlexGridEditor';
+import {
+  //
+  isFunction,
+  //
+  EventArgs,
+} from '@grapecity/wijmo';
+import {
+  //
+  FlexGrid,
+} from '@grapecity/wijmo.grid';
+import {
+  //
+  GridRestCollectionView,
+} from '@/model';
+import {
+  //
+  reactive,
+  watch,
+  toRefs,
+} from 'vue';
+
+/**
+ * 그리드의 프록시 객체 생성
+ *
+ * @param {FlexGrid} s
+ */
+function asProxyFlexGrid(s) {
+  return new Proxy(s, {
+    get(target, prop, receiver) {
+      return Reflect.get(target, prop, receiver);
+    },
+    set(target, prop, value, receiver) {
+      if (prop === 'itemsSource') {
+        console.error('GridRestCollectionView는 itemsSource를 설정할 수 없습니다.');
+        return true;
+      }
+      return Reflect.set(target, prop, value, receiver);
+    },
+  });
+}
+
+export default {
+  name: 'OwGrid',
+  components: {
+    OwFlexGrid,
+    OwFlexGridEditor,
+  },
+  inheritAttrs: false,
+  props: {
+    initialized: Function,
+    read: Function,
+    insert: Function,
+    update: Function,
+    remove: Function,
+  },
+  setup(props) {
+    const state = reactive({
+      grid: null,
+      pageNo: 1,
+      pageSize: 10,
+      pageSizeList: [],
+      totalCount: 0,
+      api: {
+        getItems: props.read,
+        addItem: props.insert,
+        patchItem: props.update,
+        deleteItem: props.remove,
+      },
+    });
+
+    /**
+     * 페이지 정보 설정
+     *
+     * @param {GridRestCollectionView} c
+     * @param {EventArgs} e
+     */
+    const setPage = (c, e) => {
+      const { pageNo, pageSize, totalItemCount, pageSizeList } = c;
+      state.pageNo = pageNo;
+      state.pageSize = pageSize;
+      state.totalCount = totalItemCount;
+      state.pageSizeList = pageSizeList;
+    };
+
+    /**
+     * 이벤트 설정
+     *
+     * @param {FlexGrid} s
+     * @param {GridRestCollectionView} c
+     */
+    const setDefaultEvents = (s, c) => {
+      // 데이터 로드시 페이지 정보 설정
+      c.loaded.addHandler(setPage);
+    };
+
+    /**
+     * 그리드 초기화
+     *
+     * @param {FlexGrid} s
+     */
+    const initialize = (s) => {
+      // 그리드
+      const grid = s;
+
+      state.grid = grid;
+
+      // 컬렉션뷰
+      const collection = new GridRestCollectionView({
+        grid,
+        pageNo: state.pageNo,
+        pageSize: state.pageSize,
+        getItems: props.read,
+        addItem: props.insert,
+        patchItem: props.update,
+        deleteItem: props.remove,
+      });
+
+      // 아이템 설정
+      grid.itemsSource = collection;
+
+      // 이벤트 설정
+      setDefaultEvents(grid, collection);
+
+      watch(
+        () => state.pageSize,
+        (pageSize) => (collection.pageSize = pageSize)
+      );
+
+      watch(
+        () => state.pageNo,
+        (pageNo) => collection.moveToPage(pageNo)
+      );
+
+      if (isFunction(props.initialized)) {
+        props.initialized(asProxyFlexGrid(grid));
+      }
+    };
+
+    const addNew = () => {
+      const grid = state.grid;
+      const sourceCollection = grid.sourceCollection;
+      const editableCollectionView = grid.editableCollectionView;
+      const defaultNewItem = isFunction(editableCollectionView.newItemCreator)
+        ? editableCollectionView.newItemCreator()
+        : sourceCollection && sourceCollection.length
+        ? new sourceCollection[0].constructor()
+        : {};
+      grid.editor.start(defaultNewItem);
+    };
+
+    return {
+      initialize,
+      addNew,
+      ...toRefs(state),
+    };
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.headline-wrap {
+  border-bottom: none;
+}
+</style>

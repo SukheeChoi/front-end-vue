@@ -1,0 +1,257 @@
+<template>
+  <div>
+    <div class="d-flex justify-content-between align-items-end">
+      <div class="headline-wrap">
+        <h1 class="h1">트리 그리드 샘플</h1>
+      </div>
+      <div>
+        <slot name="right">
+          <button type="button" class="ow-btn type-state">추가</button>
+        </slot>
+      </div>
+    </div>
+    <div class="ow-grid-wrap mt-8 mb-8">
+      <ow-flex-grid :initialized="initialize" v-bind="$attrs">
+        <slot></slot>
+      </ow-flex-grid>
+    </div>
+    <div class="d-flex justify-content-end align-items-center">
+      <div>전체 {{ totalCount }} 건</div>
+    </div>
+    <ow-flex-grid-editor :src="[grid]">
+      <template #default="{ item }">
+        <slot name="editor" :item="item"> </slot>
+      </template>
+    </ow-flex-grid-editor>
+  </div>
+</template>
+
+<script>
+import OwFlexGrid from '@/components/grid/new/OwFlexGrid';
+import OwFlexGridEditor from '@/components/grid/new/OwFlexGridEditor';
+import {
+  //
+  setCss,
+  evalTemplate,
+  isFunction,
+  //
+  EventArgs,
+} from '@grapecity/wijmo';
+import {
+  //
+  CellType,
+  CellFactory,
+  //
+  FlexGrid,
+  FormatItemEventArgs,
+} from '@grapecity/wijmo.grid';
+import {
+  //
+  TreeGridRestCollectionView,
+} from '@/model';
+import {
+  //
+  reactive,
+  watch,
+  toRefs,
+} from 'vue';
+
+/**
+ * 그리드의 프록시 객체 생성
+ *
+ * @param {FlexGrid} s
+ */
+function asProxyFlexGrid(s) {
+  return new Proxy(s, {
+    get(target, prop, receiver) {
+      return Reflect.get(target, prop, receiver);
+    },
+    set(target, prop, value, receiver) {
+      if (prop === 'itemsSource') {
+        console.error('TreeGridRestCollectionView는 itemsSource를 설정할 수 없습니다.');
+        return true;
+      }
+      return Reflect.set(target, prop, value, receiver);
+    },
+  });
+}
+
+const DEFULT_CHILD_ITEM_PATH = 'children';
+const TREE_INDENT = 20;
+
+export default {
+  name: 'OwTreeGrid',
+  components: {
+    OwFlexGrid,
+    OwFlexGridEditor,
+  },
+  inheritAttrs: false,
+  props: {
+    initialized: Function,
+    read: Function,
+    insert: Function,
+    update: Function,
+    remove: Function,
+    childItemsPath: { type: String, default: DEFULT_CHILD_ITEM_PATH },
+  },
+  setup(props) {
+    const state = reactive({
+      grid: null,
+      totalCount: 0,
+      api: {
+        getItems: props.read,
+        addItem: props.insert,
+        patchItem: props.update,
+        deleteItem: props.remove,
+      },
+    });
+
+    /**
+     * 페이지 정보 설정
+     *
+     * @param {GridRestCollectionView} c
+     * @param {EventArgs} ev
+     */
+    const setPage = (c) => {
+      const { grid: s, totalItemCount } = c;
+      state.totalCount = totalItemCount;
+      s.collapseGroupsToLevel(0);
+    };
+
+    /**
+     * 접힘 셀 설정
+     *
+     * @param {FlexGrid} s
+     * @param {FormatItemEventArgs} e
+     */
+    const setCollapseCell = (s, e) => {
+      const row = e.getRow();
+      const col = e.getColumn();
+      const {
+        cell,
+        panel: { cellType },
+      } = e;
+      // 셀에 대해서만
+      if (CellType.Cell === cellType) {
+        // 들여쓰기 설정
+        if (col.index === 0 && !row.hasChildren) {
+          const paddingLeft = s.treeIndent * (row.level + 1) + s._cellPadLeft;
+          setCss(cell, { paddingLeft });
+        }
+        // 셀 템플릿 설정
+        if (row.hasChildren && col.cellTemplate) {
+          const ctx = CellFactory._tplCtx;
+          ctx.value = col._binding.getValue(row.dataItem);
+          ctx.text = cell.innerHTML;
+          ctx.item = row.dataItem;
+          ctx.row = row;
+          ctx.col = col;
+          const ct = col.cellTemplate;
+          cell.innerHTML = (isFunction(ct) ? ct(ctx, cell) : evalTemplate(ct, ctx)) || '';
+        }
+      }
+    };
+
+    /**
+     * 이벤트 설정
+     *
+     * @param {FlexGrid} s
+     * @param {GridRestCollectionView} c
+     */
+    const setDefaultEvents = (s, c) => {
+      // 트리 그리드 Collase 셀 설정
+      s.formatItem.addHandler(setCollapseCell);
+      // 데이터 로드시 페이지 정보 설정
+      c.loaded.addHandler(setPage);
+    };
+
+    /**
+     * 그리드 초기화
+     *
+     * @param {FlexGrid} s
+     */
+    const initialize = (s) => {
+      // 그리드
+      const grid = s;
+
+      state.grid = grid;
+
+      // 컬렉션뷰
+      const collection = new TreeGridRestCollectionView({
+        grid,
+        getItems: props.read,
+        addItem: props.insert,
+        patchItem: props.update,
+        deleteItem: props.remove,
+        scrollRestoration: true,
+      });
+
+      // 아이템 설정
+      s.itemsSource = collection;
+
+      // 이벤트 설정
+      setDefaultEvents(grid, collection);
+
+      // 트리 그리드 설정
+      grid.childItemsPath = props.childItemsPath;
+      grid.treeIndent = TREE_INDENT;
+
+      watch(
+        () => state.pageSize,
+        (pageSize) => (collection.pageSize = pageSize)
+      );
+
+      watch(
+        () => state.pageNo,
+        (pageNo) => collection.moveToPage(pageNo)
+      );
+
+      if (isFunction(props.initialized)) {
+        props.initialized(asProxyFlexGrid(grid));
+      }
+    };
+
+    let newNodeId = 9000;
+
+    const addItem = (
+      item = {
+        id: newNodeId++,
+        country: 'new country ' + newNodeId,
+        sales: 999,
+        expenses: 999,
+      }
+    ) => {
+      const grid = state.grid;
+      if (!grid) {
+        console.error('그리드가 없습니다.');
+        return;
+      }
+      const collection = grid.editableCollectionView;
+      const selectedItem = grid.selectedItem;
+      if (selectedItem && false) {
+        const children = selectedItem[grid.childItemsPath];
+        if (children) {
+          children.push(item);
+        } else {
+          selectedItem[grid.childItemsPath] = [item];
+        }
+        collection.patchItem(selectedItem);
+      } else {
+        collection.addItem(item);
+      }
+    };
+
+    return {
+      ...toRefs(state),
+      initialize,
+      addItem,
+    };
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.headline-wrap {
+  border-bottom: none;
+}
+</style>

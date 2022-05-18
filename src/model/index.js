@@ -1,3 +1,7 @@
+'use strict';
+
+import _ from 'lodash';
+
 export class Menu {
   constructor(title, name, children = [], type = '', path = '') {
     this.title = title;
@@ -298,5 +302,261 @@ export class PermissionStatus {
   constructor(name, state = PermissionState.DENIED) {
     this.name = name;
     this.state = state;
+  }
+}
+
+import {
+  //
+  isFunction,
+  //
+  CollectionView,
+  Event,
+  Point,
+} from '@grapecity/wijmo';
+
+export const _READ_ONLY = Symbol('readonly');
+
+if (!CollectionView.prototype.setReadOnly) {
+  CollectionView.prototype.setReadOnly = function (dataItem, isReadOnly = true) {
+    const at = this._src.indexOf(dataItem);
+    if (at > -1) {
+      if (isReadOnly) {
+        Reflect.set(dataItem, _READ_ONLY, true);
+      } else if (this.isReadOnly(dataItem)) {
+        Reflect.deleteProperty(dataItem, _READ_ONLY);
+      }
+    }
+  };
+}
+
+if (!CollectionView.prototype.isReadOnly) {
+  CollectionView.prototype.isReadOnly = function (dataItem) {
+    return _READ_ONLY in dataItem;
+  };
+}
+
+import { RestCollectionView } from '@grapecity/wijmo.rest';
+
+export class GridRestCollectionView extends RestCollectionView {
+  // 생성자
+  constructor(options) {
+    super();
+    // 그리드 정보
+    this.grid = options.grid;
+    // 기본 정보 설정
+    this.pageOnServer = true;
+    this.sortOnServer = true;
+    this.filterOnServer = true;
+    // 페이지 정보 설정
+    // wijmo는 zero-base
+    this._pgIdx = (options.pageNo ?? 1) - 1;
+    this._pgSz = options.pageSize ?? 10;
+    this._pageSizeList = options.pageSizeList ?? [5, 10, 20, 30, 50, 100];
+    this.scrollRestoration = options.scrollRestoration ?? false;
+    // 쿼리 정보 설정
+    this._query = options.query ?? {};
+    // API 정보 설정
+    this._getItems = options.getItems;
+    this._addItem = options.addItem;
+    this._patchItem = options.patchItem;
+    this._deleteItem = options.deleteItem;
+    this._scrollTop = 0;
+    // 스크롤 최상단 이동
+    this.loading.addHandler(() => (this._scrollTop = this.grid.scrollPosition.y));
+    this.loaded.addHandler(this.moveToScrollTop.bind(this));
+  }
+
+  implementsInterface(intf) {
+    switch (intf) {
+      case 'RestCollectionView':
+        return true;
+    }
+    return super.implementsInterface(intf);
+  }
+
+  get query() {
+    return this._query;
+  }
+
+  get pageSizeList() {
+    return this._pageSizeList.map((pageSize) => ({ name: `${pageSize}건`, value: pageSize }));
+  }
+
+  /**
+   * one-base
+   */
+  get pageNo() {
+    return this.pageIndex + 1;
+  }
+
+  moveToScrollTop() {
+    const grid = this.grid;
+    if (grid.rows.length > 0) {
+      const x = grid.scrollPosition.x;
+      const y = this.scrollRestoration ? this._scrollTop : 0;
+      grid.scrollPosition = new Point(x, y);
+    }
+  }
+
+  moveToFirstPage() {
+    return this.moveToPage(1);
+  }
+
+  moveToLastPage() {
+    return this.moveToPage(this.pageCount);
+  }
+
+  moveToPreviousPage() {
+    return this.moveToPage(this.pageNo - 1);
+  }
+
+  moveToNextPage() {
+    return this.moveToPage(this.pageNo + 1);
+  }
+
+  moveToPage(pageNo) {
+    super.moveToPage(pageNo - 1);
+  }
+
+  lookup(query) {
+    this._query = query;
+    this._pgIdx = 0;
+    this._pgSz = 10;
+    this.load();
+  }
+
+  async getItems() {
+    if (!isFunction(this._getItems)) {
+      console.error('조회 API가 없거나 함수 형태가 아닙니다.');
+      return;
+    }
+    const fn = this._getItems.bind(this);
+    const result = await fn(this.query, this.pageIndex + 1, this.pageSize);
+    const { totalCount: totalItemCount, data: items } = result;
+    this._totalItemCount = totalItemCount;
+    return items;
+  }
+
+  async addItem(item) {
+    if (!isFunction(this._addItem)) {
+      console.error('추가 API가 없거나 함수 형태가 아닙니다.');
+      return;
+    }
+    const fn = this._addItem.bind(this);
+    const success = await fn(item);
+    if (success) {
+      this.load();
+    } else {
+      console.error('추가 작업 수행 중 오류가 발생했습니다.');
+    }
+  }
+
+  async patchItem(item) {
+    if (!isFunction(this._patchItem)) {
+      console.error('수정 API가 없거나 함수 형태가 아닙니다.');
+      return;
+    }
+    const fn = this._patchItem.bind(this);
+    const success = await fn(item);
+    if (success) {
+      this.load();
+    } else {
+      console.error('수정 작업 수행 중 오류가 발생했습니다.');
+    }
+  }
+
+  async deleteItem(item) {
+    if (!isFunction(this._deleteItem)) {
+      console.error('삭제 API가 없거나 함수 형태가 아닙니다.');
+      return;
+    }
+    const fn = this._deleteItem.bind(this);
+    const success = await fn(item);
+    if (success) {
+      this.load();
+    } else {
+      console.error('삭제 작업 수행 중 오류가 발생했습니다.');
+    }
+  }
+}
+
+export class TreeGridRestCollectionView extends GridRestCollectionView {
+  constructor(options) {
+    super(options);
+  }
+
+  get childItemPath() {
+    return this.grid.childItemPath;
+  }
+
+  get totalItemCount() {
+    return this.grid.rows.length;
+  }
+}
+
+export class NGridRestCollectionView extends GridRestCollectionView {
+  constructor(options) {
+    super(options);
+    this.n = options.n;
+    this.i = options.i;
+    this.first = this.i === 1;
+  }
+
+  get pageCount() {
+    return this.pageSize ? Math.ceil(this.totalItemCount / (this.pageSize * this.n)) : 1;
+  }
+
+  async getItems() {
+    if (!isFunction(this._getItems)) {
+      console.error('조회 API가 없거나 함수 형태가 아닙니다.');
+      return;
+    }
+    const fn = this._getItems.bind(this);
+    const pageNo = this.pageIndex * this.n + this.i;
+    const result = await fn(this.query, +pageNo, this.pageSize);
+    const { totalCount: totalItemCount, data: items } = result;
+    this._totalItemCount = totalItemCount;
+    return items;
+  }
+}
+
+export class DataTransfer {
+  constructor() {
+    this.src = null;
+    this.data = null;
+    this.isProcessing = false;
+    this.starting = new Event();
+    this.stoping = new Event();
+  }
+
+  /**
+   * 데이터 이동 시작
+   *
+   * @param {Object} src
+   * @param {Object} data
+   */
+  start(src, data) {
+    this.src = src;
+    this.data = data;
+    this.isProcessing = true;
+    if (this.starting.hasHandlers) {
+      this.starting.raise(this);
+    }
+    this.starting.removeAllHandlers();
+  }
+
+  /**
+   * 데이터 이동 종료
+   */
+  stop() {
+    if (this.isProcessing) {
+      this.src = null;
+      this.data = null;
+      this.isProcessing = false;
+      if (this.stoping.hasHandlers) {
+        this.stoping.raise(this);
+      }
+      this.stoping.removeAllHandlers();
+    }
   }
 }
