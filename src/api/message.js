@@ -1,12 +1,13 @@
 'use strict';
 
 import http from '@/api';
+import store from '@/store';
 
 const MESSAGE_URI = '/ntf/Notification';
 
 const GET_UNCONFIRMED_MESSAGES = '/getUnconfirmedList';
-const PUT_DELETE_MESSAGE = '/deleteMessage'; //'/messages/{}/confirm';
-const PUT_DELETE_ALL_MESSAGES = '/deleteAllMessages';
+const REMOVE_MESSAGE = '/removeMessage';
+const REMOVE_ALL_MESSAGES = '/removeAllMessages';
 
 function format(str, ...args) {
   let i = 0;
@@ -25,16 +26,14 @@ export async function getAllUnconfirmedMessages(empNo) {
 }
 
 export async function removeMessage(message) {
-  const item = {
-    recvId: message.recvId
-    , ntfNo: message.ntfNo
-    , recvTycd: message.recvTycd
-  }
-  const res = await http.put(MESSAGE_URI + PUT_DELETE_MESSAGE, [item]);
+  const res = await http.put(MESSAGE_URI + REMOVE_MESSAGE, message);
   return res.data.data;
 }
 
 export async function removeAllMessages() {
-  const res = await http.put(MESSAGE_URI + PUT_DELETE_ALL_MESSAGES);
+  const empNo = store.getters.getUserInfo.empNo;
+  const res = await http.put(MESSAGE_URI + REMOVE_ALL_MESSAGES, { 
+    recvId : empNo 
+  });
   return res.data.data;
 }

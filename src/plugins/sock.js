@@ -11,7 +11,6 @@ function publish(client, message) {
   }
 
   if (message) {
-    console.log('publish', message);
     client.publish({
       destination: '/ntf/Colabo/publish',
       body: JSON.stringify(message),
@@ -22,13 +21,10 @@ function publish(client, message) {
 
 // SUBSCRIBES
 function subscribe(store, message) {
-  let item = JSON.parse(message.body);
-  item = JSON.parse(item.message);
+  let _message = JSON.parse(message.body);
 
-  console.log('subscribe', item);
-
-  store.commit('message/add', item);
-  store.dispatch('alert/set', item);
+  store.dispatch('message/receive', _message);
+  store.dispatch('alert/set');
 }
 
 const MAPPING_PATH = '/ntf/Auth/connect';
@@ -37,15 +33,20 @@ const URL = process.env.VUE_APP_SERVER_IP + MAPPING_PATH;
 export default {
   install: (app, options) => {
     const store = app.config.globalProperties.$store;
-    const userInfo = store.getters.getUserInfo;
     const stompConfig = {
-      reconnectDelay: 3000,
-      connectionTimeout: 3000,
+      reconnectDelay: 5000,
+      connectionTimeout: 5000,
+      // heartbeatIncoming: 50000,
+      // heartbeatOutgoing: 50000,
     };
-
+    
     const client = new Client({
       webSocketFactory: () => {
-        return new SockJS(URL);
+        const status = store.getters["socket/status"];
+        console.log('status', status);
+        if (status !== 'connect') {
+          return new SockJS(URL);
+        }
       },
       beforeConnect: (frame) => {
         store.commit('socket/status', 'connecting...');
@@ -53,22 +54,24 @@ export default {
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
-
+        
         store.commit('socket/status', 'connect');
         store.dispatch('message/init');
-
+        
+        
         //test
         // client.subscribe('/ntf/Sub/messages', (message) => {
+        //     subscribe(store, message);
+        //   });
+          
+        const userInfo = store.getters.getUserInfo;
+        const subscription = client.subscribe('/ntf/Colabo/subscribe/' + userInfo.empNo, (message) => {
+          subscribe(store, message);
+        });
+
+        // client.subscribe('/ntf/subscribe/@' + userInfo.ehrOrgCd, (message) => {
         //   subscribe(store, message);
         // });
-
-        client.subscribe('/ntf/subscribe/' + userInfo.empNo, (message) => {
-          subscribe(store, message);
-        });
-
-        client.subscribe('/ntf/subscribe/@' + userInfo.ehrOrgCd, (message) => {
-          subscribe(store, message);
-        });
       },
       onDisconnect: (frame) => {
         console.log('>>>>>>>>>>>>>> disconnect', frame);
@@ -76,6 +79,12 @@ export default {
       },
       onStompError: (frame) => {
         console.log('stomp error', frame);
+      },
+      onWebSocketClose: (frame) => {
+        console.log('websocket close', frame);
+      },
+      onWebSocketError: (frame) => {
+        console.log('websocket error', frame);
       },
     });
 
@@ -85,9 +94,6 @@ export default {
       methods: {
         $publish: function (message) {
           publish(client, message);
-          // if (publish(client, message)) {
-          //   //clear message
-          // }
         },
         $connect: function () {
           client.activate();
