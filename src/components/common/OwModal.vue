@@ -8,7 +8,7 @@
       <div class="layer-body">
         <template v-if="show">
           <ow-flex-wrap col>
-            <slot></slot>
+            <slot :data="data"></slot>
           </ow-flex-wrap>
         </template>
       </div>
@@ -36,9 +36,8 @@
 <script>
 import _ from 'lodash';
 
-import { ref, computed, onMounted, reactive, toRefs, watch, onUnmounted } from 'vue';
+import { ref, computed, onMounted, reactive, toRefs, watch } from 'vue';
 
-import { Control } from '@grapecity/wijmo';
 import { PopupTrigger } from '@grapecity/wijmo.input';
 import { WjPopup } from '@grapecity/wijmo.vue2.input';
 
@@ -82,6 +81,7 @@ export default {
     const state = reactive({
       show: false,
       control: null,
+      data: {},
       unique: expando('ow-modal-once'),
       acceptButtonText: '',
       cancelButtonText: '',
@@ -94,6 +94,7 @@ export default {
     const open = (
       accept,
       options = {
+        data: {},
         acceptButtonText: '확인',
         cancelButtonText: '취소',
       }
@@ -102,6 +103,7 @@ export default {
         state.checkedOnce = false;
         state.control.hideTrigger = PopupTrigger.None;
         state.control.show((state.show = true));
+        state.data = options.data;
         state.acceptButtonText = options.acceptButtonText ?? '확인';
         state.cancelButtonText = options.cancelButtonText ?? '취소';
         if (accept && typeof accept === 'function') {
@@ -119,16 +121,13 @@ export default {
     };
     const onCancel = () => {
       state.resolvePromise({ ok: false, control: state.control });
-      state.control.hide();
       hidden();
     };
 
     const hidden = () => {
       state.show = false;
+      state.control.hide();
     };
-
-    // Observer를 이용하여 Modal Body가 변경되면 invalidateAll을 수행한다.
-    const observer = new ResizeObserver(_.debounce(() => Control.invalidateAll(), 100));
 
     watch(
       () => props.once,
@@ -139,11 +138,6 @@ export default {
 
     onMounted(() => {
       state.control = root.value.control;
-      observer.observe(body.value);
-    });
-
-    onUnmounted(() => {
-      observer.disconnect();
     });
 
     return {
@@ -161,6 +155,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .wj-popup {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
   width: 100%;
   max-width: var(--max-width, 400px) !important;
   .modal-body {
