@@ -59,6 +59,8 @@
 <script>
 import {
   //
+  isArray,
+  //
   NotifyCollectionChangedAction,
 } from '@grapecity/wijmo';
 import {
@@ -68,6 +70,19 @@ import {
   toRefs,
   watch,
 } from 'vue';
+
+function indexOf(s, source, target) {
+  let at = -1;
+  if (!isArray(source)) return at;
+  at = source.indexOf(target);
+  if (at < 0) {
+    for (const item of source) {
+      at = indexOf(s, item[s.childItemsPath], target);
+      if (at > -1) break;
+    }
+  }
+  return at;
+}
 
 export default {
   name: 'OwFlexGridEditor',
@@ -108,7 +123,8 @@ export default {
       // state.currentGridController = s;
       setState(s);
       const c = s.editableCollectionView;
-      const isNew = c._pgView.indexOf(item) < 0;
+      // const isNew = c._pgView.indexOf(item) < 0;
+      const isNew = indexOf(s, c.sourceCollection, item) < 0;
       const action = isNew ? NotifyCollectionChangedAction.Add : NotifyCollectionChangedAction.Change;
       state.title = isNew ? '추가' : '수정';
       const editor = state.editor;
