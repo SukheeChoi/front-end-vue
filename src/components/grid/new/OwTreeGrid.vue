@@ -2,7 +2,9 @@
   <div>
     <div class="d-flex justify-content-between align-items-end">
       <div class="headline-wrap">
-        <h1 class="h1">트리 그리드 샘플</h1>
+        <slot name="left">
+          <h1 class="h1">트리 그리드</h1>
+        </slot>
       </div>
       <div>
         <slot name="right">
@@ -117,7 +119,7 @@ export default {
     const setPage = (c) => {
       const { grid: s, totalItemCount } = c;
       state.totalCount = totalItemCount;
-      s.collapseGroupsToLevel(0);
+      s.collapseGroupsToLevel(1);
     };
 
     /**

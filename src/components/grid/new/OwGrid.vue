@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between align-items-end">
       <div class="headline-wrap">
         <slot name="left">
-          <h1 class="h1">그리드 샘플</h1>
+          <h1 class="h1">그리드</h1>
         </slot>
       </div>
       <div>

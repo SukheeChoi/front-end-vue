@@ -36,7 +36,6 @@ import {
 } from '@grapecity/wijmo.vue2.grid';
 import {
   //
-  ref,
   watch,
 } from 'vue';
 import {
@@ -44,10 +43,13 @@ import {
   DataTransfer,
 } from '@/model';
 
+export const VisibleRowsCount = Symbol('[osstem] visible-rows-count');
+
 export const dataTransfer = new DataTransfer();
 
 export const DraggingColumn = Symbol('[osstem] drag-column');
 export const DraggingData = Symbol('[osstem] drag-item');
+export const DropHandler = Symbol('[osstem] drop-handler');
 
 if (!FlexGrid.prototype.selectedItem) {
   Object.defineProperty(FlexGrid.prototype, 'selectedItem', {
@@ -106,6 +108,17 @@ function setDefaultProperties(s) {
 }
 
 /**
+ * 그리드의 옵션 설정
+ *
+ * @param {FlexGrid} s
+ * @param {Object} props
+ */
+function setCustomProperties(s, props) {
+  s[VisibleRowsCount] = props.visibleRowsCount;
+  s[DropHandler] = props.drop;
+}
+
+/**
  * 그리드의 기본 이벤트 설정
  *
  * @param {FlexGrid} s
@@ -125,17 +138,12 @@ function setDefaultEvents(s) {
  * 그리드의 이벤트 설정
  *
  * @param {FlexGrid} s
- * @param {Obejct} props
  */
-function setCustomEvents(s, { props, refs }) {
-  const editor = refs.editor.value;
-  // 더블클릭 이벤트
-  // if (editor) {
-  //   s.doubleClick.addHandler((s) => editor.start.call(null, s.selectedItem, s));
-  // }
+function setCustomEvents(s) {
   // 높이 조정
-  s.loadedRows.addHandler(adjustGridHeight.bind(s, props.visibleRowsCount));
+  s.loadedRows.addHandler(adjustGridHeight);
   // 드래그 & 드롭 중 드롭에 대한 이벤트
+  document.removeEventListener('mouseup', documentMouseup);
   document.addEventListener('mouseup', documentMouseup);
 }
 
@@ -145,34 +153,27 @@ function setCustomEvents(s, { props, refs }) {
  * 헤더의 높이와 보여줄 행의 개수(기본값: 10)만큼 노출합니다.
  * 보여줄 행의 개수보다 존재하는 데이터가 적을 경우 데이터의 양만큼만 보여줍니다.
  *
- * @this {FlexGrid}
- * @param {Number} visibleRowsCount 보여줄 행의 개수
+ * @param {FlexGrid} s
  */
-function adjustGridHeight(visibleRowsCount) {
+function adjustGridHeight(s) {
   let height = 0;
   const {
     columnHeaders: { rows: rows1 },
     rows: rows2,
-  } = this;
+  } = s;
   if (rows1.length > 0) {
     // 헤더의 높이
     height += rows1.map((row) => row.renderHeight).reduce((acc, cur) => acc + cur);
   }
-  // if (rows2.length > 0) {
-  // 보여줄 행의 높이 만큼
-  // height += rows2
-  //   .slice(0, visibleRowsCount)
-  //   .map((row) => row.renderHeight)
-  //   .reduce((acc, cur) => acc + cur);
-  // }
+  const visibleRowsCount = s[VisibleRowsCount];
   height += rows2.defaultSize * visibleRowsCount;
   // Magic Number
   height += 2;
-  setCss(this.hostElement, { height });
-  if (this.rows.length <= visibleRowsCount) {
-    setCss(this.root, { overflow: 'hidden' });
+  setCss(s.hostElement, { height });
+  if (s.rows.length <= visibleRowsCount) {
+    setCss(s.root, { overflow: 'hidden' });
   } else {
-    setCss(this.root, { 'overflow-x': 'hidden', 'overflow-y': 'auto' });
+    setCss(s.root, { 'overflow-x': 'hidden', 'overflow-y': 'auto' });
   }
 }
 
@@ -327,19 +328,25 @@ function documentMousemove(e) {
 function cellPanelMouseup(e, s) {
   if (!dataTransfer.isProcessing) return;
   const data = dataTransfer.data;
+  const drop = s[DropHandler];
   if (!(DraggingData in data)) return;
-  const { sourceCollection, editableCollectionView } = s;
-  const defaultNewItem = isFunction(editableCollectionView.newItemCreator)
-    ? editableCollectionView.newItemCreator()
-    : sourceCollection && sourceCollection.length
-    ? new sourceCollection[0].constructor()
-    : {};
-  const newItem = Object.assign({}, defaultNewItem, data[DraggingData]);
-  if (s.editor) {
-    s.editor.start(newItem);
+  const dropData = data[DraggingData];
+  if (isFunction(drop)) {
+    drop(e, s, dropData);
   } else {
-    editableCollectionView.addNew(newItem);
-    setTimeout(() => (s.selectedItem = editableCollectionView.items.at(-1)), 100);
+    const { sourceCollection, editableCollectionView } = s;
+    const defaultNewItem = isFunction(editableCollectionView.newItemCreator)
+      ? editableCollectionView.newItemCreator()
+      : sourceCollection && sourceCollection.length
+      ? new sourceCollection[0].constructor()
+      : {};
+    const newItem = Object.assign({}, defaultNewItem, dropData);
+    if (s.editor) {
+      s.editor.start(newItem);
+    } else {
+      editableCollectionView.addNew(newItem);
+      setTimeout(() => (s.selectedItem = editableCollectionView.items.at(-1)), 100);
+    }
   }
 }
 
@@ -362,20 +369,6 @@ function documentMouseup(e) {
 }
 
 /**
- * 편집 시작
- *
- * @param {FlexGrid} s
- * @param {MouseEvent} e
- */
-function startEdit(item) {}
-
-/**
- * 편집 종료
- *
- */
-function finishEdit() {}
-
-/**
  * 데이터 추가
  */
 function addDataItem() {}
@@ -390,16 +383,6 @@ function setDataItem() {}
  */
 function removeDataItem() {}
 
-/**
- * 그리드 편집 화면
- *
- * @this {FlexGrid}
- * @param {OwModal} m
- */
-function showEditor(m) {
-  m.open(() => {}, { data: this.selectedItem });
-}
-
 export default {
   name: 'OwFlexGrid',
   components: {
@@ -409,11 +392,10 @@ export default {
   props: {
     initialized: Function,
     draggable: Boolean,
+    drop: Function,
     visibleRowsCount: { type: Number, default: 10 },
   },
   setup(props) {
-    // 에디터
-    const editor = ref();
     /**
      * 그리드 초기화
      *
@@ -426,6 +408,9 @@ export default {
       // 기본 설정
       setDefaultProperties(grid);
 
+      // 기타 설정
+      setCustomProperties(grid, props);
+
       // 기본 이벤트 정의
       setDefaultEvents(grid);
 
@@ -435,7 +420,7 @@ export default {
       }
 
       // 이벤트 정의
-      setCustomEvents(grid, { props, refs: { editor } });
+      setCustomEvents(grid, props);
 
       if (isFunction(props.initialized)) {
         props.initialized(grid);
@@ -445,18 +430,10 @@ export default {
         () => props.visibleRowsCount,
         () => grid.onUpdatedView()
       );
-
-      console.log('s', s, editor);
-    };
-
-    const initializeEditor = (...args) => {
-      console.log('initializeEditor', ...args);
     };
 
     return {
-      editor,
       initialize,
-      initializeEditor,
     };
   },
 };
