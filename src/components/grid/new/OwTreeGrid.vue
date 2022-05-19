@@ -143,7 +143,13 @@ export default {
           setCss(cell, { paddingLeft });
         }
         // 셀 템플릿 설정
-        if (row.hasChildren && col.cellTemplate) {
+        if (col.cellTemplate && s.columns.firstVisibleIndex === col.index && row.hasChildren) {
+          const childNodes = cell.childNodes;
+          for (const childNode of childNodes) {
+            if (childNode instanceof Text) {
+              cell.removeChild(childNode);
+            }
+          }
           const ctx = CellFactory._tplCtx;
           ctx.value = col._binding.getValue(row.dataItem);
           ctx.text = cell.innerHTML;
