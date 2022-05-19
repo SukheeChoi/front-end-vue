@@ -1,13 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import menu01 from './menu01';
+import menu02 from './menu02';
 
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: "home",
     component: HomeView
-  },
-  {
+  }
+  , {
     path: '/about',
     name: 'about',
     // route level code-splitting
@@ -15,11 +17,13 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   }
+  , ...menu01
+  , ...menu02
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
 
-export default router
+export default router;
