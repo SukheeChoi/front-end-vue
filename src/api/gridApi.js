@@ -28,6 +28,14 @@ export class GridApi extends CollectionView {
     this._newValues = model ? utils.copyDefaultValues(model) : null;
   }
 
+  implementsInterface(intf) {
+    switch (intf) {
+      case 'GridApi':
+        return true;
+    }
+    return super.implementsInterface(intf);
+  }
+
   addQueryChain(stores) {
     this._storeChain = stores;
   }

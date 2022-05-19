@@ -18,7 +18,7 @@
 <script>
 import { computed, ref, watch } from 'vue';
 
-import { CollectionView } from '@grapecity/wijmo';
+import { isPrimitive, CollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
 import { WjComboBox } from '@grapecity/wijmo.vue2.input';
 
@@ -55,19 +55,30 @@ export default {
 
     const dataMap = computed(() => {
       const selectedValue = props.modelValue;
-      const items = props.items;
-      let itemsSource;
+      let itemsSource = props.items;
       let displayMemberPath = 'name';
       let selectedValuePath = 'value';
-      if (items instanceof DataMap) {
-        itemsSource = items.collectionView.items;
-        displayMemberPath = items.displayMemberPath;
-        selectedValuePath = items.selectedValuePath;
-      } else if (items instanceof CollectionView) {
-        itemsSource = items.items;
-      } else {
-        itemsSource = items;
+      if (itemsSource instanceof DataMap) {
+        displayMemberPath = itemsSource.displayMemberPath;
+        selectedValuePath = itemsSource.selectedValuePath;
+        itemsSource = itemsSource.collectionView;
       }
+      if (itemsSource instanceof CollectionView) {
+        itemsSource = itemsSource.sourceCollection;
+      }
+      itemsSource = itemsSource.map((item) => {
+        if (displayMemberPath in item && selectedValuePath in item) {
+          return item;
+        }
+        if (isPrimitive(item)) {
+          return {
+            [displayMemberPath]: item,
+            [selectedValuePath]: item,
+          };
+        }
+        return {};
+      });
+
       return {
         itemsSource,
         displayMemberPath,

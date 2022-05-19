@@ -98,6 +98,7 @@ export default {
   inheritAttrs: false,
   props: {
     initialized: Function,
+    query: Object,
     read: Function,
     insert: Function,
     update: Function,
@@ -106,6 +107,7 @@ export default {
   setup(props) {
     const state = reactive({
       grid: null,
+      query: Object.assign({}, props.query),
       pageNo: 1,
       pageSize: 10,
       pageSizeList: [],
@@ -157,6 +159,7 @@ export default {
       // 컬렉션뷰
       const collection = new GridRestCollectionView({
         grid,
+        query: state.query,
         pageNo: state.pageNo,
         pageSize: state.pageSize,
         getItems: props.read,

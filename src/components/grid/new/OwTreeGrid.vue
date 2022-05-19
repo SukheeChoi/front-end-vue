@@ -6,7 +6,7 @@
       </div>
       <div>
         <slot name="right">
-          <button type="button" class="ow-btn type-state">추가</button>
+          <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
         </slot>
       </div>
     </div>
@@ -88,6 +88,7 @@ export default {
   inheritAttrs: false,
   props: {
     initialized: Function,
+    query: Object,
     read: Function,
     insert: Function,
     update: Function,
@@ -97,6 +98,7 @@ export default {
   setup(props) {
     const state = reactive({
       grid: null,
+      query: Object.assign({}, props.query),
       totalCount: 0,
       api: {
         getItems: props.read,
@@ -179,6 +181,7 @@ export default {
       // 컬렉션뷰
       const collection = new TreeGridRestCollectionView({
         grid,
+        query: state.query,
         getItems: props.read,
         addItem: props.insert,
         patchItem: props.update,
@@ -211,40 +214,22 @@ export default {
       }
     };
 
-    let newNodeId = 9000;
-
-    const addItem = (
-      item = {
-        id: newNodeId++,
-        country: 'new country ' + newNodeId,
-        sales: 999,
-        expenses: 999,
-      }
-    ) => {
+    const addNew = () => {
       const grid = state.grid;
-      if (!grid) {
-        console.error('그리드가 없습니다.');
-        return;
-      }
-      const collection = grid.editableCollectionView;
-      const selectedItem = grid.selectedItem;
-      if (selectedItem && false) {
-        const children = selectedItem[grid.childItemsPath];
-        if (children) {
-          children.push(item);
-        } else {
-          selectedItem[grid.childItemsPath] = [item];
-        }
-        collection.patchItem(selectedItem);
-      } else {
-        collection.addItem(item);
-      }
+      const sourceCollection = grid.sourceCollection;
+      const editableCollectionView = grid.editableCollectionView;
+      const defaultNewItem = isFunction(editableCollectionView.newItemCreator)
+        ? editableCollectionView.newItemCreator()
+        : sourceCollection && sourceCollection.length
+        ? new sourceCollection[0].constructor()
+        : {};
+      grid.editor.start(defaultNewItem);
     };
 
     return {
-      ...toRefs(state),
       initialize,
-      addItem,
+      addNew,
+      ...toRefs(state),
     };
   },
 };
