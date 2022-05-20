@@ -484,7 +484,7 @@ export class TreeGridRestCollectionView extends GridRestCollectionView {
   constructor(options) {
     super(options);
     this._treeLoadedTimeout = null;
-    this.loaded.addHandler(this._treeLoaded.bind(this));
+    this.loaded.addHandler(this._treeLoaded, this);
   }
 
   get childItemPath() {
