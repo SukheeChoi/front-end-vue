@@ -313,6 +313,15 @@ import {
   Event,
   Point,
 } from '@grapecity/wijmo';
+import {
+  //
+  CellRange,
+  CellRangeEventArgs,
+} from '@grapecity/wijmo.grid';
+import {
+  //
+  RestCollectionView,
+} from '@grapecity/wijmo.rest';
 
 export const _READ_ONLY = Symbol('readonly');
 
@@ -334,8 +343,6 @@ if (!CollectionView.prototype.isReadOnly) {
     return _READ_ONLY in dataItem;
   };
 }
-
-import { RestCollectionView } from '@grapecity/wijmo.rest';
 
 export class GridRestCollectionView extends RestCollectionView {
   // 생성자
@@ -363,7 +370,7 @@ export class GridRestCollectionView extends RestCollectionView {
     this._scrollTop = 0;
     // 스크롤 최상단 이동
     this.loading.addHandler(() => (this._scrollTop = this.grid.scrollPosition.y));
-    this.loaded.addHandler(this.moveToScrollTop.bind(this));
+    this.loaded.addHandler(this._loaded, this);
   }
 
   implementsInterface(intf) {
@@ -389,14 +396,19 @@ export class GridRestCollectionView extends RestCollectionView {
     return this.pageIndex + 1;
   }
 
-  moveToScrollTop() {
+  _loaded() {
     const grid = this.grid;
     if (grid.rows.length > 0) {
       const x = grid.scrollPosition.x;
       const y = this.scrollRestoration ? this._scrollTop : 0;
       grid.scrollPosition = new Point(x, y);
     }
+    const range = new CellRange(0);
+    const event = new CellRangeEventArgs(grid.cells, range);
+    grid.onSelectionChanged(event);
   }
+
+  moveToScrollTop() {}
 
   moveToFirstPage() {
     return this.moveToPage(1);
@@ -428,7 +440,7 @@ export class GridRestCollectionView extends RestCollectionView {
   async getItems() {
     if (!isFunction(this._getItems)) {
       console.error('조회 API가 없거나 함수 형태가 아닙니다.');
-      return [];
+      return;
     }
     const fn = this._getItems.bind(this);
     const result = await fn(this.query, this.pageIndex + 1, this.pageSize);

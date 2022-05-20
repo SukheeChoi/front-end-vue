@@ -123,11 +123,12 @@ export default {
      * @param {EventArgs} e
      */
     const setPage = (c, e) => {
-      const { pageNo, pageSize, totalItemCount, pageSizeList } = c;
+      const { grid, pageNo, pageSize, totalItemCount, pageSizeList } = c;
       state.pageNo = pageNo;
       state.pageSize = pageSize;
       state.totalCount = totalItemCount;
       state.pageSizeList = pageSizeList;
+      grid.onSelectionChanged();
     };
 
     /**
