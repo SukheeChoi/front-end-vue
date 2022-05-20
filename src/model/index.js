@@ -428,7 +428,7 @@ export class GridRestCollectionView extends RestCollectionView {
   async getItems() {
     if (!isFunction(this._getItems)) {
       console.error('조회 API가 없거나 함수 형태가 아닙니다.');
-      return;
+      return [];
     }
     const fn = this._getItems.bind(this);
     const result = await fn(this.query, this.pageIndex + 1, this.pageSize);
@@ -483,6 +483,8 @@ export class GridRestCollectionView extends RestCollectionView {
 export class TreeGridRestCollectionView extends GridRestCollectionView {
   constructor(options) {
     super(options);
+    this._treeLoadedTimeout = null;
+    this.loaded.addHandler(this._treeLoaded.bind(this));
   }
 
   get childItemPath() {
@@ -491,6 +493,13 @@ export class TreeGridRestCollectionView extends GridRestCollectionView {
 
   get totalItemCount() {
     return this.grid.rows.length;
+  }
+
+  _treeLoaded() {
+    if (this._treeLoadedTimeout) {
+      clearTimeout(this._treeLoadedTimeout);
+    }
+    this._treeLoadedTimeout = setTimeout(() => this.refresh(), 100);
   }
 }
 

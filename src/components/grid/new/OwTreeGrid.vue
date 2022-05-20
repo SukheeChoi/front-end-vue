@@ -1,16 +1,12 @@
 <template>
   <div>
-    <div class="d-flex justify-content-between align-items-end">
-      <div class="headline-wrap">
-        <slot name="left">
-          <h1 class="h1">트리 그리드</h1>
-        </slot>
-      </div>
-      <div>
-        <slot name="right">
-          <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
-        </slot>
-      </div>
+    <div class="d-flex justify-content-between align-items-end mt-10">
+      <slot name="left">
+        <h1 class="h1">그리드</h1>
+      </slot>
+      <slot name="right">
+        <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
+      </slot>
     </div>
     <div class="ow-grid-wrap mt-8 mb-8">
       <ow-flex-grid :initialized="initialize" v-bind="$attrs">
@@ -244,7 +240,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.headline-wrap {
-  border-bottom: none;
+:deep(.h1),
+:deep(.h2),
+:deep(.h3) {
+  position: relative;
+  padding-left: 0.75rem;
+  &::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: cornflowerblue;
+  }
 }
 </style>
