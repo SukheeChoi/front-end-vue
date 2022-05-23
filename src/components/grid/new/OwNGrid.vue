@@ -6,7 +6,7 @@
       </slot>
       <slot name="right">
         <template v-if="editable">
-          <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
+          <button type="button" class="ow-btn type-state" v-if="insert" @click="addNew">추가</button>
         </template>
       </slot>
     </div>

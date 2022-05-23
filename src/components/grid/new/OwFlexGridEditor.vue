@@ -113,7 +113,11 @@ export default {
       removable: false,
     });
 
-    const dblclick = (s) => start(s, s.selectedItem);
+    const dblclick = (s, e) => {
+      console.log('e.defaultPrevented', e.defaultPrevented);
+      if (e.defaultPrevented) return;
+      start(s, s.selectedItem);
+    };
 
     const initialize = (s) => {
       // 이벤트 설정

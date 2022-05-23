@@ -130,8 +130,8 @@ function setDefaultEvents(s) {
   s.onDoubleClick = function (e) {
     this.doubleClick.raise(this, e);
   };
-  // 셀 더블 클릭 이벤트
-  s.addEventListener(s.cells.hostElement, 'dblclick', s.onDoubleClick.bind(s));
+  // 셀 더블 클릭 이벤트(cells의 hostElement 이벤트 위임)
+  s.addEventListener(s.root, 'dblclick', s.onDoubleClick.bind(s));
 }
 
 /**
@@ -166,7 +166,15 @@ function adjustGridHeight(s) {
     height += rows1.map((row) => row.renderHeight).reduce((acc, cur) => acc + cur);
   }
   const visibleRowsCount = s[VisibleRowsCount];
-  height += rows2.defaultSize * visibleRowsCount;
+  if (rows2.length > visibleRowsCount) {
+    // 행의 높이
+    height += rows2
+      .slice(0, visibleRowsCount)
+      .map((row) => row.renderHeight)
+      .reduce((acc, cur) => acc + cur);
+  } else {
+    height += rows2.defaultSize * visibleRowsCount;
+  }
   // Magic Number
   height += 2;
   setCss(s.hostElement, { height });
@@ -446,6 +454,14 @@ export default {
   }
   :deep([wj-part='root']) {
     overflow: hidden overlay !important;
+  }
+  :deep(.wj-cell) {
+    label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 }
 </style>

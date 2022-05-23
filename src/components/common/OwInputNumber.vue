@@ -2,21 +2,25 @@
   <template v-if="label">
     <label class="input-number-label" :for="unique">{{ label }}</label>
   </template>
-  <wj-input-number
-    class="ow-custom-spin"
-    :format="format"
-    :min="min"
-    :max="max"
-    :step="step"
-    v-bind="$attrs"
-    v-model="number"
-  ></wj-input-number>
+  <div>
+    <wj-input-number
+      class="ow-custom-spin"
+      :format="format"
+      :min="min"
+      :max="max"
+      :step="step"
+      :is-read-only="readonly"
+      v-bind="$attrs"
+      v-model="number"
+    ></wj-input-number>
+  </div>
 </template>
 <script>
 import { computed, reactive, toRefs } from 'vue';
 
 import { WjInputNumber } from '@grapecity/wijmo.vue2.input';
 
+import { expando } from '@/utils';
 export default {
   name: 'OwInputNumber',
   components: {
@@ -24,6 +28,16 @@ export default {
   },
   props: {
     label: String,
+    unique: {
+      type: String,
+      default: () => {
+        return expando('ow-input');
+      },
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
     format: {
       type: String,
       default: 'n0',
@@ -68,6 +82,19 @@ export default {
   flex-shrink: 0;
 }
 .ow-custom-spin {
-  width: var(--width, auto);
+  width: var(--width, 100%);
+}
+:deep(.wj-state-readonly) {
+  .wj-template {
+    padding-right: 0;
+  }
+  .wj-input-group-btn {
+    display: none !important;
+  }
+  .wj-form-control {
+    &:read-only {
+      background-color: rgba(238, 238, 238, 1);
+    }
+  }
 }
 </style>

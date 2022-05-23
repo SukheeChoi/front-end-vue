@@ -7,7 +7,7 @@
       :id="unique"
       :placeholder="placeholder"
       :initialized="initialized"
-      :readonly="readonly"
+      :is-read-only="readonly"
       @input="textChanged"
       @keyup.enter="lookup"
     ></wj-combo-box>
@@ -127,6 +127,13 @@ export default {
   }
   &:after {
     display: none;
+  }
+}
+:deep(.wj-state-readonly) {
+  .wj-form-control {
+    &:read-only {
+      background-color: rgba(238, 238, 238, 1);
+    }
   }
 }
 </style>
