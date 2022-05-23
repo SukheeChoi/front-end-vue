@@ -17,23 +17,26 @@ function format(str, ...args) {
 }
 
 export async function getAllUnconfirmedMessages(empNo) {
-  const res = await http.get(MESSAGE_URI + GET_UNCONFIRMED_MESSAGES, {
-    params: {
-      empNo 
-    }
-  });
-  return res.data.data;
+  // const res = await http.get(MESSAGE_URI + GET_UNCONFIRMED_MESSAGES, {
+  //   params: {
+  //     empNo
+  //   }
+  // });
+  // return res.data.data;
+  return [];
 }
 
 export async function removeMessage(message) {
-  const res = await http.put(MESSAGE_URI + REMOVE_MESSAGE, message);
-  return res.data.data;
+  // const res = await http.put(MESSAGE_URI + REMOVE_MESSAGE, message);
+  // return res.data.data;
+  return [];
 }
 
 export async function removeAllMessages() {
-  const empNo = store.getters.getUserInfo.empNo;
-  const res = await http.put(MESSAGE_URI + REMOVE_ALL_MESSAGES, { 
-    recvId : empNo 
-  });
-  return res.data.data;
+  // const empNo = store.getters.getUserInfo.empNo;
+  // const res = await http.put(MESSAGE_URI + REMOVE_ALL_MESSAGES, {
+  //   recvId : empNo
+  // });
+  // return res.data.data;
+  return [];
 }

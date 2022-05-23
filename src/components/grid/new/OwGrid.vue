@@ -5,7 +5,9 @@
         <h1 class="h1">그리드</h1>
       </slot>
       <slot name="right">
-        <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
+        <template v-if="editable">
+          <button type="button" class="ow-btn type-state" v-if="insert" @click="addNew">추가</button>
+        </template>
       </slot>
     </div>
     <div class="ow-grid-wrap mt-8 mb-8">
@@ -33,9 +35,9 @@
       </div>
       <div>전체 {{ totalCount }} 건</div>
     </div>
-    <ow-flex-grid-editor :src="[grid]">
+    <ow-flex-grid-editor v-if="editable" :src="[grid]" :type="editorSize">
       <template #default="item">
-        <slot name="editor" :data="item.data"> </slot>
+        <slot name="editor" :item="item.data"> </slot>
       </template>
     </ow-flex-grid-editor>
   </div>
@@ -99,6 +101,8 @@ export default {
     insert: Function,
     update: Function,
     remove: Function,
+    editable: Boolean,
+    editorSize: { type: String, default: 'L' },
   },
   setup(props) {
     const state = reactive({
@@ -123,12 +127,11 @@ export default {
      * @param {EventArgs} e
      */
     const setPage = (c, e) => {
-      const { grid, pageNo, pageSize, totalItemCount, pageSizeList } = c;
+      const { pageNo, pageSize, totalItemCount, pageSizeList } = c;
       state.pageNo = pageNo;
       state.pageSize = pageSize;
       state.totalCount = totalItemCount;
       state.pageSizeList = pageSizeList;
-      grid.onSelectionChanged();
     };
 
     /**

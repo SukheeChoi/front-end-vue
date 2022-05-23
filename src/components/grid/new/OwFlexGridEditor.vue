@@ -1,5 +1,5 @@
 <template>
-  <ow-modal type="L" :title="title" ref="editor">
+  <ow-modal :type="type" :title="title" ref="editor">
     <template #default="item">
       <slot :data="item.data">
         <!-- 기본 에디터 {{ item.data }} -->
@@ -49,8 +49,17 @@
       format="n2"
     ></ow-input-number> -->
     <template #action>
-      <button type="button" class="ow-btn type-base color-gray" @click.prevent="onDelete()">삭제</button>
-      <button type="button" class="ow-btn type-base color-dark" @click.prevent="$refs.editor.onAccept">확인</button>
+      <button type="button" class="ow-btn type-base color-gray" v-if="removable" @click.prevent="onDelete()">
+        삭제
+      </button>
+      <button
+        type="button"
+        class="ow-btn type-base color-dark"
+        v-if="(isNew && insertable) || (!isNew && updatable)"
+        @click.prevent="$refs.editor.onAccept"
+      >
+        확인
+      </button>
       <button type="button" class="ow-btn type-base color-gray" @click.prevent="$refs.editor.onCancel">취소</button>
     </template>
   </ow-modal>
@@ -89,6 +98,7 @@ export default {
   inheritAttrs: false,
   props: {
     src: { type: Array, default: [] },
+    type: { type: String, default: 'L' },
   },
   setup(props) {
     const state = reactive({
@@ -97,6 +107,10 @@ export default {
       dataMap: ['US', 'Germany', 'UK', 'Japan', 'Italy', 'Greece'],
       currentGridController: null,
       currentGridColumns: [],
+      isNew: false,
+      insertable: false,
+      updatable: false,
+      removable: false,
     });
 
     const dblclick = (s) => start(s, s.selectedItem);
@@ -114,17 +128,15 @@ export default {
       };
     };
 
-    const setState = (s) => {
+    const start = async (s, item) => {
       state.currentGridController = s;
       state.currentGridColumns = s.columns;
-    };
-
-    const start = async (s, item) => {
-      // state.currentGridController = s;
-      setState(s);
       const c = s.editableCollectionView;
-      // const isNew = c._pgView.indexOf(item) < 0;
-      const isNew = indexOf(s, c.sourceCollection, item) < 0;
+      console.log('c', c, item);
+      state.insertable = c.insertable;
+      state.updatable = c.updatable;
+      state.removable = c.removable;
+      const isNew = (state.isNew = indexOf(s, c.sourceCollection, item) < 0);
       const action = isNew ? NotifyCollectionChangedAction.Add : NotifyCollectionChangedAction.Change;
       state.title = isNew ? '추가' : '수정';
       const editor = state.editor;

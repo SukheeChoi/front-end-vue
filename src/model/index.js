@@ -381,6 +381,18 @@ export class GridRestCollectionView extends RestCollectionView {
     return super.implementsInterface(intf);
   }
 
+  get insertable() {
+    return isFunction(this._addItem);
+  }
+
+  get updatable() {
+    return isFunction(this._patchItem);
+  }
+
+  get removable() {
+    return isFunction(this._deleteItem);
+  }
+
   get query() {
     return this._query;
   }

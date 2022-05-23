@@ -9,7 +9,7 @@ function publish(client, message) {
     console.log('client disconnected, cant send message');
     return false;
   }
-
+  console.log('publish', message);
   if (message) {
     client.publish({
       destination: '/ntf/Colabo/publish',
@@ -22,9 +22,8 @@ function publish(client, message) {
 // SUBSCRIBES
 function subscribe(store, message) {
   let _message = JSON.parse(message.body);
-
   store.dispatch('message/receive', _message);
-  store.dispatch('alert/set');
+  store.dispatch('alert/open');
 }
 
 const MAPPING_PATH = '/ntf/Auth/connect';
@@ -39,6 +38,7 @@ export default {
       // heartbeatIncoming: 50000,
       // heartbeatOutgoing: 50000,
     };
+    const userInfo = store.getters.getUserInfo;
 
     const client = new Client({
       webSocketFactory: () => {
@@ -62,7 +62,6 @@ export default {
         //     subscribe(store, message);
         //   });
 
-        const userInfo = store.getters.getUserInfo;
         const subscription = client.subscribe('/ntf/Colabo/subscribe/' + userInfo.empNo, (message) => {
           subscribe(store, message);
         });
