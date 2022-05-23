@@ -5,7 +5,9 @@
         <h1 class="h1">그리드</h1>
       </slot>
       <slot name="right">
-        <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
+        <template v-if="editable">
+          <button type="button" class="ow-btn type-state" @click="addNew">추가</button>
+        </template>
       </slot>
     </div>
     <div class="ow-grid-wrap mt-8 mb-8">
@@ -16,9 +18,9 @@
     <div class="d-flex justify-content-end align-items-center">
       <div>전체 {{ totalCount }} 건</div>
     </div>
-    <ow-flex-grid-editor :src="[grid]">
-      <template #default="{ item }">
-        <slot name="editor" :item="item"> </slot>
+    <ow-flex-grid-editor v-if="editable" :src="[grid]" :type="editorSize">
+      <template #default="item">
+        <slot name="editor" :item="item.data"> </slot>
       </template>
     </ow-flex-grid-editor>
   </div>
@@ -91,6 +93,8 @@ export default {
     insert: Function,
     update: Function,
     remove: Function,
+    editable: Boolean,
+    editorSize: { type: String, default: 'L' },
     childItemsPath: { type: String, default: DEFULT_CHILD_ITEM_PATH },
   },
   setup(props) {
@@ -229,6 +233,8 @@ export default {
         : {};
       grid.editor.start(defaultNewItem);
     };
+
+    console.log('tree state', state);
 
     return {
       initialize,
