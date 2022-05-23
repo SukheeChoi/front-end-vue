@@ -140,6 +140,9 @@ const message = {
         state.message.recvIds = message.recvIds;
         state.message.recvOrgs = message.recvOrgs;
         state.message.recvGrpIds = message.recvGrpIds;
+        //
+        state.message.sndNm = userInfo.userNm;
+        state.message.orgNm = userInfo.orgNm;
       }
     },
   },
@@ -149,7 +152,7 @@ const message = {
       // 서버로 확인하지 않은 메시지 목록을 받아서 설정
       const userInfo = store.getters.getUserInfo;
       // 개발서버 테이블 미반영으로 주석처리
-      // commit('set', await getAllUnconfirmedMessages(userInfo.empNo)); // 두 번째 인자는 await 서버 다녀오기
+      commit('set', await getAllUnconfirmedMessages(userInfo.empNo)); // 두 번째 인자는 await 서버 다녀오기
     },
     // 메시지 확인(지우기)
     async remove({ commit }, message) {
@@ -163,8 +166,8 @@ const message = {
       // 서버로 메시지 확인에 대한 처리 이후에 메시지 초기화
       if (await removeAllMessages()) {
         // 개발서버 테이블 미반영으로 주석처리
-        // const userInfo = store.getters.getUserInfo;
-        // // commit('set', await getAllUnconfirmedMessages(userInfo.empNo));
+        const userInfo = store.getters.getUserInfo;
+        commit('set', await getAllUnconfirmedMessages(userInfo.empNo));
       }
     },
     async send({ commit, state }, message) {
