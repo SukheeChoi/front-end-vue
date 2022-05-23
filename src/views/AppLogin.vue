@@ -140,7 +140,7 @@ export default {
           this.$store.commit('setSavedId', this.loginId);
         }
         this.$store.commit('setChecked', this.checkSaveUserId);
-        this.$_openSubScreens(['http://gw.osstem.com']);
+        //this.$_openSubScreens(['http://localhost']);
         this.$router.push('/');
       }
     },
