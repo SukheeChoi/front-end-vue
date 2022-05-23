@@ -39,10 +39,10 @@ export default {
       // heartbeatIncoming: 50000,
       // heartbeatOutgoing: 50000,
     };
-    
+
     const client = new Client({
       webSocketFactory: () => {
-        const status = store.getters["socket/status"];
+        const status = store.getters['socket/status'];
         console.log('status', status);
         if (status !== 'connect') {
           return new SockJS(URL);
@@ -50,20 +50,18 @@ export default {
       },
       beforeConnect: (frame) => {
         store.commit('socket/status', 'connecting...');
-        console.log('beforeConnet', frame);
       },
       onConnect: (frame) => {
         console.log('>>>>>>>>>>>>> connect', frame);
-        
+
         store.commit('socket/status', 'connect');
         store.dispatch('message/init');
-        
-        
+
         //test
         // client.subscribe('/ntf/Sub/messages', (message) => {
         //     subscribe(store, message);
         //   });
-          
+
         const userInfo = store.getters.getUserInfo;
         const subscription = client.subscribe('/ntf/Colabo/subscribe/' + userInfo.empNo, (message) => {
           subscribe(store, message);
