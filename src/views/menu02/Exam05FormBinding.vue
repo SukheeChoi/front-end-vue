@@ -99,7 +99,8 @@
 
             <!-- <input type="submit" value="등록" class="btn btn-danger btn-sm" :disabled="!checkData()"/> -->
             <input type="submit" value="등록" class="btn btn-danger btn-sm mr-2" :disabled="!checkData"/>
-            <input type="reset" value="재작성" class="btn btn-info btn-sm" @click="handleReset"/>
+            <!-- <input type="reset" value="재작성" class="btn btn-info btn-sm" @click="handleReset"/> -->
+            <button type="button" class="btn btn-info btn-sm" @click="handleReset">재작성</button>
         </form>
     </div>
   </div>

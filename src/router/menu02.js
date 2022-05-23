@@ -19,4 +19,16 @@ export default [
         path: "/menu02/exam05formbinding"
         , component: () => import(/* webpackChunkName: "menu02" */ '../views/menu02/Exam05FormBinding.vue')
     }
+    , {
+        path: "/menu02/exam06listrendering"
+        , component: () => import(/* webpackChunkName: "menu02" */ '../views/menu02/Exam06ListRendering.vue')
+    }
+    , {
+        path: "/menu02/exam07computedbinding"
+        , component: () => import(/* webpackChunkName: "menu02" */ '../views/menu02/Exam07ComputedBinding.vue')
+    }
+    , {
+        path: "/menu02/exam08slot"
+        , component: () => import(/* webpackChunkName: "menu02" */ '../views/menu02/Exam08Slot')
+    }
 ];

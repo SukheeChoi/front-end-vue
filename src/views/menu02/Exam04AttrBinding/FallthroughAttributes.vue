@@ -1,11 +1,11 @@
 <template>
-  <div class="card" :id="attrs.id">
+  <div class="card" :id="$attrs.id">
     <div class="card-header">
-      <span :class="attrs.class" :style="attrs.style">FallthroughAttributes</span> 
+      <span :class="$attrs.class" :style="$attrs.style">FallthroughAttributes</span> 
     </div>
     <div class="card-body">
-      <router-link :to="attrs.to" class="btn btn-info btn-sm mr-2">이 동</router-link>
-      <button @click="attrs.onClick" class="btn btn-info btn-sm">버 튼</button>
+      <router-link :to="$attrs.to" class="btn btn-info btn-sm mr-2">이 동</router-link>
+      <button @click="$attrs.onClick" class="btn btn-info btn-sm">버 튼</button>
       <hr/>
       <button @click="handleBtn1" class="btn btn-info btn-sm mr-2">이 동</button>
       <button @click="handleBtn2" class="btn btn-info btn-sm mr-2">버 튼</button>
