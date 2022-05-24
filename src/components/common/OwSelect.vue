@@ -8,7 +8,6 @@
       :items-source="dataMap.itemsSource"
       :display-member-path="dataMap.displayMemberPath"
       :selected-value-path="dataMap.selectedValuePath"
-      :selected-value="dataMap.selectedValue"
       :placeholder="placeholder"
       :is-read-only="readonly"
       :initialized="initialized"
@@ -78,7 +77,6 @@ export default {
         }
         return {};
       });
-
       return {
         itemsSource,
         displayMemberPath,
@@ -91,11 +89,12 @@ export default {
 
     const initialized = (combo) => {
       control = combo;
-      control.itemsSourceChanged.addHandler(() => (combo.selectedValue = props.modelValue));
-      control.selectedIndexChanged.addHandler(() => emit('update:modelValue', combo.selectedValue));
+      control.selectedValue = props.modelValue;
+      control.itemsSourceChanged.addHandler(() => (control.selectedValue = props.modelValue));
+      control.selectedIndexChanged.addHandler(() => emit('update:modelValue', control.selectedValue));
       watch(
         () => props.items,
-        () => (control.selectedValue = props.items)
+        () => control.onItemsSourceChanged()
       );
     };
 

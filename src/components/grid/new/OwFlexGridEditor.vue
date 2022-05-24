@@ -2,21 +2,6 @@
   <ow-modal :type="type" :title="title" ref="editor">
     <template #default="item">
       <slot :data="item.data">
-        <!-- 기본 에디터 {{ item.data }} -->
-        <!-- <ow-input-number
-          label="Sales"
-          v-model="item.data.sales"
-          style="--width: 120px"
-          :min="0"
-          format="n2"
-        ></ow-input-number>
-        <ow-input-number
-          label="Expenses"
-          v-model="item.data.expenses"
-          style="--width: 120px"
-          :min="0"
-          format="n2"
-        ></ow-input-number> -->
         <template v-for="column in currentGridColumns" :key="column">
           <br />binding: {{ column.binding }} | datatype: {{ column.dataType }} | value:
           {{ column._binding.getValue(item.data) }}
@@ -31,25 +16,8 @@
         </template>
       </slot>
     </template>
-    <!-- <ow-select label="Country" :items="dataMap" v-model="selectedItem.country" style="--width: 140px"></ow-select> -->
-    <!-- <wj-combo-box :items-source="dataMap" v-model="selectedItem.country" :selected-item="selectedItem.country">
-    </wj-combo-box>
-    <ow-input-number
-      label="Sales"
-      v-model="selectedItem.sales"
-      style="--width: 120px"
-      :min="0"
-      format="n2"
-    ></ow-input-number>
-    <ow-input-number
-      label="Expenses"
-      v-model="selectedItem.expenses"
-      style="--width: 120px"
-      :min="0"
-      format="n2"
-    ></ow-input-number> -->
     <template #action>
-      <button type="button" class="ow-btn type-base color-gray" v-if="removable" @click.prevent="onDelete()">
+      <button type="button" class="ow-btn type-base color-gray" v-if="!isNew && removable" @click.prevent="onDelete()">
         삭제
       </button>
       <button
@@ -114,7 +82,6 @@ export default {
     });
 
     const dblclick = (s, e) => {
-      console.log('e.defaultPrevented', e.defaultPrevented);
       if (e.defaultPrevented) return;
       start(s, s.selectedItem);
     };
@@ -136,7 +103,6 @@ export default {
       state.currentGridController = s;
       state.currentGridColumns = s.columns;
       const c = s.editableCollectionView;
-      console.log('c', c, item);
       state.insertable = c.insertable;
       state.updatable = c.updatable;
       state.removable = c.removable;
@@ -193,5 +159,4 @@ export default {
   },
 };
 </script>
-
 <style lang="scss" scoped></style>

@@ -1,8 +1,4 @@
 export default {
-  USE_YN: [
-    { name: '사용', value: 'Y' },
-    { name: '미사용', value: 'N' },
-  ],
   SCREEN_LAYOUT: [
     { name: '', value: 0, scrnRto: [] },
     { name: '라디오1', value: 1, scrnRto: [100], path: 'dashboard_1.png' },

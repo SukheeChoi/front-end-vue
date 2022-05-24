@@ -2,7 +2,7 @@
 
 import http from '@/api';
 
-import { reactive, readonly, toRef, unref } from 'vue';
+import { computed, reactive, readonly, toRef, unref, watch } from 'vue';
 
 import { asCollectionView as _asCollectionView } from '@grapecity/wijmo';
 import { DataMap } from '@grapecity/wijmo.grid';
@@ -23,7 +23,7 @@ const COMMON_CODE = reactive({
 
 const COLLECTION_VIEW_MAP = new Map();
 
-function getCodeList(cmmGrpCd) {
+export function getCodeList(cmmGrpCd) {
   const commonCodeList = COMMON_CODE[cmmGrpCd];
   if (commonCodeList) {
     return readonly(unref(commonCodeList));
@@ -33,7 +33,7 @@ function getCodeList(cmmGrpCd) {
   return readonly(unref(newCommonCodeList));
 }
 
-function getCode(cmmGrpCd, cmmCd) {
+export function getCode(cmmGrpCd, cmmCd) {
   const commonCodeList = getCodeList(cmmGrpCd);
   for (const commonCode of commonCodeList) {
     if (commonCode.value === cmmCd) {
@@ -51,7 +51,7 @@ function trigger() {
   }
 }
 
-function asCollectionView(arr) {
+export function asCollectionView(arr) {
   if (COLLECTION_VIEW_MAP.has(arr)) {
     return COLLECTION_VIEW_MAP.get(arr);
   }
@@ -60,7 +60,7 @@ function asCollectionView(arr) {
   return collectionView;
 }
 
-function asDataMap(
+export function asDataMap(
   arr,
   displayMemberPath = DEFAULT_DISPLAY_MEMBER_PATH,
   selectedValuePath = DEFAULT_SELECTED_VALUE_PATH
@@ -68,7 +68,11 @@ function asDataMap(
   return new DataMap(asCollectionView(arr), selectedValuePath, displayMemberPath);
 }
 
-function asFilteredDataMap(arr, binding, displayMemberPath, selectedValuePath) {
+export function asFilteredLink(arr, link) {
+  return unref(computed(() => arr.filter((item) => item.link === link)));
+}
+
+export function asFilteredDataMap(arr, binding, displayMemberPath, selectedValuePath) {
   const dataMap = asDataMap(arr, displayMemberPath, selectedValuePath);
   dataMap.getDisplayValues = function (dataItem) {
     if (!(this._cv && this._displayPath)) {
@@ -80,15 +84,15 @@ function asFilteredDataMap(arr, binding, displayMemberPath, selectedValuePath) {
   return dataMap;
 }
 
-function prepend(arr = [], args = []) {
+export function prepend(arr = [], args = []) {
   return readonly([...args, ...unref(arr)]);
 }
 
-function append(arr = [], args = []) {
+export function append(arr = [], args = []) {
   return readonly([...unref(arr), ...args]);
 }
 
-function combine(arr = [], ...args) {
+export function combine(arr = [], ...args) {
   const prepend = args.at(0) ?? [];
   const append = args.at(1) ?? [];
   return readonly([...prepend, ...unref(arr), ...append]);
@@ -112,5 +116,3 @@ async function loadCodeList(cmmGrpCd, newCommonCodeList) {
     trigger();
   }
 }
-
-export { getCodeList, getCode, asCollectionView, asDataMap, asFilteredDataMap, prepend, append, combine };

@@ -114,7 +114,7 @@ export default {
      * 페이지 정보 설정
      *
      * @param {GridRestCollectionView} c
-     * @param {EventArgs} ev
+     * @param {EventArgs} e
      */
     const setPage = (c) => {
       const { grid: s, totalItemCount } = c;
