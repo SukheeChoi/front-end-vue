@@ -5,7 +5,7 @@
       <h3>검색</h3>
       <ow-input search @lookup="lookup"></ow-input>
     </div>
-    <div class="ow-node-tree-body">
+    <div class="ow-node-tree-body" ref="tree">
       <ow-tree-view
         :initialized="initTreeView"
         :items-source="treeData"
@@ -22,16 +22,85 @@
 <script>
 import _ from 'lodash';
 
-import { reactive, toRefs } from 'vue';
-import { addClass, removeClass, hasClass } from '@grapecity/wijmo';
 import OwTreeView from '@/components/tree/OwTreeView';
-import { getOrganization } from '@/api/tree';
+
+import {
+  //
+  ref,
+  reactive,
+  toRefs,
+} from 'vue';
+import {
+  //
+  addClass,
+  removeClass,
+  hasClass,
+} from '@grapecity/wijmo';
+import {
+  //
+  TreeView,
+} from '@grapecity/wijmo.nav';
+import {
+  //
+  getOrganization,
+} from '@/api/tree';
 
 const CLS_FILTERED = 'filtered';
 const CLS_MATCHED = 'matched';
 
 const CLS_ORG = 'org';
 const CLS_USER = 'user';
+
+function setNodeText(node, keyword, text) {
+  const element = node.element;
+  const regex = /(<span class="highlight">|<\/span>)/gi;
+  const keywordReg = new RegExp(keyword, 'gi');
+  const textElement = element.querySelector('.' + TreeView._CNDT);
+  let textContent = textElement.textContent;
+  textContent = textContent.replace(regex, '');
+  textContent = textContent.replace(keywordReg, text);
+  textElement.innerHTML = textContent;
+}
+
+function getNodeText(node, displayMemberPath) {
+  const item = node.dataItem;
+  for (const displayMember of displayMemberPath) {
+    const text = item[displayMember];
+    if (text) {
+      return text;
+    }
+  }
+  return '';
+}
+
+function traversal(s, nodes, keyword) {
+  for (const node of nodes) {
+    const text = getNodeText(node, s.displayMemberPath);
+    const isMatched = !!keyword && _.toUpper(text).includes(keyword);
+    if (isMatched) {
+      for (let self = node; self; self = self.parentNode) {
+        self.isCollapsed = false;
+        setNodeText(self, keyword, '<span class="highlight">$&</span>');
+        addClass(self.element, CLS_MATCHED);
+      }
+    } else {
+      node.isCollapsed = !!node.parentNode;
+      setNodeText(node, keyword, '');
+      removeClass(node.element, CLS_MATCHED);
+    }
+    if (node.nodes) {
+      traversal(s, node.nodes, keyword);
+    }
+    if (isMatched && node.nodes) {
+      for (const child of node.nodes) {
+        const element = child.element;
+        if (hasClass(element, CLS_USER)) {
+          addClass(element, CLS_MATCHED);
+        }
+      }
+    }
+  }
+}
 
 export default {
   inheritAttrs: false,
@@ -45,65 +114,24 @@ export default {
     initialized: Function,
   },
   setup(props) {
+    const tree = ref();
+
     const state = reactive({
       treeData: [],
     });
 
-    const traversal = (nodes, keyword) => {
-      const regex = /(<span class="highlight">|<\/span>)/gi;
-      const keywordReg = new RegExp(keyword, 'gi');
-
-      for (const node of nodes) {
-        const dataItem = node.dataItem;
-        const name = dataItem.orgNm ?? dataItem.userNm ?? '';
-        const isMatched = !!keyword && name.includes(keyword);
-
-        if (isMatched) {
-          for (let self = node; self; self = self.parentNode) {
-            self.isCollapsed = false;
-            const element = self.element;
-            const html = element.innerHTML.replace(regex, '');
-
-            if (keywordReg.test(element.textContent)) {
-              addClass(element, 'show');
-            }
-            element.innerHTML = html.replace(keywordReg, '<span class="highlight">$&</span>');
-            addClass(element, CLS_MATCHED);
-          }
-        } else {
-          node.isCollapsed = !!node.parentNode;
-          const element = node.element;
-          const html = element.innerHTML.replace(regex, '');
-          element.innerHTML = html;
-          removeClass(element, CLS_MATCHED);
-        }
-        if (
-          node.parentNode &&
-          hasClass(node.parentNode.element, 'show') &&
-          hasClass(node.parentNode.element, CLS_MATCHED)
-        ) {
-          console.log(node);
-          if (hasClass(node.element, CLS_USER)) {
-            addClass(node.element, CLS_MATCHED);
-          }
-          console.log(node.parentNode, node);
-        }
-        if (node.nodes) {
-          traversal(node.nodes, keyword);
-        }
-      }
-    };
-
     const lookup = (keyword) => {
-      const treeView = state.treeView;
       keyword = keyword.replace(/\s/g, '');
+      const treeView = state.treeView;
+      const hostElement = treeView.hostElement;
       if (!keyword) {
-        removeClass(treeView.hostElement, CLS_FILTERED);
+        removeClass(hostElement, CLS_FILTERED);
       }
-      traversal(treeView.nodes, _.toUpper(keyword));
+      traversal(treeView, treeView.nodes, _.toUpper(keyword));
       if (keyword) {
-        addClass(treeView.hostElement, CLS_FILTERED);
+        addClass(hostElement, CLS_FILTERED);
       }
+      tree.value.scrollTop = 0;
     };
 
     const initTreeView = async (s) => {
@@ -133,6 +161,7 @@ export default {
     };
 
     return {
+      tree,
       ...toRefs(state),
       initTreeView,
       formatItem,
