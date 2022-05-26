@@ -57,6 +57,10 @@ const RestApi = {
   execute(url, data, id = '', params = {}) {
     return http.post(url + '/execute' + id, data, { params });
   },
+
+  read(url, data, id = '', params = {}) {
+    return http.post(url + '/read' + id, data, { params });
+  },
 };
 
 export default RestApi;

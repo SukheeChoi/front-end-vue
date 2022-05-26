@@ -101,8 +101,8 @@ export default {
       if (userData.data.data !== null) {
         const userInfo = userData.data.data;
         this.$store.commit('setUserInfo', userInfo);
-        return await this.getDashboard();
-        //return await this.getMenus();
+        //return await this.getDashboard();
+        return await this.getMenus();
         //this.$router.push('/');
 
         if (instance.$connect) {
