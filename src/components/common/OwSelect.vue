@@ -121,4 +121,17 @@ export default {
     background: 0;
   }
 }
+:deep(.wj-state-readonly) {
+  .wj-template {
+    padding-right: 0;
+  }
+  .wj-input-group-btn {
+    display: none !important;
+  }
+  .wj-form-control {
+    &:read-only {
+      background-color: rgba(238, 238, 238, 1);
+    }
+  }
+}
 </style>

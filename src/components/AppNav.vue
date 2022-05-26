@@ -81,10 +81,7 @@ const MenuList2 = [
     Menu.create('김종혁', 'EAPZZ', [Menu.create('사용자설정', 'EAPZZ001'), Menu.create('완료함', 'EAPZZ002')]),
     Menu.create('김동은', 'EAPOO', [Menu.create('RegisterLayout', 'EAPOO001')]),
   ]),
-  Menu.create('데이터표준', 'DAMROOT', [
-    Menu.create('표준단어', 'DAMST001'),
-    Menu.create('표준도메인', 'DAMST002'),
-  ]),
+  Menu.create('데이터표준', 'DAMROOT', [Menu.create('표준단어', 'DAMST001'), Menu.create('표준도메인', 'DAMST002')]),
 ];
 
 export default {
@@ -133,7 +130,7 @@ export default {
       const last = state.myMenuList.at(-1);
       if (last) {
         const { list, index } = last;
-        document.title = `OW OSSTEM | ${list[index].title}`;
+        document.title = `${list[index].title} | OW OSSTEM`;
       }
     };
 

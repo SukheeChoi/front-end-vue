@@ -1,15 +1,17 @@
 <template>
   <div>
-    <div class="d-flex justify-content-between align-items-end mt-10">
-      <slot name="left">
-        <h1 class="h1">그리드</h1>
-      </slot>
-      <slot name="right">
-        <template v-if="editable">
-          <button type="button" class="ow-btn type-state" v-if="insert" @click="addNew">추가</button>
-        </template>
-      </slot>
-    </div>
+    <template v-if="isNotBlankHeader">
+      <div class="d-flex justify-content-between align-items-end mt-10" ref="header">
+        <slot name="left">
+          <h1 class="h1">그리드</h1>
+        </slot>
+        <slot name="right">
+          <template v-if="editable">
+            <button type="button" class="ow-btn type-state" v-if="insert" @click="addNew">추가</button>
+          </template>
+        </slot>
+      </div>
+    </template>
     <div class="ow-grid-wrap mt-8 mb-8">
       <template v-for="i in n" :key="i">
         <ow-flex-grid :initialized="initialize.bind(null, i)" v-bind="$attrs">
@@ -108,6 +110,8 @@ export default {
     editorSize: { type: String, default: 'L' },
   },
   setup(props) {
+    const header = ref();
+
     const state = reactive({
       grids: [],
       pageNo: 1,
@@ -120,6 +124,13 @@ export default {
         patchItem: props.update,
         deleteItem: props.remove,
       },
+      isNotBlankHeader: computed(() => {
+        const el = header.value;
+        if (el) {
+          return el.textContent.trim() !== '';
+        }
+        return false;
+      }),
       // 보여지는 페이지의 수
       perPage: computed(() => state.pageSize * props.n),
     });
@@ -197,8 +208,22 @@ export default {
       }
     };
 
+    const addNew = () => {
+      const grid = state.grid;
+      const sourceCollection = grid.sourceCollection;
+      const editableCollectionView = grid.editableCollectionView;
+      const defaultNewItem = isFunction(editableCollectionView.newItemCreator)
+        ? editableCollectionView.newItemCreator()
+        : sourceCollection && sourceCollection.length
+        ? new sourceCollection[0].constructor()
+        : {};
+      grid.editor.start(defaultNewItem);
+    };
+
     return {
+      header,
       initialize,
+      addNew,
       ...toRefs(state),
     };
   },

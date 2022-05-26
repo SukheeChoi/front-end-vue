@@ -1,15 +1,17 @@
 <template>
   <div>
-    <div class="d-flex justify-content-between align-items-end mt-10">
-      <slot name="left">
-        <h1 class="h1">그리드</h1>
-      </slot>
-      <slot name="right">
-        <template v-if="editable">
-          <button type="button" class="ow-btn type-state" v-if="insert" @click="addNew">추가</button>
-        </template>
-      </slot>
-    </div>
+    <template v-if="isNotBlankHeader">
+      <div class="d-flex justify-content-between align-items-end mt-10" ref="header">
+        <slot name="left">
+          <h1 class="h1">그리드</h1>
+        </slot>
+        <slot name="right">
+          <template v-if="editable">
+            <button type="button" class="ow-btn type-state" v-if="insert" @click="addNew">추가</button>
+          </template>
+        </slot>
+      </div>
+    </template>
     <div class="ow-grid-wrap mt-8 mb-8">
       <ow-flex-grid :initialized="initialize" v-bind="$attrs">
         <slot></slot>
@@ -65,6 +67,8 @@ import {
   reactive,
   watch,
   toRefs,
+  computed,
+  ref,
 } from 'vue';
 
 /**
@@ -105,6 +109,8 @@ export default {
     editorSize: { type: String, default: 'L' },
   },
   setup(props) {
+    const header = ref();
+
     const state = reactive({
       grid: null,
       query: Object.assign({}, props.query),
@@ -118,6 +124,13 @@ export default {
         patchItem: props.update,
         deleteItem: props.remove,
       },
+      isNotBlankHeader: computed(() => {
+        const el = header.value;
+        if (el) {
+          return el.textContent.trim() !== '';
+        }
+        return false;
+      }),
     });
 
     /**
@@ -202,6 +215,7 @@ export default {
     };
 
     return {
+      header,
       initialize,
       addNew,
       ...toRefs(state),

@@ -1,15 +1,15 @@
 <template>
   <ow-modal :type="type" :title="title" ref="editor">
-    <template #default="item">
-      <slot :data="item.data">
+    <template #default="{ data }">
+      <slot :data="data">
         <template v-for="column in currentGridColumns" :key="column">
           <br />binding: {{ column.binding }} | datatype: {{ column.dataType }} | value:
-          {{ column._binding.getValue(item.data) }}
+          {{ column._binding.getValue(data) }}
           <template v-if="column.dataMap">
             <ow-select
               label="Country"
               :items="column.dataMap"
-              v-model="item.data.country"
+              v-model="data.country"
               style="--width: 140px"
             ></ow-select>
           </template>
