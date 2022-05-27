@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="isNotBlankHeader">
+    <template v-if="isNotBlank">
       <div class="d-flex justify-content-between align-items-end mt-10" ref="header">
         <slot name="left">
           <h1 class="h1">그리드</h1>
@@ -67,8 +67,9 @@ import {
   reactive,
   watch,
   toRefs,
-  computed,
   ref,
+  onMounted,
+  nextTick,
 } from 'vue';
 
 /**
@@ -124,13 +125,7 @@ export default {
         patchItem: props.update,
         deleteItem: props.remove,
       },
-      isNotBlankHeader: computed(() => {
-        const el = header.value;
-        if (el) {
-          return el.textContent.trim() !== '';
-        }
-        return false;
-      }),
+      isNotBlank: true,
     });
 
     /**
@@ -213,6 +208,13 @@ export default {
         : {};
       grid.editor.start(defaultNewItem);
     };
+
+    onMounted(async () => {
+      await nextTick();
+      const el = header.value;
+      const textContent = el.textContent.trim();
+      state.isNotBlank = textContent !== '';
+    });
 
     return {
       header,
