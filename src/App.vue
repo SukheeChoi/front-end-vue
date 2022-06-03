@@ -25,4 +25,8 @@
 <script setup>
   import AppHeader from "./components/AppHeader.vue";
   import AppMenu from "./components/AppMenu.vue";
+  import { useStore } from 'vuex';
+
+  const store = useStore();
+  store.dispatch('loadAuth');
 </script>

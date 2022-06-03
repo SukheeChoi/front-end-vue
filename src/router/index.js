@@ -6,6 +6,7 @@ import menu03 from './menu03';
 import menu04 from './menu04';
 import menu05 from './menu05';
 import menu06 from './menu06';
+import menu07 from './menu07';
 
 const routes = [
   {
@@ -27,6 +28,7 @@ const routes = [
   , ...menu04
   , ...menu05
   , ...menu06
+  , ...menu07
 ]
 
 const router = createRouter({

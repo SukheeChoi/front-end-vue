@@ -1,18 +1,26 @@
 import { createStore } from 'vuex'
 import counter from './counter';
+import axiosConfig from '@/apis/axiosConfig';
 
 export default createStore({
   state: {
-    userId: "summer"
+    userId: '' // mid
+    , authToken: '' // authToken
   },
   getters: {
     getUserId(state, getters, rootState, rootGetters) {
       return state.userId;
     }
+    , getAuthToken(state, getters, rootState, rootGetters) {
+      return state.authToken;
+    }
   },
   mutations: {
     setUserId(state, payload) {
       state.userId = payload;
+    }
+    , setAuthToken(state, payload) {
+      state.authToken = payload;
     }
   },
   actions: {
@@ -40,6 +48,33 @@ export default createStore({
         // 예외가 발생했거나 reject된 경우
         console.log('userId 상태 변경 실패');
       });
+    }
+
+    // 로그인이 성공했을 때 실행
+    // payload: {userId: xxx, authToken: yyyy}
+    , saveAuth(context, payload) {
+      context.commit('setUserId', payload.userId);
+      context.commit('setAuthToken', payload.authToken);
+      sessionStorage.setItem('userId', payload.userId);
+      sessionStorage.setItem('authToken', payload.authToken);
+      axiosConfig.addAuthHeader(payload.authToken);
+    }
+    
+    // 로그아웃할 때 실행
+    , deleteAuth(context, payload) {
+      context.commit('setUserId', '');
+      context.commit('setAuthToken', '');
+      sessionStorage.removeItem('userId');
+      sessionStorage.removeItem('authToken');
+      axiosConfig.removeAuthHeader();
+    }
+    
+    , loadAuth(context, payload) {
+      context.commit('setUserId', sessionStorage.getItem('userId') || '');
+      context.commit('setAuthToken', sessionStorage.getItem('authToken') || '');
+      if(context.state.authToken !== '') {
+        axiosConfig.addAuthHeader(context.state.authToken);
+      }
     }
   },
   modules: {
