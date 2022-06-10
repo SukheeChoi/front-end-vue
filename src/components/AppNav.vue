@@ -33,55 +33,12 @@ const MenuList2 = [
       Menu.create('배치결과', 'COMBT002'),
       Menu.create('배치변경이력', 'COMBT003'),
     ]),
-    Menu.create('권한관리', 'COMAU', [
-      Menu.create('사용자관리', 'COMAU001'),
-      Menu.create('업무그룹관리', 'COMAU003'),
-      Menu.create('부서별 업무그룹관리', 'COMAU004'),
-      Menu.create('화면관리', 'COMAU005'),
-      Menu.create('메뉴관리', 'COMAU006'),
-      Menu.create('메뉴별 프로그램관리', 'COMAU011'),
-      Menu.create('업무그룹별 메뉴관리', 'COMAU007'),
-      Menu.create('개인별 업무그룹 관리', 'COMAU008'),
-      Menu.create('부서별 메인화면 관리', 'COMAU009'),
-      Menu.create('부서별 대시보드 관리', 'COMAU010'),
-    ]),
-    Menu.create('보고서', 'COMRP', [
-      Menu.create('사용자로그인이력', 'COMRP001'),
-      Menu.create('화면접속이력', 'COMRP002'),
-      Menu.create('엑셀다운로드이력', 'COMRP003'),
-    ]),
-    Menu.create('설정', 'COMCF', [
-      Menu.create('언어코드', 'COMCF001'),
-      Menu.create('타임존', 'COMCF002'),
-      Menu.create('통화코드', 'COMCF003'),
-      Menu.create('메세지소스', 'COMCF004'),
-      Menu.create('공통코드', 'COMCF005'),
-      Menu.create('템플릿관리', 'COMCF006'),
-      Menu.create('시스템설정', 'COMCF007'),
-    ]),
-    Menu.create('인터페이스', 'COMIF', [
-      Menu.create('인터페이스 등록', 'COMIF001'),
-      Menu.create('인터페이스 현황', 'COMIF002'),
-    ]),
-    Menu.create('개인화설정', 'COMPE', [
-      Menu.create('개인정보설정', 'COMPE001'),
-      Menu.create('로그인 비밀번호 설정', 'COMPE002'),
-      Menu.create('결재 비밀번호 설정', 'COMPE003'),
-      Menu.create('부재 설정', 'COMPE004'),
-      Menu.create('알림 설정', 'COMPE005'),
-    ]),
   ]),
-  Menu.create('전자결재', 'EAPROOT', [
-    Menu.create('정명훈', 'EAPXX', [
-      Menu.create('양식', 'EAPXX001'),
-      Menu.create('기안', 'EAPXX002'),
-      Menu.create('샘플', 'EAPXX003'),
-    ]),
-    Menu.create('메인보드', 'EAP01', [Menu.create('기안작성', 'EAP02')]),
-    Menu.create('김종혁', 'EAPZZ', [Menu.create('사용자설정', 'EAPZZ001'), Menu.create('완료함', 'EAPZZ002')]),
-    Menu.create('김동은', 'EAPOO', [Menu.create('RegisterLayout', 'EAPOO001')]),
-  ]),
-  Menu.create('데이터표준', 'DAMROOT', [Menu.create('표준단어', 'DAMST001'), Menu.create('표준도메인', 'DAMST002')]),
+  Menu.create('교육', 'EDUROOT', [
+    Menu.create('교육중메뉴', 'TestSub', [
+      Menu.create('ABC', 'abc001')
+    ])
+  ])
 ];
 
 export default {

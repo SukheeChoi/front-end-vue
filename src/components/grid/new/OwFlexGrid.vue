@@ -156,7 +156,8 @@ function setCustomEvents(s) {
  * @param {FlexGrid} s
  */
 function adjustGridHeight(s) {
-  let height = 0;
+   let height = 500;
+  //let height = 0;
   const {
     columnHeaders: { rows: rows1 },
     rows: rows2,
@@ -453,7 +454,9 @@ export default {
     text-align: center;
   }
   :deep([wj-part='root']) {
-    overflow: hidden overlay !important;
+    overflow: auto;
+    
+    // overflow: hidden overlay !important;
   }
   :deep(.wj-cell) {
     label {

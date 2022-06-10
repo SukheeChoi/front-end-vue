@@ -3,6 +3,8 @@ import store from '@/store';
 import login from '@/api/login.js';
 import { requestReissueToken } from '@/api/login.js';
 import loading from '../store/modules/loading';
+// import OwNGrid from '@/components/grid/new/OwNGrid.vue';
+
 const routes = [
   {
     path: '/',
@@ -18,6 +20,7 @@ const routes = [
       {
         path: 'main',
         name: 'main',
+        // @/views/AppDashboard
         component: () => import('@/views/AppDashboard'),
         props: {
           components: [
@@ -25,9 +28,6 @@ const routes = [
             require('@/views/dashboard/Panel2'),
             require('@/views/dashboard/Panel3'),
             require('@/views/dashboard/Panel4'),
-            // require('@/views/dashboard/Panel5'),
-            require('@@/com/views/SendMessage'),
-            require('@/views/dashboard/Panel6'),
           ],
         },
       },
@@ -51,7 +51,29 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/AppNotFound'),
-  },
+  }
+  , {
+    path: '/ngrid'
+    , name: 'OwNGrid'
+    , component: () => import('@/views/routerTest/ngridTest')
+  }
+  , {
+    path: '/test01'
+    , name: 'test01'
+    , component: () => import('@/views/wijmoTest/test01')
+  }
+  , {
+    path: '/actionplantest'
+    , component: () => import('@/views/wijmoTest/ActionPlanTest')
+  }
+  , {
+    path: '/grid'
+    , component: () => import('@/views/wijmoTest/OwGridTest')
+  }
+  , {
+    path: '/collection'
+    , component: () => import('@/views/wijmoTest/CollectionView')
+  }
 ];
 function loadRoutes() {
   console.log('initialize loadRoutes');
@@ -85,7 +107,7 @@ router.afterEach((to, from, failure) => {});
 router.beforeEach(async (to, from, next) => {
   const routeList = store.getters.getRouteList;
 
-  const devMode = false;
+  const devMode = true;
   const now = new Date();
   const nowTime = now.getTime();
 
@@ -93,9 +115,6 @@ router.beforeEach(async (to, from, next) => {
     const newData = await requestReissueToken('/com/Auth', store.getters.getUserInfo.userId);
     store.commit('setAuth', newData.data.data);
   }
-
-  console.log(store.getters.getUserInfo);
-  console.log(store.getters.getToken);
 
   if (devMode == false && to.fullPath === '/login' && store.getters.getToken.length > 0) {
     router.push('/main');

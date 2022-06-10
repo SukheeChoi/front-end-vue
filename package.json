@@ -10,7 +10,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@grapecity/wijmo.vue2.all": "^5.20213.824",
+    "@grapecity/wijmo.vue2.all": "^5.20221.842",
     "@popperjs/core": "^2.11.2",
     "@stomp/stompjs": "^6.1.2",
     "@tinymce/tinymce-vue": "^4.0.6",
@@ -61,5 +61,13 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "description": "```\r npm install\r ```",
+  "main": ".eslintrc.js",
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.osstem.com/ow/ows-web.git"
+  },
+  "author": "",
+  "license": "ISC"
 }

@@ -33,6 +33,7 @@ import OwSwitch from '@/components/common/OwSwitch';
 import OwTab from '@/components/common/OwTab';
 
 import OwGrid from '@/components/grid/OwGrid';
+import OwNGrid from '@/components/grid/new/OwNGrid';
 import OwFlexGrid from '@/components/grid/OwFlexGrid';
 import OwTreeGrid from '@/components/grid/OwTreeGrid';
 
@@ -59,6 +60,7 @@ let COMMON_COMPONENTS = {
   OwFlexWrap,
   OwFlexItem,
   OwGrid,
+  OwNGrid,
   OwInput,
   OwInputDate,
   OwInputTime,

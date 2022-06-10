@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import OwFlexGrid from '@/components/grid/new/OwFlexGrid';
 import OwFlexGridEditor from '@/components/grid/new/OwFlexGridEditor';
 import {
@@ -95,7 +96,7 @@ function asProxyFlexGrid(s) {
 }
 
 export default {
-  name: 'OwGrid',
+  name: 'OwNGrid',
   components: {
     OwFlexGrid,
     OwFlexGridEditor,
@@ -112,12 +113,12 @@ export default {
     editorSize: { type: String, default: 'L' },
   },
   setup(props) {
-    const header = ref();
+    const header = ref(null);
 
     const state = reactive({
-      grids: [],
+      grids: ['a', 'b', 'c', 'd', 'e'],
       pageNo: 1,
-      pageSize: 10,
+      pageSize: 20,
       pageSizeList: [],
       totalCount: 0,
       api: {

@@ -211,8 +211,10 @@ export default {
 
     onMounted(async () => {
       await nextTick();
-      const el = header.value;
+      // const el = header.value;
+      const el = '가나다라마바사';
       const textContent = el.textContent.trim();
+      // const textContent = el.textContent.trim();
       state.isNotBlank = textContent !== '';
     });
 

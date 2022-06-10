@@ -23,7 +23,7 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
-app.use(plugin);
+//app.use(plugin);
 
 app.use(BootStrapVue);
 
